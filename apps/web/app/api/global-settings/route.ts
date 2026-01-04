@@ -3,14 +3,12 @@ import { Prisma, prisma } from '@trends172tech/db';
 import { z } from 'zod';
 import { AuthError, requireRole } from '@/lib/auth/guards';
 
-const numberFromInput = z.preprocess(
-  (value) => (typeof value === 'string' ? Number(value) : value),
-  z.number()
-);
+const numberFromInput = (schema: z.ZodNumber) =>
+  z.preprocess((value) => (typeof value === 'string' ? Number(value) : value), schema);
 
 const globalSettingsSchema = z.object({
-  usdToVesRate: numberFromInput.min(0.0001),
-  usdPaymentDiscountPercent: numberFromInput.min(0).max(100),
+  usdToVesRate: numberFromInput(z.number().min(0.0001)),
+  usdPaymentDiscountPercent: numberFromInput(z.number().min(0).max(100)),
   roundingRule: z.enum(['ONE', 'FIVE', 'TEN'])
 });
 
