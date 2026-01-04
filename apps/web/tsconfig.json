@@ -17,6 +17,6 @@
       "@/*": ["./app/*"]
     }
   },
-  "include": ["next-env.d.ts", "next-auth.d.ts", "app/**/*", "next.config.ts", "middleware.ts", "i18n.ts"],
+  "include": ["next-env.d.ts", "app/**/*", "next.config.ts", "middleware.ts", "i18n.ts"],
   "exclude": ["node_modules"]
 }
