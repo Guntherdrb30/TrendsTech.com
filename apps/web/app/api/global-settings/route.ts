@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { Prisma, prisma } from '@trends172tech/db';
+import { prisma } from '@trends172tech/db';
 import { z } from 'zod';
 import { AuthError, requireRole } from '@/lib/auth/guards';
 
@@ -45,15 +45,15 @@ export async function POST(request: Request) {
     const settings = await prisma.globalSettings.upsert({
       where: { id: 1 },
       update: {
-        usdToVesRate: new Prisma.Decimal(parsed.data.usdToVesRate),
-        usdPaymentDiscountPercent: new Prisma.Decimal(parsed.data.usdPaymentDiscountPercent),
+        usdToVesRate: parsed.data.usdToVesRate,
+        usdPaymentDiscountPercent: parsed.data.usdPaymentDiscountPercent,
         roundingRule: parsed.data.roundingRule,
         updatedByUserId: user.id
       },
       create: {
         id: 1,
-        usdToVesRate: new Prisma.Decimal(parsed.data.usdToVesRate),
-        usdPaymentDiscountPercent: new Prisma.Decimal(parsed.data.usdPaymentDiscountPercent),
+        usdToVesRate: parsed.data.usdToVesRate,
+        usdPaymentDiscountPercent: parsed.data.usdPaymentDiscountPercent,
         roundingRule: parsed.data.roundingRule,
         updatedByUserId: user.id
       }
