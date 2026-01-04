@@ -4,6 +4,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { RootClient } from './root-client';
 
+export const dynamic = 'force-dynamic';
+
 export default async function RootPage() {
   await requireRole('ROOT');
 

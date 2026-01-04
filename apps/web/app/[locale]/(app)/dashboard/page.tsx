@@ -5,6 +5,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { DashboardClient } from './dashboard-client';
 
+export const dynamic = 'force-dynamic';
+
 export default async function DashboardPage() {
   const user = await requireAuth();
   const tenant = await resolveTenantFromUser(user);
