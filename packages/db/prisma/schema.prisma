@@ -1,0 +1,274 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum TenantMode {
+  SINGLE
+  RESELLER
+}
+
+enum TenantStatus {
+  ACTIVE
+  SUSPENDED
+}
+
+enum UserRole {
+  ROOT
+  TENANT_ADMIN
+  TENANT_OPERATOR
+  TENANT_VIEWER
+}
+
+enum AgentStatus {
+  DRAFT
+  ACTIVE
+  PAUSED
+}
+
+enum Language {
+  ES
+  EN
+}
+
+enum KnowledgeSourceType {
+  URL
+  PDF
+  TEXT
+}
+
+enum KnowledgeSourceStatus {
+  PENDING
+  PROCESSING
+  READY
+  FAILED
+}
+
+enum InstallStatus {
+  ACTIVE
+  DISABLED
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  PAST_DUE
+  CANCELED
+}
+
+enum ManualPaymentCurrency {
+  USD
+  VES
+}
+
+enum ManualPaymentStatus {
+  PENDING
+  REVIEWING
+  APPROVED
+  REJECTED
+}
+
+enum RoundingRule {
+  ONE
+  FIVE
+  TEN
+}
+
+model Tenant {
+  id             String           @id @default(cuid())
+  name           String
+  slug           String           @unique
+  mode           TenantMode       @default(SINGLE)
+  status         TenantStatus     @default(ACTIVE)
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+
+  users          User[]
+  endCustomers   EndCustomer[]
+  agentInstances AgentInstance[]
+  knowledge      KnowledgeSource[]
+  installs       Install[]
+  subscriptions  Subscription[]
+  manualPayments ManualPayment[]
+  auditLogs      AuditLog[]
+}
+
+model User {
+  id                 String          @id @default(cuid())
+  tenantId           String?
+  email              String          @unique
+  name               String?
+  role               UserRole        @default(TENANT_VIEWER)
+  passwordHash       String?
+  createdAt          DateTime        @default(now())
+  updatedAt          DateTime        @updatedAt
+
+  tenant             Tenant?         @relation(fields: [tenantId], references: [id])
+  reviewedPayments   ManualPayment[] @relation("ManualPaymentReviewedBy")
+  auditLogs          AuditLog[]      @relation("AuditLogActor")
+  updatedSettings    GlobalSettings[]
+
+  @@index([tenantId])
+}
+
+model EndCustomer {
+  id             String          @id @default(cuid())
+  tenantId       String
+  name           String
+  email          String?
+  phone          String?
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+
+  tenant         Tenant          @relation(fields: [tenantId], references: [id])
+  agentInstances AgentInstance[]
+
+  @@index([tenantId])
+}
+
+model AgentInstance {
+  id              String           @id @default(cuid())
+  tenantId        String
+  endCustomerId   String?
+  name            String
+  baseAgentKey    String
+  languageDefault Language         @default(ES)
+  status          AgentStatus      @default(DRAFT)
+  featuresJson    Json?
+  brandingJson    Json?
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+
+  tenant          Tenant           @relation(fields: [tenantId], references: [id])
+  endCustomer     EndCustomer?     @relation(fields: [endCustomerId], references: [id])
+  knowledge       KnowledgeSource[]
+  installs        Install[]
+
+  @@index([tenantId])
+  @@index([endCustomerId])
+}
+
+model KnowledgeSource {
+  id              String               @id @default(cuid())
+  tenantId        String
+  agentInstanceId String
+  type            KnowledgeSourceType
+  title           String?
+  url             String?
+  fileKey         String?
+  rawText         String?              @db.Text
+  status          KnowledgeSourceStatus @default(PENDING)
+  createdAt       DateTime             @default(now())
+  updatedAt       DateTime             @updatedAt
+
+  tenant          Tenant               @relation(fields: [tenantId], references: [id])
+  agentInstance   AgentInstance        @relation(fields: [agentInstanceId], references: [id])
+
+  @@index([tenantId])
+  @@index([agentInstanceId])
+}
+
+model Install {
+  id              String        @id @default(cuid())
+  tenantId        String
+  agentInstanceId String
+  publicKey       String        @unique
+  allowedDomains  String[]      @default([])
+  status          InstallStatus @default(ACTIVE)
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  tenant          Tenant        @relation(fields: [tenantId], references: [id])
+  agentInstance   AgentInstance @relation(fields: [agentInstanceId], references: [id])
+
+  @@index([tenantId])
+  @@index([agentInstanceId])
+}
+
+model Plan {
+  id               String        @id @default(cuid())
+  key              String        @unique
+  name_es          String
+  name_en          String
+  priceUsdMonthly  Decimal       @db.Decimal(12, 2)
+  limitsJson       Json?
+  isActive         Boolean       @default(true)
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+
+  subscriptions    Subscription[]
+}
+
+model Subscription {
+  id         String             @id @default(cuid())
+  tenantId   String
+  planId     String
+  status     SubscriptionStatus @default(ACTIVE)
+  startedAt  DateTime           @default(now())
+  endsAt     DateTime?
+  createdAt  DateTime           @default(now())
+  updatedAt  DateTime           @updatedAt
+
+  tenant     Tenant             @relation(fields: [tenantId], references: [id])
+  plan       Plan               @relation(fields: [planId], references: [id])
+  payments   ManualPayment[]
+
+  @@index([tenantId])
+  @@index([planId])
+}
+
+model ManualPayment {
+  id               String               @id @default(cuid())
+  tenantId         String
+  subscriptionId   String?
+  amountPaid       Decimal              @db.Decimal(12, 2)
+  currencyPaid     ManualPaymentCurrency
+  exchangeRateUsed Decimal?             @db.Decimal(12, 4)
+  reference        String
+  proofUrl         String?
+  status           ManualPaymentStatus  @default(PENDING)
+  reviewedByUserId String?
+  reviewedAt       DateTime?
+  createdAt        DateTime             @default(now())
+  updatedAt        DateTime             @updatedAt
+
+  tenant           Tenant               @relation(fields: [tenantId], references: [id])
+  subscription     Subscription?        @relation(fields: [subscriptionId], references: [id])
+  reviewedBy       User?                @relation("ManualPaymentReviewedBy", fields: [reviewedByUserId], references: [id])
+
+  @@index([tenantId])
+  @@index([subscriptionId])
+}
+
+model GlobalSettings {
+  id                        Int          @id @default(1)
+  usdToVesRate              Decimal      @db.Decimal(12, 4)
+  roundingRule              RoundingRule @default(ONE)
+  usdPaymentDiscountPercent Decimal      @db.Decimal(5, 2)
+  updatedByUserId           String?
+  updatedAt                 DateTime     @updatedAt
+
+  updatedBy                 User?        @relation(fields: [updatedByUserId], references: [id])
+
+  @@index([updatedByUserId])
+}
+
+model AuditLog {
+  id          String   @id @default(cuid())
+  actorUserId String
+  tenantId    String?
+  action      String
+  entity      String
+  entityId    String
+  metaJson    Json?
+  createdAt   DateTime @default(now())
+
+  actor       User     @relation("AuditLogActor", fields: [actorUserId], references: [id])
+  tenant      Tenant?  @relation(fields: [tenantId], references: [id])
+
+  @@index([actorUserId])
+  @@index([tenantId])
+}

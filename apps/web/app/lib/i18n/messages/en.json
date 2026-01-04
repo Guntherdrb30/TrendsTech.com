@@ -1,0 +1,21 @@
+{
+  "nav": {
+    "home": "Home",
+    "agents": "Agents",
+    "pricing": "Pricing",
+    "login": "Login",
+    "dashboard": "Dashboard"
+  },
+  "pages": {
+    "homeTitle": "Trends172 Tech",
+    "homeSubtitle": "AI agent platform for analysis, creation, and distribution.",
+    "agentsTitle": "Agents",
+    "pricingTitle": "Pricing",
+    "loginTitle": "Login",
+    "dashboardTitle": "Dashboard",
+    "rootTitle": "Root Area"
+  },
+  "common": {
+    "comingSoon": "Coming soon"
+  }
+}

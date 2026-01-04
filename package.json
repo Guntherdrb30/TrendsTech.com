@@ -1,0 +1,19 @@
+{
+  "name": "trends172tech",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "npm --workspace apps/web run dev",
+    "build": "npm --workspace apps/web run build",
+    "start": "npm --workspace apps/web run start",
+    "lint": "npm --workspace apps/web run lint",
+    "typecheck": "npm --workspace apps/web run typecheck",
+    "prisma": "npm --workspace packages/db run prisma",
+    "db:migrate": "npm --workspace packages/db run prisma migrate dev",
+    "db:studio": "npm --workspace packages/db run prisma studio",
+    "db:seed": "npm --workspace packages/db run prisma db seed"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "nav": {
+    "home": "Inicio",
+    "agents": "Agentes",
+    "pricing": "Precios",
+    "login": "Iniciar sesion",
+    "dashboard": "Panel"
+  },
+  "pages": {
+    "homeTitle": "Trends172 Tech",
+    "homeSubtitle": "Plataforma de agentes IA para analisis, creacion y distribucion.",
+    "agentsTitle": "Agentes",
+    "pricingTitle": "Precios",
+    "loginTitle": "Iniciar sesion",
+    "dashboardTitle": "Panel",
+    "rootTitle": "Area Root"
+  },
+  "common": {
+    "comingSoon": "Proximamente"
+  }
+}
