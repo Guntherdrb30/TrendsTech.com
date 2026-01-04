@@ -8,6 +8,7 @@ export default getRequestConfig(async ({ requestLocale }) => {
     : defaultLocale;
 
   return {
+    locale: resolvedLocale,
     messages: (await import(`./app/lib/i18n/messages/${resolvedLocale}.json`)).default
   };
 });
