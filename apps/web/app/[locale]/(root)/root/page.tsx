@@ -7,10 +7,18 @@ import { RootClient } from './root-client';
 export default async function RootPage() {
   await requireRole('ROOT');
 
-  const [settings, tenants] = await Promise.all([
-    prisma.globalSettings.findUnique({ where: { id: 1 } }),
-    prisma.tenant.findMany({ orderBy: { createdAt: 'desc' } })
-  ]);
+  type TenantRow = {
+    id: string;
+    name: string;
+    slug: string;
+    mode: string;
+    status: string;
+  };
+
+  const settings = await prisma.globalSettings.findUnique({ where: { id: 1 } });
+  const tenants = (await prisma.tenant.findMany({
+    orderBy: { createdAt: 'desc' }
+  })) as TenantRow[];
 
   return (
     <section className="space-y-6">
