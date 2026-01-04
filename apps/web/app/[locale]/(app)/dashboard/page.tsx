@@ -1,4 +1,3 @@
-import type { Prisma } from '@trends172tech/db';
 import { prisma } from '@trends172tech/db';
 import { requireAuth } from '@/lib/auth/guards';
 import { resolveTenantFromUser } from '@/lib/tenant';
@@ -19,22 +18,27 @@ export default async function DashboardPage() {
     );
   }
 
-  type EndCustomerOption = Prisma.EndCustomerGetPayload<{ select: { id: true; name: true } }>;
-  type AgentWithEndCustomer = Prisma.AgentInstanceGetPayload<{ include: { endCustomer: true } }>;
+  type EndCustomerOption = { id: string; name: string };
+  type AgentWithEndCustomer = {
+    id: string;
+    name: string;
+    baseAgentKey: string;
+    status: string;
+    endCustomer: { name: string | null } | null;
+  };
 
-  const [endCustomers, agentInstances]: [EndCustomerOption[], AgentWithEndCustomer[]] =
-    await Promise.all([
-      prisma.endCustomer.findMany({
-        where: { tenantId: tenant.id },
-        orderBy: { createdAt: 'desc' },
-        select: { id: true, name: true }
-      }),
-      prisma.agentInstance.findMany({
-        where: { tenantId: tenant.id },
-        orderBy: { createdAt: 'desc' },
-        include: { endCustomer: true }
-      })
-    ]);
+  const [endCustomers, agentInstances] = (await Promise.all([
+    prisma.endCustomer.findMany({
+      where: { tenantId: tenant.id },
+      orderBy: { createdAt: 'desc' },
+      select: { id: true, name: true }
+    }),
+    prisma.agentInstance.findMany({
+      where: { tenantId: tenant.id },
+      orderBy: { createdAt: 'desc' },
+      include: { endCustomer: true }
+    })
+  ])) as [EndCustomerOption[], AgentWithEndCustomer[]];
 
   return (
     <section className="space-y-6">
