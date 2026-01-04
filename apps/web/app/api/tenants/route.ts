@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { PrismaClientKnownRequestError, prisma } from '@trends172tech/db';
+import { prisma } from '@trends172tech/db';
 import { createTenantSchema } from '@/lib/validators/tenant';
 import { AuthError, requireRole } from '@/lib/auth/guards';
 
@@ -7,7 +7,7 @@ function handleError(error: unknown) {
   if (error instanceof AuthError) {
     return NextResponse.json({ error: error.message }, { status: error.status });
   }
-  if (error instanceof PrismaClientKnownRequestError && error.code === 'P2002') {
+  if (typeof error === 'object' && error !== null && 'code' in error && (error as { code?: string }).code === 'P2002') {
     return NextResponse.json({ error: 'Tenant slug already exists.' }, { status: 409 });
   }
 
