@@ -1,3 +1,4 @@
+import type { Prisma } from '@trends172tech/db';
 import { prisma } from '@trends172tech/db';
 import { requireAuth } from '@/lib/auth/guards';
 import { resolveTenantFromUser } from '@/lib/tenant';
@@ -18,25 +19,29 @@ export default async function DashboardPage() {
     );
   }
 
-  const [endCustomers, agentInstances] = await Promise.all([
-    prisma.endCustomer.findMany({
-      where: { tenantId: tenant.id },
-      orderBy: { createdAt: 'desc' },
-      select: { id: true, name: true }
-    }),
-    prisma.agentInstance.findMany({
-      where: { tenantId: tenant.id },
-      orderBy: { createdAt: 'desc' },
-      include: { endCustomer: true }
-    })
-  ]);
+  type EndCustomerOption = Prisma.EndCustomerGetPayload<{ select: { id: true; name: true } }>;
+  type AgentWithEndCustomer = Prisma.AgentInstanceGetPayload<{ include: { endCustomer: true } }>;
+
+  const [endCustomers, agentInstances]: [EndCustomerOption[], AgentWithEndCustomer[]] =
+    await Promise.all([
+      prisma.endCustomer.findMany({
+        where: { tenantId: tenant.id },
+        orderBy: { createdAt: 'desc' },
+        select: { id: true, name: true }
+      }),
+      prisma.agentInstance.findMany({
+        where: { tenantId: tenant.id },
+        orderBy: { createdAt: 'desc' },
+        include: { endCustomer: true }
+      })
+    ]);
 
   return (
     <section className="space-y-6">
       <div className="space-y-2">
         <h1 className="text-2xl font-semibold">Tenant dashboard</h1>
         <p className="text-sm text-slate-500 dark:text-slate-400">
-          {tenant.name} · {tenant.mode} · role: {user.role}
+          {tenant.name} | {tenant.mode} | role: {user.role}
         </p>
       </div>
 
