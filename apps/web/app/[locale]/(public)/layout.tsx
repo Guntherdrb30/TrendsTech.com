@@ -9,10 +9,11 @@ export default async function PublicLayout({
   params
 }: {
   children: ReactNode;
-  params: { locale: string };
+  params: Promise<{ locale: string }>;
 }) {
   const t = await getTranslations('nav');
-  const base = `/${params.locale}`;
+  const { locale } = await params;
+  const base = `/${locale}`;
 
   return (
     <div className="min-h-screen">
