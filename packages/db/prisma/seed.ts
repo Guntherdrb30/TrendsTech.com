@@ -1,5 +1,5 @@
 import { randomBytes } from 'crypto';
-import { hash } from 'bcryptjs';
+import bcryptjs from 'bcryptjs';
 import { Prisma, PrismaClient, RoundingRule, TenantMode, TenantStatus, UserRole } from '@prisma/client';
 
 const prisma = new PrismaClient();
@@ -14,8 +14,8 @@ async function main() {
   const demoEmail = process.env.DEMO_EMAIL ?? 'admin@demo.trends172tech.local';
   const demoPassword = process.env.DEMO_PASSWORD ?? 'Demo123!';
 
-  const rootHash = await hash(rootPassword, 10);
-  const demoHash = await hash(demoPassword, 10);
+  const rootHash = await bcryptjs.hash(rootPassword, 10);
+  const demoHash = await bcryptjs.hash(demoPassword, 10);
 
   const rootUser = await prisma.user.upsert({
     where: { email: rootEmail },
