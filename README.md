@@ -19,8 +19,6 @@ Trends172 Tech is a multi-tenant SaaS platform for building, selling, and embedd
 
 ## Database setup (PROM 2)
 1. Set `DATABASE_URL`, `AUTH_SECRET`, `ROOT_EMAIL`, and `ROOT_PASSWORD` in `.env`
-   - Supabase: `DATABASE_URL` = pooler URL (often `POSTGRES_PRISMA_URL`)
-   - Supabase: `DIRECT_URL` = non-pooling URL (often `POSTGRES_URL_NON_POOLING`)
 2. Run migrations:
    - `npm run db:migrate`
    - or `pnpm --filter @trends172tech/db prisma migrate dev`
