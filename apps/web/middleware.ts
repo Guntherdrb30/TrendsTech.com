@@ -32,7 +32,7 @@ function isRootPath(pathname: string) {
 }
 
 export default async function middleware(request: NextRequest) {
-  const response = intlMiddleware(request as Parameters<typeof intlMiddleware>[0]);
+  const response = intlMiddleware(request as unknown as Parameters<typeof intlMiddleware>[0]);
   const pathname = request.nextUrl.pathname;
 
   if (!isProtectedPath(pathname)) {
