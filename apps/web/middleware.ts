@@ -1,5 +1,4 @@
 import createMiddleware from 'next-intl/middleware';
-import { getToken } from 'next-auth/jwt';
 import { NextRequest, NextResponse } from 'next/server';
 import { defaultLocale, locales } from './app/lib/i18n/config';
 
@@ -27,8 +26,12 @@ function isProtectedPath(pathname: string) {
   return normalized.startsWith('/dashboard') || normalized.startsWith('/root');
 }
 
-function isRootPath(pathname: string) {
-  return stripLocale(pathname).startsWith('/root');
+const SESSION_COOKIE_PREFIXES = ['__Secure-next-auth.session-token', 'next-auth.session-token'];
+
+function hasSessionCookie(request: NextRequest) {
+  return request.cookies
+    .getAll()
+    .some(({ name }) => SESSION_COOKIE_PREFIXES.some((prefix) => name === prefix || name.startsWith(`${prefix}.`)));
 }
 
 export default async function middleware(request: NextRequest) {
@@ -39,20 +42,12 @@ export default async function middleware(request: NextRequest) {
     return response;
   }
 
-  const token = await getToken({ req: request, secret: process.env.AUTH_SECRET });
-  const isAuthenticated = Boolean(token);
+  const isAuthenticated = hasSessionCookie(request);
 
   if (!isAuthenticated) {
     const locale = getLocaleFromPathname(pathname);
     const url = request.nextUrl.clone();
     url.pathname = `/${locale}/login`;
-    return NextResponse.redirect(url);
-  }
-
-  if (isRootPath(pathname) && token?.role !== 'ROOT') {
-    const locale = getLocaleFromPathname(pathname);
-    const url = request.nextUrl.clone();
-    url.pathname = `/${locale}/dashboard`;
     return NextResponse.redirect(url);
   }
 
