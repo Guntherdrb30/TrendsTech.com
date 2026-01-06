@@ -1,4 +1,4 @@
-import IORedis from 'ioredis';
+import type { ConnectionOptions } from 'bullmq';
 
 const QUEUE_NAME = process.env.KB_QUEUE_NAME ?? 'knowledge-ingest';
 const QUEUE_CONCURRENCY = Number(process.env.KB_QUEUE_CONCURRENCY ?? 2);
@@ -15,12 +15,13 @@ export function getQueueConcurrency() {
   return Math.floor(QUEUE_CONCURRENCY);
 }
 
-export function createRedisConnection() {
+export function createRedisConnection(): ConnectionOptions {
   if (!REDIS_URL) {
     throw new Error('KB queue Redis URL is not configured');
   }
 
-  return new IORedis(REDIS_URL, {
+  return {
+    url: REDIS_URL,
     maxRetriesPerRequest: null
-  });
+  };
 }

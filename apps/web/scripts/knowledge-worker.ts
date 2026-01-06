@@ -61,7 +61,6 @@ worker.on('failed', async (job, error) => {
 
 async function shutdown() {
   await worker.close();
-  await connection.quit();
   await prisma.$disconnect();
 }
 
