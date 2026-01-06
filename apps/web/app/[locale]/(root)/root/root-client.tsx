@@ -11,12 +11,14 @@ interface RootClientProps {
   usdToVesRate: string;
   usdPaymentDiscountPercent: string;
   roundingRule: 'ONE' | 'FIVE' | 'TEN';
+  kbUrlPageLimit: string;
 }
 
 export function RootClient({
   usdToVesRate,
   usdPaymentDiscountPercent,
-  roundingRule
+  roundingRule,
+  kbUrlPageLimit
 }: RootClientProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
@@ -26,6 +28,7 @@ export function RootClient({
   const [rate, setRate] = useState(usdToVesRate);
   const [discount, setDiscount] = useState(usdPaymentDiscountPercent);
   const [rule, setRule] = useState<'ONE' | 'FIVE' | 'TEN'>(roundingRule);
+  const [pageLimit, setPageLimit] = useState(kbUrlPageLimit);
 
   const [tenantName, setTenantName] = useState('');
   const [tenantSlug, setTenantSlug] = useState('');
@@ -42,7 +45,8 @@ export function RootClient({
         body: JSON.stringify({
           usdToVesRate: rate,
           usdPaymentDiscountPercent: discount,
-          roundingRule: rule
+          roundingRule: rule,
+          kbUrlPageLimit: pageLimit
         })
       });
 
@@ -122,6 +126,15 @@ export function RootClient({
                 <option value="FIVE">5</option>
                 <option value="TEN">10</option>
               </select>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="kbUrlPageLimit">KB URL page limit</Label>
+              <Input
+                id="kbUrlPageLimit"
+                value={pageLimit}
+                onChange={(event) => setPageLimit(event.target.value)}
+                inputMode="numeric"
+              />
             </div>
             {settingsError ? <p className="text-sm text-red-500">{settingsError}</p> : null}
             <Button type="submit" disabled={isPending}>

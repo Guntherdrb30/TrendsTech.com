@@ -6,21 +6,27 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "knowledge-worker": "tsx scripts/knowledge-worker.ts"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.964.0",
     "@radix-ui/react-slot": "^1.1.0",
     "@trends172tech/core": "file:../../packages/core",
     "@trends172tech/db": "file:../../packages/db",
     "@trends172tech/openai": "file:../../packages/openai",
     "bcryptjs": "^2.4.3",
+    "bullmq": "^5.66.4",
+    "cheerio": "^1.0.0-rc.12",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "eslint-config-next": "^15.5.9",
+    "ioredis": "^5.9.0",
     "next": "^15.5.9",
     "next-auth": "^4.24.7",
     "next-intl": "^3.18.0",
     "next-themes": "^0.4.6",
+    "pdf-parse": "^1.1.1",
     "react": "19.0.0",
     "react-dom": "19.0.0",
     "tailwind-merge": "^2.5.2",
@@ -35,6 +41,7 @@
     "eslint": "^9.7.0",
     "postcss": "^8.4.38",
     "tailwindcss": "^3.4.13",
+    "tsx": "^4.21.0",
     "typescript": "^5.5.4"
   }
 }

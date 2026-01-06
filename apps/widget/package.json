@@ -5,13 +5,14 @@
   "type": "module",
   "main": "src/index.ts",
   "scripts": {
-    "build": "tsc -p tsconfig.json"
+    "build": "esbuild src/index.ts --bundle --platform=browser --format=iife --global-name=Trends172Widget --outfile=build/widget.js --jsx=automatic --minify --sourcemap"
   },
   "dependencies": {
     "react": "19.0.0",
     "react-dom": "19.0.0"
   },
   "devDependencies": {
+    "esbuild": "^0.24.0",
     "typescript": "^5.5.4"
   }
 }

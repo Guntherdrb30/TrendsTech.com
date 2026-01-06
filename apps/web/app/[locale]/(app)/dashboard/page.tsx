@@ -95,6 +95,17 @@ export default async function DashboardPage({ params }: { params: Promise<{ loca
           )}
         </CardContent>
       </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Widget installs</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Link className="text-sm text-blue-600 hover:underline" href={`/${locale}/dashboard/installs`}>
+            Manage installs and domains
+          </Link>
+        </CardContent>
+      </Card>
     </section>
   );
 }

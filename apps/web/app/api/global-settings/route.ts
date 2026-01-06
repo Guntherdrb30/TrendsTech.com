@@ -9,7 +9,8 @@ const numberFromInput = (schema: z.ZodNumber) =>
 const globalSettingsSchema = z.object({
   usdToVesRate: numberFromInput(z.number().min(0.0001)),
   usdPaymentDiscountPercent: numberFromInput(z.number().min(0).max(100)),
-  roundingRule: z.enum(['ONE', 'FIVE', 'TEN'])
+  roundingRule: z.enum(['ONE', 'FIVE', 'TEN']),
+  kbUrlPageLimit: numberFromInput(z.number().int().min(1).max(25))
 });
 
 function handleError(error: unknown) {
@@ -48,6 +49,7 @@ export async function POST(request: Request) {
         usdToVesRate: parsed.data.usdToVesRate,
         usdPaymentDiscountPercent: parsed.data.usdPaymentDiscountPercent,
         roundingRule: parsed.data.roundingRule,
+        kbUrlPageLimit: parsed.data.kbUrlPageLimit,
         updatedByUserId: user.id
       },
       create: {
@@ -55,6 +57,7 @@ export async function POST(request: Request) {
         usdToVesRate: parsed.data.usdToVesRate,
         usdPaymentDiscountPercent: parsed.data.usdPaymentDiscountPercent,
         roundingRule: parsed.data.roundingRule,
+        kbUrlPageLimit: parsed.data.kbUrlPageLimit,
         updatedByUserId: user.id
       }
     });
@@ -68,7 +71,8 @@ export async function POST(request: Request) {
         metaJson: {
           usdToVesRate: parsed.data.usdToVesRate,
           usdPaymentDiscountPercent: parsed.data.usdPaymentDiscountPercent,
-          roundingRule: parsed.data.roundingRule
+          roundingRule: parsed.data.roundingRule,
+          kbUrlPageLimit: parsed.data.kbUrlPageLimit
         }
       }
     });

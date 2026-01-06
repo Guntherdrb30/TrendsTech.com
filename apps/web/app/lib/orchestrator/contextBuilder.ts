@@ -1,11 +1,13 @@
 import { prisma } from '@trends172tech/db';
-import type { AgentInstance, EndCustomer, KnowledgeSource, Tenant } from '@prisma/client';
+import type { AgentInstance, EndCustomer, Tenant } from '@prisma/client';
+import { searchKnowledge } from '../kb/search';
 
 type ContextInput = {
   tenantId: string;
   agentInstanceId: string;
   sessionId: string;
   channel?: string;
+  userMessage?: string;
   endUser?: {
     id?: string;
     name?: string;
@@ -25,10 +27,11 @@ type SystemContext = {
   language: string;
   channel: string;
   compliance: Record<string, unknown>;
-  knowledge: {
-    total: number;
-    items: Array<{ type: string; title: string }>;
-  };
+  knowledge: Array<{
+    content: string;
+    score: number;
+    meta: Record<string, unknown>;
+  }>;
 };
 
 type ConversationContext = {
@@ -46,28 +49,6 @@ function safeJson(input: unknown, fallback: Record<string, unknown>) {
     return fallback;
   }
   return input as Record<string, unknown>;
-}
-
-function normalizeText(value: string, limit = 280) {
-  if (value.length <= limit) {
-    return value;
-  }
-  return `${value.slice(0, limit)}...`;
-}
-
-function safeTitle(source: KnowledgeSource) {
-  if (source.title) {
-    return normalizeText(source.title);
-  }
-  if (source.url) {
-    try {
-      const host = new URL(source.url).host;
-      return normalizeText(host);
-    } catch {
-      return normalizeText(source.url);
-    }
-  }
-  return `${source.type}`;
 }
 
 async function loadTenantData(tenantId: string) {
@@ -89,25 +70,16 @@ async function loadAgentData(agentInstanceId: string, tenantId: string) {
   return agentInstance;
 }
 
-async function loadKnowledge(agentInstanceId: string) {
-  const knowledge = await prisma.knowledgeSource.findMany({
-    where: { agentInstanceId, status: 'READY' },
-    orderBy: { updatedAt: 'desc' },
-    take: 8
-  });
-  return knowledge;
-}
-
 function buildSystemContext(
   tenant: Tenant,
   agentInstance: AgentInstance,
-  knowledge: KnowledgeSource[],
+  knowledge: Array<{ content: string; score: number; metaJson: Record<string, unknown> | null }>,
   channel?: string
 ): SystemContext {
   return {
     business_profile: {
       tenant_id: tenant.id,
-      name: normalizeText(tenant.name),
+      name: tenant.name,
       mode: tenant.mode
     },
     features: safeJson(agentInstance.featuresJson, {}),
@@ -115,13 +87,11 @@ function buildSystemContext(
     language: agentInstance.languageDefault,
     channel: channel ?? 'web',
     compliance: {},
-    knowledge: {
-      total: knowledge.length,
-      items: knowledge.map((item) => ({
-        type: item.type,
-        title: safeTitle(item)
-      }))
-    }
+    knowledge: knowledge.map((item) => ({
+      content: item.content,
+      score: item.score,
+      meta: item.metaJson ?? {}
+    }))
   };
 }
 
@@ -148,7 +118,14 @@ export async function buildContext(input: ContextInput) {
   const [tenant, agentInstance, knowledge] = await Promise.all([
     loadTenantData(input.tenantId),
     loadAgentData(input.agentInstanceId, input.tenantId),
-    loadKnowledge(input.agentInstanceId)
+    input.userMessage
+      ? searchKnowledge({
+          tenantId: input.tenantId,
+          agentInstanceId: input.agentInstanceId,
+          query: input.userMessage,
+          topK: 4
+        })
+      : Promise.resolve([])
   ]);
 
   const systemContext = buildSystemContext(tenant, agentInstance, knowledge, input.channel);

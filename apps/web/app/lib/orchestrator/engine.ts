@@ -196,7 +196,8 @@ export async function runOrchestrator(
       agentInstanceId: agentInstance.id,
       sessionId: request.sessionId,
       channel: request.channel,
-      endUser: request.endUser
+      endUser: request.endUser,
+      userMessage: request.message
     });
 
     const contextString = sanitizeContextPayload(contextPayload);

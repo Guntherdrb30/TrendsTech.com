@@ -10,6 +10,9 @@ export interface OrchestratorRequest {
   sessionId: string;
   message: string;
   channel?: string;
+  language?: string;
+  pageUrl?: string;
+  installId?: string;
   endUser?: {
     id?: string;
     name?: string;

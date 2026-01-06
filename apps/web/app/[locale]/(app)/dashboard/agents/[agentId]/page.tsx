@@ -6,6 +6,7 @@ import { resolveTenantFromUser } from '@/lib/tenant';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { AgentRunner } from './agent-runner';
+import { KnowledgeManager } from './knowledge-manager';
 
 export const dynamic = 'force-dynamic';
 
@@ -176,6 +177,8 @@ export default async function AgentDetailPage({ params }: { params: Promise<Page
           )}
         </CardContent>
       </Card>
+
+      <KnowledgeManager agentInstanceId={agentInstance.id} />
 
       <Link className="text-sm text-blue-600 hover:underline" href={`/${locale}/dashboard`}>
         Back to dashboard

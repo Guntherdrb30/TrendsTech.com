@@ -33,6 +33,7 @@ export default async function RootPage() {
         usdToVesRate={settings?.usdToVesRate?.toString() ?? '0'}
         usdPaymentDiscountPercent={settings?.usdPaymentDiscountPercent?.toString() ?? '0'}
         roundingRule={(settings?.roundingRule ?? 'ONE') as 'ONE' | 'FIVE' | 'TEN'}
+        kbUrlPageLimit={(settings?.kbUrlPageLimit ?? 5).toString()}
       />
 
       <Card>

@@ -94,6 +94,7 @@ model Tenant {
   subscriptions  Subscription[]
   manualPayments ManualPayment[]
   auditLogs      AuditLog[]
+  knowledgeChunks KnowledgeChunk[]
 }
 
 model User {
@@ -146,6 +147,7 @@ model AgentInstance {
   endCustomer     EndCustomer?     @relation(fields: [endCustomerId], references: [id])
   knowledge       KnowledgeSource[]
   installs        Install[]
+  knowledgeChunks KnowledgeChunk[]
 
   @@index([tenantId])
   @@index([endCustomerId])
@@ -166,9 +168,30 @@ model KnowledgeSource {
 
   tenant          Tenant               @relation(fields: [tenantId], references: [id])
   agentInstance   AgentInstance        @relation(fields: [agentInstanceId], references: [id])
+  chunks          KnowledgeChunk[]
 
   @@index([tenantId])
   @@index([agentInstanceId])
+}
+
+model KnowledgeChunk {
+  id              String   @id @default(cuid())
+  tenantId        String
+  agentInstanceId String
+  sourceId        String
+  content         String   @db.Text
+  embedding       Unsupported("vector")
+  tokenCount      Int
+  metaJson        Json?
+  createdAt       DateTime @default(now())
+
+  tenant          Tenant          @relation(fields: [tenantId], references: [id])
+  agentInstance   AgentInstance   @relation(fields: [agentInstanceId], references: [id])
+  source          KnowledgeSource @relation(fields: [sourceId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId])
+  @@index([agentInstanceId])
+  @@index([sourceId])
 }
 
 model Install {
@@ -248,6 +271,7 @@ model GlobalSettings {
   usdToVesRate              Decimal      @db.Decimal(12, 4)
   roundingRule              RoundingRule @default(ONE)
   usdPaymentDiscountPercent Decimal      @db.Decimal(5, 2)
+  kbUrlPageLimit            Int          @default(5)
   updatedByUserId           String?
   updatedAt                 DateTime     @updatedAt
 
