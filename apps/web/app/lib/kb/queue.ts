@@ -3,11 +3,26 @@ import { createRedisConnection, getQueueName } from './queueConfig';
 import type { KnowledgeJobPayload } from './jobProcessor';
 
 const DEFAULT_REMOVE_LIMIT = 1000;
-let queue: Queue<KnowledgeJobPayload> | null = null;
+type KnowledgeQueue = Queue<
+  KnowledgeJobPayload,
+  unknown,
+  string,
+  KnowledgeJobPayload,
+  unknown,
+  string
+>;
+let queue: KnowledgeQueue | null = null;
 
-function getQueue() {
+function getQueue(): KnowledgeQueue {
   if (!queue) {
-    queue = new Queue<KnowledgeJobPayload>(getQueueName(), {
+    queue = new Queue<
+      KnowledgeJobPayload,
+      unknown,
+      string,
+      KnowledgeJobPayload,
+      unknown,
+      string
+    >(getQueueName(), {
       connection: createRedisConnection()
     });
   }
