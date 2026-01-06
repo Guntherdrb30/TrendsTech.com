@@ -63,7 +63,7 @@ export async function GET(request: Request) {
       },
       { headers }
     );
-  } catch (error) {
+  } catch {
     return NextResponse.json({ valid: false, error: 'Unexpected error' }, { status: 500, headers });
   }
 }
