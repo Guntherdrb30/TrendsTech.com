@@ -230,8 +230,9 @@ export async function runOrchestrator(
     const result = await runner.run(agent, inputItems, { maxTurns: 6 });
     const toolCallsExecuted = countToolCalls(result.newItems);
     const replyText =
-      (typeof result.finalOutput === 'string' ? result.finalOutput : extractAllTextOutput(result.output)) ||
+      (typeof result.finalOutput === 'string' ? result.finalOutput : extractAllTextOutput(result.newItems)) ||
       FALLBACK_REPLY;
+    const modelName = typeof agent.model === 'string' ? agent.model : baseAgentDefinition.model ?? null;
 
     await logConversation({
       tenantId,
@@ -249,7 +250,7 @@ export async function runOrchestrator(
       actorUserId,
       agentInstanceId: agentInstance.id,
       sessionId: request.sessionId,
-      model: agent.model ?? null,
+      model: modelName,
       toolCalls: toolCallsExecuted,
       messages: 2
     });

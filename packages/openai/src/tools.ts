@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { tool as agentTool, type Tool } from '@openai/agents';
-import { prisma } from '@trends172tech/db';
+import { prisma, Prisma } from '@trends172tech/db';
 
 export type ToolContext = {
   tenantId: string;
@@ -12,7 +12,7 @@ export type ToolContext = {
 type ToolDefinition = {
   name: string;
   description: string;
-  schema: z.ZodSchema;
+  schema: z.AnyZodObject;
   execute: (input: unknown, context: ToolContext) => Promise<Record<string, unknown>>;
 };
 
@@ -42,7 +42,7 @@ const requestHumanContactSchema = z.object({
   reason: z.string().max(500).optional()
 });
 
-async function logAction(context: ToolContext, action: string, entity: string, metaJson: Record<string, unknown>) {
+async function logAction(context: ToolContext, action: string, entity: string, metaJson: Prisma.InputJsonObject) {
   return prisma.auditLog.create({
     data: {
       actorUserId: context.actorUserId,
@@ -133,7 +133,10 @@ const TOOL_DEFINITIONS: ToolDefinition[] = [
       const parsed = requestHumanContactSchema.parse(input);
       const audit = await logAction(context, 'request_human_contact', 'human_contact', {
         sessionId: context.sessionId,
-        ...parsed
+        name: parsed.name ?? null,
+        phone: parsed.phone ?? null,
+        email: parsed.email ?? null,
+        reason: parsed.reason ?? null
       });
 
       return { status: 'requested', requestId: audit.id };
