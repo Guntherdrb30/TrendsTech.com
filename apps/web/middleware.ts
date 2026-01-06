@@ -1,15 +1,31 @@
-import createMiddleware from 'next-intl/middleware';
 import { NextRequest, NextResponse } from 'next/server';
 import { defaultLocale, locales } from './app/lib/i18n/config';
-
-const intlMiddleware = createMiddleware({
-  locales,
-  defaultLocale
-});
 
 function getLocaleFromPathname(pathname: string) {
   const segment = pathname.split('/')[1];
   return locales.includes(segment as (typeof locales)[number]) ? segment : defaultLocale;
+}
+
+function hasLocalePrefix(pathname: string) {
+  const segment = pathname.split('/')[1];
+  return locales.includes(segment as (typeof locales)[number]);
+}
+
+function resolveLocale(request: NextRequest) {
+  const cookieLocale = request.cookies.get('NEXT_LOCALE')?.value;
+  if (cookieLocale && locales.includes(cookieLocale as (typeof locales)[number])) {
+    return cookieLocale;
+  }
+
+  const acceptLanguage = request.headers.get('accept-language') ?? '';
+  for (const part of acceptLanguage.split(',')) {
+    const locale = part.split(';')[0]?.trim().split('-')[0]?.toLowerCase();
+    if (locale && locales.includes(locale as (typeof locales)[number])) {
+      return locale;
+    }
+  }
+
+  return defaultLocale;
 }
 
 function stripLocale(pathname: string) {
@@ -35,11 +51,17 @@ function hasSessionCookie(request: NextRequest) {
 }
 
 export default async function middleware(request: NextRequest) {
-  const response = intlMiddleware(request as unknown as Parameters<typeof intlMiddleware>[0]);
   const pathname = request.nextUrl.pathname;
 
+  if (!hasLocalePrefix(pathname)) {
+    const locale = resolveLocale(request);
+    const url = request.nextUrl.clone();
+    url.pathname = `/${locale}${pathname === '/' ? '' : pathname}`;
+    return NextResponse.redirect(url);
+  }
+
   if (!isProtectedPath(pathname)) {
-    return response;
+    return NextResponse.next();
   }
 
   const isAuthenticated = hasSessionCookie(request);
@@ -51,7 +73,7 @@ export default async function middleware(request: NextRequest) {
     return NextResponse.redirect(url);
   }
 
-  return response;
+  return NextResponse.next();
 }
 
 export const config = {
