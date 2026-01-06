@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { prisma } from '@trends172tech/db';
 import { requireAuth } from '@/lib/auth/guards';
 import { resolveTenantFromUser } from '@/lib/tenant';
@@ -7,7 +8,8 @@ import { DashboardClient } from './dashboard-client';
 
 export const dynamic = 'force-dynamic';
 
-export default async function DashboardPage() {
+export default async function DashboardPage({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
   const user = await requireAuth();
   const tenant = await resolveTenantFromUser(user);
 
@@ -68,6 +70,7 @@ export default async function DashboardPage() {
                   <TableHead>Base key</TableHead>
                   <TableHead>Status</TableHead>
                   <TableHead>End customer</TableHead>
+                  <TableHead>Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -77,6 +80,14 @@ export default async function DashboardPage() {
                     <TableCell>{agent.baseAgentKey}</TableCell>
                     <TableCell>{agent.status}</TableCell>
                     <TableCell>{agent.endCustomer?.name ?? '-'}</TableCell>
+                    <TableCell>
+                      <Link
+                        className="text-sm text-blue-600 hover:underline"
+                        href={`/${locale}/dashboard/agents/${agent.id}`}
+                      >
+                        View detail
+                      </Link>
+                    </TableCell>
                   </TableRow>
                 ))}
               </TableBody>

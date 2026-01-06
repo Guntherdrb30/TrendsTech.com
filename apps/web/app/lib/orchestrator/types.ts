@@ -6,5 +6,18 @@ export interface OrchestratorMessage {
 }
 
 export interface OrchestratorRequest {
-  messages: OrchestratorMessage[];
+  agentInstanceId: string;
+  sessionId: string;
+  message: string;
+  channel?: string;
+  endUser?: {
+    id?: string;
+    name?: string;
+    email?: string;
+    phone?: string;
+  };
+}
+
+export interface OrchestratorResponse {
+  reply: string;
 }
