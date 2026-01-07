@@ -65,6 +65,10 @@ function hasSessionCookie(request: Request) {
   );
 }
 
+function nextResponse() {
+  return new Response(null, { headers: { 'x-middleware-next': '1' } });
+}
+
 export default function middleware(request: Request) {
   const url = new URL(request.url);
   const pathname = url.pathname;
@@ -76,7 +80,7 @@ export default function middleware(request: Request) {
   }
 
   if (!isProtectedPath(pathname)) {
-    return;
+    return nextResponse();
   }
 
   const isAuthenticated = hasSessionCookie(request);
@@ -87,6 +91,8 @@ export default function middleware(request: Request) {
     redirectUrl.pathname = `/${locale}/login`;
     return Response.redirect(redirectUrl);
   }
+
+  return nextResponse();
 }
 
 export const config = {
