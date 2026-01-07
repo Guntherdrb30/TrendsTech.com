@@ -18,27 +18,29 @@ export default async function PublicLayout({
   return (
     <div className="min-h-screen">
       <header className="border-b border-slate-200 dark:border-slate-800">
-        <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-4">
-          <div className="flex items-center gap-6">
-            <Link href={base} className="text-sm font-semibold">
-              Trends172 Tech
-            </Link>
-            <nav className="flex items-center gap-4 text-sm">
-              <Link href={base}>{t('home')}</Link>
-              <Link href={`${base}/agents`}>{t('agents')}</Link>
-              <Link href={`${base}/pricing`}>{t('pricing')}</Link>
-            </nav>
-          </div>
-          <div className="flex items-center gap-4">
-            <Link href={`${base}/login`} className="text-sm">
-              {t('login')}
-            </Link>
-            <LocaleSwitcher />
-            <ThemeToggle />
+        <div className="mx-auto max-w-5xl px-4 py-4">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-6">
+              <Link href={base} className="text-sm font-semibold">
+                Trends172 Tech
+              </Link>
+              <nav className="flex flex-wrap items-center gap-3 text-sm">
+                <Link href={base}>{t('home')}</Link>
+                <Link href={`${base}/agents`}>{t('agents')}</Link>
+                <Link href={`${base}/pricing`}>{t('pricing')}</Link>
+              </nav>
+            </div>
+            <div className="flex flex-wrap items-center gap-3">
+              <Link href={`${base}/login`} className="text-sm">
+                {t('login')}
+              </Link>
+              <LocaleSwitcher />
+              <ThemeToggle />
+            </div>
           </div>
         </div>
       </header>
-      <main className="mx-auto max-w-5xl px-4 py-10">{children}</main>
+      <main className="mx-auto max-w-5xl px-4 py-8 sm:py-10">{children}</main>
     </div>
   );
 }

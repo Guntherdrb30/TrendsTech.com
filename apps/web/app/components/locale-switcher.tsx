@@ -23,7 +23,7 @@ export function LocaleSwitcher() {
     : defaultLocale;
 
   return (
-    <div className="flex items-center gap-2 text-sm">
+    <div className="flex flex-wrap items-center gap-2 text-xs sm:text-sm">
       {locales.map((locale) => {
         const href = basePath === '/' ? `/${locale}` : `/${locale}${basePath}`;
         const isActive = locale === activeLocale;

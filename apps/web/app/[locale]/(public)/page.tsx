@@ -7,7 +7,7 @@ export default async function HomePage() {
 
   return (
     <section className="space-y-4">
-      <h1 className="text-3xl font-semibold">{t('homeTitle')}</h1>
+      <h1 className="text-2xl font-semibold sm:text-3xl">{t('homeTitle')}</h1>
       <p className="max-w-2xl text-base text-slate-600 dark:text-slate-300">
         {t('homeSubtitle')}
       </p>
