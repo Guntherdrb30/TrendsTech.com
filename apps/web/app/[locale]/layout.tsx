@@ -7,6 +7,8 @@ import { ThemeProvider } from '../components/theme-provider';
 import { locales } from '../lib/i18n/config';
 import '../../styles/globals.css';
 
+export const runtime = 'nodejs';
+
 export const metadata: Metadata = {
   title: 'Trends172 Tech',
   description: 'AI agent platform for analysis, creation, and distribution.'
