@@ -1,4 +1,5 @@
 import { getTranslations } from 'next-intl/server';
+import { PublicHomeClient } from './public-home-client';
 
 export default async function HomePage() {
   const t = await getTranslations('pages');
@@ -13,6 +14,7 @@ export default async function HomePage() {
       <div className="rounded border border-dashed border-slate-300 px-4 py-6 text-sm text-slate-500 dark:border-slate-700 dark:text-slate-400">
         {common('comingSoon')}
       </div>
+      <PublicHomeClient />
     </section>
   );
 }
