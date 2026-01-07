@@ -77,6 +77,16 @@ enum RoundingRule {
   TEN
 }
 
+enum WhatsAppProvider {
+  META
+  BSP
+}
+
+enum WhatsAppChannelStatus {
+  ACTIVE
+  PAUSED
+}
+
 model Tenant {
   id             String           @id @default(cuid())
   name           String
@@ -89,6 +99,7 @@ model Tenant {
   users          User[]
   endCustomers   EndCustomer[]
   agentInstances AgentInstance[]
+  whatsappChannels WhatsAppChannel[]
   knowledge      KnowledgeSource[]
   installs       Install[]
   subscriptions  Subscription[]
@@ -145,6 +156,7 @@ model AgentInstance {
 
   tenant          Tenant           @relation(fields: [tenantId], references: [id])
   endCustomer     EndCustomer?     @relation(fields: [endCustomerId], references: [id])
+  whatsappChannel WhatsAppChannel?
   knowledge       KnowledgeSource[]
   installs        Install[]
   knowledgeChunks KnowledgeChunk[]
@@ -294,5 +306,22 @@ model AuditLog {
   tenant      Tenant?  @relation(fields: [tenantId], references: [id])
 
   @@index([actorUserId])
+  @@index([tenantId])
+}
+
+model WhatsAppChannel {
+  id              String                @id @default(cuid())
+  tenantId        String
+  agentInstanceId String                @unique
+  phoneNumber     String                @unique
+  provider        WhatsAppProvider      @default(META)
+  status          WhatsAppChannelStatus @default(ACTIVE)
+  webhookSecret   String?
+  createdAt       DateTime              @default(now())
+  updatedAt       DateTime              @updatedAt
+
+  tenant          Tenant                @relation(fields: [tenantId], references: [id])
+  agentInstance   AgentInstance         @relation(fields: [agentInstanceId], references: [id])
+
   @@index([tenantId])
 }

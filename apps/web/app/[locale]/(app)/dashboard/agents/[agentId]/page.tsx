@@ -178,6 +178,20 @@ export default async function AgentDetailPage({ params }: { params: Promise<Page
         </CardContent>
       </Card>
 
+      <Card>
+        <CardHeader>
+          <CardTitle>Canales</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Link
+            className="text-sm text-blue-600 hover:underline"
+            href={`/${locale}/dashboard/agents/${agentInstance.id}/channels`}
+          >
+            Configurar canales (WhatsApp)
+          </Link>
+        </CardContent>
+      </Card>
+
       <KnowledgeManager agentInstanceId={agentInstance.id} />
 
       <Link className="text-sm text-blue-600 hover:underline" href={`/${locale}/dashboard`}>
