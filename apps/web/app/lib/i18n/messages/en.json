@@ -17,5 +17,130 @@
   },
   "common": {
     "comingSoon": "Coming soon"
+  },
+  "agentsPage": {
+    "title": "Agents ready for your business",
+    "subtitle": "Explore specialized agents. Pick one and see how it works.",
+    "ctaPrimary": "View pricing",
+    "ctaSecondary": "Login",
+    "detailCta": "View details",
+    "pricingCta": "Hire",
+    "flowTitle": "Recommended flow",
+    "flowStep1Title": "Browse the catalog",
+    "flowStep1Body": "Review available agents and their capabilities.",
+    "flowStep2Title": "Pick your agent",
+    "flowStep2Body": "Open the detail page and confirm the fit.",
+    "flowStep3Title": "Hire and activate",
+    "flowStep3Body": "Choose a plan and enable the channel you want."
+  },
+  "agentDetail": {
+    "back": "Back to catalog",
+    "primaryCta": "Hire",
+    "secondaryCta": "Login",
+    "whatTitle": "What it does",
+    "flowTitle": "How it works",
+    "idealTitle": "Ideal for"
+  },
+  "agents": {
+    "marketing": {
+      "name": "Marketing",
+      "tagline": "Campaigns and content that convert.",
+      "summary": "Attract customers, build interest, and convert with clear messaging.",
+      "ideal": "Teams that want to grow demand and brand.",
+      "features": {
+        "f1": "Designs campaigns by product or segment.",
+        "f2": "Adjusts tone and value prop.",
+        "f3": "Creates high-impact messages."
+      },
+      "steps": {
+        "s1": "Aligns goal and audience.",
+        "s2": "Drafts messages and variants.",
+        "s3": "Optimizes based on replies."
+      },
+      "outcomes": {
+        "o1": "More qualified leads.",
+        "o2": "Consistent messaging."
+      }
+    },
+    "sales": {
+      "name": "Sales",
+      "tagline": "Qualify and close opportunities with precise replies.",
+      "summary": "Turn conversations into revenue with clear follow-up.",
+      "ideal": "Sales teams with high lead volume.",
+      "features": {
+        "f1": "Qualifies leads quickly.",
+        "f2": "Handles common objections.",
+        "f3": "Suggests the next step."
+      },
+      "steps": {
+        "s1": "Identify need and priority.",
+        "s2": "Present the right offer.",
+        "s3": "Close or schedule next action."
+      },
+      "outcomes": {
+        "o1": "Higher conversion.",
+        "o2": "Cleaner pipeline."
+      }
+    },
+    "appointments": {
+      "name": "Appointments",
+      "tagline": "Schedule appointments with low friction and confirm key details.",
+      "summary": "Coordinate times, collect data, and reduce no-shows.",
+      "ideal": "Businesses that depend on appointments and bookings.",
+      "features": {
+        "f1": "Captures name and phone.",
+        "f2": "Coordinates availability.",
+        "f3": "Confirms and reminds."
+      },
+      "steps": {
+        "s1": "Collect basic details.",
+        "s2": "Offer available slots.",
+        "s3": "Confirm the appointment."
+      },
+      "outcomes": {
+        "o1": "Fewer no-shows.",
+        "o2": "Organized calendar."
+      }
+    },
+    "support": {
+      "name": "Support",
+      "tagline": "Resolve questions and hand off to a human when needed.",
+      "summary": "Consistent support backed by knowledge base.",
+      "ideal": "Teams that want to reduce repeated tickets.",
+      "features": {
+        "f1": "Answers FAQs.",
+        "f2": "Escalates complex cases.",
+        "f3": "Keeps context."
+      },
+      "steps": {
+        "s1": "Diagnose the issue.",
+        "s2": "Provide clear steps.",
+        "s3": "Escalate when needed."
+      },
+      "outcomes": {
+        "o1": "Lower workload.",
+        "o2": "Happier customers."
+      }
+    },
+    "public_voice": {
+      "name": "Public Voice",
+      "tagline": "Natural conversation for voice channels.",
+      "summary": "Voice-first support with short, clear responses.",
+      "ideal": "Businesses with phone or kiosk support.",
+      "features": {
+        "f1": "Speaks naturally.",
+        "f2": "Avoids long responses.",
+        "f3": "Escalates quickly."
+      },
+      "steps": {
+        "s1": "Identify the reason.",
+        "s2": "Respond in short phrases.",
+        "s3": "Confirm key data."
+      },
+      "outcomes": {
+        "o1": "Faster assistance.",
+        "o2": "Better voice experience."
+      }
+    }
   }
 }

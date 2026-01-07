@@ -17,5 +17,130 @@
   },
   "common": {
     "comingSoon": "Proximamente"
+  },
+  "agentsPage": {
+    "title": "Agentes listos para tu negocio",
+    "subtitle": "Explora agentes especializados. Elige uno y conoce como trabaja.",
+    "ctaPrimary": "Ver precios",
+    "ctaSecondary": "Iniciar sesion",
+    "detailCta": "Ver detalles",
+    "pricingCta": "Contratar",
+    "flowTitle": "Flujo recomendado",
+    "flowStep1Title": "Explora el catalogo",
+    "flowStep1Body": "Revisa los agentes disponibles y sus capacidades.",
+    "flowStep2Title": "Elige tu agente",
+    "flowStep2Body": "Entra al detalle y valida si encaja con tu negocio.",
+    "flowStep3Title": "Contrata y activa",
+    "flowStep3Body": "Selecciona el plan y activa el canal que quieras."
+  },
+  "agentDetail": {
+    "back": "Volver al catalogo",
+    "primaryCta": "Contratar",
+    "secondaryCta": "Iniciar sesion",
+    "whatTitle": "Que hace",
+    "flowTitle": "Como trabaja",
+    "idealTitle": "Ideal para"
+  },
+  "agents": {
+    "marketing": {
+      "name": "Marketing",
+      "tagline": "Campanas y contenido que convierten en leads.",
+      "summary": "Atrae clientes, genera interes y convierte con mensajes claros.",
+      "ideal": "Negocios que quieren crecer demanda y marca.",
+      "features": {
+        "f1": "Disena campanas por producto o segmento.",
+        "f2": "Ajusta tono y propuesta de valor.",
+        "f3": "Crea mensajes de alto impacto."
+      },
+      "steps": {
+        "s1": "Analiza objetivo y publico.",
+        "s2": "Propone mensajes y variantes.",
+        "s3": "Optimiza segun respuestas."
+      },
+      "outcomes": {
+        "o1": "Mas leads calificados.",
+        "o2": "Mensajes consistentes."
+      }
+    },
+    "sales": {
+      "name": "Ventas",
+      "tagline": "Califica y cierra oportunidades con respuestas precisas.",
+      "summary": "Convierte conversaciones en ventas con seguimiento claro.",
+      "ideal": "Equipos comerciales con alto volumen de leads.",
+      "features": {
+        "f1": "Califica leads en minutos.",
+        "f2": "Responde objeciones comunes.",
+        "f3": "Sugiere el siguiente paso."
+      },
+      "steps": {
+        "s1": "Identifica necesidad y prioridad.",
+        "s2": "Presenta la oferta correcta.",
+        "s3": "Cierra o agenda la siguiente accion."
+      },
+      "outcomes": {
+        "o1": "Mayor conversion.",
+        "o2": "Pipeline mas ordenado."
+      }
+    },
+    "appointments": {
+      "name": "Citas",
+      "tagline": "Agenda citas sin friccion y confirma datos clave.",
+      "summary": "Coordina horarios, recopila datos y reduce ausencias.",
+      "ideal": "Negocios que dependen de citas y reservas.",
+      "features": {
+        "f1": "Captura nombre y telefono.",
+        "f2": "Coordina disponibilidad.",
+        "f3": "Confirma y recuerda."
+      },
+      "steps": {
+        "s1": "Solicita datos basicos.",
+        "s2": "Propone horarios disponibles.",
+        "s3": "Confirma la cita."
+      },
+      "outcomes": {
+        "o1": "Menos no-shows.",
+        "o2": "Agenda organizada."
+      }
+    },
+    "support": {
+      "name": "Soporte",
+      "tagline": "Resuelve dudas y deriva a humano cuando hace falta.",
+      "summary": "Soporte claro y consistente con base de conocimiento.",
+      "ideal": "Equipos que quieren reducir tickets repetidos.",
+      "features": {
+        "f1": "Responde preguntas frecuentes.",
+        "f2": "Escala casos complejos.",
+        "f3": "Registra contexto."
+      },
+      "steps": {
+        "s1": "Diagnostica el problema.",
+        "s2": "Entrega pasos claros.",
+        "s3": "Escala si es necesario."
+      },
+      "outcomes": {
+        "o1": "Menos carga operativa.",
+        "o2": "Clientes satisfechos."
+      }
+    },
+    "public_voice": {
+      "name": "Voz al publico",
+      "tagline": "Conversacion natural para canales de voz.",
+      "summary": "Atiende por voz con frases cortas y claras.",
+      "ideal": "Negocios con atencion telefonica o kioscos.",
+      "features": {
+        "f1": "Habla con naturalidad.",
+        "f2": "Evita respuestas largas.",
+        "f3": "Deriva a humano rapido."
+      },
+      "steps": {
+        "s1": "Identifica el motivo.",
+        "s2": "Responde en frases cortas.",
+        "s3": "Confirma datos clave."
+      },
+      "outcomes": {
+        "o1": "Atencion agil.",
+        "o2": "Mejor experiencia de voz."
+      }
+    }
   }
 }
