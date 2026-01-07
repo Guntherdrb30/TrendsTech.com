@@ -1,5 +1,5 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { defaultLocale, locales } from './app/lib/i18n/config';
+const locales = ['es', 'en'] as const;
+const defaultLocale = 'es';
 
 function getLocaleFromPathname(pathname: string) {
   const segment = pathname.split('/')[1];
@@ -11,10 +11,17 @@ function hasLocalePrefix(pathname: string) {
   return locales.includes(segment as (typeof locales)[number]);
 }
 
-function resolveLocale(request: NextRequest) {
-  const cookieLocale = request.cookies.get('NEXT_LOCALE')?.value;
-  if (cookieLocale && locales.includes(cookieLocale as (typeof locales)[number])) {
-    return cookieLocale;
+function resolveLocale(request: Request) {
+  const cookieHeader = request.headers.get('cookie') ?? '';
+  for (const part of cookieHeader.split(';')) {
+    const [rawName, rawValue] = part.split('=');
+    const name = rawName?.trim();
+    if (name === 'NEXT_LOCALE') {
+      const value = rawValue?.trim();
+      if (value && locales.includes(value as (typeof locales)[number])) {
+        return value;
+      }
+    }
   }
 
   const acceptLanguage = request.headers.get('accept-language') ?? '';
@@ -44,36 +51,42 @@ function isProtectedPath(pathname: string) {
 
 const SESSION_COOKIE_PREFIXES = ['__Secure-next-auth.session-token', 'next-auth.session-token'];
 
-function hasSessionCookie(request: NextRequest) {
-  return request.cookies
-    .getAll()
-    .some(({ name }) => SESSION_COOKIE_PREFIXES.some((prefix) => name === prefix || name.startsWith(`${prefix}.`)));
+function hasSessionCookie(request: Request) {
+  const cookieHeader = request.headers.get('cookie') ?? '';
+  if (!cookieHeader) {
+    return false;
+  }
+  const names = cookieHeader
+    .split(';')
+    .map((part) => part.split('=')[0]?.trim())
+    .filter(Boolean) as string[];
+  return names.some((name) =>
+    SESSION_COOKIE_PREFIXES.some((prefix) => name === prefix || name.startsWith(`${prefix}.`))
+  );
 }
 
-export default async function middleware(request: NextRequest) {
-  const pathname = request.nextUrl.pathname;
+export default function middleware(request: Request) {
+  const url = new URL(request.url);
+  const pathname = url.pathname;
 
   if (!hasLocalePrefix(pathname)) {
     const locale = resolveLocale(request);
-    const url = request.nextUrl.clone();
     url.pathname = `/${locale}${pathname === '/' ? '' : pathname}`;
-    return NextResponse.redirect(url);
+    return Response.redirect(url);
   }
 
   if (!isProtectedPath(pathname)) {
-    return NextResponse.next();
+    return;
   }
 
   const isAuthenticated = hasSessionCookie(request);
 
   if (!isAuthenticated) {
     const locale = getLocaleFromPathname(pathname);
-    const url = request.nextUrl.clone();
-    url.pathname = `/${locale}/login`;
-    return NextResponse.redirect(url);
+    const redirectUrl = new URL(request.url);
+    redirectUrl.pathname = `/${locale}/login`;
+    return Response.redirect(redirectUrl);
   }
-
-  return NextResponse.next();
 }
 
 export const config = {
