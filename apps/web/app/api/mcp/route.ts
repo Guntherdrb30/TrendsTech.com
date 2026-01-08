@@ -6,4 +6,9 @@ export async function GET() {
     status: "online",
     tools: [
       { name: "create_project" },
-      { name:
+      { name: "update_progress" },
+      { name: "register_expense" },
+      { name: "financial_status" }
+    ]
+  });
+}
