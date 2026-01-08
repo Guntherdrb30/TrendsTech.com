@@ -1,6 +1,11 @@
+import { NextResponse } from "next/server";
+
 export async function GET() {
-  return Response.json({
+
+  return NextResponse.json({
+
     tools: [
+
       {
         name: "create_project",
         description: "Crear un nuevo proyecto y registrarlo en el sistema",
@@ -13,6 +18,7 @@ export async function GET() {
           required: ["project_name"]
         }
       },
+
       {
         name: "update_progress",
         description: "Actualizar fase, avance y tareas del proyecto",
@@ -26,6 +32,7 @@ export async function GET() {
           required: ["project"]
         }
       },
+
       {
         name: "register_expense",
         description: "Registrar gastos de transporte, hotel, gasoil, etc.",
@@ -40,6 +47,7 @@ export async function GET() {
           required: ["project", "amount"]
         }
       },
+
       {
         name: "financial_status",
         description: "Consultar pagos, adelantos y saldo pendiente",
