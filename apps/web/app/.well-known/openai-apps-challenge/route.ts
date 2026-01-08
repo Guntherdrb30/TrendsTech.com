@@ -1,14 +1,17 @@
-import { OPENAI_APPS_CHALLENGE_TOKEN } from '@/lib/openai/verification';
-
-const textHeaders = { 'Content-Type': 'text/plain' };
+export const runtime = 'edge';
+export const dynamic = 'force-dynamic';
 
 export function GET() {
-  return new Response(OPENAI_APPS_CHALLENGE_TOKEN, {
-    status: 200,
-    headers: textHeaders
-  });
-}
+  const token =
+    process.env.OPENAI_VERIFICATION_TOKEN ??
+    'HiipP67up2y9b98TlN8i6eUxZwKudIUPC3_B4V5OkNw';
 
-export function HEAD() {
-  return new Response(null, { status: 200, headers: textHeaders });
+  return new Response(token, {
+    status: 200,
+    headers: {
+      'Content-Type': 'text/plain; charset=utf-8',
+      'Cache-Control': 'no-store, max-age=0',
+      'X-Content-Type-Options': 'nosniff'
+    }
+  });
 }

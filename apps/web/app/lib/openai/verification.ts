@@ -1,2 +1,0 @@
-export const OPENAI_APPS_CHALLENGE_TOKEN =
-  'HiipPG7up2y9b98TlN8I6eUxZwKudlUPC3_B4V5OkNw';
