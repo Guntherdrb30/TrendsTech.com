@@ -59,6 +59,7 @@ export async function GET() {
           required: ["project"]
         }
       }
+
     ]
   });
 }
