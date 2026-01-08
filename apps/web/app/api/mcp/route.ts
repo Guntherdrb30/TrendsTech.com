@@ -1,20 +1,19 @@
-export const dynamic = "force-dynamic";
+import { NextResponse } from "next/server";
 
 export async function GET() {
-
-  const body = JSON.stringify({
-    mcp: "Trends172 Project Orchestrator",
-    status: "online",
-    tools_endpoint: "/api/mcp/tools"
-  });
-
-  return new Response(body, {
-    headers: {
-      "Content-Type": "application/json; charset=utf-8",
-      "Cache-Control": "no-store, no-transform",
-      "Content-Length": String(Buffer.byteLength(body)),
-      "Content-Encoding": "identity",
-      "X-MCP-Endpoint": "root"
+  return NextResponse.json(
+    {
+      mcp: "Trends172 Project Orchestrator",
+      status: "online",
+      version: "1.0",
+      tools_endpoint: "/api/mcp/tools"
+    },
+    {
+      status: 200,
+      headers: {
+        "Content-Type": "application/json",
+        "Cache-Control": "no-store"
+      }
     }
-  });
+  );
 }
