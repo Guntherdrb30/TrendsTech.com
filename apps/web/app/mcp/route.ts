@@ -2,7 +2,7 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { WebStandardStreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/webStandardStreamableHttp.js";
 import { z } from "zod";
 
-import { getToolDefinitions } from "@trends172tech/openai";
+import { getToolDefinitions, type ToolContext } from "@trends172tech/openai";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -17,20 +17,13 @@ const pingOutputSchema = z.object({
   ts: z.string()
 });
 
-type ToolContextHeaders = {
-  tenantId?: string;
-  agentInstanceId?: string;
-  actorUserId?: string;
-  sessionId?: string;
-};
-
 const REQUIRED_CONTEXT_HEADERS = ["x-tenant-id", "x-agent-instance-id", "x-actor-user-id"] as const;
 
-function buildToolContext(headers: Record<string, string | undefined>): ToolContextHeaders | null {
+function buildToolContext(headers: Record<string, string | undefined>): ToolContext | null {
   const tenantId = headers["x-tenant-id"];
   const agentInstanceId = headers["x-agent-instance-id"];
   const actorUserId = headers["x-actor-user-id"];
-  const sessionId = headers["x-session-id"] ?? headers["mcp-session-id"];
+  const sessionId = headers["x-session-id"] ?? headers["mcp-session-id"] ?? "mcp";
 
   if (!tenantId || !agentInstanceId || !actorUserId) {
     return null;
