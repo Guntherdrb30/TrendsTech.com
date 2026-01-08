@@ -96,5 +96,5 @@ export default function middleware(request: Request) {
 }
 
 export const config = {
-  matcher: ['/((?!api|_next|.*\\..*|\\.well-known).*)']
+  matcher: ['/((?!api|_next|.*\\..*|\\.well-known|mcp).*)']
 };

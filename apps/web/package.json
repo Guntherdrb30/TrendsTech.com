@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.964.0",
+    "@modelcontextprotocol/sdk": "^1.25.2",
     "@radix-ui/react-slot": "^1.1.0",
     "@trends172tech/core": "file:../../packages/core",
     "@trends172tech/db": "file:../../packages/db",
@@ -30,7 +31,8 @@
     "react": "19.0.0",
     "react-dom": "19.0.0",
     "tailwind-merge": "^2.5.2",
-    "zod": "^3.23.8"
+    "zod": "^3.23.8",
+    "zod-to-json-schema": "^3.25.1"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",
