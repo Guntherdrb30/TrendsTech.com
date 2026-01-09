@@ -58,3 +58,18 @@ body {
     transform: none;
   }
 }
+
+.rotating-placeholder::placeholder {
+  animation: placeholderFade 4.2s ease-in-out infinite;
+  opacity: 0.65;
+}
+
+@keyframes placeholderFade {
+  0%,
+  100% {
+    opacity: 0.35;
+  }
+  50% {
+    opacity: 0.85;
+  }
+}

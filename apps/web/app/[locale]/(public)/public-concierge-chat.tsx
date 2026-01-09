@@ -96,25 +96,25 @@ export function PublicConciergeChat({ copy }: { copy: ConciergeCopy }) {
   }, [threadId, messages]);
 
   const voiceLocale = useMemo(() => getVoiceLocale(copy.locale), [copy.locale]);
-  const placeholderOptions = useMemo(
-    () => [copy.chatPlaceholder, ...copy.chatSuggestions],
+  const placeholderPrefix = copy.locale === "en" ? "E.g." : "Ej:";
+  const rotatingOptions = useMemo(
+    () => (copy.chatSuggestions.length > 0 ? copy.chatSuggestions : [copy.chatPlaceholder]),
     [copy.chatPlaceholder, copy.chatSuggestions]
   );
 
   useEffect(() => {
-    if (isFocused || input.trim() || placeholderOptions.length < 2) {
+    if (isFocused || input.trim() || rotatingOptions.length < 2) {
       return;
     }
     const interval = window.setInterval(() => {
-      setPlaceholderIndex((prev) => (prev + 1) % placeholderOptions.length);
+      setPlaceholderIndex((prev) => (prev + 1) % rotatingOptions.length);
     }, 4200);
     return () => window.clearInterval(interval);
-  }, [isFocused, input, placeholderOptions.length]);
+  }, [isFocused, input, rotatingOptions.length]);
 
-  const placeholderText =
-    !isFocused && !input.trim()
-      ? placeholderOptions[placeholderIndex] ?? copy.chatPlaceholder
-      : copy.chatPlaceholder;
+  const placeholderText = !isFocused && !input.trim()
+    ? `${placeholderPrefix} ${rotatingOptions[placeholderIndex] ?? copy.chatPlaceholder}`
+    : copy.chatPlaceholder;
 
   function speak(text: string) {
     if (!voiceOutputEnabled || typeof window === "undefined") {
@@ -284,7 +284,7 @@ export function PublicConciergeChat({ copy }: { copy: ConciergeCopy }) {
                 }
               }}
               placeholder={placeholderText}
-              className="flex-1 bg-transparent text-sm text-white placeholder:text-slate-500 focus:outline-none sm:text-base"
+              className="rotating-placeholder flex-1 bg-transparent text-sm text-white placeholder:text-slate-400 focus:outline-none sm:text-base"
             />
             <button
               type="button"
