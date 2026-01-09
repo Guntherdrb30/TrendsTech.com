@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 import Link from 'next/link';
+import Script from 'next/script';
 import { getTranslations } from 'next-intl/server';
 import { LocaleSwitcher } from '../../components/locale-switcher';
 import { ThemeToggle } from '../../components/theme-toggle';
@@ -17,6 +18,10 @@ export default async function PublicLayout({
 
   return (
     <div className="min-h-screen">
+      <Script
+        src="https://cdn.platform.openai.com/deployments/chatkit/chatkit.js"
+        strategy="afterInteractive"
+      />
       <header className="border-b border-slate-200 dark:border-slate-800">
         <div className="mx-auto max-w-5xl px-4 py-4">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">

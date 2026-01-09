@@ -12,6 +12,8 @@
   "dependencies": {
     "@aws-sdk/client-s3": "^3.964.0",
     "@modelcontextprotocol/sdk": "^1.25.2",
+    "@openai/chatkit": "^1.2.0",
+    "@openai/chatkit-react": "^1.4.0",
     "@radix-ui/react-slot": "^1.1.0",
     "@trends172tech/core": "file:../../packages/core",
     "@trends172tech/db": "file:../../packages/db",
