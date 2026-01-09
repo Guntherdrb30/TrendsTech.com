@@ -77,16 +77,25 @@ export async function POST(request: Request) {
 
   const { userId, setCookie } = resolveUserId(request);
   const apiBase = process.env.CHATKIT_API_BASE || DEFAULT_CHATKIT_BASE;
+  const headers: Record<string, string> = {
+    Authorization: `Bearer ${apiKey}`,
+    "OpenAI-Beta": "chatkit_beta=v1",
+    "Content-Type": "application/json"
+  };
+  const organization = process.env.OPENAI_ORG_ID;
+  const project = process.env.OPENAI_PROJECT_ID;
+  if (organization) {
+    headers["OpenAI-Organization"] = organization;
+  }
+  if (project) {
+    headers["OpenAI-Project"] = project;
+  }
 
   let upstream: Response;
   try {
     upstream = await fetch(`${apiBase}/v1/chatkit/sessions`, {
       method: "POST",
-      headers: {
-        Authorization: `Bearer ${apiKey}`,
-        "OpenAI-Beta": "chatkit_beta=v1",
-        "Content-Type": "application/json"
-      },
+      headers,
       body: JSON.stringify({
         workflow: { id: workflowId },
         user: userId
