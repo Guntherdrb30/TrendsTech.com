@@ -14,6 +14,8 @@ type ConciergeCopy = {
   chatMemory: string;
   chatReset: string;
   chatError: string;
+  chatSuggestionsTitle: string;
+  chatSuggestions: string[];
 };
 
 type ChatMessage = {
@@ -280,6 +282,20 @@ export function PublicConciergeChat({ copy }: { copy: ConciergeCopy }) {
             >
               {copy.chatSend}
             </button>
+          </div>
+
+          <div className="flex flex-wrap items-center justify-center gap-2 text-[11px] uppercase tracking-[0.2em] text-slate-500">
+            <span>{copy.chatSuggestionsTitle}</span>
+            {copy.chatSuggestions.map((suggestion) => (
+              <button
+                key={suggestion}
+                type="button"
+                onClick={() => handleSend(suggestion)}
+                className="rounded-full border border-slate-800 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-400 transition hover:border-slate-700 hover:text-slate-200"
+              >
+                {suggestion}
+              </button>
+            ))}
           </div>
 
           <div className="flex flex-wrap items-center justify-between gap-3 text-[11px] uppercase tracking-[0.2em] text-slate-500">

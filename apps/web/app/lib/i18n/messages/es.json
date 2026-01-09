@@ -39,6 +39,13 @@
     "chatMemory": "Memoria activa",
     "chatReset": "Nueva conversacion",
     "chatError": "No pude responder en este momento.",
+    "chatSuggestionsTitle": "Sugerencias",
+    "chatSuggestions": {
+      "s1": "Pega tu URL",
+      "s2": "Necesito un agente de citas",
+      "s3": "Quiero ventas por WhatsApp",
+      "s4": "Tengo ecommerce"
+    },
     "eyebrow": "SOLUCIONES DE IA PARA EMPRESAS",
     "heroHeadline": "Arquitectura de agentes con enfoque corporativo",
     "heroSubhead": "Diseno, despliegue y gobierno de flujos IA con trazabilidad y cumplimiento.",

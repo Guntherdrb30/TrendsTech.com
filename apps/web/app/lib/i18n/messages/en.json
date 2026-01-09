@@ -39,6 +39,13 @@
     "chatMemory": "Memory on",
     "chatReset": "New conversation",
     "chatError": "I could not respond right now.",
+    "chatSuggestionsTitle": "Suggestions",
+    "chatSuggestions": {
+      "s1": "Paste my URL",
+      "s2": "I need appointment scheduling",
+      "s3": "I want sales on WhatsApp",
+      "s4": "I run an ecommerce store"
+    },
     "eyebrow": "ENTERPRISE AI SYSTEMS",
     "heroHeadline": "Corporate-grade agent architecture",
     "heroSubhead": "Design, deploy, and govern AI workflows with traceability and compliance.",

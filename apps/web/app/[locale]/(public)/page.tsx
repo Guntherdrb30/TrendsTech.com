@@ -86,7 +86,14 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
     chatListening: home("chatListening"),
     chatMemory: home("chatMemory"),
     chatReset: home("chatReset"),
-    chatError: home("chatError")
+    chatError: home("chatError"),
+    chatSuggestionsTitle: home("chatSuggestionsTitle"),
+    chatSuggestions: [
+      home("chatSuggestions.s1"),
+      home("chatSuggestions.s2"),
+      home("chatSuggestions.s3"),
+      home("chatSuggestions.s4")
+    ]
   };
 
   return (
