@@ -52,6 +52,8 @@ export function PublicConciergeChat({ copy }: { copy: ConciergeCopy }) {
   const [error, setError] = useState("");
   const [voiceOutputEnabled, setVoiceOutputEnabled] = useState(false);
   const [listening, setListening] = useState(false);
+  const [placeholderIndex, setPlaceholderIndex] = useState(0);
+  const [isFocused, setIsFocused] = useState(false);
 
   const recognitionRef = useRef<unknown>(null);
 
@@ -94,6 +96,25 @@ export function PublicConciergeChat({ copy }: { copy: ConciergeCopy }) {
   }, [threadId, messages]);
 
   const voiceLocale = useMemo(() => getVoiceLocale(copy.locale), [copy.locale]);
+  const placeholderOptions = useMemo(
+    () => [copy.chatPlaceholder, ...copy.chatSuggestions],
+    [copy.chatPlaceholder, copy.chatSuggestions]
+  );
+
+  useEffect(() => {
+    if (isFocused || input.trim() || placeholderOptions.length < 2) {
+      return;
+    }
+    const interval = window.setInterval(() => {
+      setPlaceholderIndex((prev) => (prev + 1) % placeholderOptions.length);
+    }, 4200);
+    return () => window.clearInterval(interval);
+  }, [isFocused, input, placeholderOptions.length]);
+
+  const placeholderText =
+    !isFocused && !input.trim()
+      ? placeholderOptions[placeholderIndex] ?? copy.chatPlaceholder
+      : copy.chatPlaceholder;
 
   function speak(text: string) {
     if (!voiceOutputEnabled || typeof window === "undefined") {
@@ -254,13 +275,15 @@ export function PublicConciergeChat({ copy }: { copy: ConciergeCopy }) {
             <input
               value={input}
               onChange={(event) => setInput(event.target.value)}
+              onFocus={() => setIsFocused(true)}
+              onBlur={() => setIsFocused(false)}
               onKeyDown={(event) => {
                 if (event.key === "Enter") {
                   event.preventDefault();
                   handleSend(input);
                 }
               }}
-              placeholder={copy.chatPlaceholder}
+              placeholder={placeholderText}
               className="flex-1 bg-transparent text-sm text-white placeholder:text-slate-500 focus:outline-none sm:text-base"
             />
             <button
