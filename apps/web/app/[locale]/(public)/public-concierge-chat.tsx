@@ -1,31 +1,11 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import Link from "next/link";
-
-type IntakeExample = { label: string; value: string };
-
 type ConciergeCopy = {
   locale: string;
-  intakeBadge: string;
   intakeTitle: string;
   intakeSubtitle: string;
-  intakeUrlLabel: string;
-  intakeUrlPlaceholder: string;
-  intakeFileLabel: string;
-  intakeDescriptionLabel: string;
-  intakeDescriptionPlaceholder: string;
-  intakeCtaPrimary: string;
-  intakeCtaSecondary: string;
   intakeNote: string;
-  intakeExamplesTitle: string;
-  intakeExamples: IntakeExample[];
-  intakePromiseTitle: string;
-  intakePromiseBody: string;
-  chatTitle: string;
-  chatSubtitle: string;
-  chatActivate: string;
-  chatDeactivate: string;
   chatPlaceholder: string;
   chatSend: string;
   chatVoiceInput: string;
@@ -62,17 +42,12 @@ function getVoiceLocale(locale: string) {
 }
 
 export function PublicConciergeChat({ copy }: { copy: ConciergeCopy }) {
-  const [chatOpen, setChatOpen] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState("");
-  const [url, setUrl] = useState("");
-  const [description, setDescription] = useState("");
-  const [fileText, setFileText] = useState("");
   const [threadId, setThreadId] = useState<string | null>(null);
   const [sessionId, setSessionId] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [voiceInputEnabled, setVoiceInputEnabled] = useState(false);
   const [voiceOutputEnabled, setVoiceOutputEnabled] = useState(false);
   const [listening, setListening] = useState(false);
 
@@ -173,25 +148,35 @@ export function PublicConciergeChat({ copy }: { copy: ConciergeCopy }) {
     return recognition;
   }
 
+  function extractUrl(message: string) {
+    const match = message.match(/https?:\/\/[^\s)]+/i);
+    if (match?.[0]) {
+      return match[0].replace(/[),.;]+$/g, "");
+    }
+    const trimmed = message.trim();
+    if (trimmed && !trimmed.includes(" ") && trimmed.includes(".")) {
+      return `https://${trimmed.replace(/^https?:\/\//i, "")}`;
+    }
+    return null;
+  }
+
   async function handleSend(message: string, includeContext = false) {
     if (!message.trim() || loading) {
       return;
     }
     setError("");
-    setChatOpen(true);
     setMessages((prev) => [...prev, { role: "user", content: message }]);
     setInput("");
     setLoading(true);
 
     const shouldIncludeContext = includeContext || !threadId;
+    const detectedUrl = extractUrl(message);
     const resolvedSessionId = sessionId || getStoredSessionId();
     const payload = {
       message,
       sessionId: resolvedSessionId,
       threadId,
-      url: shouldIncludeContext ? url : undefined,
-      description: shouldIncludeContext ? description : undefined,
-      fileText: shouldIncludeContext ? fileText : undefined
+      url: shouldIncludeContext ? detectedUrl ?? undefined : undefined
     };
 
     try {
@@ -224,27 +209,6 @@ export function PublicConciergeChat({ copy }: { copy: ConciergeCopy }) {
     }
   }
 
-  function handleAnalyze() {
-    const intent = copy.locale === "en"
-      ? "Analyze my business and recommend the best agents. Ask any clarifying questions."
-      : "Analiza mi negocio y recomienda los agentes ideales. Haz las preguntas que necesites.";
-    handleSend(intent, true);
-  }
-
-  async function handleFileChange(event: React.ChangeEvent<HTMLInputElement>) {
-    const file = event.target.files?.[0];
-    if (!file) {
-      setFileText("");
-      return;
-    }
-    try {
-      const text = await file.text();
-      setFileText(text.slice(0, 4000));
-    } catch {
-      setFileText("");
-    }
-  }
-
   function handleVoiceToggle() {
     const recognition = ensureRecognition();
     if (!recognition) {
@@ -266,215 +230,105 @@ export function PublicConciergeChat({ copy }: { copy: ConciergeCopy }) {
     }
   }
 
+  const hasConversation = messages.length > 0;
+
   return (
-    <section className="reveal relative overflow-hidden rounded-3xl border border-slate-200 bg-white px-6 py-8 shadow-[0_35px_90px_-70px_rgba(15,23,42,0.5)] dark:border-slate-800 dark:bg-slate-950 sm:px-10 sm:py-10">
-      <div className="absolute -right-32 -top-24 h-72 w-72 rounded-full bg-[radial-gradient(circle_at_center,_rgba(59,130,246,0.2),_transparent_70%)] blur-2xl" aria-hidden="true" />
-      <div className="absolute -left-28 -bottom-24 h-72 w-72 rounded-full bg-[radial-gradient(circle_at_center,_rgba(16,185,129,0.18),_transparent_70%)] blur-2xl" aria-hidden="true" />
-      <div className="relative z-10 grid gap-8 lg:grid-cols-[1.15fr_0.85fr]">
-        <div className="space-y-4">
-          <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-400">
-            <span className="h-2 w-2 rounded-full bg-emerald-500 shadow-[0_0_12px_rgba(16,185,129,0.55)]" />
-            {copy.intakeBadge}
-          </div>
-          <div className="space-y-2">
-            <h2 className="text-2xl font-[var(--font-display)] font-semibold text-slate-900 dark:text-white sm:text-3xl">
-              {copy.intakeTitle}
-            </h2>
-            <p className="max-w-2xl text-sm text-slate-600 dark:text-slate-300 sm:text-base">
-              {copy.intakeSubtitle}
-            </p>
-          </div>
-          <form className="grid gap-4 rounded-2xl border border-slate-200 bg-white/80 p-4 shadow-sm backdrop-blur dark:border-slate-800 dark:bg-slate-900/60 sm:p-5">
-            <label className="grid gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
-              {copy.intakeUrlLabel}
-              <input
-                type="url"
-                name="websiteUrl"
-                value={url}
-                onChange={(event) => setUrl(event.target.value)}
-                placeholder={copy.intakeUrlPlaceholder}
-                className="rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-normal text-slate-900 outline-none transition focus:border-slate-400 focus:ring-2 focus:ring-slate-200 dark:border-slate-700 dark:bg-slate-950 dark:text-white dark:focus:border-slate-500 dark:focus:ring-slate-800"
-              />
-            </label>
-            <label className="grid gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
-              {copy.intakeFileLabel}
-              <input
-                type="file"
-                name="companyFile"
-                onChange={handleFileChange}
-                className="rounded-xl border border-dashed border-slate-300 bg-slate-50 px-4 py-2 text-sm font-normal text-slate-600 file:mr-3 file:rounded-full file:border-0 file:bg-slate-900 file:px-3 file:py-1.5 file:text-xs file:font-semibold file:text-white dark:border-slate-700 dark:bg-slate-950 dark:text-slate-300 dark:file:bg-white dark:file:text-slate-950"
-              />
-            </label>
-            <label className="grid gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
-              {copy.intakeDescriptionLabel}
-              <textarea
-                name="companyDescription"
-                rows={4}
-                value={description}
-                onChange={(event) => setDescription(event.target.value)}
-                placeholder={copy.intakeDescriptionPlaceholder}
-                className="rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-normal text-slate-900 outline-none transition focus:border-slate-400 focus:ring-2 focus:ring-slate-200 dark:border-slate-700 dark:bg-slate-950 dark:text-white dark:focus:border-slate-500 dark:focus:ring-slate-800"
-              />
-            </label>
-            <div className="flex flex-wrap items-center gap-3">
-              <button
-                type="button"
-                onClick={handleAnalyze}
-                className="inline-flex items-center justify-center rounded-full bg-slate-900 px-5 py-2.5 text-sm font-semibold text-white shadow-[0_18px_40px_-20px_rgba(15,23,42,0.6)] transition hover:-translate-y-0.5 hover:bg-slate-800 disabled:opacity-60 dark:bg-white dark:text-slate-950 dark:hover:bg-slate-200"
-                disabled={loading}
-              >
-                {loading ? copy.chatListening : copy.intakeCtaPrimary}
-              </button>
-              <Link
-                href="agents"
-                className="inline-flex items-center justify-center rounded-full border border-slate-300 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 transition hover:-translate-y-0.5 hover:border-slate-400 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-200"
-              >
-                {copy.intakeCtaSecondary}
-              </Link>
-            </div>
-            <p className="text-xs text-slate-400">{copy.intakeNote}</p>
-          </form>
+    <section className="reveal relative overflow-hidden rounded-[32px] border border-slate-900 bg-slate-950 px-6 py-12 text-white shadow-[0_50px_140px_-90px_rgba(15,23,42,0.85)] sm:px-10">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(59,130,246,0.2),_transparent_55%)]" aria-hidden="true" />
+      <div className="absolute -right-24 -top-20 h-64 w-64 rounded-full bg-[radial-gradient(circle_at_center,_rgba(234,88,12,0.35),_transparent_70%)] blur-2xl" aria-hidden="true" />
+      <div className="relative mx-auto flex max-w-3xl flex-col items-center gap-6 text-center">
+        <div className="space-y-3">
+          <h2 className="text-3xl font-[var(--font-display)] font-semibold sm:text-4xl">
+            {copy.intakeTitle}
+          </h2>
+          <p className="text-sm text-slate-300 sm:text-base">{copy.intakeSubtitle}</p>
         </div>
 
-        <div className="space-y-4">
-          <div className="rounded-2xl border border-slate-200 bg-gradient-to-br from-slate-50 via-white to-slate-100 p-5 text-sm text-slate-600 shadow-sm dark:border-slate-800 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 dark:text-slate-300">
-            <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">
-              {copy.intakeExamplesTitle}
+        <div className="w-full space-y-3">
+          <div className="flex items-center gap-3 rounded-[28px] border border-slate-800 bg-slate-900/70 px-4 py-3 shadow-[0_20px_40px_-30px_rgba(0,0,0,0.7)] backdrop-blur">
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-slate-800 text-lg">
+              +
             </div>
-            <ul className="mt-4 space-y-3 text-sm">
-              {copy.intakeExamples.map((example) => (
-                <li
-                  key={example.label}
-                  className="rounded-xl border border-slate-200 bg-white px-4 py-3 text-slate-600 shadow-sm dark:border-slate-800 dark:bg-slate-950 dark:text-slate-300"
-                >
-                  <span className="block text-xs uppercase tracking-[0.18em] text-slate-400">
-                    {example.label}
-                  </span>
-                  <span className="mt-1 block font-semibold text-slate-900 dark:text-white">
-                    {example.value}
-                  </span>
-                </li>
-              ))}
-            </ul>
+            <input
+              value={input}
+              onChange={(event) => setInput(event.target.value)}
+              onKeyDown={(event) => {
+                if (event.key === "Enter") {
+                  event.preventDefault();
+                  handleSend(input);
+                }
+              }}
+              placeholder={copy.chatPlaceholder}
+              className="flex-1 bg-transparent text-sm text-white placeholder:text-slate-500 focus:outline-none sm:text-base"
+            />
+            <button
+              type="button"
+              onClick={handleVoiceToggle}
+              className={`rounded-full border px-3 py-2 text-xs font-semibold uppercase tracking-[0.2em] ${
+                listening
+                  ? "border-emerald-400 text-emerald-300"
+                  : "border-slate-700 text-slate-400"
+              }`}
+            >
+              {listening ? copy.chatListening : copy.chatVoiceInput}
+            </button>
+            <button
+              type="button"
+              onClick={() => handleSend(input)}
+              className="flex h-11 w-11 items-center justify-center rounded-full bg-orange-500 text-sm font-semibold text-white shadow-[0_12px_30px_-18px_rgba(249,115,22,0.8)] transition hover:bg-orange-400 disabled:opacity-60"
+              disabled={loading}
+            >
+              {copy.chatSend}
+            </button>
           </div>
 
-          <div className="rounded-2xl border border-slate-200 bg-slate-950 px-5 py-5 text-xs text-slate-200 shadow-sm dark:border-slate-800">
-            <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">
-              {copy.intakePromiseTitle}
-            </div>
-            <p className="mt-3 text-sm text-slate-200">{copy.intakePromiseBody}</p>
-          </div>
-
-          <div className="rounded-2xl border border-slate-200 bg-white px-5 py-5 text-sm text-slate-700 shadow-sm dark:border-slate-800 dark:bg-slate-950 dark:text-slate-200">
-            <div className="flex items-center justify-between">
-              <div>
-                <div className="text-sm font-semibold text-slate-900 dark:text-white">
-                  {copy.chatTitle}
-                </div>
-                <p className="text-xs text-slate-500 dark:text-slate-400">{copy.chatSubtitle}</p>
-              </div>
-              <button
-                type="button"
-                onClick={() => setChatOpen((prev) => !prev)}
-                className="rounded-full border border-slate-200 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-slate-500 transition hover:border-slate-300 dark:border-slate-700 dark:text-slate-300"
-              >
-                {chatOpen ? copy.chatDeactivate : copy.chatActivate}
-              </button>
-            </div>
-
-            <div className="mt-4 flex flex-wrap gap-2 text-[11px] uppercase tracking-[0.2em] text-slate-400">
-              <span className="rounded-full border border-slate-200 px-2 py-1 dark:border-slate-700">
-                {copy.chatMemory}
-              </span>
-              <button
-                type="button"
-                onClick={() => setVoiceInputEnabled((prev) => !prev)}
-                className={`rounded-full border px-2 py-1 ${
-                  voiceInputEnabled
-                    ? "border-emerald-400 text-emerald-500"
-                    : "border-slate-200 text-slate-400 dark:border-slate-700"
-                }`}
-              >
-                {copy.chatVoiceInput}
-              </button>
+          <div className="flex flex-wrap items-center justify-between gap-3 text-[11px] uppercase tracking-[0.2em] text-slate-500">
+            <span>{copy.intakeNote}</span>
+            <div className="flex items-center gap-3">
               <button
                 type="button"
                 onClick={() => setVoiceOutputEnabled((prev) => !prev)}
-                className={`rounded-full border px-2 py-1 ${
+                className={`rounded-full border px-3 py-1 ${
                   voiceOutputEnabled
-                    ? "border-indigo-400 text-indigo-500"
-                    : "border-slate-200 text-slate-400 dark:border-slate-700"
+                    ? "border-orange-300 text-orange-200"
+                    : "border-slate-800 text-slate-500"
                 }`}
               >
                 {copy.chatVoiceOutput}
               </button>
+              {hasConversation && (
+                <button type="button" onClick={resetConversation}>
+                  {copy.chatReset}
+                </button>
+              )}
             </div>
-
-            {chatOpen && (
-              <div className="mt-4 space-y-3">
-                <div className="max-h-72 space-y-3 overflow-auto rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm dark:border-slate-800 dark:bg-slate-900/60">
-                  {messages.length === 0 && (
-                    <p className="text-sm text-slate-500 dark:text-slate-400">
-                      {copy.intakeSubtitle}
-                    </p>
-                  )}
-                  {messages.map((message, index) => (
-                    <div
-                      key={`${message.role}-${index}`}
-                      className={`rounded-2xl px-4 py-3 ${
-                        message.role === "user"
-                          ? "ml-auto bg-slate-900 text-white"
-                          : "bg-white text-slate-700 dark:bg-slate-950 dark:text-slate-200"
-                      }`}
-                    >
-                      {message.content}
-                    </div>
-                  ))}
-                </div>
-
-                {error && (
-                  <p className="text-xs text-rose-500">{error}</p>
-                )}
-
-                <div className="flex items-center gap-2">
-                  <input
-                    value={input}
-                    onChange={(event) => setInput(event.target.value)}
-                    placeholder={copy.chatPlaceholder}
-                    className="flex-1 rounded-full border border-slate-200 bg-white px-4 py-2 text-sm text-slate-900 outline-none transition focus:border-slate-400 focus:ring-2 focus:ring-slate-200 dark:border-slate-700 dark:bg-slate-950 dark:text-white dark:focus:border-slate-500 dark:focus:ring-slate-800"
-                  />
-                  {voiceInputEnabled && (
-                    <button
-                      type="button"
-                      onClick={handleVoiceToggle}
-                      className={`rounded-full border px-3 py-2 text-xs font-semibold uppercase tracking-[0.2em] ${
-                        listening
-                          ? "border-emerald-400 text-emerald-500"
-                          : "border-slate-200 text-slate-500 dark:border-slate-700 dark:text-slate-300"
-                      }`}
-                    >
-                      {listening ? copy.chatListening : copy.chatVoiceInput}
-                    </button>
-                  )}
-                  <button
-                    type="button"
-                    onClick={() => handleSend(input)}
-                    className="rounded-full bg-slate-900 px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-white transition hover:bg-slate-800 disabled:opacity-60 dark:bg-white dark:text-slate-950"
-                    disabled={loading}
-                  >
-                    {copy.chatSend}
-                  </button>
-                </div>
-
-                <div className="text-[11px] uppercase tracking-[0.2em] text-slate-400">
-                  <button type="button" onClick={resetConversation}>
-                    {copy.chatReset}
-                  </button>
-                </div>
-              </div>
-            )}
           </div>
         </div>
+
+        {hasConversation && (
+          <div className="w-full space-y-3 rounded-3xl border border-slate-800 bg-slate-900/60 p-5 text-left text-sm text-slate-200 shadow-[0_30px_80px_-60px_rgba(0,0,0,0.75)]">
+            <div className="flex flex-wrap gap-2 text-[11px] uppercase tracking-[0.2em] text-slate-500">
+              <span className="rounded-full border border-slate-800 px-3 py-1">
+                {copy.chatMemory}
+              </span>
+            </div>
+            <div className="space-y-3">
+              {messages.map((message, index) => (
+                <div
+                  key={`${message.role}-${index}`}
+                  className={`rounded-2xl px-4 py-3 ${
+                    message.role === "user"
+                      ? "ml-auto bg-slate-800 text-white"
+                      : "bg-slate-950 text-slate-200"
+                  }`}
+                >
+                  {message.content}
+                </div>
+              ))}
+            </div>
+            {error && <p className="text-xs text-rose-400">{error}</p>}
+          </div>
+        )}
       </div>
     </section>
   );
