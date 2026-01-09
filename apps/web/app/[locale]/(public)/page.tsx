@@ -15,10 +15,10 @@ const body = IBM_Plex_Sans({
   variable: "--font-body"
 });
 
-export default async function HomePage({ params }: { params: { locale: string } }) {
+export default async function HomePage({ params }: { params: Promise<{ locale: string }> }) {
   const t = await getTranslations("pages");
   const home = await getTranslations("home");
-  const { locale } = params;
+  const { locale } = await params;
 
   const metrics = [
     { value: home("metrics.m1Value"), label: home("metrics.m1Label") },
