@@ -15,6 +15,70 @@
     "dashboardTitle": "Dashboard",
     "rootTitle": "Root Area"
   },
+  "home": {
+    "eyebrow": "ENTERPRISE AI SYSTEMS",
+    "heroHeadline": "Corporate-grade agent architecture",
+    "heroSubhead": "Design, deploy, and govern AI workflows with traceability and compliance.",
+    "heroCtaPrimary": "Explore agents",
+    "heroCtaSecondary": "View pricing",
+    "heroNote": "Go live in weeks with full control.",
+    "metrics": {
+      "m1Value": "99.9%",
+      "m1Label": "uptime target",
+      "m2Value": "24/7",
+      "m2Label": "automated operations",
+      "m3Value": "48h",
+      "m3Label": "deployment window"
+    },
+    "heroCardTitle": "MCP Streamable",
+    "heroCardSubtitle": "Tooling infrastructure ready for scan",
+    "heroCardItems": {
+      "i1Title": "Audited tooling",
+      "i1Body": "Schemas and execution with validation",
+      "i2Title": "Observability",
+      "i2Body": "Logs and traces per tenant",
+      "i3Title": "Scalability",
+      "i3Body": "Stateless sessions on Vercel",
+      "i4Title": "Security",
+      "i4Body": "Context isolation by design"
+    },
+    "capabilitiesTitle": "Modern operations with enterprise rigor",
+    "capabilitiesBody": "We blend discovery, flow design, and secure automation so your team sees measurable results.",
+    "capabilities": {
+      "c1Title": "MCP orchestration",
+      "c1Body": "Tool catalog with stable, versioned contracts.",
+      "c2Title": "AI governance",
+      "c2Body": "Audit trails and context control per tenant.",
+      "c3Title": "Omnichannel experience",
+      "c3Body": "Web, WhatsApp, and voice with consistent tone.",
+      "c4Title": "Accelerated delivery",
+      "c4Body": "MVP with a roadmap for scale and security."
+    },
+    "stackTitle": "Production-ready stack",
+    "stackBody": "Modern architecture on Next.js, Vercel, and MCP with repeatable deployments.",
+    "stackItems": {
+      "s1": "Next.js App Router + React 19",
+      "s2": "MCP Streamable HTTP",
+      "s3": "Prisma + Postgres",
+      "s4": "Observability and session traces"
+    },
+    "processTitle": "From strategy to production without friction",
+    "processBody": "A clear workflow that aligns business, data, and deployment in weeks.",
+    "processSteps": {
+      "p1Title": "Diagnosis",
+      "p1Body": "We identify use cases and define ROI.",
+      "p2Title": "Architecture",
+      "p2Body": "We model flows, tools, and tenant security.",
+      "p3Title": "Implementation",
+      "p3Body": "We build the MCP and connect channels.",
+      "p4Title": "Scaling",
+      "p4Body": "We measure, iterate, and optimize with data."
+    },
+    "ctaTitle": "Elevate your operation to enterprise level",
+    "ctaBody": "Activate AI agents with full control and consistent performance.",
+    "ctaPrimary": "View pricing",
+    "ctaSecondary": "Login"
+  },
   "common": {
     "comingSoon": "Coming soon"
   },

@@ -15,6 +15,70 @@
     "dashboardTitle": "Panel",
     "rootTitle": "Area Root"
   },
+  "home": {
+    "eyebrow": "SOLUCIONES DE IA PARA EMPRESAS",
+    "heroHeadline": "Arquitectura de agentes con enfoque corporativo",
+    "heroSubhead": "Diseno, despliegue y gobierno de flujos IA con trazabilidad y cumplimiento.",
+    "heroCtaPrimary": "Explorar agentes",
+    "heroCtaSecondary": "Ver precios",
+    "heroNote": "Implementacion en semanas con control total.",
+    "metrics": {
+      "m1Value": "99.9%",
+      "m1Label": "disponibilidad objetivo",
+      "m2Value": "24/7",
+      "m2Label": "operacion automatizada",
+      "m3Value": "48h",
+      "m3Label": "tiempo de despliegue"
+    },
+    "heroCardTitle": "MCP Streamable",
+    "heroCardSubtitle": "Infraestructura de herramientas lista para el scan",
+    "heroCardItems": {
+      "i1Title": "Tooling auditado",
+      "i1Body": "Schemas y ejecucion con validacion",
+      "i2Title": "Observabilidad",
+      "i2Body": "Logs y trazas por tenant",
+      "i3Title": "Escalabilidad",
+      "i3Body": "Sesiones stateless en Vercel",
+      "i4Title": "Seguridad",
+      "i4Body": "Aislamiento por contexto"
+    },
+    "capabilitiesTitle": "Operativa moderna con rigor corporativo",
+    "capabilitiesBody": "Combinamos discovery, diseno de flujos y automatizacion segura para que tu equipo vea resultados medibles.",
+    "capabilities": {
+      "c1Title": "Orquestacion MCP",
+      "c1Body": "Catalogo de tools con contratos estables y versionados.",
+      "c2Title": "Governance IA",
+      "c2Body": "Auditoria de acciones y control de contexto por tenant.",
+      "c3Title": "Experiencia omnicanal",
+      "c3Body": "Web, WhatsApp y voz con tono consistente.",
+      "c4Title": "Entrega acelerada",
+      "c4Body": "MVP con roadmap de escalamiento y seguridad."
+    },
+    "stackTitle": "Stack listo para produccion",
+    "stackBody": "Arquitectura moderna sobre Next.js, Vercel y MCP con despliegues reproducibles.",
+    "stackItems": {
+      "s1": "Next.js App Router + React 19",
+      "s2": "MCP Streamable HTTP",
+      "s3": "Prisma + Postgres",
+      "s4": "Observabilidad y trazas por sesion"
+    },
+    "processTitle": "De estrategia a produccion sin friccion",
+    "processBody": "Un flujo claro que alinea negocio, datos y despliegue en pocas semanas.",
+    "processSteps": {
+      "p1Title": "Diagnostico",
+      "p1Body": "Identificamos casos de uso y definimos el ROI.",
+      "p2Title": "Arquitectura",
+      "p2Body": "Modelamos flujos, herramientas y seguridad por tenant.",
+      "p3Title": "Implementacion",
+      "p3Body": "Construimos el MCP y conectamos los canales.",
+      "p4Title": "Escalamiento",
+      "p4Body": "Medimos, iteramos y optimizamos con data."
+    },
+    "ctaTitle": "Lleva tu operacion a nivel enterprise",
+    "ctaBody": "Activa agentes IA con control total y performance consistente.",
+    "ctaPrimary": "Ver precios",
+    "ctaSecondary": "Iniciar sesion"
+  },
   "common": {
     "comingSoon": "Proximamente"
   },
