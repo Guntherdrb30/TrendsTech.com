@@ -16,6 +16,28 @@
     "rootTitle": "Area Root"
   },
   "home": {
+    "intakeBadge": "AGENTE DE DESCUBRIMIENTO",
+    "intakeTitle": "Cuentalo una vez. Nosotros recomendamos los agentes.",
+    "intakeSubtitle": "Primero analiza tu sitio. Luego complementa con un archivo o una descripcion clara de tu empresa.",
+    "intakeUrlLabel": "URL principal",
+    "intakeUrlPlaceholder": "https://empresa.com",
+    "intakeFileLabel": "Archivo con informacion",
+    "intakeDescriptionLabel": "Descripcion corta",
+    "intakeDescriptionPlaceholder": "Ejemplo: Clinica privada con 3 sedes, necesitamos agendar citas y responder preguntas frecuentes.",
+    "intakeCtaPrimary": "Analizar y recomendar",
+    "intakeCtaSecondary": "Ver agentes manualmente",
+    "intakeNote": "Tus datos se usan solo para diagnostico y recomendaciones.",
+    "intakeExamplesTitle": "Ejemplos de recomendacion",
+    "intakeExamples": {
+      "e1Label": "Salud y clinicas",
+      "e1Value": "Agente de citas + soporte para pacientes",
+      "e2Label": "Retail y ecommerce",
+      "e2Value": "Agente de ventas + seguimiento de leads",
+      "e3Label": "Servicios profesionales",
+      "e3Value": "Agente de marketing + agenda comercial"
+    },
+    "intakePromiseTitle": "Que entrega el analisis",
+    "intakePromiseBody": "Mapa de agentes sugeridos, prioridades y configuracion inicial.",
     "eyebrow": "SOLUCIONES DE IA PARA EMPRESAS",
     "heroHeadline": "Arquitectura de agentes con enfoque corporativo",
     "heroSubhead": "Diseno, despliegue y gobierno de flujos IA con trazabilidad y cumplimiento.",

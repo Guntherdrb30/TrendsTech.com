@@ -16,6 +16,28 @@
     "rootTitle": "Root Area"
   },
   "home": {
+    "intakeBadge": "DISCOVERY AGENT",
+    "intakeTitle": "Tell us once. We recommend the right agents.",
+    "intakeSubtitle": "Start with your website. Then add a file or a clear company description.",
+    "intakeUrlLabel": "Primary URL",
+    "intakeUrlPlaceholder": "https://company.com",
+    "intakeFileLabel": "Company file",
+    "intakeDescriptionLabel": "Short description",
+    "intakeDescriptionPlaceholder": "Example: Private clinic with 3 locations. We need appointment scheduling and FAQ support.",
+    "intakeCtaPrimary": "Analyze and recommend",
+    "intakeCtaSecondary": "Browse agents manually",
+    "intakeNote": "Your data is only used for diagnostics and recommendations.",
+    "intakeExamplesTitle": "Recommendation examples",
+    "intakeExamples": {
+      "e1Label": "Healthcare",
+      "e1Value": "Appointments agent + patient support",
+      "e2Label": "Retail & ecommerce",
+      "e2Value": "Sales agent + lead follow-up",
+      "e3Label": "Professional services",
+      "e3Value": "Marketing agent + sales scheduling"
+    },
+    "intakePromiseTitle": "What the analysis delivers",
+    "intakePromiseBody": "Suggested agent map, priorities, and initial configuration.",
     "eyebrow": "ENTERPRISE AI SYSTEMS",
     "heroHeadline": "Corporate-grade agent architecture",
     "heroSubhead": "Design, deploy, and govern AI workflows with traceability and compliance.",

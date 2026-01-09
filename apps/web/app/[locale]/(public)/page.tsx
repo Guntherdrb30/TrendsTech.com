@@ -54,6 +54,108 @@ export default async function HomePage() {
 
   return (
     <div className={`${display.variable} ${body.variable} space-y-16 font-[var(--font-body)]`}>
+      <section className="reveal relative overflow-hidden rounded-3xl border border-slate-200 bg-white px-6 py-8 shadow-[0_35px_90px_-70px_rgba(15,23,42,0.5)] dark:border-slate-800 dark:bg-slate-950 sm:px-10 sm:py-10">
+        <div className="absolute -right-32 -top-24 h-72 w-72 rounded-full bg-[radial-gradient(circle_at_center,_rgba(59,130,246,0.2),_transparent_70%)] blur-2xl" aria-hidden="true" />
+        <div className="absolute -left-28 -bottom-24 h-72 w-72 rounded-full bg-[radial-gradient(circle_at_center,_rgba(16,185,129,0.18),_transparent_70%)] blur-2xl" aria-hidden="true" />
+        <div className="relative z-10 grid gap-8 lg:grid-cols-[1.15fr_0.85fr]">
+          <div className="space-y-4">
+            <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-400">
+              <span className="h-2 w-2 rounded-full bg-emerald-500 shadow-[0_0_12px_rgba(16,185,129,0.55)]" />
+              {home("intakeBadge")}
+            </div>
+            <div className="space-y-2">
+              <h2 className="text-2xl font-[var(--font-display)] font-semibold text-slate-900 dark:text-white sm:text-3xl">
+                {home("intakeTitle")}
+              </h2>
+              <p className="max-w-2xl text-sm text-slate-600 dark:text-slate-300 sm:text-base">
+                {home("intakeSubtitle")}
+              </p>
+            </div>
+            <form className="grid gap-4 rounded-2xl border border-slate-200 bg-white/80 p-4 shadow-sm backdrop-blur dark:border-slate-800 dark:bg-slate-900/60 sm:p-5">
+              <label className="grid gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
+                {home("intakeUrlLabel")}
+                <input
+                  type="url"
+                  name="websiteUrl"
+                  placeholder={home("intakeUrlPlaceholder")}
+                  className="rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-normal text-slate-900 outline-none transition focus:border-slate-400 focus:ring-2 focus:ring-slate-200 dark:border-slate-700 dark:bg-slate-950 dark:text-white dark:focus:border-slate-500 dark:focus:ring-slate-800"
+                />
+              </label>
+              <label className="grid gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
+                {home("intakeFileLabel")}
+                <input
+                  type="file"
+                  name="companyFile"
+                  className="rounded-xl border border-dashed border-slate-300 bg-slate-50 px-4 py-2 text-sm font-normal text-slate-600 file:mr-3 file:rounded-full file:border-0 file:bg-slate-900 file:px-3 file:py-1.5 file:text-xs file:font-semibold file:text-white dark:border-slate-700 dark:bg-slate-950 dark:text-slate-300 dark:file:bg-white dark:file:text-slate-950"
+                />
+              </label>
+              <label className="grid gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
+                {home("intakeDescriptionLabel")}
+                <textarea
+                  name="companyDescription"
+                  rows={4}
+                  placeholder={home("intakeDescriptionPlaceholder")}
+                  className="rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-normal text-slate-900 outline-none transition focus:border-slate-400 focus:ring-2 focus:ring-slate-200 dark:border-slate-700 dark:bg-slate-950 dark:text-white dark:focus:border-slate-500 dark:focus:ring-slate-800"
+                />
+              </label>
+              <div className="flex flex-wrap items-center gap-3">
+                <button
+                  type="button"
+                  className="inline-flex items-center justify-center rounded-full bg-slate-900 px-5 py-2.5 text-sm font-semibold text-white shadow-[0_18px_40px_-20px_rgba(15,23,42,0.6)] transition hover:-translate-y-0.5 hover:bg-slate-800 dark:bg-white dark:text-slate-950 dark:hover:bg-slate-200"
+                >
+                  {home("intakeCtaPrimary")}
+                </button>
+                <button
+                  type="button"
+                  className="inline-flex items-center justify-center rounded-full border border-slate-300 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 transition hover:-translate-y-0.5 hover:border-slate-400 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-200"
+                >
+                  {home("intakeCtaSecondary")}
+                </button>
+              </div>
+              <p className="text-xs text-slate-400">{home("intakeNote")}</p>
+            </form>
+          </div>
+          <div className="space-y-4">
+            <div className="rounded-2xl border border-slate-200 bg-gradient-to-br from-slate-50 via-white to-slate-100 p-5 text-sm text-slate-600 shadow-sm dark:border-slate-800 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 dark:text-slate-300">
+              <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">
+                {home("intakeExamplesTitle")}
+              </div>
+              <ul className="mt-4 space-y-3 text-sm">
+                <li className="rounded-xl border border-slate-200 bg-white px-4 py-3 text-slate-600 shadow-sm dark:border-slate-800 dark:bg-slate-950 dark:text-slate-300">
+                  <span className="block text-xs uppercase tracking-[0.18em] text-slate-400">
+                    {home("intakeExamples.e1Label")}
+                  </span>
+                  <span className="mt-1 block font-semibold text-slate-900 dark:text-white">
+                    {home("intakeExamples.e1Value")}
+                  </span>
+                </li>
+                <li className="rounded-xl border border-slate-200 bg-white px-4 py-3 text-slate-600 shadow-sm dark:border-slate-800 dark:bg-slate-950 dark:text-slate-300">
+                  <span className="block text-xs uppercase tracking-[0.18em] text-slate-400">
+                    {home("intakeExamples.e2Label")}
+                  </span>
+                  <span className="mt-1 block font-semibold text-slate-900 dark:text-white">
+                    {home("intakeExamples.e2Value")}
+                  </span>
+                </li>
+                <li className="rounded-xl border border-slate-200 bg-white px-4 py-3 text-slate-600 shadow-sm dark:border-slate-800 dark:bg-slate-950 dark:text-slate-300">
+                  <span className="block text-xs uppercase tracking-[0.18em] text-slate-400">
+                    {home("intakeExamples.e3Label")}
+                  </span>
+                  <span className="mt-1 block font-semibold text-slate-900 dark:text-white">
+                    {home("intakeExamples.e3Value")}
+                  </span>
+                </li>
+              </ul>
+            </div>
+            <div className="rounded-2xl border border-slate-200 bg-slate-950 px-5 py-5 text-xs text-slate-200 shadow-sm dark:border-slate-800">
+              <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">
+                {home("intakePromiseTitle")}
+              </div>
+              <p className="mt-3 text-sm text-slate-200">{home("intakePromiseBody")}</p>
+            </div>
+          </div>
+        </div>
+      </section>
       <section className="relative overflow-hidden rounded-3xl border border-slate-200 bg-gradient-to-br from-white via-slate-50 to-slate-100 px-6 py-10 shadow-[0_40px_120px_-80px_rgba(15,23,42,0.45)] dark:border-slate-800 dark:from-slate-950 dark:via-slate-900 dark:to-slate-900 sm:px-10 sm:py-14">
         <div className="grid-lines absolute inset-0 opacity-60" aria-hidden="true" />
         <div className="absolute -right-28 -top-20 h-72 w-72 rounded-full bg-[radial-gradient(circle_at_center,_rgba(14,116,144,0.35),_transparent_70%)] blur-2xl" aria-hidden="true" />
