@@ -2,6 +2,7 @@
 
 import { useMemo } from "react";
 import { ChatKit, useChatKit } from "@openai/chatkit-react";
+import type { SupportedLocale } from "@openai/chatkit";
 
 type ConciergeCopy = {
   locale: string;
@@ -14,6 +15,16 @@ type ConciergeCopy = {
 };
 
 const THREAD_STORAGE_KEY = "publicConciergeThread";
+
+function normalizeLocale(locale: string): SupportedLocale | undefined {
+  if (locale.startsWith("es")) {
+    return "es";
+  }
+  if (locale.startsWith("en")) {
+    return "en";
+  }
+  return undefined;
+}
 
 function getStoredThreadId() {
   if (typeof window === "undefined") {
@@ -63,6 +74,7 @@ function createClientSecretFetcher(endpoint = "/api/chatkit/session") {
 export function PublicConciergeChat({ copy }: { copy: ConciergeCopy }) {
   const initialThread = useMemo(() => getStoredThreadId(), []);
   const getClientSecret = useMemo(() => createClientSecretFetcher(), []);
+  const chatLocale = useMemo(() => normalizeLocale(copy.locale), [copy.locale]);
 
   const startPrompts = useMemo(
     () =>
@@ -74,7 +86,7 @@ export function PublicConciergeChat({ copy }: { copy: ConciergeCopy }) {
 
   const chatkit = useChatKit({
     api: { getClientSecret },
-    locale: copy.locale,
+    locale: chatLocale,
     initialThread,
     header: { enabled: false },
     history: { enabled: false },

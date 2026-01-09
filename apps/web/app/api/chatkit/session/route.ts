@@ -79,7 +79,7 @@ export async function POST(request: Request) {
         user: userId
       })
     });
-  } catch (error) {
+  } catch {
     const response = NextResponse.json(
       { error: "Failed to reach ChatKit API." },
       { status: 502, headers: { "Cache-Control": "no-store" } }
