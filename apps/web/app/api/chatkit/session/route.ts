@@ -32,8 +32,21 @@ function resolveWorkflowId(body: JsonPayload): string | null {
   return workflowId && workflowId.trim() ? workflowId.trim() : null;
 }
 
+function getCookieValue(cookieHeader: string | null, name: string) {
+  if (!cookieHeader) {
+    return null;
+  }
+  for (const part of cookieHeader.split(";")) {
+    const [rawName, ...rest] = part.trim().split("=");
+    if (rawName === name) {
+      return decodeURIComponent(rest.join("="));
+    }
+  }
+  return null;
+}
+
 function resolveUserId(request: Request) {
-  const existing = request.cookies.get(SESSION_COOKIE_NAME)?.value;
+  const existing = getCookieValue(request.headers.get("cookie"), SESSION_COOKIE_NAME);
   if (existing) {
     return { userId: existing, setCookie: false };
   }
