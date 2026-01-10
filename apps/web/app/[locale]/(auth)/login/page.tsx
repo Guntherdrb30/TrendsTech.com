@@ -6,13 +6,15 @@ function getLoginPageCopy(locale: string) {
     return {
       title: 'Iniciar sesion',
       subtitle: 'Solo credenciales (dev).',
-      linkLabel: 'Crear cuenta'
+      linkLabel: 'Crear cuenta',
+      forgotLabel: 'Olvidaste tu contrasena?'
     };
   }
   return {
     title: 'Login',
     subtitle: 'Credentials only (dev).',
-    linkLabel: 'Create an account'
+    linkLabel: 'Create an account',
+    forgotLabel: 'Forgot your password?'
   };
 }
 
@@ -31,6 +33,9 @@ export default async function LoginPage({
         <p className="text-sm text-slate-500 dark:text-slate-400">{copy.subtitle}</p>
         <Link className="text-sm text-blue-600 hover:underline" href={`/${locale}/register`}>
           {copy.linkLabel}
+        </Link>
+        <Link className="text-sm text-blue-600 hover:underline" href={`/${locale}/forgot-password`}>
+          {copy.forgotLabel}
         </Link>
       </div>
       <LoginForm locale={locale} />

@@ -110,10 +110,10 @@ function getRegisterCopy(locale: string): RegisterCopy {
       submit: 'Create account',
       submitting: 'Creating account...'
     },
-      hints: {
-        phoneExample: 'Example: +58 412 123 4567',
-        phonePlaceholder: '+58 412 123 4567'
-      },
+    hints: {
+      phoneExample: 'Example: +58 412 123 4567',
+      phonePlaceholder: '+58 412 123 4567'
+    },
     errors: {
       nameRequired: 'Name is required',
       companyShort: 'Company must be at least 2 characters',
