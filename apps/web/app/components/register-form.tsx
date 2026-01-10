@@ -53,6 +53,7 @@ type RegisterCopy = {
     emailExists: string;
     humanRequired: string;
     invalidForm: string;
+    securityConfigMissing: string;
     registrationFailed: string;
     loginAfterRegisterFailed: string;
   };
@@ -89,6 +90,7 @@ function getRegisterCopy(locale: string): RegisterCopy {
         emailExists: 'El correo ya esta registrado',
         humanRequired: 'Verificacion humana requerida',
         invalidForm: 'Revisa los campos y vuelve a intentar',
+        securityConfigMissing: 'Falta configurar la verificacion humana',
         registrationFailed: 'No se pudo registrar la cuenta',
         loginAfterRegisterFailed: 'Cuenta creada, pero no se pudo iniciar sesion'
       }
@@ -124,6 +126,7 @@ function getRegisterCopy(locale: string): RegisterCopy {
       emailExists: 'Email already exists',
       humanRequired: 'Human verification required',
       invalidForm: 'Review the fields and try again',
+      securityConfigMissing: 'Human verification is not configured',
       registrationFailed: 'Registration failed',
       loginAfterRegisterFailed: 'Account created but sign in failed'
     }
@@ -172,7 +175,22 @@ function validatePayload(payload: RegisterPayload, copy: RegisterCopy): FieldErr
   return errors;
 }
 
-function mapRegisterError(status: number, copy: RegisterCopy) {
+function mapRegisterError(status: number, serverMessage: string | null, copy: RegisterCopy) {
+  if (serverMessage) {
+    const normalized = serverMessage.toLowerCase();
+    if (normalized.includes('email') && normalized.includes('exist')) {
+      return copy.errors.emailExists;
+    }
+    if (normalized.includes('human verification')) {
+      return copy.errors.humanRequired;
+    }
+    if (normalized.includes('invalid payload')) {
+      return copy.errors.invalidForm;
+    }
+    if (normalized.includes('missing turnstile_secret_key')) {
+      return copy.errors.securityConfigMissing;
+    }
+  }
   switch (status) {
     case 403:
       return copy.errors.humanRequired;
@@ -181,7 +199,7 @@ function mapRegisterError(status: number, copy: RegisterCopy) {
     case 400:
       return copy.errors.invalidForm;
     default:
-      return copy.errors.registrationFailed;
+      return serverMessage ? `${copy.errors.registrationFailed}: ${serverMessage}` : copy.errors.registrationFailed;
   }
 }
 
@@ -227,7 +245,9 @@ export function RegisterForm({ locale }: RegisterFormProps) {
         return;
       }
       if (!response.ok) {
-        setError(mapRegisterError(response.status, copy));
+        const result = (await response.json().catch(() => ({}))) as { error?: string };
+        const serverMessage = typeof result.error === 'string' ? result.error : null;
+        setError(mapRegisterError(response.status, serverMessage, copy));
         return;
       }
 
