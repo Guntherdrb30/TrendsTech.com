@@ -160,10 +160,11 @@ function createClientSecretFetcher(endpoint = "/api/chatkit/session") {
 }
 
 export function PublicConciergeChat({ copy }: { copy: ConciergeCopy }) {
-  const initialThread = useMemo(() => getStoredThreadId(), []);
+  const [resetCounter, setResetCounter] = useState(0);
+  const initialThread = useMemo(() => getStoredThreadId(), [resetCounter]);
   const threadIdRef = useRef<string | null>(initialThread);
-  const [hasActiveThread, setHasActiveThread] = useState(Boolean(initialThread));
   const [isResponding, setIsResponding] = useState(false);
+  const [isReady, setIsReady] = useState(false);
   const getClientSecret = useMemo(() => createClientSecretFetcher(), []);
   const chatLocale = useMemo(() => normalizeLocale(copy.locale), [copy.locale]);
 
@@ -203,6 +204,9 @@ export function PublicConciergeChat({ copy }: { copy: ConciergeCopy }) {
     startScreen: { greeting: "", prompts: startPrompts },
     composer: { placeholder: copy.chatPlaceholder },
     disclaimer: { text: copy.intakeNote, highContrast: true },
+    onReady: () => {
+      setIsReady(true);
+    },
     onResponseStart: () => {
       setIsResponding(true);
     },
@@ -253,7 +257,6 @@ export function PublicConciergeChat({ copy }: { copy: ConciergeCopy }) {
       const resolved = threadId ?? null;
       threadIdRef.current = resolved;
       persistThreadId(resolved);
-      setHasActiveThread(Boolean(resolved));
       if (resolved) {
         persistLastActive(Date.now());
       } else {
@@ -270,13 +273,13 @@ export function PublicConciergeChat({ copy }: { copy: ConciergeCopy }) {
     threadIdRef.current = null;
     persistThreadId(null);
     persistLastActive(null);
-    setHasActiveThread(false);
+    setResetCounter((prev) => prev + 1);
     chatkit.setThreadId(null).catch((error) => {
       console.error("Failed to clear chat", error);
     });
   }, [chatkit]);
 
-  const isClearDisabled = isResponding || !hasActiveThread;
+  const isClearDisabled = isResponding || !isReady;
 
   return (
     <section className="reveal relative overflow-hidden rounded-[32px] border border-slate-900 bg-slate-950 px-6 py-12 text-white shadow-[0_50px_140px_-90px_rgba(15,23,42,0.85)] sm:px-10">
@@ -302,7 +305,7 @@ export function PublicConciergeChat({ copy }: { copy: ConciergeCopy }) {
               type="button"
               onClick={clearChat}
               disabled={isClearDisabled}
-              className="inline-flex items-center justify-center rounded-full border border-slate-800/80 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-400 transition hover:border-slate-600 hover:text-slate-100 disabled:cursor-not-allowed disabled:opacity-60"
+              className="inline-flex items-center justify-center rounded-full border border-[#25d0c7]/60 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-[#25d0c7] transition hover:border-[#25d0c7] hover:text-white disabled:cursor-not-allowed disabled:border-slate-700/60 disabled:text-slate-500"
             >
               {copy.chatClearLabel}
             </button>
