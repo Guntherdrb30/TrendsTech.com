@@ -1,5 +1,19 @@
 import type { ReactNode } from 'react';
+import { SiteHeader } from '../../components/site-header';
 
-export default function RootAreaLayout({ children }: { children: ReactNode }) {
-  return <div className="min-h-screen px-4 py-10">{children}</div>;
+export default async function RootAreaLayout({
+  children,
+  params
+}: {
+  children: ReactNode;
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+
+  return (
+    <div className="min-h-screen">
+      <SiteHeader locale={locale} />
+      <main className="mx-auto max-w-5xl px-4 py-8 sm:py-10">{children}</main>
+    </div>
+  );
 }

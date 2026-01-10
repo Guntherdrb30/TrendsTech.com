@@ -4,7 +4,9 @@
     "agents": "Agentes",
     "pricing": "Precios",
     "login": "Iniciar sesion",
-    "dashboard": "Panel"
+    "dashboard": "Panel",
+    "searchPlaceholder": "Buscar agentes",
+    "searchLabel": "Buscar agente"
   },
   "pages": {
     "homeTitle": "Trends172 Tech",
@@ -113,13 +115,27 @@
     "comingSoon": "Proximamente"
   },
   "agentsPage": {
+    "eyebrow": "CATALOGO DE AGENTES",
     "title": "Agentes listos para tu negocio",
-    "subtitle": "Explora agentes especializados. Elige uno y conoce como trabaja.",
+    "subtitle": "Explora agentes especializados con demos controladas para verlos en accion.",
     "ctaPrimary": "Ver precios",
     "ctaSecondary": "Iniciar sesion",
+    "productBadge": "Agente IA",
+    "demoBadge": "Demo guiada",
+    "demoPromptLabel": "Prompt sugerido",
+    "demoCta": "Probar demo",
+    "demoPolicyTitle": "Acceso a demo",
+    "demoPolicyBody": "Las pruebas se habilitan solo para usuarios verificados.",
+    "demoRequirement1": "Inicia sesion con tu cuenta.",
+    "demoRequirement2": "Verifica tu correo antes de probar.",
+    "demoRequirement3": "Validacion humana obligatoria (anti-bots).",
+    "demoRequirement4": "Solo 1 prueba por cuenta.",
+    "demoRulesInline": "Login, verificacion de correo y validacion humana requeridas. 1 prueba por cuenta.",
+    "demoPolicyNote": "DEMO CONTROLADA CON DATOS DE EJEMPLO",
     "detailCta": "Ver detalles",
     "pricingCta": "Contratar",
     "flowTitle": "Flujo recomendado",
+    "flowSubtitle": "De discovery a activacion en 3 pasos.",
     "flowStep1Title": "Explora el catalogo",
     "flowStep1Body": "Revisa los agentes disponibles y sus capacidades.",
     "flowStep2Title": "Elige tu agente",
@@ -140,6 +156,8 @@
       "name": "Marketing",
       "tagline": "Campanas y contenido que convierten en leads.",
       "summary": "Atrae clientes, genera interes y convierte con mensajes claros.",
+      "demoUser": "Necesito una campana para Trends172 Tech enfocada en retail. Que propones?",
+      "demoAgent": "Defino objetivo, propuesta de valor y tres mensajes con CTA para captar leads.",
       "ideal": "Negocios que quieren crecer demanda y marca.",
       "features": {
         "f1": "Disena campanas por producto o segmento.",
@@ -160,6 +178,8 @@
       "name": "Ventas",
       "tagline": "Califica y cierra oportunidades con respuestas precisas.",
       "summary": "Convierte conversaciones en ventas con seguimiento claro.",
+      "demoUser": "Tengo leads interesados en agentes IA. Como los califico?",
+      "demoAgent": "Pregunto industria, urgencia y presupuesto; luego propongo una demo con ROI.",
       "ideal": "Equipos comerciales con alto volumen de leads.",
       "features": {
         "f1": "Califica leads en minutos.",
@@ -180,6 +200,8 @@
       "name": "Citas",
       "tagline": "Agenda citas sin friccion y confirma datos clave.",
       "summary": "Coordina horarios, recopila datos y reduce ausencias.",
+      "demoUser": "Quiero agendar demos esta semana. Que datos necesitas?",
+      "demoAgent": "Solicito nombre, correo, empresa, zona horaria y horarios preferidos.",
       "ideal": "Negocios que dependen de citas y reservas.",
       "features": {
         "f1": "Captura nombre y telefono.",
@@ -200,6 +222,8 @@
       "name": "Soporte",
       "tagline": "Resuelve dudas y deriva a humano cuando hace falta.",
       "summary": "Soporte claro y consistente con base de conocimiento.",
+      "demoUser": "Un cliente no puede iniciar sesion. Como lo ayudo?",
+      "demoAgent": "Guio recuperacion de acceso, verifico identidad y escalo si es necesario.",
       "ideal": "Equipos que quieren reducir tickets repetidos.",
       "features": {
         "f1": "Responde preguntas frecuentes.",
@@ -220,6 +244,8 @@
       "name": "Voz al publico",
       "tagline": "Conversacion natural para canales de voz.",
       "summary": "Atiende por voz con frases cortas y claras.",
+      "demoUser": "Necesito un agente de voz para reservas rapidas.",
+      "demoAgent": "Confirmo motivo, nombre y horario con respuestas cortas y claras.",
       "ideal": "Negocios con atencion telefonica o kioscos.",
       "features": {
         "f1": "Habla con naturalidad.",

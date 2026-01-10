@@ -4,7 +4,9 @@
     "agents": "Agents",
     "pricing": "Pricing",
     "login": "Login",
-    "dashboard": "Dashboard"
+    "dashboard": "Dashboard",
+    "searchPlaceholder": "Search agents",
+    "searchLabel": "Search agent"
   },
   "pages": {
     "homeTitle": "Trends172 Tech",
@@ -113,13 +115,27 @@
     "comingSoon": "Coming soon"
   },
   "agentsPage": {
+    "eyebrow": "AGENT CATALOG",
     "title": "Agents ready for your business",
-    "subtitle": "Explore specialized agents. Pick one and see how it works.",
+    "subtitle": "Explore specialized agents with controlled demos to see them in action.",
     "ctaPrimary": "View pricing",
     "ctaSecondary": "Login",
+    "productBadge": "AI Agent",
+    "demoBadge": "Guided demo",
+    "demoPromptLabel": "Suggested prompt",
+    "demoCta": "Try demo",
+    "demoPolicyTitle": "Demo access",
+    "demoPolicyBody": "Trials are enabled only for verified users.",
+    "demoRequirement1": "Sign in with your account.",
+    "demoRequirement2": "Verify your email first.",
+    "demoRequirement3": "Pass the human check (anti-bot).",
+    "demoRequirement4": "One trial per account.",
+    "demoRulesInline": "Login, email verification, and human check required. 1 trial per account.",
+    "demoPolicyNote": "CONTROLLED DEMO WITH SAMPLE DATA",
     "detailCta": "View details",
     "pricingCta": "Hire",
     "flowTitle": "Recommended flow",
+    "flowSubtitle": "From discovery to activation in 3 steps.",
     "flowStep1Title": "Browse the catalog",
     "flowStep1Body": "Review available agents and their capabilities.",
     "flowStep2Title": "Pick your agent",
@@ -140,6 +156,8 @@
       "name": "Marketing",
       "tagline": "Campaigns and content that convert.",
       "summary": "Attract customers, build interest, and convert with clear messaging.",
+      "demoUser": "I need a campaign for Trends172 Tech focused on retail. What do you propose?",
+      "demoAgent": "I define the goal, value prop, and three CTA messages to capture leads.",
       "ideal": "Teams that want to grow demand and brand.",
       "features": {
         "f1": "Designs campaigns by product or segment.",
@@ -160,6 +178,8 @@
       "name": "Sales",
       "tagline": "Qualify and close opportunities with precise replies.",
       "summary": "Turn conversations into revenue with clear follow-up.",
+      "demoUser": "I have leads interested in AI agents. How do I qualify them?",
+      "demoAgent": "I ask industry, urgency, and budget, then suggest a ROI-focused demo.",
       "ideal": "Sales teams with high lead volume.",
       "features": {
         "f1": "Qualifies leads quickly.",
@@ -180,6 +200,8 @@
       "name": "Appointments",
       "tagline": "Schedule appointments with low friction and confirm key details.",
       "summary": "Coordinate times, collect data, and reduce no-shows.",
+      "demoUser": "I want to schedule demos this week. What info do you need?",
+      "demoAgent": "I collect name, email, company, time zone, and preferred slots.",
       "ideal": "Businesses that depend on appointments and bookings.",
       "features": {
         "f1": "Captures name and phone.",
@@ -200,6 +222,8 @@
       "name": "Support",
       "tagline": "Resolve questions and hand off to a human when needed.",
       "summary": "Consistent support backed by knowledge base.",
+      "demoUser": "A customer cannot sign in. How do I help?",
+      "demoAgent": "I guide recovery steps, verify identity, and escalate if needed.",
       "ideal": "Teams that want to reduce repeated tickets.",
       "features": {
         "f1": "Answers FAQs.",
@@ -220,6 +244,8 @@
       "name": "Public Voice",
       "tagline": "Natural conversation for voice channels.",
       "summary": "Voice-first support with short, clear responses.",
+      "demoUser": "I need a voice agent for quick reservations.",
+      "demoAgent": "I confirm reason, name, and time with short, clear replies.",
       "ideal": "Businesses with phone or kiosk support.",
       "features": {
         "f1": "Speaks naturally.",

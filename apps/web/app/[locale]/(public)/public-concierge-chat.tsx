@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useCallback, useMemo, useRef } from "react";
 import { ChatKit, useChatKit } from "@openai/chatkit-react";
 import type { SupportedLocale } from "@openai/chatkit";
 
@@ -15,6 +15,7 @@ type ConciergeCopy = {
 };
 
 const THREAD_STORAGE_KEY = "publicConciergeThread";
+const LEAD_TOOL_NAMES = new Set(["lead_capture", "capture_lead", "notify_lead"]);
 
 function normalizeLocale(locale: string): SupportedLocale | undefined {
   if (locale.startsWith("es")) {
@@ -45,6 +46,31 @@ function persistThreadId(threadId: string | null) {
   window.localStorage.setItem(THREAD_STORAGE_KEY, threadId);
 }
 
+function readString(value: unknown) {
+  if (typeof value !== "string") {
+    return undefined;
+  }
+  const trimmed = value.trim();
+  return trimmed ? trimmed : undefined;
+}
+
+function normalizeLeadPayload(
+  params: Record<string, unknown>,
+  threadId: string | null,
+  locale: string
+) {
+  return {
+    name: readString(params.name ?? params.nombre ?? params.contactName ?? params.contacto),
+    phone: readString(params.phone ?? params.telefono ?? params.phoneNumber ?? params.whatsapp),
+    business: readString(params.business ?? params.negocio ?? params.company),
+    notes: readString(params.notes ?? params.nota ?? params.detalle),
+    transcript: readString(params.transcript ?? params.chat ?? params.conversation),
+    source: "public_home",
+    locale,
+    threadId: threadId ?? undefined
+  };
+}
+
 function createClientSecretFetcher(endpoint = "/api/chatkit/session") {
   return async (currentSecret: string | null) => {
     if (currentSecret) {
@@ -73,6 +99,7 @@ function createClientSecretFetcher(endpoint = "/api/chatkit/session") {
 
 export function PublicConciergeChat({ copy }: { copy: ConciergeCopy }) {
   const initialThread = useMemo(() => getStoredThreadId(), []);
+  const threadIdRef = useRef<string | null>(initialThread);
   const getClientSecret = useMemo(() => createClientSecretFetcher(), []);
   const chatLocale = useMemo(() => normalizeLocale(copy.locale), [copy.locale]);
 
@@ -84,6 +111,25 @@ export function PublicConciergeChat({ copy }: { copy: ConciergeCopy }) {
     [copy.chatSuggestions]
   );
 
+  const sendLeadCapture = useCallback(
+    async (rawParams: Record<string, unknown>) => {
+      const payload = normalizeLeadPayload(rawParams, threadIdRef.current, copy.locale);
+      const response = await fetch("/api/lead-capture", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+      const result = (await response.json().catch(() => ({}))) as {
+        error?: string;
+      };
+
+      if (!response.ok) {
+        throw new Error(result.error ?? "Lead capture failed.");
+      }
+    },
+    [copy.locale]
+  );
+
   const chatkit = useChatKit({
     api: { getClientSecret },
     locale: chatLocale,
@@ -93,6 +139,32 @@ export function PublicConciergeChat({ copy }: { copy: ConciergeCopy }) {
     startScreen: { greeting: "", prompts: startPrompts },
     composer: { placeholder: copy.chatPlaceholder },
     disclaimer: { text: copy.intakeNote, highContrast: true },
+    onClientTool: async ({ name, params }) => {
+      if (!LEAD_TOOL_NAMES.has(name)) {
+        return { ok: false, error: "Unsupported tool." };
+      }
+      const safeParams = params && typeof params === "object" ? params : {};
+      try {
+        await sendLeadCapture(safeParams);
+        return { ok: true };
+      } catch (error) {
+        return {
+          ok: false,
+          error: error instanceof Error ? error.message : "Lead capture failed."
+        };
+      }
+    },
+    onEffect: async ({ name, data }) => {
+      if (!LEAD_TOOL_NAMES.has(name)) {
+        return;
+      }
+      const safeParams = data && typeof data === "object" ? data : {};
+      try {
+        await sendLeadCapture(safeParams);
+      } catch (error) {
+        console.error("Lead capture failed", error);
+      }
+    },
     theme: {
       colorScheme: "dark",
       radius: "round",
@@ -107,7 +179,9 @@ export function PublicConciergeChat({ copy }: { copy: ConciergeCopy }) {
       }
     },
     onThreadChange: ({ threadId }) => {
-      persistThreadId(threadId ?? null);
+      const resolved = threadId ?? null;
+      threadIdRef.current = resolved;
+      persistThreadId(resolved);
     }
   });
 
