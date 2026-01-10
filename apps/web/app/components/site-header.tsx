@@ -53,6 +53,7 @@ export async function SiteHeader({ locale }: SiteHeaderProps) {
             <Link href={`${base}/login`}>
               {t('login')}
             </Link>
+            <Link href={`${base}/register`}>{t('register')}</Link>
             <LocaleSwitcher />
             <ThemeToggle />
           </div>

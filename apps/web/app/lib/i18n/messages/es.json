@@ -4,6 +4,7 @@
     "agents": "Agentes",
     "pricing": "Precios",
     "login": "Iniciar sesion",
+    "register": "Crear cuenta",
     "dashboard": "Panel",
     "searchPlaceholder": "Buscar agentes",
     "searchLabel": "Buscar agente"
@@ -149,7 +150,15 @@
     "secondaryCta": "Iniciar sesion",
     "whatTitle": "Que hace",
     "flowTitle": "Como trabaja",
-    "idealTitle": "Ideal para"
+    "idealTitle": "Ideal para",
+    "chatTitle": "Prueba el agente",
+    "chatSubtitle": "Conversacion en vivo para ver como responde.",
+    "chatPlaceholder": "Escribe tu mensaje...",
+    "chatUnavailable": "El demo no esta configurado. Agrega el workflow ID en Vercel.",
+    "chatLoginTitle": "Inicia sesion para usar el demo",
+    "chatLoginBody": "Crea una cuenta o inicia sesion para probar este agente.",
+    "chatLoginPrimary": "Iniciar sesion",
+    "chatLoginSecondary": "Crear cuenta"
   },
   "agents": {
     "marketing": {

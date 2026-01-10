@@ -106,6 +106,17 @@ export default async function DashboardPage({ params }: { params: Promise<{ loca
           </Link>
         </CardContent>
       </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>User management</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Link className="text-sm text-blue-600 hover:underline" href={`/${locale}/dashboard/users`}>
+            Manage team access
+          </Link>
+        </CardContent>
+      </Card>
     </section>
   );
 }

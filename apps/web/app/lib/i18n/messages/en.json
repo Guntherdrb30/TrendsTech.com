@@ -4,6 +4,7 @@
     "agents": "Agents",
     "pricing": "Pricing",
     "login": "Login",
+    "register": "Register",
     "dashboard": "Dashboard",
     "searchPlaceholder": "Search agents",
     "searchLabel": "Search agent"
@@ -149,7 +150,15 @@
     "secondaryCta": "Login",
     "whatTitle": "What it does",
     "flowTitle": "How it works",
-    "idealTitle": "Ideal for"
+    "idealTitle": "Ideal for",
+    "chatTitle": "Try the agent",
+    "chatSubtitle": "Chat live with this agent to see how it responds.",
+    "chatPlaceholder": "Type your message...",
+    "chatUnavailable": "Demo chat not configured yet. Add the workflow ID in Vercel.",
+    "chatLoginTitle": "Sign in to unlock the demo",
+    "chatLoginBody": "Create an account or sign in to try this agent live.",
+    "chatLoginPrimary": "Sign in",
+    "chatLoginSecondary": "Create account"
   },
   "agents": {
     "marketing": {
