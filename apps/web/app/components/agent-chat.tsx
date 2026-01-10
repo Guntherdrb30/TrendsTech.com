@@ -12,6 +12,13 @@ type AgentChatProps = {
   unavailableMessage: string;
 };
 
+type AgentChatLiveProps = {
+  agentKey: string;
+  locale: string;
+  workflowId: string;
+  placeholder: string;
+};
+
 const THREAD_STORAGE_PREFIX = 'agentChatThread:';
 
 function normalizeLocale(locale: string): SupportedLocale | undefined {
@@ -76,11 +83,6 @@ export function AgentChat({
   placeholder,
   unavailableMessage
 }: AgentChatProps) {
-  const storageKey = `${THREAD_STORAGE_PREFIX}${agentKey}`;
-  const initialThread = useMemo(() => getStoredThreadId(storageKey), [storageKey]);
-  const threadIdRef = useRef<string | null>(initialThread);
-  const chatLocale = useMemo(() => normalizeLocale(locale), [locale]);
-
   if (!workflowId) {
     return (
       <div className="rounded-2xl border border-slate-200 bg-white/80 px-5 py-4 text-sm text-slate-500 shadow-sm dark:border-slate-800 dark:bg-slate-950/60 dark:text-slate-400">
@@ -89,6 +91,21 @@ export function AgentChat({
     );
   }
 
+  return (
+    <AgentChatLive
+      agentKey={agentKey}
+      locale={locale}
+      workflowId={workflowId}
+      placeholder={placeholder}
+    />
+  );
+}
+
+function AgentChatLive({ agentKey, locale, workflowId, placeholder }: AgentChatLiveProps) {
+  const storageKey = `${THREAD_STORAGE_PREFIX}${agentKey}`;
+  const initialThread = useMemo(() => getStoredThreadId(storageKey), [storageKey]);
+  const threadIdRef = useRef<string | null>(initialThread);
+  const chatLocale = useMemo(() => normalizeLocale(locale), [locale]);
   const getClientSecret = useMemo(
     () => createClientSecretFetcher('/api/chatkit/session', workflowId),
     [workflowId]
