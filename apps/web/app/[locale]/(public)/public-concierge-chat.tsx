@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useMemo, useRef } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import { ChatKit, useChatKit } from "@openai/chatkit-react";
 import type { SupportedLocale } from "@openai/chatkit";
 
@@ -10,11 +10,15 @@ type ConciergeCopy = {
   intakeSubtitle: string;
   intakeNote: string;
   chatPlaceholder: string;
+  chatClearLabel: string;
   chatSuggestionsTitle: string;
   chatSuggestions: string[];
 };
 
 const THREAD_STORAGE_KEY = "publicConciergeThread";
+const THREAD_ACTIVITY_KEY = "publicConciergeThreadLastActive";
+const THREAD_ARCHIVE_KEY = "publicConciergeThreadArchive";
+const THREAD_TTL_MS = 24 * 60 * 60 * 1000;
 const LEAD_TOOL_NAMES = new Set(["lead_capture", "capture_lead", "notify_lead"]);
 
 function normalizeLocale(locale: string): SupportedLocale | undefined {
@@ -31,8 +35,20 @@ function getStoredThreadId() {
   if (typeof window === "undefined") {
     return null;
   }
-  const stored = window.localStorage.getItem(THREAD_STORAGE_KEY);
-  return stored && stored.trim() ? stored : null;
+  const stored = readString(window.localStorage.getItem(THREAD_STORAGE_KEY));
+  if (!stored) {
+    return null;
+  }
+  const lastActive = readTimestamp(window.localStorage.getItem(THREAD_ACTIVITY_KEY));
+  if (lastActive !== null && Date.now() - lastActive > THREAD_TTL_MS) {
+    archiveThread(stored, lastActive);
+    clearStoredThread();
+    return null;
+  }
+  if (lastActive === null) {
+    persistLastActive(Date.now());
+  }
+  return stored;
 }
 
 function persistThreadId(threadId: string | null) {
@@ -44,6 +60,52 @@ function persistThreadId(threadId: string | null) {
     return;
   }
   window.localStorage.setItem(THREAD_STORAGE_KEY, threadId);
+}
+
+function readTimestamp(value: string | null) {
+  if (!value) {
+    return null;
+  }
+  const parsed = Number.parseInt(value, 10);
+  return Number.isFinite(parsed) ? parsed : null;
+}
+
+function persistLastActive(timestamp: number | null) {
+  if (typeof window === "undefined") {
+    return;
+  }
+  if (timestamp === null) {
+    window.localStorage.removeItem(THREAD_ACTIVITY_KEY);
+    return;
+  }
+  window.localStorage.setItem(THREAD_ACTIVITY_KEY, String(timestamp));
+}
+
+function getLastActive() {
+  if (typeof window === "undefined") {
+    return null;
+  }
+  return readTimestamp(window.localStorage.getItem(THREAD_ACTIVITY_KEY));
+}
+
+function archiveThread(threadId: string, lastActive: number | null) {
+  if (typeof window === "undefined") {
+    return;
+  }
+  const payload = {
+    threadId,
+    lastActive: lastActive ?? undefined,
+    archivedAt: Date.now()
+  };
+  window.localStorage.setItem(THREAD_ARCHIVE_KEY, JSON.stringify(payload));
+}
+
+function clearStoredThread() {
+  if (typeof window === "undefined") {
+    return;
+  }
+  window.localStorage.removeItem(THREAD_STORAGE_KEY);
+  window.localStorage.removeItem(THREAD_ACTIVITY_KEY);
 }
 
 function readString(value: unknown) {
@@ -100,6 +162,8 @@ function createClientSecretFetcher(endpoint = "/api/chatkit/session") {
 export function PublicConciergeChat({ copy }: { copy: ConciergeCopy }) {
   const initialThread = useMemo(() => getStoredThreadId(), []);
   const threadIdRef = useRef<string | null>(initialThread);
+  const [hasActiveThread, setHasActiveThread] = useState(Boolean(initialThread));
+  const [isResponding, setIsResponding] = useState(false);
   const getClientSecret = useMemo(() => createClientSecretFetcher(), []);
   const chatLocale = useMemo(() => normalizeLocale(copy.locale), [copy.locale]);
 
@@ -139,6 +203,13 @@ export function PublicConciergeChat({ copy }: { copy: ConciergeCopy }) {
     startScreen: { greeting: "", prompts: startPrompts },
     composer: { placeholder: copy.chatPlaceholder },
     disclaimer: { text: copy.intakeNote, highContrast: true },
+    onResponseStart: () => {
+      setIsResponding(true);
+    },
+    onResponseEnd: () => {
+      setIsResponding(false);
+      persistLastActive(Date.now());
+    },
     onClientTool: async ({ name, params }) => {
       if (!LEAD_TOOL_NAMES.has(name)) {
         return { ok: false, error: "Unsupported tool." };
@@ -182,8 +253,30 @@ export function PublicConciergeChat({ copy }: { copy: ConciergeCopy }) {
       const resolved = threadId ?? null;
       threadIdRef.current = resolved;
       persistThreadId(resolved);
+      setHasActiveThread(Boolean(resolved));
+      if (resolved) {
+        persistLastActive(Date.now());
+      } else {
+        persistLastActive(null);
+      }
     }
   });
+
+  const clearChat = useCallback(() => {
+    const activeThread = threadIdRef.current;
+    if (activeThread) {
+      archiveThread(activeThread, getLastActive());
+    }
+    threadIdRef.current = null;
+    persistThreadId(null);
+    persistLastActive(null);
+    setHasActiveThread(false);
+    chatkit.setThreadId(null).catch((error) => {
+      console.error("Failed to clear chat", error);
+    });
+  }, [chatkit]);
+
+  const isClearDisabled = isResponding || !hasActiveThread;
 
   return (
     <section className="reveal relative overflow-hidden rounded-[32px] border border-slate-900 bg-slate-950 px-6 py-12 text-white shadow-[0_50px_140px_-90px_rgba(15,23,42,0.85)] sm:px-10">
@@ -203,9 +296,17 @@ export function PublicConciergeChat({ copy }: { copy: ConciergeCopy }) {
           <p className="text-sm text-slate-300 sm:text-base">
             {copy.intakeSubtitle}
           </p>
-          <p className="text-[10px] uppercase tracking-[0.28em] text-slate-500">
-            {copy.chatSuggestionsTitle}
-          </p>
+          <div className="flex flex-wrap items-center justify-center gap-3 text-[10px] uppercase tracking-[0.28em] text-slate-500">
+            <span>{copy.chatSuggestionsTitle}</span>
+            <button
+              type="button"
+              onClick={clearChat}
+              disabled={isClearDisabled}
+              className="inline-flex items-center justify-center rounded-full border border-slate-800/80 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-400 transition hover:border-slate-600 hover:text-slate-100 disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              {copy.chatClearLabel}
+            </button>
+          </div>
         </div>
 
         <div className="w-full overflow-hidden rounded-[28px] border border-slate-800 bg-slate-950/60 shadow-[0_28px_80px_-60px_rgba(0,0,0,0.7)] backdrop-blur">

@@ -60,6 +60,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
     intakeSubtitle: home("intakeSubtitle"),
     intakeNote: home("intakeNote"),
     chatPlaceholder: home("chatPlaceholder"),
+    chatClearLabel: home("chatClearLabel"),
     chatSuggestionsTitle: home("chatSuggestionsTitle"),
     chatSuggestions: [
       home("chatSuggestions.s1"),

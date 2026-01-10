@@ -37,6 +37,7 @@
     "intakePromiseTitle": "What the analysis delivers",
     "intakePromiseBody": "Suggested agent map, priorities, and initial configuration.",
     "chatPlaceholder": "Paste your URL or tell us what you need...",
+    "chatClearLabel": "Clear chat",
     "chatSend": "Send",
     "chatVoiceInput": "Voice",
     "chatVoiceOutput": "Voice output",

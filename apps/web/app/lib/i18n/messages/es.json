@@ -37,6 +37,7 @@
     "intakePromiseTitle": "Que entrega el analisis",
     "intakePromiseBody": "Mapa de agentes sugeridos, prioridades y configuracion inicial.",
     "chatPlaceholder": "Pega tu URL o escribe lo que necesitas...",
+    "chatClearLabel": "Limpiar chat",
     "chatSend": "Enviar",
     "chatVoiceInput": "Voz",
     "chatVoiceOutput": "Voz salida",
