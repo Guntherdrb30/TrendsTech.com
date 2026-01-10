@@ -36,7 +36,8 @@ export default async function LocaleLayout({
 
   setRequestLocale(locale);
   const messages = await getMessages();
-  const verified = cookies().get('human_verified')?.value === '1';
+  const cookieStore = await cookies();
+  const verified = cookieStore.get('human_verified')?.value === '1';
   const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? null;
 
   return (
