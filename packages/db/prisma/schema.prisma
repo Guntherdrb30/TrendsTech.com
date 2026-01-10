@@ -113,6 +113,8 @@ model User {
   tenantId           String?
   email              String          @unique
   name               String?
+  phone              String?
+  avatarUrl          String?
   role               UserRole        @default(TENANT_VIEWER)
   passwordHash       String?
   createdAt          DateTime        @default(now())

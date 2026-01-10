@@ -5,7 +5,8 @@ export const createAgentInstanceSchema = z.object({
   baseAgentKey: z.string().min(2, 'Base agent key is required'),
   languageDefault: z.enum(['ES', 'EN']).default('ES'),
   status: z.enum(['DRAFT', 'ACTIVE', 'PAUSED']).default('DRAFT'),
-  endCustomerId: z.string().optional().nullable()
+  endCustomerId: z.string().optional().nullable(),
+  contactPhone: z.string().min(4).max(40).optional().nullable()
 });
 
 export type CreateAgentInstanceInput = z.infer<typeof createAgentInstanceSchema>;

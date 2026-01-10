@@ -12,6 +12,10 @@ export default async function DashboardPage({ params }: { params: Promise<{ loca
   const { locale } = await params;
   const user = await requireAuth();
   const tenant = await resolveTenantFromUser(user);
+  const profile = await prisma.user.findUnique({
+    where: { id: user.id },
+    select: { phone: true }
+  });
 
   if (!tenant) {
     return (
@@ -53,7 +57,11 @@ export default async function DashboardPage({ params }: { params: Promise<{ loca
         </p>
       </div>
 
-      <DashboardClient tenantMode={tenant.mode} endCustomers={endCustomers} />
+      <DashboardClient
+        tenantMode={tenant.mode}
+        endCustomers={endCustomers}
+        profilePhone={profile?.phone ?? null}
+      />
 
       <Card>
         <CardHeader>

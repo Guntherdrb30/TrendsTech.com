@@ -68,7 +68,12 @@ export async function POST(request: Request) {
         name: parsed.data.name,
         baseAgentKey: parsed.data.baseAgentKey,
         languageDefault: parsed.data.languageDefault,
-        status: parsed.data.status
+        status: parsed.data.status,
+        featuresJson: parsed.data.contactPhone
+          ? {
+              contactPhone: parsed.data.contactPhone
+            }
+          : undefined
       }
     });
 

@@ -15,9 +15,10 @@ interface EndCustomerOption {
 interface DashboardClientProps {
   tenantMode: 'SINGLE' | 'RESELLER';
   endCustomers: EndCustomerOption[];
+  profilePhone?: string | null;
 }
 
-export function DashboardClient({ tenantMode, endCustomers }: DashboardClientProps) {
+export function DashboardClient({ tenantMode, endCustomers, profilePhone }: DashboardClientProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [endCustomerError, setEndCustomerError] = useState<string | null>(null);
@@ -32,6 +33,8 @@ export function DashboardClient({ tenantMode, endCustomers }: DashboardClientPro
   const [languageDefault, setLanguageDefault] = useState<'ES' | 'EN'>('ES');
   const [status, setStatus] = useState<'DRAFT' | 'ACTIVE' | 'PAUSED'>('DRAFT');
   const [endCustomerId, setEndCustomerId] = useState('');
+  const [useProfilePhone, setUseProfilePhone] = useState(Boolean(profilePhone));
+  const [agentPhone, setAgentPhone] = useState('');
 
   const submitEndCustomer = (event: React.FormEvent) => {
     event.preventDefault();
@@ -66,6 +69,7 @@ export function DashboardClient({ tenantMode, endCustomers }: DashboardClientPro
     setAgentError(null);
 
     startTransition(async () => {
+      const contactPhone = useProfilePhone ? profilePhone : agentPhone;
       const response = await fetch('/api/agent-instances', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -74,7 +78,8 @@ export function DashboardClient({ tenantMode, endCustomers }: DashboardClientPro
           baseAgentKey,
           languageDefault,
           status,
-          endCustomerId: endCustomerId || null
+          endCustomerId: endCustomerId || null,
+          contactPhone: contactPhone || null
         })
       });
 
@@ -87,6 +92,7 @@ export function DashboardClient({ tenantMode, endCustomers }: DashboardClientPro
       setAgentName('');
       setBaseAgentKey('');
       setEndCustomerId('');
+      setAgentPhone('');
       router.refresh();
     });
   };
@@ -202,6 +208,29 @@ export function DashboardClient({ tenantMode, endCustomers }: DashboardClientPro
                     </option>
                   ))}
                 </select>
+              </div>
+            ) : null}
+            {profilePhone ? (
+              <div className="space-y-2 rounded-lg border border-slate-200 bg-slate-50 px-3 py-3 text-xs text-slate-600 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300">
+                <label className="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    checked={useProfilePhone}
+                    onChange={(event) => setUseProfilePhone(event.target.checked)}
+                  />
+                  Use profile phone ({profilePhone})
+                </label>
+              </div>
+            ) : null}
+            {!useProfilePhone ? (
+              <div className="space-y-2">
+                <Label htmlFor="agentPhone">Agent phone</Label>
+                <Input
+                  id="agentPhone"
+                  value={agentPhone}
+                  onChange={(event) => setAgentPhone(event.target.value)}
+                  placeholder="Optional"
+                />
               </div>
             ) : null}
             {agentError ? <p className="text-sm text-red-500">{agentError}</p> : null}

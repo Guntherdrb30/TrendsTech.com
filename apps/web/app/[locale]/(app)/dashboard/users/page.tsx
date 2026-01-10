@@ -22,7 +22,8 @@ const createSchema = z.object({
   name: z.string().min(1).max(120),
   email: z.string().email().max(190),
   password: z.string().min(8).max(72),
-  role: z.enum(['TENANT_ADMIN', 'TENANT_OPERATOR', 'TENANT_VIEWER'])
+  role: z.enum(['TENANT_ADMIN', 'TENANT_OPERATOR', 'TENANT_VIEWER']),
+  phone: z.string().min(4).max(40).optional()
 });
 
 const updateSchema = z.object({
@@ -38,7 +39,8 @@ async function createUser(formData: FormData) {
     name: formData.get('name'),
     email: formData.get('email'),
     password: formData.get('password'),
-    role: formData.get('role')
+    role: formData.get('role'),
+    phone: formData.get('phone') || undefined
   });
 
   if (!parsed.success) {
@@ -62,7 +64,8 @@ async function createUser(formData: FormData) {
       name: parsed.data.name.trim(),
       email,
       role: parsed.data.role,
-      passwordHash
+      passwordHash,
+      phone: parsed.data.phone?.trim() || null
     }
   });
 
@@ -141,6 +144,10 @@ export default async function UsersPage({ params }: { params: Promise<PageParams
             <div className="space-y-2">
               <Label htmlFor="password">Password</Label>
               <Input id="password" name="password" type="password" required />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="phone">Phone</Label>
+              <Input id="phone" name="phone" />
             </div>
             <div className="space-y-2">
               <Label htmlFor="role">Role</Label>

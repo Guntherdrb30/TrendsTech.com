@@ -41,6 +41,8 @@ export const authOptions: NextAuthOptions = {
           id: user.id,
           email: user.email,
           name: user.name ?? undefined,
+          phone: user.phone ?? undefined,
+          avatarUrl: user.avatarUrl ?? undefined,
           role: user.role,
           tenantId: user.tenantId
         };
@@ -54,6 +56,8 @@ export const authOptions: NextAuthOptions = {
         token.email = user.email;
         token.role = user.role;
         token.tenantId = user.tenantId ?? null;
+        token.phone = user.phone ?? null;
+        token.avatarUrl = user.avatarUrl ?? null;
       }
       return token;
     },
@@ -63,6 +67,8 @@ export const authOptions: NextAuthOptions = {
         session.user.email = token.email as string;
         session.user.role = token.role as string;
         session.user.tenantId = token.tenantId as string | null;
+        session.user.phone = (token.phone as string | null) ?? null;
+        session.user.avatarUrl = (token.avatarUrl as string | null) ?? null;
       }
       return session;
     }

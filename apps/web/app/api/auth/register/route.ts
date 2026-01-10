@@ -10,7 +10,8 @@ const requestSchema = z.object({
   name: z.string().min(1).max(120),
   email: z.string().email().max(190),
   password: z.string().min(8).max(72),
-  company: z.string().min(2).max(120)
+  company: z.string().min(2).max(120),
+  phone: z.string().min(4).max(40).optional()
 });
 
 function slugify(value: string) {
@@ -81,7 +82,8 @@ export async function POST(request: Request) {
         name: payload.name.trim(),
         email,
         role: 'TENANT_ADMIN',
-        passwordHash
+        passwordHash,
+        phone: payload.phone?.trim() || null
       }
     });
   });

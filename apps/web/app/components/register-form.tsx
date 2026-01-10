@@ -17,6 +17,7 @@ type RegisterPayload = {
   email: string;
   password: string;
   company: string;
+  phone: string;
 };
 
 export function RegisterForm({ locale }: RegisterFormProps) {
@@ -27,7 +28,8 @@ export function RegisterForm({ locale }: RegisterFormProps) {
     name: '',
     email: '',
     password: '',
-    company: ''
+    company: '',
+    phone: ''
   });
 
   const onSubmit = (event: React.FormEvent) => {
@@ -35,10 +37,14 @@ export function RegisterForm({ locale }: RegisterFormProps) {
     setError(null);
 
     startTransition(async () => {
+      const normalized = {
+        ...payload,
+        phone: payload.phone.trim() || undefined
+      };
       const response = await fetch('/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
+        body: JSON.stringify(normalized)
       });
       const result = (await response.json().catch(() => ({}))) as { error?: string };
 
@@ -99,6 +105,15 @@ export function RegisterForm({ locale }: RegisterFormProps) {
               onChange={(event) => setPayload((prev) => ({ ...prev, email: event.target.value }))}
               autoComplete="email"
               required
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="phone">Phone</Label>
+            <Input
+              id="phone"
+              value={payload.phone}
+              onChange={(event) => setPayload((prev) => ({ ...prev, phone: event.target.value }))}
+              autoComplete="tel"
             />
           </div>
           <div className="space-y-2">
