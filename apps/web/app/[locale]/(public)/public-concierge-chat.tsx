@@ -309,10 +309,10 @@ export function PublicConciergeChat({ copy }: { copy: ConciergeCopy }) {
           </div>
         </div>
 
-        <div className="w-full overflow-hidden rounded-[28px] border border-slate-800 bg-slate-950/60 shadow-[0_28px_80px_-60px_rgba(0,0,0,0.7)] backdrop-blur">
+        <div className="h-[60vh] min-h-[320px] w-full overflow-hidden rounded-[28px] border border-slate-800 bg-slate-950/60 shadow-[0_28px_80px_-60px_rgba(0,0,0,0.7)] backdrop-blur sm:h-[65vh] sm:min-h-[420px]">
           <ChatKit
             control={chatkit.control}
-            className="h-[65vh] min-h-[420px] w-full"
+            className="block h-full w-full"
           />
         </div>
       </div>
