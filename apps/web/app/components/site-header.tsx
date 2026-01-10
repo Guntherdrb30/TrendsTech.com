@@ -22,21 +22,21 @@ export async function SiteHeader({ locale }: SiteHeaderProps) {
 
   return (
     <header className="border-b border-slate-200 dark:border-slate-800">
-      <div className="mx-auto max-w-5xl px-4 py-4">
-        <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-6">
-            <Link href={base} className="flex items-center gap-3 text-sm font-semibold">
+      <div className="w-full px-4 py-1.5">
+        <div className="flex flex-nowrap items-center gap-4 overflow-x-auto">
+          <div className="flex min-w-0 items-center gap-4">
+            <Link href={base} className="flex items-center gap-2 text-xs font-semibold">
               <Image
                 src="/branding/ttech-logo.svg"
                 alt="Trends172 Tech"
-                width={44}
-                height={44}
-                className="h-11 w-11"
+                width={36}
+                height={36}
+                className="h-9 w-9"
                 priority
               />
-              <span>Trends172 Tech</span>
+              <span className="whitespace-nowrap">Trends172 Tech</span>
             </Link>
-            <nav className="flex flex-wrap items-center gap-3 text-sm">
+            <nav className="flex items-center gap-3 text-xs whitespace-nowrap">
               <Link href={base}>{t('home')}</Link>
               <Link href={`${base}/agents`}>{t('agents')}</Link>
               <Link href={`${base}/pricing`}>{t('pricing')}</Link>
@@ -47,10 +47,10 @@ export async function SiteHeader({ locale }: SiteHeaderProps) {
             placeholder={t('searchPlaceholder')}
             label={t('searchLabel')}
             options={agentOptions}
-            className="w-full lg:max-w-xs"
+            className="min-w-[200px] flex-1 max-w-sm"
           />
-          <div className="flex flex-wrap items-center gap-3">
-            <Link href={`${base}/login`} className="text-sm">
+          <div className="flex items-center gap-2 text-xs whitespace-nowrap">
+            <Link href={`${base}/login`}>
               {t('login')}
             </Link>
             <LocaleSwitcher />
