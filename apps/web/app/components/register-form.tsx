@@ -237,7 +237,7 @@ export function RegisterForm({ locale }: RegisterFormProps) {
         redirect: false
       });
 
-      if (signInResult?.error) {
+      if (!signInResult || signInResult.error || signInResult.ok === false) {
         setError(copy.errors.loginAfterRegisterFailed);
         return;
       }
