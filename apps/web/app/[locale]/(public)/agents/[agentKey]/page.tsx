@@ -7,6 +7,13 @@ import { AgentChat } from '@/components/agent-chat';
 import { getCurrentUser } from '@/lib/auth/guards';
 import { AGENT_PRODUCTS, type AgentKey } from '../agent-products';
 
+const WHATSAPP_BUY_NUMBER = '584122640371';
+
+function buildWhatsAppLink(agentName: string) {
+  const text = encodeURIComponent(`Estoy interesado en el agente ${agentName}`);
+  return `https://wa.me/${WHATSAPP_BUY_NUMBER}?text=${text}`;
+}
+
 type PageParams = {
   locale: string;
   agentKey: AgentKey;
@@ -28,6 +35,7 @@ export default async function AgentDetailPage({ params }: { params: Promise<Page
   const a = await getTranslations('agents');
   const d = await getTranslations('agentDetail');
   const user = await getCurrentUser();
+  const agentName = a(`${agent.key}.name`);
   const workflowMap: Record<AgentKey, string | undefined> = {
     marketing: process.env.CHATKIT_WORKFLOW_MARKETING,
     sales: process.env.CHATKIT_WORKFLOW_SALES,
@@ -43,13 +51,18 @@ export default async function AgentDetailPage({ params }: { params: Promise<Page
         <Link className="text-sm text-slate-500 hover:text-slate-900 dark:text-slate-400" href={`${base}/agents`}>
           {d('back')}
         </Link>
-        <h1 className="text-2xl font-semibold sm:text-3xl">{a(`${agent.key}.name`)}</h1>
+        <h1 className="text-2xl font-semibold sm:text-3xl">{agentName}</h1>
         <p className="max-w-2xl text-sm text-slate-600 dark:text-slate-300">
           {a(`${agent.key}.summary`)}
         </p>
         <div className="flex flex-wrap gap-3">
           <Button asChild>
             <Link href={`${base}/pricing`}>{d('primaryCta')}</Link>
+          </Button>
+          <Button asChild variant="secondary">
+            <Link href={buildWhatsAppLink(agentName)} target="_blank" rel="noreferrer">
+              {d('whatsappCta')}
+            </Link>
           </Button>
           <Button asChild variant="outline">
             <Link href={`${base}/login`}>{d('secondaryCta')}</Link>

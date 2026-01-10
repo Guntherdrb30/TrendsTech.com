@@ -4,6 +4,13 @@ import { IBM_Plex_Sans, Space_Grotesk } from 'next/font/google';
 import { Button } from '@/components/ui/button';
 import { AGENT_PRODUCTS } from './agent-products';
 
+const WHATSAPP_BUY_NUMBER = '584122640371';
+
+function buildWhatsAppLink(agentName: string) {
+  const text = encodeURIComponent(`Estoy interesado en el agente ${agentName}`);
+  return `https://wa.me/${WHATSAPP_BUY_NUMBER}?text=${text}`;
+}
+
 const display = Space_Grotesk({
   subsets: ['latin'],
   weight: ['400', '500', '600', '700'],
@@ -151,6 +158,15 @@ export default async function AgentsPage({
                 </Button>
                 <Button asChild size="sm" variant="outline">
                   <Link href={`${base}/agents/${agent.key}`}>{t('detailCta')}</Link>
+                </Button>
+                <Button asChild size="sm" variant="secondary">
+                  <Link
+                    href={buildWhatsAppLink(a(`${agent.key}.name`))}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    {t('buyCta')}
+                  </Link>
                 </Button>
               </div>
               <p className="text-xs text-slate-500 dark:text-slate-400">{t('demoRulesInline')}</p>

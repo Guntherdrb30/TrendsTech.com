@@ -7,7 +7,9 @@
     "register": "Register",
     "dashboard": "Dashboard",
     "searchPlaceholder": "Search agents",
-    "searchLabel": "Search agent"
+    "searchLabel": "Search agent",
+    "menuOpen": "Open menu",
+    "menuClose": "Close menu"
   },
   "pages": {
     "homeTitle": "Trends172 Tech",
@@ -134,6 +136,7 @@
     "demoRulesInline": "Login, email verification, and human check required. 1 trial per account.",
     "demoPolicyNote": "CONTROLLED DEMO WITH SAMPLE DATA",
     "detailCta": "View details",
+    "buyCta": "Buy on WhatsApp",
     "pricingCta": "Hire",
     "flowTitle": "Recommended flow",
     "flowSubtitle": "From discovery to activation in 3 steps.",
@@ -147,6 +150,7 @@
   "agentDetail": {
     "back": "Back to catalog",
     "primaryCta": "Hire",
+    "whatsappCta": "Buy on WhatsApp",
     "secondaryCta": "Login",
     "whatTitle": "What it does",
     "flowTitle": "How it works",

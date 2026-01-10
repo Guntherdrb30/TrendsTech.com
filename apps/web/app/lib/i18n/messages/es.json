@@ -7,7 +7,9 @@
     "register": "Crear cuenta",
     "dashboard": "Panel",
     "searchPlaceholder": "Buscar agentes",
-    "searchLabel": "Buscar agente"
+    "searchLabel": "Buscar agente",
+    "menuOpen": "Abrir menu",
+    "menuClose": "Cerrar menu"
   },
   "pages": {
     "homeTitle": "Trends172 Tech",
@@ -134,6 +136,7 @@
     "demoRulesInline": "Login, verificacion de correo y validacion humana requeridas. 1 prueba por cuenta.",
     "demoPolicyNote": "DEMO CONTROLADA CON DATOS DE EJEMPLO",
     "detailCta": "Ver detalles",
+    "buyCta": "Comprar por WhatsApp",
     "pricingCta": "Contratar",
     "flowTitle": "Flujo recomendado",
     "flowSubtitle": "De discovery a activacion en 3 pasos.",
@@ -147,6 +150,7 @@
   "agentDetail": {
     "back": "Volver al catalogo",
     "primaryCta": "Contratar",
+    "whatsappCta": "Comprar por WhatsApp",
     "secondaryCta": "Iniciar sesion",
     "whatTitle": "Que hace",
     "flowTitle": "Como trabaja",
