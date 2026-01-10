@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState, useTransition } from 'react';
+import { useState, useTransition } from 'react';
 import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
@@ -23,48 +23,166 @@ type RegisterPayload = {
 type FieldErrors = Partial<Record<keyof RegisterPayload, string>>;
 
 const PHONE_ALLOWED = /^[0-9+()\-\s]+$/;
-const PHONE_EXAMPLE = '+58 412 123 4567';
+
+type RegisterCopy = {
+  title: string;
+  labels: {
+    name: string;
+    company: string;
+    email: string;
+    phone: string;
+    password: string;
+  };
+  actions: {
+    submit: string;
+    submitting: string;
+  };
+  hints: {
+    phoneExample: string;
+    phonePlaceholder: string;
+  };
+  errors: {
+    nameRequired: string;
+    companyShort: string;
+    emailRequired: string;
+    emailInvalid: string;
+    passwordRequired: string;
+    passwordShort: string;
+    phoneFormat: string;
+    phoneLength: string;
+    emailExists: string;
+    humanRequired: string;
+    invalidForm: string;
+    registrationFailed: string;
+    loginAfterRegisterFailed: string;
+  };
+};
+
+function getRegisterCopy(locale: string): RegisterCopy {
+  if (locale.startsWith('es')) {
+    return {
+      title: 'Crear cuenta',
+      labels: {
+        name: 'Nombre',
+        company: 'Empresa',
+        email: 'Correo',
+        phone: 'Telefono',
+        password: 'Contrasena'
+      },
+      actions: {
+        submit: 'Crear cuenta',
+        submitting: 'Creando cuenta...'
+      },
+      hints: {
+        phoneExample: 'Ejemplo: +58 412 123 4567',
+        phonePlaceholder: '+58 412 123 4567'
+      },
+      errors: {
+        nameRequired: 'El nombre es obligatorio',
+        companyShort: 'La empresa debe tener al menos 2 caracteres',
+        emailRequired: 'El correo es obligatorio',
+        emailInvalid: 'Ingresa un correo valido',
+        passwordRequired: 'La contrasena es obligatoria',
+        passwordShort: 'La contrasena debe tener al menos 8 caracteres',
+        phoneFormat: 'Usa solo digitos, espacios y + ( ) -',
+        phoneLength: 'Ingresa al menos 7 digitos',
+        emailExists: 'El correo ya esta registrado',
+        humanRequired: 'Verificacion humana requerida',
+        invalidForm: 'Revisa los campos y vuelve a intentar',
+        registrationFailed: 'No se pudo registrar la cuenta',
+        loginAfterRegisterFailed: 'Cuenta creada, pero no se pudo iniciar sesion'
+      }
+    };
+  }
+
+  return {
+    title: 'Create account',
+    labels: {
+      name: 'Name',
+      company: 'Company',
+      email: 'Email',
+      phone: 'Phone',
+      password: 'Password'
+    },
+    actions: {
+      submit: 'Create account',
+      submitting: 'Creating account...'
+    },
+      hints: {
+        phoneExample: 'Example: +58 412 123 4567',
+        phonePlaceholder: '+58 412 123 4567'
+      },
+    errors: {
+      nameRequired: 'Name is required',
+      companyShort: 'Company must be at least 2 characters',
+      emailRequired: 'Email is required',
+      emailInvalid: 'Enter a valid email',
+      passwordRequired: 'Password is required',
+      passwordShort: 'Password must be at least 8 characters',
+      phoneFormat: 'Use only digits, spaces, and + ( ) -',
+      phoneLength: 'Enter at least 7 digits',
+      emailExists: 'Email already exists',
+      humanRequired: 'Human verification required',
+      invalidForm: 'Review the fields and try again',
+      registrationFailed: 'Registration failed',
+      loginAfterRegisterFailed: 'Account created but sign in failed'
+    }
+  };
+}
 
 function countDigits(value: string) {
   return value.replace(/\D/g, '').length;
 }
 
-function validatePhone(value: string) {
+function validatePhone(value: string, copy: RegisterCopy) {
   if (!value.trim()) {
     return null;
   }
   if (!PHONE_ALLOWED.test(value)) {
-    return 'Use only digits, spaces, and + ( ) -';
+    return copy.errors.phoneFormat;
   }
   if (countDigits(value) < 7) {
-    return 'Enter at least 7 digits';
+    return copy.errors.phoneLength;
   }
   return null;
 }
 
-function validatePayload(payload: RegisterPayload): FieldErrors {
+function validatePayload(payload: RegisterPayload, copy: RegisterCopy): FieldErrors {
   const errors: FieldErrors = {};
   if (!payload.name.trim()) {
-    errors.name = 'Name is required';
+    errors.name = copy.errors.nameRequired;
   }
   if (!payload.company.trim() || payload.company.trim().length < 2) {
-    errors.company = 'Company name must be at least 2 characters';
+    errors.company = copy.errors.companyShort;
   }
   if (!payload.email.trim()) {
-    errors.email = 'Email is required';
+    errors.email = copy.errors.emailRequired;
   } else if (!/^\S+@\S+\.\S+$/.test(payload.email.trim())) {
-    errors.email = 'Enter a valid email';
+    errors.email = copy.errors.emailInvalid;
   }
   if (!payload.password) {
-    errors.password = 'Password is required';
+    errors.password = copy.errors.passwordRequired;
   } else if (payload.password.length < 8) {
-    errors.password = 'Password must be at least 8 characters';
+    errors.password = copy.errors.passwordShort;
   }
-  const phoneError = validatePhone(payload.phone);
+  const phoneError = validatePhone(payload.phone, copy);
   if (phoneError) {
     errors.phone = phoneError;
   }
   return errors;
+}
+
+function mapRegisterError(status: number, copy: RegisterCopy) {
+  switch (status) {
+    case 403:
+      return copy.errors.humanRequired;
+    case 409:
+      return copy.errors.emailExists;
+    case 400:
+      return copy.errors.invalidForm;
+    default:
+      return copy.errors.registrationFailed;
+  }
 }
 
 export function RegisterForm({ locale }: RegisterFormProps) {
@@ -79,13 +197,12 @@ export function RegisterForm({ locale }: RegisterFormProps) {
     company: '',
     phone: ''
   });
-
-  const phoneHint = useMemo(() => `Example: ${PHONE_EXAMPLE}`, []);
+  const copy = getRegisterCopy(locale);
 
   const onSubmit = (event: React.FormEvent) => {
     event.preventDefault();
     setError(null);
-    const errors = validatePayload(payload);
+    const errors = validatePayload(payload, copy);
     setFieldErrors(errors);
     if (Object.keys(errors).length > 0) {
       return;
@@ -96,15 +213,21 @@ export function RegisterForm({ locale }: RegisterFormProps) {
         ...payload,
         phone: payload.phone.trim() || undefined
       };
-      const response = await fetch('/api/auth/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(normalized)
-      });
-      const result = (await response.json().catch(() => ({}))) as { error?: string };
 
+      let response: Response;
+      try {
+        response = await fetch('/api/auth/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(normalized)
+        });
+      } catch (fetchError) {
+        console.error('Registration failed', fetchError);
+        setError(copy.errors.registrationFailed);
+        return;
+      }
       if (!response.ok) {
-        setError(result.error ?? 'Registration failed.');
+        setError(mapRegisterError(response.status, copy));
         return;
       }
 
@@ -115,7 +238,7 @@ export function RegisterForm({ locale }: RegisterFormProps) {
       });
 
       if (signInResult?.error) {
-        setError('Account created but sign in failed.');
+        setError(copy.errors.loginAfterRegisterFailed);
         return;
       }
 
@@ -127,12 +250,12 @@ export function RegisterForm({ locale }: RegisterFormProps) {
   return (
     <Card className="max-w-md">
       <CardHeader>
-        <CardTitle>Create account</CardTitle>
+        <CardTitle>{copy.title}</CardTitle>
       </CardHeader>
       <CardContent>
         <form onSubmit={onSubmit} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="name">Name</Label>
+            <Label htmlFor="name">{copy.labels.name}</Label>
             <Input
               id="name"
               value={payload.name}
@@ -155,7 +278,7 @@ export function RegisterForm({ locale }: RegisterFormProps) {
             ) : null}
           </div>
           <div className="space-y-2">
-            <Label htmlFor="company">Company</Label>
+            <Label htmlFor="company">{copy.labels.company}</Label>
             <Input
               id="company"
               value={payload.company}
@@ -181,7 +304,7 @@ export function RegisterForm({ locale }: RegisterFormProps) {
             ) : null}
           </div>
           <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
+            <Label htmlFor="email">{copy.labels.email}</Label>
             <Input
               id="email"
               type="email"
@@ -208,19 +331,19 @@ export function RegisterForm({ locale }: RegisterFormProps) {
             ) : null}
           </div>
           <div className="space-y-2">
-            <Label htmlFor="phone">Phone</Label>
+            <Label htmlFor="phone">{copy.labels.phone}</Label>
             <Input
               id="phone"
               value={payload.phone}
               inputMode="tel"
-              placeholder={PHONE_EXAMPLE}
+              placeholder={copy.hints.phonePlaceholder}
               onChange={(event) => {
                 const value = event.target.value;
                 setPayload((prev) => ({ ...prev, phone: value }));
                 if (fieldErrors.phone) {
                   setFieldErrors((prev) => ({
                     ...prev,
-                    phone: validatePhone(value) ? prev.phone : undefined
+                    phone: validatePhone(value, copy) ? prev.phone : undefined
                   }));
                 }
               }}
@@ -229,7 +352,7 @@ export function RegisterForm({ locale }: RegisterFormProps) {
               aria-describedby={fieldErrors.phone ? 'phone-hint phone-error' : 'phone-hint'}
             />
             <p id="phone-hint" className="text-xs text-slate-500">
-              {phoneHint}
+              {copy.hints.phoneExample}
             </p>
             {fieldErrors.phone ? (
               <p id="phone-error" className="text-xs text-red-500">
@@ -238,7 +361,7 @@ export function RegisterForm({ locale }: RegisterFormProps) {
             ) : null}
           </div>
           <div className="space-y-2">
-            <Label htmlFor="password">Password</Label>
+            <Label htmlFor="password">{copy.labels.password}</Label>
             <Input
               id="password"
               type="password"
@@ -266,7 +389,7 @@ export function RegisterForm({ locale }: RegisterFormProps) {
           </div>
           {error ? <p className="text-sm text-red-500">{error}</p> : null}
           <Button type="submit" disabled={isPending} className="w-full">
-            {isPending ? 'Creating account...' : 'Create account'}
+            {isPending ? copy.actions.submitting : copy.actions.submit}
           </Button>
         </form>
       </CardContent>
