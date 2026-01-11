@@ -107,7 +107,8 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
 
   return (
     <div className={`${display.variable} ${body.variable} font-[var(--font-body)]`}>
-      <div className="grid gap-10 lg:grid-cols-[280px_minmax(0,1fr)] lg:items-start">
+      <div className="relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] w-screen px-4 lg:px-0">
+        <div className="grid gap-10 lg:grid-cols-[300px_minmax(0,1fr)] lg:items-start">
         <aside className="relative overflow-hidden rounded-3xl border border-slate-900 bg-slate-950 text-white shadow-[0_40px_120px_-80px_rgba(15,23,42,0.8)] lg:sticky lg:top-6">
           <div
             className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(37,208,199,0.18),_transparent_60%)]"
@@ -366,6 +367,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
       </section>
 
         </div>
+      </div>
       </div>
     </div>
   );
