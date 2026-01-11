@@ -1,4 +1,4 @@
-import { prisma } from '@trends172tech/db';
+import { prisma, Prisma } from '@trends172tech/db';
 import {
   createBaseAgent,
   getBaseAgentDefinition,
@@ -220,19 +220,21 @@ export async function runOrchestrator(
       FALLBACK_REPLY;
     const modelName = typeof agent.model === 'string' ? agent.model : baseAgentDefinition.model ?? null;
 
+    const endUserJson = request.endUser ?? Prisma.DbNull;
+
     await prisma.agentSession.upsert({
       where: { tenantId_sessionId: { tenantId, sessionId: request.sessionId } },
       update: {
         agentInstanceId: agentInstance.id,
         channel: request.channel ?? 'web',
-        endUserJson: request.endUser ?? null
+        endUserJson
       },
       create: {
         tenantId,
         agentInstanceId: agentInstance.id,
         sessionId: request.sessionId,
         channel: request.channel ?? 'web',
-        endUserJson: request.endUser ?? null,
+        endUserJson,
         isDemo: false
       }
     });
