@@ -6,11 +6,20 @@ import { AuthError, requireRole } from '@/lib/auth/guards';
 const numberFromInput = (schema: z.ZodNumber) =>
   z.preprocess((value) => (typeof value === 'string' ? Number(value) : value), schema);
 
+const optionalString = (schema: z.ZodString) =>
+  z.preprocess(
+    (value) => (typeof value === 'string' && value.trim() === '' ? null : value),
+    schema.nullable().optional()
+  );
+
 const globalSettingsSchema = z.object({
   usdToVesRate: numberFromInput(z.number().min(0.0001)),
   usdPaymentDiscountPercent: numberFromInput(z.number().min(0).max(100)),
   roundingRule: z.enum(['ONE', 'FIVE', 'TEN']),
-  kbUrlPageLimit: numberFromInput(z.number().int().min(1).max(25))
+  kbUrlPageLimit: numberFromInput(z.number().int().min(1).max(25)),
+  zelleRecipientName: optionalString(z.string().max(120)),
+  zelleEmail: optionalString(z.string().email().max(190)),
+  zellePhone: optionalString(z.string().max(40))
 });
 
 function handleError(error: unknown) {
@@ -50,6 +59,9 @@ export async function POST(request: Request) {
         usdPaymentDiscountPercent: parsed.data.usdPaymentDiscountPercent,
         roundingRule: parsed.data.roundingRule,
         kbUrlPageLimit: parsed.data.kbUrlPageLimit,
+        zelleRecipientName: parsed.data.zelleRecipientName ?? null,
+        zelleEmail: parsed.data.zelleEmail ?? null,
+        zellePhone: parsed.data.zellePhone ?? null,
         updatedByUserId: user.id
       },
       create: {
@@ -58,6 +70,9 @@ export async function POST(request: Request) {
         usdPaymentDiscountPercent: parsed.data.usdPaymentDiscountPercent,
         roundingRule: parsed.data.roundingRule,
         kbUrlPageLimit: parsed.data.kbUrlPageLimit,
+        zelleRecipientName: parsed.data.zelleRecipientName ?? null,
+        zelleEmail: parsed.data.zelleEmail ?? null,
+        zellePhone: parsed.data.zellePhone ?? null,
         updatedByUserId: user.id
       }
     });
@@ -72,7 +87,10 @@ export async function POST(request: Request) {
           usdToVesRate: parsed.data.usdToVesRate,
           usdPaymentDiscountPercent: parsed.data.usdPaymentDiscountPercent,
           roundingRule: parsed.data.roundingRule,
-          kbUrlPageLimit: parsed.data.kbUrlPageLimit
+          kbUrlPageLimit: parsed.data.kbUrlPageLimit,
+          zelleRecipientName: parsed.data.zelleRecipientName ?? null,
+          zelleEmail: parsed.data.zelleEmail ?? null,
+          zellePhone: parsed.data.zellePhone ?? null
         }
       }
     });

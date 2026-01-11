@@ -301,6 +301,9 @@ model GlobalSettings {
   roundingRule              RoundingRule @default(ONE)
   usdPaymentDiscountPercent Decimal      @db.Decimal(5, 2)
   kbUrlPageLimit            Int          @default(5)
+  zelleRecipientName        String?
+  zelleEmail                String?
+  zellePhone                String?
   updatedByUserId           String?
   updatedAt                 DateTime     @updatedAt
 

@@ -13,7 +13,7 @@ export default async function RootAreaLayout({
   return (
     <div className="min-h-screen">
       <SiteHeader locale={locale} />
-      <main className="mx-auto max-w-5xl px-4 py-8 sm:py-10">{children}</main>
+      <main className="mx-auto w-full max-w-6xl px-4 py-8 sm:py-10">{children}</main>
     </div>
   );
 }

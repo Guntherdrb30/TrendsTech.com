@@ -19,26 +19,30 @@ function getLoginPageCopy(locale: string) {
 }
 
 export default async function LoginPage({
-  params
+  params,
+  searchParams
 }: {
   params: Promise<{ locale: string }>;
+  searchParams: Promise<{ redirectTo?: string }>;
 }) {
   const { locale } = await params;
+  const { redirectTo } = await searchParams;
   const copy = getLoginPageCopy(locale);
+  const query = redirectTo ? `?redirectTo=${encodeURIComponent(redirectTo)}` : '';
 
   return (
     <section className="space-y-6">
       <div className="space-y-2">
         <h1 className="text-2xl font-semibold">{copy.title}</h1>
         <p className="text-sm text-slate-500 dark:text-slate-400">{copy.subtitle}</p>
-        <Link className="text-sm text-blue-600 hover:underline" href={`/${locale}/register`}>
+        <Link className="text-sm text-blue-600 hover:underline" href={`/${locale}/register${query}`}>
           {copy.linkLabel}
         </Link>
         <Link className="text-sm text-blue-600 hover:underline" href={`/${locale}/forgot-password`}>
           {copy.forgotLabel}
         </Link>
       </div>
-      <LoginForm locale={locale} />
+      <LoginForm locale={locale} redirectTo={redirectTo} />
     </section>
   );
 }

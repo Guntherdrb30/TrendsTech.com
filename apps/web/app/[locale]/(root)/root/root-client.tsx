@@ -12,13 +12,19 @@ interface RootClientProps {
   usdPaymentDiscountPercent: string;
   roundingRule: 'ONE' | 'FIVE' | 'TEN';
   kbUrlPageLimit: string;
+  zelleRecipientName: string;
+  zelleEmail: string;
+  zellePhone: string;
 }
 
 export function RootClient({
   usdToVesRate,
   usdPaymentDiscountPercent,
   roundingRule,
-  kbUrlPageLimit
+  kbUrlPageLimit,
+  zelleRecipientName,
+  zelleEmail,
+  zellePhone
 }: RootClientProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
@@ -29,6 +35,9 @@ export function RootClient({
   const [discount, setDiscount] = useState(usdPaymentDiscountPercent);
   const [rule, setRule] = useState<'ONE' | 'FIVE' | 'TEN'>(roundingRule);
   const [pageLimit, setPageLimit] = useState(kbUrlPageLimit);
+  const [zelleName, setZelleName] = useState(zelleRecipientName);
+  const [zelleEmailValue, setZelleEmailValue] = useState(zelleEmail);
+  const [zellePhoneValue, setZellePhoneValue] = useState(zellePhone);
 
   const [tenantName, setTenantName] = useState('');
   const [tenantSlug, setTenantSlug] = useState('');
@@ -46,13 +55,16 @@ export function RootClient({
           usdToVesRate: rate,
           usdPaymentDiscountPercent: discount,
           roundingRule: rule,
-          kbUrlPageLimit: pageLimit
+          kbUrlPageLimit: pageLimit,
+          zelleRecipientName: zelleName,
+          zelleEmail: zelleEmailValue,
+          zellePhone: zellePhoneValue
         })
       });
 
       if (!response.ok) {
         const result = await response.json();
-        setSettingsError(result?.error ?? 'Failed to update settings.');
+        setSettingsError(result?.error ?? 'No se pudieron guardar los ajustes.');
         return;
       }
 
@@ -77,7 +89,7 @@ export function RootClient({
 
       if (!response.ok) {
         const result = await response.json();
-        setTenantError(result?.error ?? 'Failed to create tenant.');
+        setTenantError(result?.error ?? 'No se pudo crear el tenant.');
         return;
       }
 
@@ -92,12 +104,12 @@ export function RootClient({
     <div className="grid gap-6 lg:grid-cols-2">
       <Card>
         <CardHeader>
-          <CardTitle>Global settings</CardTitle>
+        <CardTitle>Configuracion global</CardTitle>
         </CardHeader>
         <CardContent>
           <form onSubmit={submitSettings} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="usdToVesRate">USD to VES rate</Label>
+              <Label htmlFor="usdToVesRate">Tasa USD a VES</Label>
               <Input
                 id="usdToVesRate"
                 value={rate}
@@ -106,7 +118,7 @@ export function RootClient({
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="usdPaymentDiscountPercent">USD payment discount %</Label>
+              <Label htmlFor="usdPaymentDiscountPercent">Descuento pago USD %</Label>
               <Input
                 id="usdPaymentDiscountPercent"
                 value={discount}
@@ -115,7 +127,7 @@ export function RootClient({
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="roundingRule">Rounding rule</Label>
+              <Label htmlFor="roundingRule">Regla de redondeo</Label>
               <select
                 id="roundingRule"
                 className="h-9 w-full rounded border border-slate-200 bg-white px-3 text-sm dark:border-slate-700 dark:bg-slate-900"
@@ -128,7 +140,7 @@ export function RootClient({
               </select>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="kbUrlPageLimit">KB URL page limit</Label>
+              <Label htmlFor="kbUrlPageLimit">Limite de paginas KB</Label>
               <Input
                 id="kbUrlPageLimit"
                 value={pageLimit}
@@ -136,9 +148,34 @@ export function RootClient({
                 inputMode="numeric"
               />
             </div>
+            <div className="space-y-2">
+              <Label htmlFor="zelleRecipientName">Nombre Zelle</Label>
+              <Input
+                id="zelleRecipientName"
+                value={zelleName}
+                onChange={(event) => setZelleName(event.target.value)}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="zelleEmail">Email Zelle</Label>
+              <Input
+                id="zelleEmail"
+                type="email"
+                value={zelleEmailValue}
+                onChange={(event) => setZelleEmailValue(event.target.value)}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="zellePhone">Telefono Zelle</Label>
+              <Input
+                id="zellePhone"
+                value={zellePhoneValue}
+                onChange={(event) => setZellePhoneValue(event.target.value)}
+              />
+            </div>
             {settingsError ? <p className="text-sm text-red-500">{settingsError}</p> : null}
             <Button type="submit" disabled={isPending}>
-              Save settings
+              Guardar ajustes
             </Button>
           </form>
         </CardContent>
@@ -146,12 +183,12 @@ export function RootClient({
 
       <Card>
         <CardHeader>
-          <CardTitle>Create tenant</CardTitle>
+        <CardTitle>Crear tenant</CardTitle>
         </CardHeader>
         <CardContent>
           <form onSubmit={submitTenant} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="tenantName">Name</Label>
+              <Label htmlFor="tenantName">Nombre</Label>
               <Input
                 id="tenantName"
                 value={tenantName}
@@ -169,20 +206,20 @@ export function RootClient({
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="tenantMode">Mode</Label>
+              <Label htmlFor="tenantMode">Modo</Label>
               <select
                 id="tenantMode"
                 className="h-9 w-full rounded border border-slate-200 bg-white px-3 text-sm dark:border-slate-700 dark:bg-slate-900"
                 value={tenantMode}
                 onChange={(event) => setTenantMode(event.target.value as 'SINGLE' | 'RESELLER')}
               >
-                <option value="SINGLE">Single</option>
-                <option value="RESELLER">Reseller</option>
+                <option value="SINGLE">Unico</option>
+                <option value="RESELLER">Revendedor</option>
               </select>
             </div>
             {tenantError ? <p className="text-sm text-red-500">{tenantError}</p> : null}
             <Button type="submit" disabled={isPending}>
-              Create tenant
+              Crear tenant
             </Button>
           </form>
         </CardContent>

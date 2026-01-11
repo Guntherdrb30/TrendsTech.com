@@ -10,6 +10,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 interface RegisterFormProps {
   locale: string;
+  redirectTo?: string;
 }
 
 type RegisterPayload = {
@@ -203,7 +204,17 @@ function mapRegisterError(status: number, serverMessage: string | null, copy: Re
   }
 }
 
-export function RegisterForm({ locale }: RegisterFormProps) {
+function resolveRedirect(locale: string, redirectTo?: string) {
+  if (!redirectTo || !redirectTo.startsWith('/')) {
+    return `/${locale}/dashboard`;
+  }
+  if (!redirectTo.startsWith(`/${locale}/`)) {
+    return `/${locale}/dashboard`;
+  }
+  return redirectTo;
+}
+
+export function RegisterForm({ locale, redirectTo }: RegisterFormProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
@@ -216,6 +227,7 @@ export function RegisterForm({ locale }: RegisterFormProps) {
     phone: ''
   });
   const copy = getRegisterCopy(locale);
+  const destination = resolveRedirect(locale, redirectTo);
 
   const onSubmit = (event: React.FormEvent) => {
     event.preventDefault();
@@ -262,7 +274,7 @@ export function RegisterForm({ locale }: RegisterFormProps) {
         return;
       }
 
-      router.push(`/${locale}/dashboard`);
+      router.push(destination);
       router.refresh();
     });
   };

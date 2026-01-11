@@ -90,6 +90,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
     {
       title: home("sidebarSectionOps"),
       items: [
+        { label: home("sidebarNavPayments"), href: `${base}/recharge` },
         { label: home("sidebarNavPricing"), href: `${base}/pricing` },
         { label: home("sidebarNavSupport"), href: `${base}/login` }
       ]
@@ -148,7 +149,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
               <div className="text-sm font-semibold">{home("sidebarPaymentsTitle")}</div>
               <p className="mt-2 text-xs text-slate-300">{home("sidebarPaymentsBody")}</p>
               <Link
-                href={`${base}/pricing`}
+                href={`${base}/recharge`}
                 className="mt-4 inline-flex items-center justify-center rounded-full border border-[#25d0c7] px-4 py-1.5 text-xs font-semibold text-[#25d0c7] transition hover:bg-[#25d0c7] hover:text-slate-950"
               >
                 {home("sidebarPaymentsCta")}

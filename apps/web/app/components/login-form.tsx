@@ -10,6 +10,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 interface LoginFormProps {
   locale: string;
+  redirectTo?: string;
 }
 
 type LoginCopy = {
@@ -88,7 +89,17 @@ function validateLogin(email: string, password: string, copy: LoginCopy): LoginF
   return errors;
 }
 
-export function LoginForm({ locale }: LoginFormProps) {
+function resolveRedirect(locale: string, redirectTo?: string) {
+  if (!redirectTo || !redirectTo.startsWith('/')) {
+    return `/${locale}/dashboard`;
+  }
+  if (!redirectTo.startsWith(`/${locale}/`)) {
+    return `/${locale}/dashboard`;
+  }
+  return redirectTo;
+}
+
+export function LoginForm({ locale, redirectTo }: LoginFormProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
@@ -96,6 +107,7 @@ export function LoginForm({ locale }: LoginFormProps) {
   const [password, setPassword] = useState('');
   const [fieldErrors, setFieldErrors] = useState<LoginFieldErrors>({});
   const copy = getLoginCopy(locale);
+  const destination = resolveRedirect(locale, redirectTo);
 
   const onSubmit = (event: React.FormEvent) => {
     event.preventDefault();
@@ -126,7 +138,7 @@ export function LoginForm({ locale }: LoginFormProps) {
         return;
       }
 
-      router.push(`/${locale}/dashboard`);
+      router.push(destination);
       router.refresh();
     });
   };

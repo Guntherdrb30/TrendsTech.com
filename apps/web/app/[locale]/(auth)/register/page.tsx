@@ -17,23 +17,27 @@ function getRegisterPageCopy(locale: string) {
 }
 
 export default async function RegisterPage({
-  params
+  params,
+  searchParams
 }: {
   params: Promise<{ locale: string }>;
+  searchParams: Promise<{ redirectTo?: string }>;
 }) {
   const { locale } = await params;
+  const { redirectTo } = await searchParams;
   const copy = getRegisterPageCopy(locale);
+  const query = redirectTo ? `?redirectTo=${encodeURIComponent(redirectTo)}` : '';
 
   return (
     <section className="space-y-6">
       <div className="space-y-2">
         <h1 className="text-2xl font-semibold">{copy.title}</h1>
         <p className="text-sm text-slate-500 dark:text-slate-400">{copy.subtitle}</p>
-        <Link className="text-sm text-blue-600 hover:underline" href={`/${locale}/login`}>
+        <Link className="text-sm text-blue-600 hover:underline" href={`/${locale}/login${query}`}>
           {copy.linkLabel}
         </Link>
       </div>
-      <RegisterForm locale={locale} />
+      <RegisterForm locale={locale} redirectTo={redirectTo} />
     </section>
   );
 }
