@@ -6,7 +6,7 @@
     "packages/*"
   ],
   "scripts": {
-    "postinstall": "npm --workspace packages/db run generate",
+    "postinstall": "npm --workspace packages/db run generate && npm --workspace packages/db run migrate:deploy",
     "dev": "npm --workspace apps/web run dev",
     "build": "npm --workspace apps/web run build",
     "start": "npm --workspace apps/web run start",
