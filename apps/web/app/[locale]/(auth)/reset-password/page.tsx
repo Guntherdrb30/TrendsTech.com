@@ -21,9 +21,10 @@ export default async function ResetPasswordPage({
   searchParams
 }: {
   params: Promise<{ locale: string }>;
-  searchParams: { token?: string };
+  searchParams: Promise<{ token?: string }>;
 }) {
   const { locale } = await params;
+  const { token } = await searchParams;
   const copy = getResetCopy(locale);
 
   return (
@@ -35,7 +36,7 @@ export default async function ResetPasswordPage({
           {copy.linkLabel}
         </Link>
       </div>
-      <ResetPasswordForm locale={locale} token={searchParams.token} />
+      <ResetPasswordForm locale={locale} token={token} />
     </section>
   );
 }

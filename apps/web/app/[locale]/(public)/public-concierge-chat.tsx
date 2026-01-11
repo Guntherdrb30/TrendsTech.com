@@ -161,7 +161,10 @@ function createClientSecretFetcher(endpoint = "/api/chatkit/session") {
 
 export function PublicConciergeChat({ copy }: { copy: ConciergeCopy }) {
   const [resetCounter, setResetCounter] = useState(0);
-  const initialThread = useMemo(() => getStoredThreadId(), [resetCounter]);
+  const initialThread = useMemo(
+    () => (resetCounter >= 0 ? getStoredThreadId() : null),
+    [resetCounter]
+  );
   const threadIdRef = useRef<string | null>(initialThread);
   const [isResponding, setIsResponding] = useState(false);
   const [isReady, setIsReady] = useState(false);
