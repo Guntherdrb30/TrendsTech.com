@@ -19,6 +19,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
   const t = await getTranslations("pages");
   const home = await getTranslations("home");
   const { locale } = await params;
+  const base = `/${locale}`;
 
   const metrics = [
     { value: home("metrics.m1Value"), label: home("metrics.m1Label") },
@@ -70,10 +71,111 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
     ]
   };
 
+  const sidebarSections = [
+    {
+      title: home("sidebarSectionCore"),
+      items: [
+        { label: home("sidebarNavDashboard"), href: `${base}/dashboard` },
+        { label: home("sidebarNavAgents"), href: `${base}/dashboard/agents` },
+        { label: home("sidebarNavInstalls"), href: `${base}/dashboard/installs` }
+      ]
+    },
+    {
+      title: home("sidebarSectionTeam"),
+      items: [
+        { label: home("sidebarNavUsers"), href: `${base}/dashboard/users` },
+        { label: home("sidebarNavProfile"), href: `${base}/dashboard/profile` }
+      ]
+    },
+    {
+      title: home("sidebarSectionOps"),
+      items: [
+        { label: home("sidebarNavPricing"), href: `${base}/pricing` },
+        { label: home("sidebarNavSupport"), href: `${base}/login` }
+      ]
+    }
+  ];
+
+  const sidebarFeatures = [
+    home("sidebarFeatures.f1"),
+    home("sidebarFeatures.f2"),
+    home("sidebarFeatures.f3"),
+    home("sidebarFeatures.f4"),
+    home("sidebarFeatures.f5"),
+    home("sidebarFeatures.f6")
+  ];
+
   return (
-    <div className={`${display.variable} ${body.variable} space-y-16 font-[var(--font-body)]`}>
-      <PublicConciergeChat copy={intakeCopy} />
-      <section className="relative overflow-hidden rounded-3xl border border-slate-200 bg-gradient-to-br from-white via-slate-50 to-slate-100 px-6 py-10 shadow-[0_40px_120px_-80px_rgba(15,23,42,0.45)] dark:border-slate-800 dark:from-slate-950 dark:via-slate-900 dark:to-slate-900 sm:px-10 sm:py-14">
+    <div className={`${display.variable} ${body.variable} font-[var(--font-body)]`}>
+      <div className="grid gap-10 lg:grid-cols-[280px_minmax(0,1fr)] lg:items-start">
+        <aside className="relative overflow-hidden rounded-3xl border border-slate-900 bg-slate-950 text-white shadow-[0_40px_120px_-80px_rgba(15,23,42,0.8)] lg:sticky lg:top-6">
+          <div
+            className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(37,208,199,0.18),_transparent_60%)]"
+            aria-hidden="true"
+          />
+          <div className="relative space-y-6 px-5 py-6">
+            <div className="space-y-2">
+              <p className="text-xs uppercase tracking-[0.24em] text-slate-400">
+                {home("sidebarTitle")}
+              </p>
+              <p className="text-sm text-slate-300">{home("sidebarSubtitle")}</p>
+            </div>
+
+            <nav className="space-y-5 text-sm">
+              {sidebarSections.map((section) => (
+                <div key={section.title} className="space-y-2">
+                  <p className="text-[11px] uppercase tracking-[0.2em] text-slate-500">
+                    {section.title}
+                  </p>
+                  <div className="space-y-2">
+                    {section.items.map((item) => (
+                      <Link
+                        key={item.label}
+                        href={item.href}
+                        className="flex items-center gap-2 text-slate-200 transition hover:text-white"
+                      >
+                        <span className="h-2 w-2 rounded-full bg-[#25d0c7]/70" aria-hidden="true" />
+                        {item.label}
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </nav>
+
+            <div className="rounded-2xl border border-slate-800 bg-slate-900/60 px-4 py-4">
+              <div className="text-sm font-semibold">{home("sidebarPaymentsTitle")}</div>
+              <p className="mt-2 text-xs text-slate-300">{home("sidebarPaymentsBody")}</p>
+              <Link
+                href={`${base}/pricing`}
+                className="mt-4 inline-flex items-center justify-center rounded-full border border-[#25d0c7] px-4 py-1.5 text-xs font-semibold text-[#25d0c7] transition hover:bg-[#25d0c7] hover:text-slate-950"
+              >
+                {home("sidebarPaymentsCta")}
+              </Link>
+              <p className="mt-3 text-[10px] uppercase tracking-[0.2em] text-slate-500">
+                {home("sidebarPaymentsNote")}
+              </p>
+            </div>
+
+            <div className="space-y-2">
+              <p className="text-[11px] uppercase tracking-[0.2em] text-slate-500">
+                {home("sidebarFeaturesTitle")}
+              </p>
+              <ul className="space-y-2 text-xs text-slate-300">
+                {sidebarFeatures.map((feature) => (
+                  <li key={feature} className="flex items-start gap-2">
+                    <span className="mt-1 h-1.5 w-1.5 rounded-full bg-[#25d0c7]" aria-hidden="true" />
+                    <span>{feature}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </aside>
+
+        <div className="space-y-16">
+          <PublicConciergeChat copy={intakeCopy} />
+          <section className="relative overflow-hidden rounded-3xl border border-slate-200 bg-gradient-to-br from-white via-slate-50 to-slate-100 px-6 py-10 shadow-[0_40px_120px_-80px_rgba(15,23,42,0.45)] dark:border-slate-800 dark:from-slate-950 dark:via-slate-900 dark:to-slate-900 sm:px-10 sm:py-14">
         <div className="grid-lines absolute inset-0 opacity-60" aria-hidden="true" />
         <div className="absolute -right-28 -top-20 h-72 w-72 rounded-full bg-[radial-gradient(circle_at_center,_rgba(14,116,144,0.35),_transparent_70%)] blur-2xl" aria-hidden="true" />
         <div className="absolute -left-24 -bottom-24 h-80 w-80 rounded-full bg-[radial-gradient(circle_at_center,_rgba(217,119,6,0.28),_transparent_70%)] blur-2xl" aria-hidden="true" />
@@ -263,6 +365,8 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         </div>
       </section>
 
+        </div>
+      </div>
     </div>
   );
 }
