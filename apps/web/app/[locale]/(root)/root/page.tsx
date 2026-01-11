@@ -920,6 +920,11 @@ export default async function RootPage({ params }: { params: Promise<{ locale: s
               zelleRecipientName={settings?.zelleRecipientName ?? ''}
               zelleEmail={settings?.zelleEmail ?? ''}
               zellePhone={settings?.zellePhone ?? ''}
+              tenantOptions={tenants.map((tenant) => ({
+                id: tenant.id,
+                name: tenant.name,
+                slug: tenant.slug
+              }))}
             />
           </section>
 

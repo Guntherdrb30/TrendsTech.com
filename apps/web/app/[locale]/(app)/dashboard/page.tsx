@@ -53,6 +53,12 @@ export default async function DashboardPage({ params }: { params: Promise<{ loca
     })
   ])) as [EndCustomerOption[], AgentWithEndCustomer[]];
 
+  const tokenWallet = await prisma.tokenWallet.findUnique({
+    where: { tenantId: tenant.id },
+    select: { balance: true }
+  });
+  const tokenBalance = tokenWallet?.balance ?? 0;
+
   return (
     <section className="space-y-6">
       <div className="space-y-2">
@@ -70,11 +76,23 @@ export default async function DashboardPage({ params }: { params: Promise<{ loca
 
       <Card>
         <CardHeader>
-          <CardTitle>Agent instances</CardTitle>
+          <CardTitle>Tokens disponibles</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-2">
+          <p className="text-3xl font-semibold">{tokenBalance}</p>
+          <Link className="text-sm text-blue-600 hover:underline" href={`/${locale}/recharge`}>
+            Recargar tokens
+          </Link>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Agentes configurados</CardTitle>
         </CardHeader>
         <CardContent>
           {agentInstances.length === 0 ? (
-            <p className="text-sm text-slate-500 dark:text-slate-400">No agent instances yet.</p>
+            <p className="text-sm text-slate-500 dark:text-slate-400">Sin agentes configurados.</p>
           ) : (
             <Table>
               <TableHeader>

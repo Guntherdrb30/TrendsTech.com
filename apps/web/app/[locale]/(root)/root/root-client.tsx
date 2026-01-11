@@ -15,6 +15,7 @@ interface RootClientProps {
   zelleRecipientName: string;
   zelleEmail: string;
   zellePhone: string;
+  tenantOptions: Array<{ id: string; name: string; slug: string }>;
 }
 
 export function RootClient({
@@ -24,7 +25,8 @@ export function RootClient({
   kbUrlPageLimit,
   zelleRecipientName,
   zelleEmail,
-  zellePhone
+  zellePhone,
+  tenantOptions
 }: RootClientProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
@@ -42,6 +44,10 @@ export function RootClient({
   const [tenantName, setTenantName] = useState('');
   const [tenantSlug, setTenantSlug] = useState('');
   const [tenantMode, setTenantMode] = useState<'SINGLE' | 'RESELLER'>('SINGLE');
+  const [tokenTenantId, setTokenTenantId] = useState('');
+  const [tokenAmount, setTokenAmount] = useState('');
+  const [tokenError, setTokenError] = useState<string | null>(null);
+  const [tokenSuccess, setTokenSuccess] = useState<string | null>(null);
 
   const submitSettings = (event: React.FormEvent) => {
     event.preventDefault();
@@ -96,6 +102,43 @@ export function RootClient({
       setTenantName('');
       setTenantSlug('');
       setTenantMode('SINGLE');
+      router.refresh();
+    });
+  };
+
+  const submitTokens = (event: React.FormEvent) => {
+    event.preventDefault();
+    setTokenError(null);
+    setTokenSuccess(null);
+
+    const amountValue = Number(tokenAmount);
+    if (!tokenTenantId) {
+      setTokenError('Selecciona un tenant.');
+      return;
+    }
+    if (!Number.isFinite(amountValue) || amountValue <= 0) {
+      setTokenError('Ingresa un monto de tokens valido.');
+      return;
+    }
+
+    startTransition(async () => {
+      const response = await fetch('/api/token-wallet', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          tenantId: tokenTenantId,
+          amount: Math.floor(amountValue)
+        })
+      });
+
+      if (!response.ok) {
+        const result = await response.json();
+        setTokenError(result?.error ?? 'No se pudo ajustar el saldo de tokens.');
+        return;
+      }
+
+      setTokenAmount('');
+      setTokenSuccess('Tokens actualizados.');
       router.refresh();
     });
   };
@@ -220,6 +263,48 @@ export function RootClient({
             {tenantError ? <p className="text-sm text-red-500">{tenantError}</p> : null}
             <Button type="submit" disabled={isPending}>
               Crear tenant
+            </Button>
+          </form>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Recargar tokens</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={submitTokens} className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="tokenTenantId">Tenant</Label>
+              <select
+                id="tokenTenantId"
+                className="h-9 w-full rounded border border-slate-200 bg-white px-3 text-sm dark:border-slate-700 dark:bg-slate-900"
+                value={tokenTenantId}
+                onChange={(event) => setTokenTenantId(event.target.value)}
+                required
+              >
+                <option value="">Selecciona un tenant</option>
+                {tenantOptions.map((tenant) => (
+                  <option key={tenant.id} value={tenant.id}>
+                    {tenant.name} ({tenant.slug})
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="tokenAmount">Tokens a agregar</Label>
+              <Input
+                id="tokenAmount"
+                value={tokenAmount}
+                onChange={(event) => setTokenAmount(event.target.value)}
+                inputMode="numeric"
+                required
+              />
+            </div>
+            {tokenError ? <p className="text-sm text-red-500">{tokenError}</p> : null}
+            {tokenSuccess ? <p className="text-sm text-emerald-500">{tokenSuccess}</p> : null}
+            <Button type="submit" disabled={isPending}>
+              Ajustar tokens
             </Button>
           </form>
         </CardContent>

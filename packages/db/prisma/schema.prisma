@@ -106,6 +106,9 @@ model Tenant {
   manualPayments ManualPayment[]
   auditLogs      AuditLog[]
   knowledgeChunks KnowledgeChunk[]
+  tokenWallet    TokenWallet?
+  tokenUsageLogs TokenUsageLog[]
+  agentSessions  AgentSession[]
 }
 
 model User {
@@ -177,9 +180,12 @@ model AgentInstance {
   knowledge       KnowledgeSource[]
   installs        Install[]
   knowledgeChunks KnowledgeChunk[]
+  tokenUsageLogs  TokenUsageLog[]
+  agentSessions   AgentSession[]
 
   @@index([tenantId])
   @@index([endCustomerId])
+  @@index([tenantId, baseAgentKey])
 }
 
 model KnowledgeSource {
@@ -344,4 +350,51 @@ model WhatsAppChannel {
   agentInstance   AgentInstance         @relation(fields: [agentInstanceId], references: [id])
 
   @@index([tenantId])
+}
+
+model TokenWallet {
+  tenantId  String   @id
+  balance   Int      @default(0)
+  updatedAt DateTime @updatedAt
+
+  tenant    Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+}
+
+model TokenUsageLog {
+  id              String        @id @default(cuid())
+  tenantId        String
+  agentInstanceId String
+  sessionId       String
+  tokensIn        Int?
+  tokensOut       Int?
+  totalTokens     Int
+  model           String?
+  createdAt       DateTime      @default(now())
+
+  tenant          Tenant        @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  agentInstance   AgentInstance @relation(fields: [agentInstanceId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId])
+  @@index([agentInstanceId])
+  @@index([sessionId])
+}
+
+model AgentSession {
+  id              String        @id @default(cuid())
+  tenantId        String
+  agentInstanceId String
+  sessionId       String
+  channel         String?
+  endUserJson     Json?
+  isDemo          Boolean       @default(false)
+  createdAt       DateTime      @default(now())
+  lastSeenAt      DateTime      @updatedAt
+
+  tenant          Tenant        @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  agentInstance   AgentInstance @relation(fields: [agentInstanceId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId])
+  @@index([agentInstanceId])
+  @@index([sessionId])
+  @@unique([tenantId, sessionId])
 }

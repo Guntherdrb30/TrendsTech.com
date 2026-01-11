@@ -48,10 +48,12 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'End customer is not allowed for SINGLE tenants.' }, { status: 400 });
     }
 
-    if (parsed.data.endCustomerId) {
+    const resolvedEndCustomerId = tenant.mode === 'SINGLE' ? null : parsed.data.endCustomerId ?? null;
+
+    if (resolvedEndCustomerId) {
       const endCustomer = await prisma.endCustomer.findFirst({
         where: {
-          id: parsed.data.endCustomerId,
+          id: resolvedEndCustomerId,
           tenantId
         }
       });
@@ -61,23 +63,40 @@ export async function POST(request: Request) {
       }
     }
 
-    const agentInstance = await prisma.agentInstance.create({
-      data: {
+    const existing = await prisma.agentInstance.findFirst({
+      where: {
         tenantId,
-        endCustomerId: parsed.data.endCustomerId ?? null,
-        name: parsed.data.name,
         baseAgentKey: parsed.data.baseAgentKey,
-        languageDefault: parsed.data.languageDefault,
-        status: parsed.data.status,
-        featuresJson: parsed.data.contactPhone
-          ? {
-              contactPhone: parsed.data.contactPhone
-            }
-          : undefined
+        endCustomerId: resolvedEndCustomerId
       }
     });
 
-    return NextResponse.json({ data: agentInstance }, { status: 201 });
+    const payload = {
+      name: parsed.data.name,
+      baseAgentKey: parsed.data.baseAgentKey,
+      languageDefault: parsed.data.languageDefault,
+      status: parsed.data.status,
+      endCustomerId: resolvedEndCustomerId,
+      featuresJson: parsed.data.contactPhone
+        ? {
+            contactPhone: parsed.data.contactPhone
+          }
+        : undefined
+    };
+
+    const agentInstance = existing
+      ? await prisma.agentInstance.update({
+          where: { id: existing.id },
+          data: payload
+        })
+      : await prisma.agentInstance.create({
+          data: {
+            tenantId,
+            ...payload
+          }
+        });
+
+    return NextResponse.json({ data: agentInstance }, { status: existing ? 200 : 201 });
   } catch (error) {
     return handleError(error);
   }

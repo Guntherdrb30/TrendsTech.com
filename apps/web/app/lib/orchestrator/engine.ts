@@ -17,18 +17,20 @@ import { buildContext } from './contextBuilder';
 import type { OrchestratorRequest, OrchestratorResponse } from './types';
 
 const FALLBACK_REPLY = 'En este momento no puedo ayudarte. Deseas que un asesor humano te contacte?';
+const TOKEN_COST_PER_MESSAGE = 1;
 
 function sanitizeContextPayload(payload: unknown) {
   const json = JSON.stringify(payload);
   return json.length > 4000 ? `${json.slice(0, 4000)}...` : json;
 }
 
-async function loadConversationHistory(tenantId: string, sessionId: string) {
+async function loadConversationHistory(tenantId: string, agentInstanceId: string, sessionId: string) {
   const logs = await prisma.auditLog.findMany({
     where: {
       tenantId,
       action: 'openai_message',
       entity: 'agent_instance',
+      entityId: agentInstanceId,
       metaJson: { path: ['sessionId'], equals: sessionId }
     },
     orderBy: { createdAt: 'desc' },
@@ -53,58 +55,39 @@ async function loadConversationHistory(tenantId: string, sessionId: string) {
   return history;
 }
 
-async function enforceUsageLimits(tenantId: string) {
+async function getPlanLimits(tenantId: string) {
   const subscription = await prisma.subscription.findFirst({
     where: { tenantId, status: 'ACTIVE' },
     orderBy: { startedAt: 'desc' },
     include: { plan: true }
   });
 
-  if (!subscription?.plan) {
-    return { allowed: false, reason: 'No active subscription.' };
-  }
-
-  const limits = (subscription.plan.limitsJson ?? {}) as {
-    maxMessagesPerMonth?: number;
-    maxToolCallsPerMonth?: number;
+  const limits = (subscription?.plan?.limitsJson ?? {}) as {
     allowedTools?: string[];
+    maxMessagesPerMonth?: number;
   };
-
-  const since = new Date();
-  since.setDate(since.getDate() - 30);
-
-  const usageLogs = await prisma.auditLog.findMany({
-    where: {
-      tenantId,
-      action: 'openai_usage',
-      createdAt: { gte: since }
-    },
-    select: { metaJson: true }
-  });
-
-  let messageCount = 0;
-  let toolCallCount = 0;
-  for (const log of usageLogs) {
-    if (!log.metaJson || typeof log.metaJson !== 'object') {
-      continue;
-    }
-    const meta = log.metaJson as { messages?: number; toolCalls?: number };
-    messageCount += meta.messages ?? 0;
-    toolCallCount += meta.toolCalls ?? 0;
-  }
-
-  if (limits.maxMessagesPerMonth && messageCount >= limits.maxMessagesPerMonth) {
-    return { allowed: false, reason: 'Message limit reached.' };
-  }
-
-  if (limits.maxToolCallsPerMonth && toolCallCount >= limits.maxToolCallsPerMonth) {
-    return { allowed: false, reason: 'Tool call limit reached.' };
-  }
 
   return {
-    allowed: true,
-    allowedTools: limits.allowedTools ?? TOOL_NAMES
+    allowedTools: limits.allowedTools ?? TOOL_NAMES,
+    maxMessagesPerMonth: limits.maxMessagesPerMonth
   };
+}
+
+async function ensureTokenWallet(tenantId: string, defaultBalance?: number) {
+  const existing = await prisma.tokenWallet.findUnique({
+    where: { tenantId }
+  });
+
+  if (existing) {
+    return existing;
+  }
+
+  return prisma.tokenWallet.create({
+    data: {
+      tenantId,
+      balance: defaultBalance ?? 0
+    }
+  });
 }
 
 async function logUsage({
@@ -185,9 +168,11 @@ export async function runOrchestrator(
       return { reply: 'Agent instance not found.' };
     }
 
-    const usageCheck = await enforceUsageLimits(tenantId);
-    if (!usageCheck.allowed) {
-      return { reply: 'Limite del plan alcanzado. Deseas contactar a un asesor humano?' };
+    const planLimits = await getPlanLimits(tenantId);
+    const wallet = await ensureTokenWallet(tenantId, planLimits.maxMessagesPerMonth);
+
+    if (wallet.balance < TOKEN_COST_PER_MESSAGE) {
+      return { reply: 'Saldo de tokens insuficiente. Recarga tokens para continuar.' };
     }
 
     const baseAgentDefinition = getBaseAgentDefinition(agentInstance.baseAgentKey);
@@ -201,7 +186,7 @@ export async function runOrchestrator(
     });
 
     const contextString = sanitizeContextPayload(contextPayload);
-    const history = await loadConversationHistory(tenantId, request.sessionId);
+    const history = await loadConversationHistory(tenantId, agentInstance.id, request.sessionId);
     const inputItems: AgentInputItem[] = [
       system(`CONTEXT_JSON:\n${contextString}`),
       ...history,
@@ -214,7 +199,7 @@ export async function runOrchestrator(
       actorUserId,
       sessionId: request.sessionId
     };
-    const tools = getAgentTools(toolContext, usageCheck.allowedTools ?? TOOL_NAMES);
+    const tools = getAgentTools(toolContext, planLimits.allowedTools);
     const agent = createBaseAgent(agentInstance.baseAgentKey, tools);
     const runner = new Runner({
       workflowName: baseAgentDefinition.name,
@@ -235,6 +220,23 @@ export async function runOrchestrator(
       FALLBACK_REPLY;
     const modelName = typeof agent.model === 'string' ? agent.model : baseAgentDefinition.model ?? null;
 
+    await prisma.agentSession.upsert({
+      where: { tenantId_sessionId: { tenantId, sessionId: request.sessionId } },
+      update: {
+        agentInstanceId: agentInstance.id,
+        channel: request.channel ?? 'web',
+        endUserJson: request.endUser ?? null
+      },
+      create: {
+        tenantId,
+        agentInstanceId: agentInstance.id,
+        sessionId: request.sessionId,
+        channel: request.channel ?? 'web',
+        endUserJson: request.endUser ?? null,
+        isDemo: false
+      }
+    });
+
     await logConversation({
       tenantId,
       actorUserId,
@@ -254,6 +256,23 @@ export async function runOrchestrator(
       model: modelName,
       toolCalls: toolCallsExecuted,
       messages: 2
+    });
+
+    await prisma.tokenUsageLog.create({
+      data: {
+        tenantId,
+        agentInstanceId: agentInstance.id,
+        sessionId: request.sessionId,
+        tokensIn: null,
+        tokensOut: null,
+        totalTokens: TOKEN_COST_PER_MESSAGE,
+        model: modelName
+      }
+    });
+
+    await prisma.tokenWallet.update({
+      where: { tenantId },
+      data: { balance: { decrement: TOKEN_COST_PER_MESSAGE } }
     });
 
     return { reply: replyText || FALLBACK_REPLY };

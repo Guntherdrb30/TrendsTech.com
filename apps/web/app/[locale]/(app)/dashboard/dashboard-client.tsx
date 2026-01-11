@@ -29,7 +29,7 @@ export function DashboardClient({ tenantMode, endCustomers, profilePhone }: Dash
   const [endCustomerPhone, setEndCustomerPhone] = useState('');
 
   const [agentName, setAgentName] = useState('');
-  const [baseAgentKey, setBaseAgentKey] = useState('');
+  const [baseAgentKey, setBaseAgentKey] = useState<'marketing' | 'sales' | 'appointments' | 'support' | 'public_voice'>('marketing');
   const [languageDefault, setLanguageDefault] = useState<'ES' | 'EN'>('ES');
   const [status, setStatus] = useState<'DRAFT' | 'ACTIVE' | 'PAUSED'>('DRAFT');
   const [endCustomerId, setEndCustomerId] = useState('');
@@ -90,7 +90,7 @@ export function DashboardClient({ tenantMode, endCustomers, profilePhone }: Dash
       }
 
       setAgentName('');
-      setBaseAgentKey('');
+      setBaseAgentKey('marketing');
       setEndCustomerId('');
       setAgentPhone('');
       router.refresh();
@@ -143,12 +143,12 @@ export function DashboardClient({ tenantMode, endCustomers, profilePhone }: Dash
 
       <Card>
         <CardHeader>
-          <CardTitle>Create Agent Instance</CardTitle>
+          <CardTitle>Configurar agente</CardTitle>
         </CardHeader>
         <CardContent>
           <form onSubmit={submitAgent} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="agentName">Name</Label>
+              <Label htmlFor="agentName">Nombre del agente</Label>
               <Input
                 id="agentName"
                 value={agentName}
@@ -157,17 +157,27 @@ export function DashboardClient({ tenantMode, endCustomers, profilePhone }: Dash
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="baseAgentKey">Base agent key</Label>
-              <Input
+              <Label htmlFor="baseAgentKey">Tipo de agente</Label>
+              <select
                 id="baseAgentKey"
+                className="h-9 w-full rounded border border-slate-200 bg-white px-3 text-sm dark:border-slate-700 dark:bg-slate-900"
                 value={baseAgentKey}
-                onChange={(event) => setBaseAgentKey(event.target.value)}
-                required
-              />
+                onChange={(event) =>
+                  setBaseAgentKey(
+                    event.target.value as 'marketing' | 'sales' | 'appointments' | 'support' | 'public_voice'
+                  )
+                }
+              >
+                <option value="marketing">Marketing</option>
+                <option value="sales">Ventas</option>
+                <option value="appointments">Citas</option>
+                <option value="support">Soporte</option>
+                <option value="public_voice">Voz publica</option>
+              </select>
             </div>
             <div className="grid gap-4 md:grid-cols-2">
               <div className="space-y-2">
-                <Label htmlFor="languageDefault">Language</Label>
+                <Label htmlFor="languageDefault">Idioma</Label>
                 <select
                   id="languageDefault"
                   className="h-9 w-full rounded border border-slate-200 bg-white px-3 text-sm dark:border-slate-700 dark:bg-slate-900"
@@ -179,7 +189,7 @@ export function DashboardClient({ tenantMode, endCustomers, profilePhone }: Dash
                 </select>
               </div>
               <div className="space-y-2">
-                <Label htmlFor="status">Status</Label>
+                <Label htmlFor="status">Estado</Label>
                 <select
                   id="status"
                   className="h-9 w-full rounded border border-slate-200 bg-white px-3 text-sm dark:border-slate-700 dark:bg-slate-900"
@@ -194,14 +204,14 @@ export function DashboardClient({ tenantMode, endCustomers, profilePhone }: Dash
             </div>
             {tenantMode === 'RESELLER' ? (
               <div className="space-y-2">
-                <Label htmlFor="endCustomerId">End customer</Label>
+                <Label htmlFor="endCustomerId">Cliente final</Label>
                 <select
                   id="endCustomerId"
                   className="h-9 w-full rounded border border-slate-200 bg-white px-3 text-sm dark:border-slate-700 dark:bg-slate-900"
                   value={endCustomerId}
                   onChange={(event) => setEndCustomerId(event.target.value)}
                 >
-                  <option value="">None</option>
+                  <option value="">Sin cliente final</option>
                   {endCustomers.map((customer) => (
                     <option key={customer.id} value={customer.id}>
                       {customer.name}
@@ -218,24 +228,24 @@ export function DashboardClient({ tenantMode, endCustomers, profilePhone }: Dash
                     checked={useProfilePhone}
                     onChange={(event) => setUseProfilePhone(event.target.checked)}
                   />
-                  Use profile phone ({profilePhone})
+                  Usar telefono del perfil ({profilePhone})
                 </label>
               </div>
             ) : null}
             {!useProfilePhone ? (
               <div className="space-y-2">
-                <Label htmlFor="agentPhone">Agent phone</Label>
+                <Label htmlFor="agentPhone">Telefono del agente</Label>
                 <Input
                   id="agentPhone"
                   value={agentPhone}
                   onChange={(event) => setAgentPhone(event.target.value)}
-                  placeholder="Optional"
+                  placeholder="Opcional"
                 />
               </div>
             ) : null}
             {agentError ? <p className="text-sm text-red-500">{agentError}</p> : null}
             <Button type="submit" disabled={isPending}>
-              Create agent instance
+              Guardar configuracion
             </Button>
           </form>
         </CardContent>
