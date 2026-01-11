@@ -228,7 +228,7 @@ export default async function RootPage({ params }: { params: Promise<{ locale: s
       by: ['actorUserId'],
       where: { createdAt: { gte: usageWindow } },
       _count: { _all: true },
-      orderBy: { _count: { _all: 'desc' } },
+      orderBy: { _count: { id: 'desc' } },
       take: 5
     }),
     prisma.manualPayment.groupBy({
