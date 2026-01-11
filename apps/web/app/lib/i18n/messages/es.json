@@ -2,6 +2,7 @@
   "nav": {
     "home": "Inicio",
     "agents": "Agentes",
+    "projects": "Proyectos",
     "pricing": "Precios",
     "login": "Iniciar sesion",
     "register": "Crear cuenta",
@@ -15,6 +16,7 @@
     "homeTitle": "Trends172 Tech",
     "homeSubtitle": "Plataforma de agentes IA para analisis, creacion y distribucion.",
     "agentsTitle": "Agentes",
+    "projectsTitle": "Proyectos",
     "pricingTitle": "Precios",
     "loginTitle": "Iniciar sesion",
     "dashboardTitle": "Panel",
@@ -135,10 +137,42 @@
       "p4Title": "Escalamiento",
       "p4Body": "Medimos, iteramos y optimizamos con data."
     },
+    "clientsTitle": "Nuestros clientes",
+    "clientsNote": "Apoya el desarrollo venezolano con inteligencia artificial.",
     "ctaTitle": "Lleva tu operacion a nivel enterprise",
     "ctaBody": "Activa agentes IA con control total y performance consistente.",
     "ctaPrimary": "Ver precios",
     "ctaSecondary": "Iniciar sesion"
+  },
+  "projectsPage": {
+    "eyebrow": "PROYECTOS TECNOLOGICOS",
+    "title": "Proyectos que demuestran nuestras capacidades",
+    "subtitle": "Desarrollamos soluciones profesionales, automatizaciones y plataformas a medida.",
+    "ctaPrimary": "Explorar planes",
+    "ctaSecondary": "Iniciar sesion",
+    "capabilitiesTitle": "Capacidades",
+    "capabilitiesNote": "De discovery a despliegue con seguridad y observabilidad.",
+    "capabilities": {
+      "c1": "Plataformas web y ecommerce",
+      "c2": "Integraciones con ERPs y CRMs",
+      "c3": "Automatizaciones con MCP",
+      "c4": "Dashboards y analitica operacional",
+      "c5": "Flujos de venta y seguimiento",
+      "c6": "Experiencias omnicanal"
+    },
+    "projectsTitle": "Proyectos destacados",
+    "projectsSubtitle": "Mostramos trabajo real y entregas completas para clientes en crecimiento.",
+    "projectBadge": "Proyecto",
+    "projectTag": "Lanzado",
+    "projectCta": "Visitar",
+    "projects": {
+      "carpihogar": {
+        "title": "Carpihogar.com",
+        "body": "Ecommerce para hogar con catalogo dinamico, integraciones y automatizacion comercial.",
+        "tagline1": "Ecommerce + pagos",
+        "tagline2": "Automatizacion comercial"
+      }
+    }
   },
   "common": {
     "comingSoon": "Proximamente"

@@ -22,6 +22,7 @@ export async function SiteHeader({ locale }: SiteHeaderProps) {
       labels={{
         home: t('home'),
         agents: t('agents'),
+        projects: t('projects'),
         pricing: t('pricing'),
         login: t('login'),
         register: t('register'),

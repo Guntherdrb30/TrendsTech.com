@@ -366,6 +366,17 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         </div>
       </section>
 
+      <section className="relative overflow-hidden rounded-3xl border border-slate-200 bg-white/80 px-6 py-10 shadow-[0_35px_90px_-70px_rgba(15,23,42,0.35)] dark:border-slate-800 dark:bg-slate-950/60 sm:px-10 sm:py-12">
+        <div className="space-y-3">
+          <h2 className="text-3xl font-[var(--font-display)] font-semibold text-slate-900 dark:text-white">
+            {home("clientsTitle")}
+          </h2>
+          <p className="text-sm text-slate-600 dark:text-slate-300">
+            {home("clientsNote")}
+          </p>
+        </div>
+      </section>
+
         </div>
       </div>
       </div>

@@ -2,6 +2,7 @@
   "nav": {
     "home": "Home",
     "agents": "Agents",
+    "projects": "Projects",
     "pricing": "Pricing",
     "login": "Login",
     "register": "Register",
@@ -15,6 +16,7 @@
     "homeTitle": "Trends172 Tech",
     "homeSubtitle": "AI agent platform for analysis, creation, and distribution.",
     "agentsTitle": "Agents",
+    "projectsTitle": "Projects",
     "pricingTitle": "Pricing",
     "loginTitle": "Login",
     "dashboardTitle": "Dashboard",
@@ -135,10 +137,42 @@
       "p4Title": "Scaling",
       "p4Body": "We measure, iterate, and optimize with data."
     },
+    "clientsTitle": "Our clients",
+    "clientsNote": "Support Venezuelan development with artificial intelligence.",
     "ctaTitle": "Elevate your operation to enterprise level",
     "ctaBody": "Activate AI agents with full control and consistent performance.",
     "ctaPrimary": "View pricing",
     "ctaSecondary": "Login"
+  },
+  "projectsPage": {
+    "eyebrow": "TECH PROJECTS",
+    "title": "Projects that prove our capabilities",
+    "subtitle": "We deliver professional development, automation, and custom platforms.",
+    "ctaPrimary": "Explore plans",
+    "ctaSecondary": "Sign in",
+    "capabilitiesTitle": "Capabilities",
+    "capabilitiesNote": "From discovery to secure, observable delivery.",
+    "capabilities": {
+      "c1": "Web platforms and ecommerce",
+      "c2": "ERP and CRM integrations",
+      "c3": "MCP automation",
+      "c4": "Operational analytics dashboards",
+      "c5": "Sales and follow-up flows",
+      "c6": "Omnichannel experiences"
+    },
+    "projectsTitle": "Featured projects",
+    "projectsSubtitle": "We show real work and complete deliveries for growing clients.",
+    "projectBadge": "Project",
+    "projectTag": "Shipped",
+    "projectCta": "Visit",
+    "projects": {
+      "carpihogar": {
+        "title": "Carpihogar.com",
+        "body": "Home ecommerce with dynamic catalog, integrations, and sales automation.",
+        "tagline1": "Ecommerce + payments",
+        "tagline2": "Sales automation"
+      }
+    }
   },
   "common": {
     "comingSoon": "Coming soon"

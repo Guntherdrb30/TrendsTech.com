@@ -17,6 +17,7 @@ type SiteHeaderClientProps = {
   labels: {
     home: string;
     agents: string;
+    projects: string;
     pricing: string;
     login: string;
     register: string;
@@ -103,6 +104,9 @@ export function SiteHeaderClient({ base, labels, agentOptions }: SiteHeaderClien
                 <Link href={`${base}/agents`} onClick={() => setMenuOpen(false)}>
                   {labels.agents}
                 </Link>
+                <Link href={`${base}/projects`} onClick={() => setMenuOpen(false)}>
+                  {labels.projects}
+                </Link>
                 <Link href={`${base}/pricing`} onClick={() => setMenuOpen(false)}>
                   {labels.pricing}
                 </Link>
@@ -139,6 +143,7 @@ export function SiteHeaderClient({ base, labels, agentOptions }: SiteHeaderClien
             <nav className="flex items-center gap-3 text-xs whitespace-nowrap">
               <Link href={base}>{labels.home}</Link>
               <Link href={`${base}/agents`}>{labels.agents}</Link>
+              <Link href={`${base}/projects`}>{labels.projects}</Link>
               <Link href={`${base}/pricing`}>{labels.pricing}</Link>
             </nav>
           </div>
