@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { redirect } from 'next/navigation';
 import { prisma } from '@trends172tech/db';
 import { requireAuth } from '@/lib/auth/guards';
 import { resolveTenantFromUser } from '@/lib/tenant';
@@ -16,6 +17,10 @@ export default async function DashboardPage({ params }: { params: Promise<{ loca
     where: { id: user.id },
     select: { phone: true }
   });
+
+  if (user.role === 'ROOT' && !tenant) {
+    redirect(`/${locale}/root`);
+  }
 
   if (!tenant) {
     return (
