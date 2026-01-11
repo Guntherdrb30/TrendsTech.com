@@ -3,6 +3,8 @@
 import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { usePathname, useSearchParams, type ReadonlyURLSearchParams } from 'next/navigation';
+import { signOut } from 'next-auth/react';
 import { AgentSearch } from './agent-search';
 import { LocaleSwitcher } from './locale-switcher';
 import { ThemeToggle } from './theme-toggle';
@@ -14,6 +16,7 @@ type AgentOption = {
 
 type SiteHeaderClientProps = {
   base: string;
+  isAuthenticated: boolean;
   labels: {
     home: string;
     agents: string;
@@ -21,6 +24,8 @@ type SiteHeaderClientProps = {
     pricing: string;
     login: string;
     register: string;
+    dashboard: string;
+    logout: string;
     searchPlaceholder: string;
     searchLabel: string;
     menuOpen: string;
@@ -57,8 +62,29 @@ function MenuIcon({ open }: { open: boolean }) {
   );
 }
 
-export function SiteHeaderClient({ base, labels, agentOptions }: SiteHeaderClientProps) {
+function buildRedirectTarget(base: string, pathname: string, searchParams: ReadonlyURLSearchParams) {
+  const authPaths = [`${base}/login`, `${base}/register`, `${base}/forgot-password`, `${base}/reset-password`];
+  if (authPaths.some((path) => pathname.startsWith(path))) {
+    return null;
+  }
+  const search = searchParams.toString();
+  return search ? `${pathname}?${search}` : pathname;
+}
+
+export function SiteHeaderClient({ base, isAuthenticated, labels, agentOptions }: SiteHeaderClientProps) {
   const [menuOpen, setMenuOpen] = useState(false);
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const redirectTarget = buildRedirectTarget(base, pathname, searchParams);
+  const loginHref = redirectTarget ? `${base}/login?redirectTo=${encodeURIComponent(redirectTarget)}` : `${base}/login`;
+  const registerHref = redirectTarget
+    ? `${base}/register?redirectTo=${encodeURIComponent(redirectTarget)}`
+    : `${base}/register`;
+
+  const handleSignOut = () => {
+    setMenuOpen(false);
+    void signOut({ callbackUrl: base });
+  };
 
   return (
     <header className="border-b border-slate-200 dark:border-slate-800">
@@ -112,12 +138,25 @@ export function SiteHeaderClient({ base, labels, agentOptions }: SiteHeaderClien
                 </Link>
               </nav>
               <div className="flex flex-wrap items-center gap-3 text-xs">
-                <Link href={`${base}/login`} onClick={() => setMenuOpen(false)}>
-                  {labels.login}
-                </Link>
-                <Link href={`${base}/register`} onClick={() => setMenuOpen(false)}>
-                  {labels.register}
-                </Link>
+                {isAuthenticated ? (
+                  <>
+                    <Link href={`${base}/dashboard`} onClick={() => setMenuOpen(false)}>
+                      {labels.dashboard}
+                    </Link>
+                    <button type="button" onClick={handleSignOut} className="text-left">
+                      {labels.logout}
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <Link href={loginHref} onClick={() => setMenuOpen(false)}>
+                      {labels.login}
+                    </Link>
+                    <Link href={registerHref} onClick={() => setMenuOpen(false)}>
+                      {labels.register}
+                    </Link>
+                  </>
+                )}
               </div>
               <div className="flex flex-wrap items-center gap-3">
                 <LocaleSwitcher />
@@ -155,8 +194,19 @@ export function SiteHeaderClient({ base, labels, agentOptions }: SiteHeaderClien
             className="min-w-[200px] flex-1 max-w-sm"
           />
           <div className="flex items-center gap-2 text-xs whitespace-nowrap">
-            <Link href={`${base}/login`}>{labels.login}</Link>
-            <Link href={`${base}/register`}>{labels.register}</Link>
+            {isAuthenticated ? (
+              <>
+                <Link href={`${base}/dashboard`}>{labels.dashboard}</Link>
+                <button type="button" onClick={handleSignOut}>
+                  {labels.logout}
+                </button>
+              </>
+            ) : (
+              <>
+                <Link href={loginHref}>{labels.login}</Link>
+                <Link href={registerHref}>{labels.register}</Link>
+              </>
+            )}
             <LocaleSwitcher />
             <ThemeToggle />
           </div>

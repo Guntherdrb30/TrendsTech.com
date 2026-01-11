@@ -36,6 +36,9 @@ export default async function AgentDetailPage({ params }: { params: Promise<Page
   const d = await getTranslations('agentDetail');
   const user = await getCurrentUser();
   const agentName = a(`${agent.key}.name`);
+  const redirectTo = `${base}/agents/${agent.key}`;
+  const loginHref = `${base}/login?redirectTo=${encodeURIComponent(redirectTo)}`;
+  const registerHref = `${base}/register?redirectTo=${encodeURIComponent(redirectTo)}`;
   const workflowMap: Record<AgentKey, string | undefined> = {
     marketing: process.env.CHATKIT_WORKFLOW_MARKETING,
     sales: process.env.CHATKIT_WORKFLOW_SALES,
@@ -65,7 +68,7 @@ export default async function AgentDetailPage({ params }: { params: Promise<Page
             </Link>
           </Button>
           <Button asChild variant="outline">
-            <Link href={`${base}/login`}>{d('secondaryCta')}</Link>
+            <Link href={loginHref}>{d('secondaryCta')}</Link>
           </Button>
         </div>
       </div>
@@ -132,10 +135,10 @@ export default async function AgentDetailPage({ params }: { params: Promise<Page
             <p className="mt-2">{d('chatLoginBody')}</p>
             <div className="mt-4 flex flex-wrap gap-3">
               <Button asChild size="sm">
-                <Link href={`${base}/login`}>{d('chatLoginPrimary')}</Link>
+                <Link href={loginHref}>{d('chatLoginPrimary')}</Link>
               </Button>
               <Button asChild size="sm" variant="outline">
-                <Link href={`${base}/register`}>{d('chatLoginSecondary')}</Link>
+                <Link href={registerHref}>{d('chatLoginSecondary')}</Link>
               </Button>
             </div>
           </div>

@@ -7,6 +7,7 @@
     "login": "Iniciar sesion",
     "register": "Crear cuenta",
     "dashboard": "Panel",
+    "logout": "Cerrar sesion",
     "searchPlaceholder": "Buscar agentes",
     "searchLabel": "Buscar agente",
     "menuOpen": "Abrir menu",

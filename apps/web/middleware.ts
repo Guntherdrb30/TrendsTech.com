@@ -89,6 +89,8 @@ export default function middleware(request: Request) {
     const locale = getLocaleFromPathname(pathname);
     const redirectUrl = new URL(request.url);
     redirectUrl.pathname = `/${locale}/login`;
+    const redirectTo = `${pathname}${url.search}`;
+    redirectUrl.searchParams.set('redirectTo', redirectTo);
     return Response.redirect(redirectUrl);
   }
 

@@ -32,6 +32,7 @@ export default async function AgentsPage({
   const base = `/${locale}`;
   const t = await getTranslations('agentsPage');
   const a = await getTranslations('agents');
+  const loginHref = `${base}/login?redirectTo=${encodeURIComponent(`${base}/agents`)}`;
 
   const demoRules = [
     t('demoRequirement1'),
@@ -72,7 +73,7 @@ export default async function AgentsPage({
                 <Link href={`${base}/pricing`}>{t('ctaPrimary')}</Link>
               </Button>
               <Button asChild variant="outline">
-                <Link href={`${base}/login`}>{t('ctaSecondary')}</Link>
+                <Link href={loginHref}>{t('ctaSecondary')}</Link>
               </Button>
             </div>
             <p className="text-xs uppercase tracking-[0.22em] text-slate-400">{t('demoPolicyNote')}</p>
@@ -154,7 +155,9 @@ export default async function AgentsPage({
 
               <div className="mt-auto flex flex-wrap gap-2">
                 <Button asChild size="sm">
-                  <Link href={`${base}/login`}>{t('demoCta')}</Link>
+                  <Link href={`${base}/login?redirectTo=${encodeURIComponent(`${base}/agents/${agent.key}`)}`}>
+                    {t('demoCta')}
+                  </Link>
                 </Button>
                 <Button asChild size="sm" variant="outline">
                   <Link href={`${base}/agents/${agent.key}`}>{t('detailCta')}</Link>
