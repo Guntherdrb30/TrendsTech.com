@@ -100,7 +100,10 @@ export function ForgotPasswordForm({ locale }: ForgotPasswordFormProps) {
         };
 
         if (!response.ok) {
-          setError(payload.error ?? copy.errors.generic);
+          const message = payload.error
+            ? `${copy.errors.generic}: ${payload.error}`
+            : copy.errors.generic;
+          setError(message);
           return;
         }
 

@@ -51,48 +51,62 @@ export async function POST(request: Request) {
     );
   }
 
-  const user = await prisma.user.findUnique({ where: { email } });
-  if (!user) {
-    return NextResponse.json({ ok: true }, { headers: { 'Cache-Control': 'no-store' } });
-  }
-
-  await prisma.passwordResetToken.updateMany({
-    where: { userId: user.id, usedAt: null },
-    data: { usedAt: new Date() }
-  });
-
-  const token = crypto.randomBytes(32).toString('hex');
-  const tokenHash = crypto.createHash('sha256').update(`${token}${tokenSecret}`).digest('hex');
-  const expiresAt = new Date(Date.now() + TOKEN_TTL_MS);
-
-  await prisma.passwordResetToken.create({
-    data: {
-      userId: user.id,
-      tokenHash,
-      expiresAt
+  try {
+    const user = await prisma.user.findUnique({ where: { email } });
+    if (!user) {
+      return NextResponse.json({ ok: true }, { headers: { 'Cache-Control': 'no-store' } });
     }
-  });
 
-  const baseUrl = getBaseUrl(request);
-  const resetUrl = `${baseUrl}/${locale}/reset-password?token=${token}`;
-  const emailResult = await sendPasswordResetEmail({
-    to: email,
-    resetUrl,
-    locale
-  });
+    await prisma.passwordResetToken.updateMany({
+      where: { userId: user.id, usedAt: null },
+      data: { usedAt: new Date() }
+    });
 
-  if (!emailResult.ok) {
-    if (process.env.NODE_ENV !== 'production') {
+    const token = crypto.randomBytes(32).toString('hex');
+    const tokenHash = crypto.createHash('sha256').update(`${token}${tokenSecret}`).digest('hex');
+    const expiresAt = new Date(Date.now() + TOKEN_TTL_MS);
+
+    await prisma.passwordResetToken.create({
+      data: {
+        userId: user.id,
+        tokenHash,
+        expiresAt
+      }
+    });
+
+    const baseUrl = getBaseUrl(request);
+    const resetUrl = `${baseUrl}/${locale}/reset-password?token=${token}`;
+    const emailResult = await sendPasswordResetEmail({
+      to: email,
+      resetUrl,
+      locale
+    });
+
+    if (!emailResult.ok) {
+      if (process.env.NODE_ENV !== 'production') {
+        return NextResponse.json(
+          { ok: true, resetUrl, warning: emailResult.error },
+          { headers: { 'Cache-Control': 'no-store' } }
+        );
+      }
       return NextResponse.json(
-        { ok: true, resetUrl, warning: emailResult.error },
-        { headers: { 'Cache-Control': 'no-store' } }
+        { error: emailResult.error ?? 'Failed to send reset email.' },
+        { status: 500, headers: { 'Cache-Control': 'no-store' } }
+      );
+    }
+
+    return NextResponse.json({ ok: true }, { headers: { 'Cache-Control': 'no-store' } });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : 'Password reset failed.';
+    if (message.toLowerCase().includes('passwordresettoken')) {
+      return NextResponse.json(
+        { error: 'Missing password reset table. Run database migrations.' },
+        { status: 500, headers: { 'Cache-Control': 'no-store' } }
       );
     }
     return NextResponse.json(
-      { error: emailResult.error ?? 'Failed to send reset email.' },
+      { error: message },
       { status: 500, headers: { 'Cache-Control': 'no-store' } }
     );
   }
-
-  return NextResponse.json({ ok: true }, { headers: { 'Cache-Control': 'no-store' } });
 }
