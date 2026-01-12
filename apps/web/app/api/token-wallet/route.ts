@@ -1,11 +1,12 @@
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { prisma } from '@trends172tech/db';
+import { USD_MICROS_PER_DOLLAR } from '@/lib/billing/pricing';
 import { AuthError, requireRole } from '@/lib/auth/guards';
 
 const payloadSchema = z.object({
   tenantId: z.string().min(1),
-  amount: z.number().int().positive()
+  amountUsd: z.number().positive()
 });
 
 function handleError(error: unknown) {
@@ -26,16 +27,18 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Validation failed', details: parsed.error.flatten() }, { status: 400 });
     }
 
+    const amountMicros = Math.round(parsed.data.amountUsd * USD_MICROS_PER_DOLLAR);
+
     const wallet = await prisma.tokenWallet.upsert({
       where: { tenantId: parsed.data.tenantId },
       update: {
         balance: {
-          increment: parsed.data.amount
+          increment: amountMicros
         }
       },
       create: {
         tenantId: parsed.data.tenantId,
-        balance: parsed.data.amount
+        balance: amountMicros
       }
     });
 

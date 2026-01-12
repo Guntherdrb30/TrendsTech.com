@@ -4,6 +4,7 @@ import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { prisma } from '@trends172tech/db';
 import { requireRole } from '@/lib/auth/guards';
+import { USD_MICROS_PER_DOLLAR } from '@/lib/billing/pricing';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -26,6 +27,12 @@ const editUserSchema = z.object({
 const actionSchema = z.object({
   locale: z.string().min(1),
   userId: z.string().min(1)
+});
+
+const paymentActionSchema = z.object({
+  locale: z.string().min(1),
+  paymentId: z.string().min(1),
+  action: z.enum(['APPROVE', 'REJECT'])
 });
 
 async function updateUser(formData: FormData) {
@@ -132,6 +139,72 @@ async function softDeleteUser(formData: FormData) {
       role: 'TENANT_VIEWER',
       passwordHash: null
     }
+  });
+
+  const path = `/${parsed.data.locale}/root`;
+  revalidatePath(path);
+  redirect(path);
+}
+
+async function updateManualPayment(formData: FormData) {
+  'use server';
+  const parsed = paymentActionSchema.safeParse({
+    locale: formData.get('locale'),
+    paymentId: formData.get('paymentId'),
+    action: formData.get('action')
+  });
+
+  if (!parsed.success) {
+    throw new Error('Invalid payment action payload.');
+  }
+
+  const reviewer = await requireRole('ROOT');
+
+  await prisma.$transaction(async (tx) => {
+    const payment = await tx.manualPayment.findUnique({
+      where: { id: parsed.data.paymentId }
+    });
+
+    if (!payment) {
+      throw new Error('Payment not found.');
+    }
+
+    if (payment.status !== 'PENDING') {
+      return;
+    }
+
+    if (parsed.data.action === 'REJECT') {
+      await tx.manualPayment.update({
+        where: { id: payment.id },
+        data: {
+          status: 'REJECTED',
+          reviewedByUserId: reviewer.id,
+          reviewedAt: new Date()
+        }
+      });
+      return;
+    }
+
+    const amountUsd = Number(payment.amountPaid);
+    const amountMicros = Math.round(amountUsd * USD_MICROS_PER_DOLLAR);
+
+    await tx.manualPayment.update({
+      where: { id: payment.id },
+      data: {
+        status: 'APPROVED',
+        reviewedByUserId: reviewer.id,
+        reviewedAt: new Date()
+      }
+    });
+
+    await tx.tokenWallet.upsert({
+      where: { tenantId: payment.tenantId },
+      update: { balance: { increment: amountMicros } },
+      create: {
+        tenantId: payment.tenantId,
+        balance: amountMicros
+      }
+    });
   });
 
   const path = `/${parsed.data.locale}/root`;
@@ -700,6 +773,7 @@ export default async function RootPage({ params }: { params: Promise<{ locale: s
                         <TableHead>Moneda</TableHead>
                         <TableHead>Referencia</TableHead>
                         <TableHead>Estado</TableHead>
+                        <TableHead>Acciones</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -710,6 +784,30 @@ export default async function RootPage({ params }: { params: Promise<{ locale: s
                           <TableCell>{payment.currencyPaid}</TableCell>
                           <TableCell>{payment.reference}</TableCell>
                           <TableCell>{payment.status}</TableCell>
+                          <TableCell>
+                            {payment.status === 'PENDING' ? (
+                              <div className="flex flex-wrap gap-2">
+                                <form action={updateManualPayment}>
+                                  <input type="hidden" name="locale" value={locale} />
+                                  <input type="hidden" name="paymentId" value={payment.id} />
+                                  <input type="hidden" name="action" value="APPROVE" />
+                                  <Button type="submit" size="sm">
+                                    Aprobar
+                                  </Button>
+                                </form>
+                                <form action={updateManualPayment}>
+                                  <input type="hidden" name="locale" value={locale} />
+                                  <input type="hidden" name="paymentId" value={payment.id} />
+                                  <input type="hidden" name="action" value="REJECT" />
+                                  <Button type="submit" size="sm" variant="outline">
+                                    Rechazar
+                                  </Button>
+                                </form>
+                              </div>
+                            ) : (
+                              <span className="text-xs text-slate-500 dark:text-slate-400">-</span>
+                            )}
+                          </TableCell>
                         </TableRow>
                       ))}
                     </TableBody>
@@ -915,6 +1013,10 @@ export default async function RootPage({ params }: { params: Promise<{ locale: s
             <RootClient
               usdToVesRate={settings?.usdToVesRate?.toString() ?? '0'}
               usdPaymentDiscountPercent={settings?.usdPaymentDiscountPercent?.toString() ?? '0'}
+              tokenInputUsdPer1M={settings?.tokenInputUsdPer1M?.toString() ?? '0.40'}
+              tokenOutputUsdPer1M={settings?.tokenOutputUsdPer1M?.toString() ?? '1.60'}
+              tokenCachedInputUsdPer1M={settings?.tokenCachedInputUsdPer1M?.toString() ?? '0.10'}
+              tokenMarkupPercent={settings?.tokenMarkupPercent?.toString() ?? '30'}
               roundingRule={(settings?.roundingRule ?? 'ONE') as 'ONE' | 'FIVE' | 'TEN'}
               kbUrlPageLimit={(settings?.kbUrlPageLimit ?? 5).toString()}
               zelleRecipientName={settings?.zelleRecipientName ?? ''}

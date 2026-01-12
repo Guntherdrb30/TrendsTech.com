@@ -6,6 +6,7 @@ import { resolveTenantFromUser } from '@/lib/tenant';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { DashboardClient } from './dashboard-client';
+import { formatUsdFromMicros } from '@/lib/billing/pricing';
 
 export const dynamic = 'force-dynamic';
 
@@ -58,6 +59,7 @@ export default async function DashboardPage({ params }: { params: Promise<{ loca
     select: { balance: true }
   });
   const tokenBalance = tokenWallet?.balance ?? 0;
+  const tokenBalanceLabel = `$${formatUsdFromMicros(tokenBalance)}`;
 
   return (
     <section className="space-y-6">
@@ -79,7 +81,7 @@ export default async function DashboardPage({ params }: { params: Promise<{ loca
           <CardTitle>Tokens disponibles</CardTitle>
         </CardHeader>
         <CardContent className="space-y-2">
-          <p className="text-3xl font-semibold">{tokenBalance}</p>
+          <p className="text-3xl font-semibold">{tokenBalanceLabel}</p>
           <Link className="text-sm text-blue-600 hover:underline" href={`/${locale}/recharge`}>
             Recargar tokens
           </Link>

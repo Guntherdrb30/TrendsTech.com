@@ -306,6 +306,10 @@ model GlobalSettings {
   usdToVesRate              Decimal      @db.Decimal(12, 4)
   roundingRule              RoundingRule @default(ONE)
   usdPaymentDiscountPercent Decimal      @db.Decimal(5, 2)
+  tokenInputUsdPer1M        Decimal      @db.Decimal(12, 4)
+  tokenOutputUsdPer1M       Decimal      @db.Decimal(12, 4)
+  tokenCachedInputUsdPer1M  Decimal      @db.Decimal(12, 4)
+  tokenMarkupPercent        Decimal      @db.Decimal(5, 2)
   kbUrlPageLimit            Int          @default(5)
   zelleRecipientName        String?
   zelleEmail                String?
@@ -368,6 +372,8 @@ model TokenUsageLog {
   tokensIn        Int?
   tokensOut       Int?
   totalTokens     Int
+  costUsdMicros   Int?
+  billedAt        DateTime?
   model           String?
   createdAt       DateTime      @default(now())
 

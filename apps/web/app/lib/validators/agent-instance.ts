@@ -1,7 +1,7 @@
 import { z } from 'zod';
-import { BASE_AGENT_KEYS } from '@trends172tech/openai';
+import { CREATEABLE_AGENT_KEYS } from '@trends172tech/openai';
 
-const baseAgentKeyEnum = BASE_AGENT_KEYS as [string, ...string[]];
+const baseAgentKeyEnum = CREATEABLE_AGENT_KEYS as [string, ...string[]];
 
 export const createAgentInstanceSchema = z.object({
   name: z.string().min(2, 'Name is required'),

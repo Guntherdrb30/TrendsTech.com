@@ -1,6 +1,12 @@
 import { Agent, type ModelSettings, type Tool } from '@openai/agents';
 
-export type BaseAgentKey = 'marketing' | 'sales' | 'appointments' | 'support' | 'public_voice';
+export type BaseAgentKey =
+  | 'marketing'
+  | 'sales'
+  | 'appointments'
+  | 'support'
+  | 'public_voice'
+  | 'agent_creator';
 
 export type BaseAgentDefinition = {
   name: string;
@@ -103,10 +109,43 @@ export const BASE_AGENTS: Record<BaseAgentKey, BaseAgentDefinition> = {
       topP: 1,
       maxTokens: 2048
     }
+  },
+  agent_creator: {
+    name: 'agent_creator',
+    instructions: [
+      'Eres un agente creador de agentes para clientes.',
+      'Responde en ES o EN segun el CONTEXT_JSON.',
+      'Primero identifica el tipo de agente recomendado (marketing, ventas, citas, soporte o voz).',
+      'Pregunta si desea contratar el agente recomendado. Si responde no, ofrece ayuda adicional.',
+      'Si responde si, explica el precio por consumo y pregunta si desea continuar con la creacion.',
+      'Usa get_token_pricing para dar precios por token cuando sea necesario.',
+      'Cuando confirme, recopila los datos necesarios:',
+      '- Nombre de la empresa',
+      '- Nombre del contacto',
+      '- Correo',
+      '- Telefono',
+      '- Descripcion breve del negocio',
+      '- Direccion (opcional)',
+      '- URL del catalogo o lista de precios (opcional)',
+      '- Web o redes (opcional)',
+      'No inventes datos. Si falta informacion, pregunta de forma clara.',
+      'Cuando tengas los datos minimos, usa create_agent_instance.',
+      'Si el cliente no tiene saldo disponible, informa que debe recargar.',
+      'Manten el flujo directo y evita respuestas largas.'
+    ].join('\n'),
+    model: 'gpt-4.1-mini',
+    modelSettings: {
+      temperature: 0.7,
+      topP: 1,
+      maxTokens: 1200
+    }
   }
 };
 
 export const BASE_AGENT_KEYS = Object.keys(BASE_AGENTS) as BaseAgentKey[];
+export const CREATEABLE_AGENT_KEYS = BASE_AGENT_KEYS.filter(
+  (key) => key !== 'agent_creator'
+) as BaseAgentKey[];
 
 export function getBaseAgentDefinition(key: string) {
   const definition = BASE_AGENTS[key as BaseAgentKey];

@@ -14,10 +14,10 @@ import {
   type ToolContext
 } from '@trends172tech/openai';
 import { buildContext } from './contextBuilder';
+import { computeUsageCostUsdMicros, getTokenPricing } from '../billing/pricing';
 import type { OrchestratorRequest, OrchestratorResponse } from './types';
 
 const FALLBACK_REPLY = 'En este momento no puedo ayudarte. Deseas que un asesor humano te contacte?';
-const TOKEN_COST_PER_MESSAGE = 1;
 
 function sanitizeContextPayload(payload: unknown) {
   const json = JSON.stringify(payload);
@@ -73,7 +73,7 @@ async function getPlanLimits(tenantId: string) {
   };
 }
 
-async function ensureTokenWallet(tenantId: string, defaultBalance?: number) {
+async function ensureTokenWallet(tenantId: string) {
   const existing = await prisma.tokenWallet.findUnique({
     where: { tenantId }
   });
@@ -85,7 +85,7 @@ async function ensureTokenWallet(tenantId: string, defaultBalance?: number) {
   return prisma.tokenWallet.create({
     data: {
       tenantId,
-      balance: defaultBalance ?? 0
+      balance: 0
     }
   });
 }
@@ -169,10 +169,10 @@ export async function runOrchestrator(
     }
 
     const planLimits = await getPlanLimits(tenantId);
-    const wallet = await ensureTokenWallet(tenantId, planLimits.maxMessagesPerMonth);
+    const wallet = await ensureTokenWallet(tenantId);
 
-    if (wallet.balance < TOKEN_COST_PER_MESSAGE) {
-      return { reply: 'Saldo de tokens insuficiente. Recarga tokens para continuar.' };
+    if (wallet.balance <= 0) {
+      return { reply: 'Saldo insuficiente. Recarga tu saldo para continuar.' };
     }
 
     const baseAgentDefinition = getBaseAgentDefinition(agentInstance.baseAgentKey);
@@ -260,22 +260,39 @@ export async function runOrchestrator(
       messages: 2
     });
 
+    const usage = result.state?._context?.usage;
+    const inputTokens = usage?.inputTokens ?? null;
+    const outputTokens = usage?.outputTokens ?? null;
+    const totalTokens = usage?.totalTokens ?? (inputTokens ?? 0) + (outputTokens ?? 0);
+    const pricing = await getTokenPricing();
+    const costUsdMicros = computeUsageCostUsdMicros({
+      inputTokens: inputTokens ?? 0,
+      outputTokens: outputTokens ?? 0,
+      pricing
+    });
+    const deferBilling = agentInstance.baseAgentKey === 'agent_creator';
+
     await prisma.tokenUsageLog.create({
       data: {
         tenantId,
         agentInstanceId: agentInstance.id,
         sessionId: request.sessionId,
-        tokensIn: null,
-        tokensOut: null,
-        totalTokens: TOKEN_COST_PER_MESSAGE,
+        tokensIn: inputTokens,
+        tokensOut: outputTokens,
+        totalTokens,
+        costUsdMicros,
+        billedAt: deferBilling ? null : new Date(),
         model: modelName
       }
     });
 
-    await prisma.tokenWallet.update({
-      where: { tenantId },
-      data: { balance: { decrement: TOKEN_COST_PER_MESSAGE } }
-    });
+    if (!deferBilling && costUsdMicros > 0) {
+      const nextBalance = Math.max(wallet.balance - costUsdMicros, 0);
+      await prisma.tokenWallet.update({
+        where: { tenantId },
+        data: { balance: nextBalance }
+      });
+    }
 
     return { reply: replyText || FALLBACK_REPLY };
   } catch (error) {

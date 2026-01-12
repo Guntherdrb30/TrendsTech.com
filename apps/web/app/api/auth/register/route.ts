@@ -76,6 +76,23 @@ export async function POST(request: Request) {
       }
     });
 
+    await tx.tokenWallet.create({
+      data: {
+        tenantId: tenant.id,
+        balance: 0
+      }
+    });
+
+    await tx.agentInstance.create({
+      data: {
+        tenantId: tenant.id,
+        name: 'Creador de agentes',
+        baseAgentKey: 'agent_creator',
+        languageDefault: 'ES',
+        status: 'ACTIVE'
+      }
+    });
+
     await tx.user.create({
       data: {
         tenantId: tenant.id,

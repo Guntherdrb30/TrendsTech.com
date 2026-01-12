@@ -37,6 +37,10 @@ async function main() {
       usdToVesRate: new Prisma.Decimal('36.5'),
       roundingRule: RoundingRule.ONE,
       usdPaymentDiscountPercent: new Prisma.Decimal('5.0'),
+      tokenInputUsdPer1M: new Prisma.Decimal('0.40'),
+      tokenOutputUsdPer1M: new Prisma.Decimal('1.60'),
+      tokenCachedInputUsdPer1M: new Prisma.Decimal('0.10'),
+      tokenMarkupPercent: new Prisma.Decimal('30.0'),
       updatedByUserId: rootUser.id
     },
     create: {
@@ -44,6 +48,10 @@ async function main() {
       usdToVesRate: new Prisma.Decimal('36.5'),
       roundingRule: RoundingRule.ONE,
       usdPaymentDiscountPercent: new Prisma.Decimal('5.0'),
+      tokenInputUsdPer1M: new Prisma.Decimal('0.40'),
+      tokenOutputUsdPer1M: new Prisma.Decimal('1.60'),
+      tokenCachedInputUsdPer1M: new Prisma.Decimal('0.10'),
+      tokenMarkupPercent: new Prisma.Decimal('30.0'),
       updatedByUserId: rootUser.id
     }
   });
@@ -79,6 +87,30 @@ async function main() {
       status: TenantStatus.ACTIVE
     }
   });
+
+  await prisma.tokenWallet.upsert({
+    where: { tenantId: demoTenant.id },
+    update: {},
+    create: {
+      tenantId: demoTenant.id,
+      balance: 0
+    }
+  });
+
+  const existingCreator = await prisma.agentInstance.findFirst({
+    where: { tenantId: demoTenant.id, baseAgentKey: 'agent_creator' }
+  });
+  if (!existingCreator) {
+    await prisma.agentInstance.create({
+      data: {
+        tenantId: demoTenant.id,
+        name: 'Creador de agentes',
+        baseAgentKey: 'agent_creator',
+        languageDefault: 'ES',
+        status: 'ACTIVE'
+      }
+    });
+  }
 
   await prisma.user.upsert({
     where: { email: demoEmail },

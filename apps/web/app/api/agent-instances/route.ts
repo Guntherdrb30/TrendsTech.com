@@ -37,6 +37,14 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Tenant not found' }, { status: 404 });
     }
 
+    const wallet = await prisma.tokenWallet.findUnique({ where: { tenantId } });
+    if (!wallet || wallet.balance <= 0) {
+      return NextResponse.json(
+        { error: 'Saldo insuficiente. Recarga tu saldo para crear un agente.' },
+        { status: 403 }
+      );
+    }
+
     const body = await request.json();
     const parsed = createAgentInstanceSchema.safeParse(body);
 

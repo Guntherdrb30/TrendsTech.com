@@ -10,6 +10,10 @@ import { Label } from '@/components/ui/label';
 interface RootClientProps {
   usdToVesRate: string;
   usdPaymentDiscountPercent: string;
+  tokenInputUsdPer1M: string;
+  tokenOutputUsdPer1M: string;
+  tokenCachedInputUsdPer1M: string;
+  tokenMarkupPercent: string;
   roundingRule: 'ONE' | 'FIVE' | 'TEN';
   kbUrlPageLimit: string;
   zelleRecipientName: string;
@@ -21,6 +25,10 @@ interface RootClientProps {
 export function RootClient({
   usdToVesRate,
   usdPaymentDiscountPercent,
+  tokenInputUsdPer1M,
+  tokenOutputUsdPer1M,
+  tokenCachedInputUsdPer1M,
+  tokenMarkupPercent,
   roundingRule,
   kbUrlPageLimit,
   zelleRecipientName,
@@ -35,6 +43,10 @@ export function RootClient({
 
   const [rate, setRate] = useState(usdToVesRate);
   const [discount, setDiscount] = useState(usdPaymentDiscountPercent);
+  const [tokenInput, setTokenInput] = useState(tokenInputUsdPer1M);
+  const [tokenOutput, setTokenOutput] = useState(tokenOutputUsdPer1M);
+  const [tokenCachedInput, setTokenCachedInput] = useState(tokenCachedInputUsdPer1M);
+  const [tokenMarkup, setTokenMarkup] = useState(tokenMarkupPercent);
   const [rule, setRule] = useState<'ONE' | 'FIVE' | 'TEN'>(roundingRule);
   const [pageLimit, setPageLimit] = useState(kbUrlPageLimit);
   const [zelleName, setZelleName] = useState(zelleRecipientName);
@@ -49,6 +61,11 @@ export function RootClient({
   const [tokenError, setTokenError] = useState<string | null>(null);
   const [tokenSuccess, setTokenSuccess] = useState<string | null>(null);
 
+  const markupValue = Number(tokenMarkup) || 0;
+  const inputClient = (Number(tokenInput) || 0) * (1 + markupValue / 100);
+  const outputClient = (Number(tokenOutput) || 0) * (1 + markupValue / 100);
+  const cachedClient = (Number(tokenCachedInput) || 0) * (1 + markupValue / 100);
+
   const submitSettings = (event: React.FormEvent) => {
     event.preventDefault();
     setSettingsError(null);
@@ -60,6 +77,10 @@ export function RootClient({
         body: JSON.stringify({
           usdToVesRate: rate,
           usdPaymentDiscountPercent: discount,
+          tokenInputUsdPer1M: tokenInput,
+          tokenOutputUsdPer1M: tokenOutput,
+          tokenCachedInputUsdPer1M: tokenCachedInput,
+          tokenMarkupPercent: tokenMarkup,
           roundingRule: rule,
           kbUrlPageLimit: pageLimit,
           zelleRecipientName: zelleName,
@@ -117,7 +138,7 @@ export function RootClient({
       return;
     }
     if (!Number.isFinite(amountValue) || amountValue <= 0) {
-      setTokenError('Ingresa un monto de tokens valido.');
+      setTokenError('Ingresa un monto en USD valido.');
       return;
     }
 
@@ -127,7 +148,7 @@ export function RootClient({
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           tenantId: tokenTenantId,
-          amount: Math.floor(amountValue)
+          amountUsd: amountValue
         })
       });
 
@@ -138,7 +159,7 @@ export function RootClient({
       }
 
       setTokenAmount('');
-      setTokenSuccess('Tokens actualizados.');
+      setTokenSuccess('Saldo actualizado.');
       router.refresh();
     });
   };
@@ -166,6 +187,42 @@ export function RootClient({
                 id="usdPaymentDiscountPercent"
                 value={discount}
                 onChange={(event) => setDiscount(event.target.value)}
+                inputMode="decimal"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="tokenInputUsdPer1M">OpenAI input / 1M tokens (USD)</Label>
+              <Input
+                id="tokenInputUsdPer1M"
+                value={tokenInput}
+                onChange={(event) => setTokenInput(event.target.value)}
+                inputMode="decimal"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="tokenOutputUsdPer1M">OpenAI output / 1M tokens (USD)</Label>
+              <Input
+                id="tokenOutputUsdPer1M"
+                value={tokenOutput}
+                onChange={(event) => setTokenOutput(event.target.value)}
+                inputMode="decimal"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="tokenCachedInputUsdPer1M">OpenAI cached input / 1M tokens (USD)</Label>
+              <Input
+                id="tokenCachedInputUsdPer1M"
+                value={tokenCachedInput}
+                onChange={(event) => setTokenCachedInput(event.target.value)}
+                inputMode="decimal"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="tokenMarkupPercent">Markup % (ganancia)</Label>
+              <Input
+                id="tokenMarkupPercent"
+                value={tokenMarkup}
+                onChange={(event) => setTokenMarkup(event.target.value)}
                 inputMode="decimal"
               />
             </div>
@@ -226,6 +283,45 @@ export function RootClient({
 
       <Card>
         <CardHeader>
+          <CardTitle>Tabla de precios (USD)</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-3 text-sm text-slate-600 dark:text-slate-300">
+          <p>
+            OpenAI vs precio al cliente (con markup {markupValue.toFixed(2)}%).
+          </p>
+          <div className="overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-800">
+            <table className="w-full text-left text-xs">
+              <thead className="bg-slate-50 text-slate-500 dark:bg-slate-900/60 dark:text-slate-400">
+                <tr>
+                  <th className="px-3 py-2 font-semibold">Concepto</th>
+                  <th className="px-3 py-2 font-semibold">OpenAI / 1M</th>
+                  <th className="px-3 py-2 font-semibold">Cliente / 1M</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-200 dark:divide-slate-800">
+                <tr>
+                  <td className="px-3 py-2">Input</td>
+                  <td className="px-3 py-2">${Number(tokenInput || 0).toFixed(4)}</td>
+                  <td className="px-3 py-2">${inputClient.toFixed(4)}</td>
+                </tr>
+                <tr>
+                  <td className="px-3 py-2">Cached input</td>
+                  <td className="px-3 py-2">${Number(tokenCachedInput || 0).toFixed(4)}</td>
+                  <td className="px-3 py-2">${cachedClient.toFixed(4)}</td>
+                </tr>
+                <tr>
+                  <td className="px-3 py-2">Output</td>
+                  <td className="px-3 py-2">${Number(tokenOutput || 0).toFixed(4)}</td>
+                  <td className="px-3 py-2">${outputClient.toFixed(4)}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
         <CardTitle>Crear tenant</CardTitle>
         </CardHeader>
         <CardContent>
@@ -270,7 +366,7 @@ export function RootClient({
 
       <Card>
         <CardHeader>
-          <CardTitle>Recargar tokens</CardTitle>
+          <CardTitle>Recargar saldo (USD)</CardTitle>
         </CardHeader>
         <CardContent>
           <form onSubmit={submitTokens} className="space-y-4">
@@ -292,12 +388,12 @@ export function RootClient({
               </select>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="tokenAmount">Tokens a agregar</Label>
+              <Label htmlFor="tokenAmount">Monto USD a agregar</Label>
               <Input
                 id="tokenAmount"
                 value={tokenAmount}
                 onChange={(event) => setTokenAmount(event.target.value)}
-                inputMode="numeric"
+                inputMode="decimal"
                 required
               />
             </div>

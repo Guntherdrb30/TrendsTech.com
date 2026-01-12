@@ -44,6 +44,27 @@ export async function POST(request: Request) {
       }
     });
 
+    await prisma.tokenWallet.upsert({
+      where: { tenantId: tenant.id },
+      update: {},
+      create: { tenantId: tenant.id, balance: 0 }
+    });
+
+    const existingCreator = await prisma.agentInstance.findFirst({
+      where: { tenantId: tenant.id, baseAgentKey: 'agent_creator' }
+    });
+    if (!existingCreator) {
+      await prisma.agentInstance.create({
+        data: {
+          tenantId: tenant.id,
+          name: 'Creador de agentes',
+          baseAgentKey: 'agent_creator',
+          languageDefault: 'ES',
+          status: 'ACTIVE'
+        }
+      });
+    }
+
     await prisma.auditLog.create({
       data: {
         actorUserId: user.id,
