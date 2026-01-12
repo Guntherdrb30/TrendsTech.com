@@ -45,30 +45,25 @@ const requestHumanContactSchema = z.object({
 
 const getTokenPricingSchema = z.object({});
 
-const createAgentInstanceSchema = z
-  .object({
-    name: z.string().min(2),
-    baseAgentKey: z.enum(CREATEABLE_AGENT_KEYS as [string, ...string[]]),
-    languageDefault: z.enum(['ES', 'EN']).optional().default('ES'),
-    status: z.enum(['DRAFT', 'ACTIVE', 'PAUSED']).optional().default('DRAFT'),
-    companyName: z.string().min(2).max(120),
-    contactName: z.string().min(2).max(120),
-    contactEmail: z.string().email().optional(),
-    contactPhone: z.string().min(4).max(40).optional(),
-    description: z.string().min(10).max(1200),
-    address: z.string().min(4).max(200).optional(),
-    website: z.string().url().max(200).optional(),
-    catalogUrl: z.string().url().max(400).optional(),
-    priceListUrl: z.string().url().max(400).optional(),
-    notes: z.string().max(800).optional(),
-    endCustomerName: z.string().min(2).max(120).optional(),
-    endCustomerEmail: z.string().email().optional(),
-    endCustomerPhone: z.string().min(4).max(40).optional()
-  })
-  .refine((data) => Boolean(data.contactEmail || data.contactPhone), {
-    message: 'contactEmail or contactPhone is required',
-    path: ['contactEmail']
-  });
+const createAgentInstanceSchema = z.object({
+  name: z.string().min(2),
+  baseAgentKey: z.enum(CREATEABLE_AGENT_KEYS as [string, ...string[]]),
+  languageDefault: z.enum(['ES', 'EN']).optional().default('ES'),
+  status: z.enum(['DRAFT', 'ACTIVE', 'PAUSED']).optional().default('DRAFT'),
+  companyName: z.string().min(2).max(120),
+  contactName: z.string().min(2).max(120),
+  contactEmail: z.string().email().optional(),
+  contactPhone: z.string().min(4).max(40).optional(),
+  description: z.string().min(10).max(1200),
+  address: z.string().min(4).max(200).optional(),
+  website: z.string().url().max(200).optional(),
+  catalogUrl: z.string().url().max(400).optional(),
+  priceListUrl: z.string().url().max(400).optional(),
+  notes: z.string().max(800).optional(),
+  endCustomerName: z.string().min(2).max(120).optional(),
+  endCustomerEmail: z.string().email().optional(),
+  endCustomerPhone: z.string().min(4).max(40).optional()
+});
 
 async function logAction(context: ToolContext, action: string, entity: string, metaJson: Prisma.InputJsonObject) {
   return prisma.auditLog.create({
@@ -238,6 +233,10 @@ const TOOL_DEFINITIONS: ToolDefinition[] = [
     schema: createAgentInstanceSchema,
     execute: async (input, context) => {
       const parsed = createAgentInstanceSchema.parse(input);
+
+      if (!parsed.contactEmail && !parsed.contactPhone) {
+        throw new Error('contactEmail or contactPhone is required');
+      }
 
       const callerAgent = await prisma.agentInstance.findUnique({
         where: { id: context.agentInstanceId }
