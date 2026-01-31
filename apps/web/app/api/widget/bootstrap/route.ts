@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 
 import { prisma } from '@trends172tech/db';
-import { matchAllowedDomains, normalizeDomain } from '@/lib/domains';
+import { matchAllowedDomains, normalizeDomain } from '../../../lib/domains';
 
 const CHANNEL = 'widget';
 const EVENT = 'widget_bootstrap';
@@ -122,3 +122,4 @@ export async function GET(request: Request) {
     agentId: access.agentId
   });
 }
+
