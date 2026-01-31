@@ -1,4 +1,4 @@
-import { matchAllowedDomains, normalizeDomain as normalizeDomainValue } from '@/lib/domains';
+import { matchAllowedDomains, normalizeDomain as normalizeDomainValue } from '../domains';
 
 export { normalizeDomainValue as normalizeDomain };
 
