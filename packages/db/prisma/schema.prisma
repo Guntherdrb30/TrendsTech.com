@@ -99,6 +99,7 @@ model Tenant {
   users          User[]
   endCustomers   EndCustomer[]
   agentInstances AgentInstance[]
+  agentAccesses  AgentAccess[]
   whatsappChannels WhatsAppChannel[]
   knowledge      KnowledgeSource[]
   installs       Install[]
@@ -109,6 +110,7 @@ model Tenant {
   tokenWallet    TokenWallet?
   tokenUsageLogs TokenUsageLog[]
   agentSessions  AgentSession[]
+  accessLogs     AccessLog[]
 }
 
 model User {
@@ -182,6 +184,8 @@ model AgentInstance {
   knowledgeChunks KnowledgeChunk[]
   tokenUsageLogs  TokenUsageLog[]
   agentSessions   AgentSession[]
+  accesses        AgentAccess[]
+  accessLogs      AccessLog[]
 
   @@index([tenantId])
   @@index([endCustomerId])
@@ -403,4 +407,48 @@ model AgentSession {
   @@index([agentInstanceId])
   @@index([sessionId])
   @@unique([tenantId, sessionId])
+}
+
+model AgentAccess {
+  id                String        @id @default(cuid())
+  tenantId          String
+  agentId           String
+  name              String
+  allowedDomains    String[]      @default([])
+  channel           String        @default("embedded_web")
+  maxTokensPerMonth Int?
+  isActive          Boolean       @default(true)
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+
+  tenant            Tenant        @relation(fields: [tenantId], references: [id])
+  agentInstance     AgentInstance @relation(fields: [agentId], references: [id])
+  accessLogs        AccessLog[]
+
+  @@index([tenantId])
+  @@index([agentId])
+  @@index([tenantId, isActive])
+  @@index([agentId, isActive])
+}
+
+model AccessLog {
+  id              String        @id @default(cuid())
+  tenantId        String
+  agentInstanceId String
+  agentAccessId   String
+  domain          String?
+  channel         String
+  event           String
+  status          String
+  reason          String?
+  metaJson        Json?
+  createdAt       DateTime      @default(now())
+
+  tenant          Tenant        @relation(fields: [tenantId], references: [id])
+  agentInstance   AgentInstance @relation(fields: [agentInstanceId], references: [id])
+  agentAccess     AgentAccess   @relation(fields: [agentAccessId], references: [id])
+
+  @@index([tenantId])
+  @@index([agentInstanceId])
+  @@index([agentAccessId])
 }

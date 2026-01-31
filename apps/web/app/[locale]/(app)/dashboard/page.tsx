@@ -142,6 +142,17 @@ export default async function DashboardPage({ params }: { params: Promise<{ loca
 
       <Card>
         <CardHeader>
+          <CardTitle>Widget access</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Link className="text-sm text-blue-600 hover:underline" href={`/${locale}/dashboard/access`}>
+            Manage embedded agent access
+          </Link>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
           <CardTitle>User management</CardTitle>
         </CardHeader>
         <CardContent>
