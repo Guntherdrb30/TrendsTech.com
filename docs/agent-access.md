@@ -13,6 +13,26 @@
 - `AgentAccess.agentId` apunta a `AgentInstance.id`. Un agente puede tener múltiples accesos (por ejemplo, un mismo agente puede servir el dashboard y un widget con dominios diferentes).
 - La combinación `tenantId + agentId` también nos permitirá, en futuras etapas, verificar que un `token_wallet` pertenece al tenant que tiene acceso al canal.
 
+## Widget bootstrap
+El flujo embebido empieza con `GET /api/widget/bootstrap?installId=...`. El handler:
+
+- Requiere `installId` válido y activo (`Install.status = 'ACTIVE'`) y extrae el `agentInstance` relacionado.
+- Obtiene el dominio del `Origin` (preferido), con `Host` o `Referer` como respaldo; si no hay dominio, responde 400.
+- Busca un `AgentAccess` activo (`isActive = true`) del mismo `agentId` y usa `matchAllowedDomains` para verificar que el dominio esté autorizado. El helper admite coincidencias exactas y wildcards de subdominio (por ejemplo, `cliente.com`, `.cliente.com` o `*.cliente.com`).
+- Si el dominio no aparece en `allowedDomains`, el endpoint devuelve 403 y registra el intento negado.
+- Cada validación exitosa crea un registro en `AccessLog` con `event = 'widget_bootstrap'`, `channel = 'widget'`, el dominio recibido y `metaJson = { installId }`, facilitando auditoría de accesos y rechazos.
+
+### Respuesta mínima
+Actualmente la respuesta incluye `ok: true`, `channel: 'widget'`, `accessId` y `agentId` (el `agentId` se expone porque ya forma parte del embed público). En futuras iteraciones podemos enriquecerla con `tenant.brandingJson`, el nombre del agente y datos de handoff (por ejemplo, `whatsappUrl`) siempre que sean seguros.
+
+### Reglas de dominio
+- `allowedDomains` puede contener coincidencias exactas o prefijadas con `.`/`*.` para cubrir subdominios.
+- Antes de comparar, el helper normaliza el valor de `Origin`/`Referer` eliminando protocolos, puertos y comillas, y acepta `localhost` solo cuando ningún dominio explícito está configurado.
+- El dominio autorizado se debe asociar a un `AgentAccess` con el mismo `tenantId` que el usuario que solicita el embed; por eso todas las consultas pasan por `requireTenantId`.
+
+### Logging
+Cada bootstrap genera una fila en `AccessLog` con los campos `tenantId`, `agentInstanceId`, `agentAccessId`, `domain`, `channel`, `event = 'widget_bootstrap'`, `status = 'ok'` y `metaJson` con `{ installId }`.
+
 ## Modelo Prisma propuesto
 ```prisma
 model AgentAccess {
@@ -39,9 +59,14 @@ model AgentAccess {
 - Todas las lecturas/actualizaciones deben pasar por los guardias `requireTenantId`/`requireAuth` y filtrar por `tenantId`. Evitar consultas sin tenant permitiría que un actor de un tenant vea (o active) los accesos de otro.
 - `allowedDomains` es un arreglo de strings que se normalizan igual que en `lib/installs/domain.ts`. La comprobación se hará en el pipeline del widget (`/api/installs/validate`) antes de llamar al orchestrator.
 - `maxTokensPerMonth` se puede sumar a los logs de `TokenUsageLog` y `AuditLog` (por ejemplo, agregando el `agentAccessId` a `metaJson`) para bloquear nuevos turnos una vez superado el límite. Mientras tanto, mantendremos la validación del balance en `tokenWallet`.
+-
+## Dashboard y operaciones administrativas
+- El dashboard de `/${locale}/dashboard/agents/[agentId]` incluye un panel “Agent Access” con un formulario para crear accesos y una lista editable que muestra `accessId`, `name`, `allowedDomains`, `maxTokensPerMonth` e `isActive`.
+- Desde esta interfaz se puede crear un nuevo acceso (nombre, dominios y límite de tokens), actualizar los datos existentes y activar/desactivar el canal sin salir del detalle del agente.
+- Las acciones usan `POST /api/agent-access` y `PATCH /api/agent-access/[accessId]`, que validan multi-tenant mediante `requireTenantId`, aplican los schemas de `zod` (`createAgentAccessSchema`, `updateAgentAccessSchema`) y devuelven el registro actualizado.
+- El componente cliente mantiene el estado con hooks (`useState`, `useTransition`) y envía cada cambio a la API para evitar recargar la página.
 
-## Próximos pasos (sin implementar aún)
-1. Capa de lectura en `apps/web/app/lib/agent-access` (o dentro de `installs`/`orchestrator`) para resolver `AgentAccess` antes de ejecutar el agente.
-2. Validar dominios/canal en `app/api/orchestrator/chat/route.ts` y en `app/api/installs/validate/route.ts` usando este registro.
-3. Registrar en `AuditLog` eventos de acceso (`agent_access_granted/denied`) para poder auditar quién y cuándo se usó cada acceso.
-4. Exponer una UI en el dashboard (probablemente dentro de `dashboard/installs` o en un nuevo `dashboard/access`) para crear/activar `AgentAccess` records.
+## Próximos pasos (pendientes)
+1. Enriquecer la respuesta bootstrap con branding/agent display name/handoff seguro y documentar cómo se usa en el frontend embebido.
+2. Aplicar límites sobre `maxTokensPerMonth` (por ejemplo, sumando `agentAccessId` al `TokenUsageLog`) para evitar abusos y notificar a los tenants cercanos al límite.
+3. Exponer métricas de `AccessLog` (por tenant/domain) y soportar alertas para dominios no autorizados o bootstraps repetidos.

@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { AgentRunner } from './agent-runner';
 import { KnowledgeManager } from './knowledge-manager';
+import { AgentAccessManager } from './agent-access-client';
 
 export const dynamic = 'force-dynamic';
 
@@ -75,16 +76,30 @@ export default async function AgentDetailPage({ params }: { params: Promise<Page
   const activeTools =
     limits.allowedTools && limits.allowedTools.length > 0 ? limits.allowedTools : TOOL_NAMES;
 
-  const conversations = await prisma.auditLog.findMany({
-    where: {
-      tenantId: tenant.id,
-      action: 'openai_message',
-      entity: 'agent_instance',
-      entityId: agentInstance.id
-    },
-    orderBy: { createdAt: 'desc' },
-    take: 6
-  });
+  const [conversations, agentAccesses] = await Promise.all([
+    prisma.auditLog.findMany({
+      where: {
+        tenantId: tenant.id,
+        action: 'openai_message',
+        entity: 'agent_instance',
+        entityId: agentInstance.id
+      },
+      orderBy: { createdAt: 'desc' },
+      take: 6
+    }),
+    prisma.agentAccess.findMany({
+      where: { tenantId: tenant.id, agentId: agentInstance.id },
+      orderBy: { createdAt: 'desc' },
+      select: {
+        id: true,
+        agentId: true,
+        name: true,
+        allowedDomains: true,
+        isActive: true,
+        maxTokensPerMonth: true
+      }
+    })
+  ]);
 
   return (
     <section className="space-y-6">
@@ -189,6 +204,19 @@ export default async function AgentDetailPage({ params }: { params: Promise<Page
           >
             Configurar canales (WhatsApp)
           </Link>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Agent Access</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <AgentAccessManager
+            agentAccesses={agentAccesses}
+            agentInstanceId={agentInstance.id}
+            agentName={agentInstance.name}
+          />
         </CardContent>
       </Card>
 
