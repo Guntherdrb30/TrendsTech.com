@@ -1,5 +1,6 @@
-import { NextResponse } from 'next/server';
+﻿import { NextResponse } from 'next/server';
 
+import { Prisma } from '@prisma/client';
 import { prisma } from '@trends172tech/db';
 import { matchAllowedDomains, normalizeDomain } from '../../../lib/domains';
 
@@ -46,7 +47,7 @@ async function logBootstrap({
   agentInstanceId: string;
   agentAccessId: string;
   domain: string | null;
-  meta: Record<string, unknown>;
+  meta: Prisma.InputJsonValue;
   status: 'ok' | 'denied';
 }) {
   await prisma.accessLog.create({
@@ -122,4 +123,6 @@ export async function GET(request: Request) {
     agentId: access.agentId
   });
 }
+
+
 
