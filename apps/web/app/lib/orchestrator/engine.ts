@@ -97,7 +97,8 @@ async function logUsage({
   sessionId,
   model,
   toolCalls,
-  messages
+  messages,
+  agentAccessId
 }: {
   tenantId: string;
   actorUserId: string;
@@ -138,7 +139,8 @@ async function logConversation({
   userMessage,
   reply,
   baseAgentKey,
-  toolCalls
+  toolCalls,
+  agentAccessId
 }: {
   tenantId: string;
   actorUserId: string;
