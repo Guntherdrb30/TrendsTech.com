@@ -109,15 +109,13 @@ async function logUsage({
   messages: number;
   agentAccessId?: string;
 }) {
-  const meta: Record<string, unknown> = {
+  const baseMeta = {
     sessionId,
     model: model ?? null,
     toolCalls,
     messages
-  };
-  if (agentAccessId) {
-    meta.agentAccessId = agentAccessId;
-  }
+  } satisfies Prisma.InputJsonObject;
+  const meta = agentAccessId ? { ...baseMeta, agentAccessId } : baseMeta;
 
   await prisma.auditLog.create({
     data: {
@@ -152,16 +150,14 @@ async function logConversation({
   toolCalls: number;
   agentAccessId?: string;
 }) {
-  const meta: Record<string, unknown> = {
+  const baseMeta = {
     sessionId,
     userMessage,
     reply,
     baseAgentKey,
     toolCalls
-  };
-  if (agentAccessId) {
-    meta.agentAccessId = agentAccessId;
-  }
+  } satisfies Prisma.InputJsonObject;
+  const meta = agentAccessId ? { ...baseMeta, agentAccessId } : baseMeta;
 
   await prisma.auditLog.create({
     data: {
