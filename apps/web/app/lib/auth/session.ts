@@ -16,37 +16,40 @@ export const authOptions: NextAuthOptions = {
         email: { label: 'Email', type: 'email' },
         password: { label: 'Password', type: 'password' }
       },
-      async authorize(credentials) {
-        const email = credentials?.email?.toLowerCase().trim();
-        const password = credentials?.password;
+    async authorize(credentials) {
+      const email = credentials?.email?.toLowerCase().trim();
+      const password = credentials?.password;
 
-        if (!email || !password) {
-          return null;
-        }
-
-        const user = await prisma.user.findUnique({
-          where: { email }
-        });
-
-        if (!user || !user.passwordHash) {
-          return null;
-        }
-
-        const isValid = await compare(password, user.passwordHash);
-        if (!isValid) {
-          return null;
-        }
-
-        return {
-          id: user.id,
-          email: user.email,
-          name: user.name ?? undefined,
-          phone: user.phone ?? undefined,
-          avatarUrl: user.avatarUrl ?? undefined,
-          role: user.role,
-          tenantId: user.tenantId
-        };
+      if (!email || !password) {
+        console.warn('[auth] credentials signin failed - missing email or password');
+        return null;
       }
+
+      const user = await prisma.user.findUnique({
+        where: { email }
+      });
+
+      if (!user || !user.passwordHash) {
+        console.warn(`[auth] credentials signin failed for ${email} - user missing or no password hash`);
+        return null;
+      }
+
+      const isValid = await compare(password, user.passwordHash);
+      if (!isValid) {
+        console.warn(`[auth] credentials signin failed for ${email} - invalid password`);
+        return null;
+      }
+
+      return {
+        id: user.id,
+        email: user.email,
+        name: user.name ?? undefined,
+        phone: user.phone ?? undefined,
+        avatarUrl: user.avatarUrl ?? undefined,
+        role: user.role,
+        tenantId: user.tenantId
+      };
+    }
     })
   ],
   callbacks: {
