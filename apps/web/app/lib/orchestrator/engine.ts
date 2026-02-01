@@ -109,7 +109,7 @@ async function logUsage({
   messages: number;
   agentAccessId?: string;
 }) {
-  const meta: Prisma.InputJsonObject = {
+  const meta: Record<string, unknown> = {
     sessionId,
     model: model ?? null,
     toolCalls,
@@ -152,7 +152,7 @@ async function logConversation({
   toolCalls: number;
   agentAccessId?: string;
 }) {
-  const meta: Prisma.InputJsonObject = {
+  const meta: Record<string, unknown> = {
     sessionId,
     userMessage,
     reply,
