@@ -13,6 +13,7 @@ export interface OrchestratorRequest {
   language?: string;
   pageUrl?: string;
   installId?: string;
+  agentAccessId?: string;
   endUser?: {
     id?: string;
     name?: string;

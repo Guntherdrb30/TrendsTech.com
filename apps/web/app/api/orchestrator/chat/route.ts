@@ -3,6 +3,7 @@ import { prisma } from '@trends172tech/db';
 import { z } from 'zod';
 import { runOrchestrator } from '@/lib/orchestrator/engine';
 import { AuthError, requireAuth } from '@/lib/auth/guards';
+import { matchAllowedDomains } from '@/lib/domains';
 import { extractDomainFromRequest, isDomainAllowed, normalizeDomain } from '@/lib/installs/domain';
 
 const internalSchema = z.object({
@@ -91,6 +92,25 @@ export async function POST(request: Request) {
         return NextResponse.json({ error: 'Domain not allowed' }, { status: 403, headers });
       }
 
+      const agentInstance = install.agentInstance;
+      if (!agentInstance) {
+        return NextResponse.json({ error: 'Agent instance not found' }, { status: 404, headers });
+      }
+
+      const accesses = await prisma.agentAccess.findMany({
+        where: {
+          agentId: agentInstance.id,
+          tenantId: agentInstance.tenantId,
+          channel: 'embedded_web',
+          isActive: true
+        }
+      });
+
+      const access = accesses.find((item) => matchAllowedDomains(domain, item.allowedDomains));
+      if (!access) {
+        return NextResponse.json({ error: 'Domain not allowed for this widget' }, { status: 403, headers });
+      }
+
       const actorUser = await prisma.user.findFirst({
         where: { tenantId: install.tenantId },
         orderBy: { createdAt: 'asc' },
@@ -107,7 +127,9 @@ export async function POST(request: Request) {
           sessionId: widgetParsed.data.sessionId,
           message: widgetParsed.data.message,
           channel: widgetParsed.data.channel ?? 'web',
-          endUser: widgetParsed.data.endUser
+          endUser: widgetParsed.data.endUser,
+          installId: widgetParsed.data.installId,
+          agentAccessId: access.id
         },
         actorUser.id,
         install.tenantId

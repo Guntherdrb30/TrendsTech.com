@@ -106,7 +106,18 @@ async function logUsage({
   model?: string | null;
   toolCalls: number;
   messages: number;
+  agentAccessId?: string;
 }) {
+  const meta: Prisma.InputJsonObject = {
+    sessionId,
+    model: model ?? null,
+    toolCalls,
+    messages
+  };
+  if (agentAccessId) {
+    meta.agentAccessId = agentAccessId;
+  }
+
   await prisma.auditLog.create({
     data: {
       actorUserId,
@@ -114,7 +125,7 @@ async function logUsage({
       action: 'openai_usage',
       entity: 'agent_instance',
       entityId: agentInstanceId,
-      metaJson: { sessionId, model, toolCalls, messages }
+      metaJson: meta
     }
   });
 }
@@ -137,7 +148,19 @@ async function logConversation({
   reply: string;
   baseAgentKey: string;
   toolCalls: number;
+  agentAccessId?: string;
 }) {
+  const meta: Prisma.InputJsonObject = {
+    sessionId,
+    userMessage,
+    reply,
+    baseAgentKey,
+    toolCalls
+  };
+  if (agentAccessId) {
+    meta.agentAccessId = agentAccessId;
+  }
+
   await prisma.auditLog.create({
     data: {
       actorUserId,
@@ -145,7 +168,7 @@ async function logConversation({
       action: 'openai_message',
       entity: 'agent_instance',
       entityId: agentInstanceId,
-      metaJson: { sessionId, userMessage, reply, baseAgentKey, toolCalls }
+      metaJson: meta
     }
   });
 }
@@ -201,16 +224,24 @@ export async function runOrchestrator(
     };
     const tools = getAgentTools(toolContext, planLimits.allowedTools);
     const agent = createBaseAgent(agentInstance.baseAgentKey, tools);
+    const traceMetadata: Record<string, string> = {
+      workflow_id: baseAgentDefinition.workflowId ?? '',
+      base_agent_key: agentInstance.baseAgentKey,
+      session_id: request.sessionId,
+      tenant_id: tenantId
+    };
+    if (request.agentAccessId) {
+      traceMetadata.agent_access_id = request.agentAccessId;
+    }
+    if (request.installId) {
+      traceMetadata.install_id = request.installId;
+    }
+
     const runner = new Runner({
       workflowName: baseAgentDefinition.name,
       groupId: request.sessionId,
       traceIncludeSensitiveData: false,
-      traceMetadata: {
-        workflow_id: baseAgentDefinition.workflowId ?? '',
-        base_agent_key: agentInstance.baseAgentKey,
-        session_id: request.sessionId,
-        tenant_id: tenantId
-      }
+      traceMetadata
     });
 
     const result = await runner.run(agent, inputItems, { maxTurns: 6 });
@@ -247,7 +278,8 @@ export async function runOrchestrator(
       userMessage: request.message,
       reply: replyText,
       baseAgentKey: agentInstance.baseAgentKey,
-      toolCalls: toolCallsExecuted
+      toolCalls: toolCallsExecuted,
+      agentAccessId: request.agentAccessId
     });
 
     await logUsage({
@@ -257,7 +289,8 @@ export async function runOrchestrator(
       sessionId: request.sessionId,
       model: modelName,
       toolCalls: toolCallsExecuted,
-      messages: 2
+      messages: 2,
+      agentAccessId: request.agentAccessId
     });
 
     const usage = result.state?._context?.usage;
