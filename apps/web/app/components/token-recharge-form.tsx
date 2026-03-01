@@ -11,6 +11,8 @@ interface TokenRechargeFormProps {
   zelleRecipientName?: string | null;
   zelleEmail?: string | null;
   zellePhone?: string | null;
+  paymentButtonUrl?: string | null;
+  paymentAmountParam?: string | null;
 }
 
 type RechargeCopy = {
@@ -18,6 +20,8 @@ type RechargeCopy = {
   subtitle: string;
   paymentTitle: string;
   paymentNote: string;
+  checkoutTitle: string;
+  checkoutBody: string;
   fields: {
     amount: string;
     reference: string;
@@ -32,11 +36,16 @@ type RechargeCopy = {
     submit: string;
     submitting: string;
   };
+  checkout: {
+    button: string;
+    secureNote: string;
+    ctaLead: string;
+  };
   errors: {
     amountRequired: string;
     amountInvalid: string;
     referenceRequired: string;
-    zelleMissing: string;
+    paymentConfigMissing: string;
     requestFailed: string;
   };
   success: string;
@@ -56,6 +65,8 @@ function getRechargeCopy(locale: string): RechargeCopy {
       subtitle: 'Confirma tu pago en USD para recargar los tokens de tu cuenta.',
       paymentTitle: 'Datos de pago (USD)',
       paymentNote: 'Metodo de pago: Zelle. Usa la referencia del envio.',
+      checkoutTitle: 'Checkout',
+      checkoutBody: 'Realiza tu pago y luego registra aqui la referencia para validarlo.',
       fields: {
         amount: 'Monto en USD',
         reference: 'Referencia de pago',
@@ -70,11 +81,16 @@ function getRechargeCopy(locale: string): RechargeCopy {
         submit: 'Enviar solicitud',
         submitting: 'Enviando...'
       },
+      checkout: {
+        button: 'Pagar ahora',
+        secureNote: 'Se abre una pagina externa de pago en una nueva pestana.',
+        ctaLead: 'Paga de forma segura con trends172 Pay'
+      },
       errors: {
         amountRequired: 'Ingresa el monto en USD',
         amountInvalid: 'El monto debe ser mayor a 0',
         referenceRequired: 'Ingresa la referencia del pago',
-        zelleMissing: 'Faltan datos de Zelle. Contacta al equipo.',
+        paymentConfigMissing: 'No hay metodo de pago configurado. Contacta al equipo.',
         requestFailed: 'No se pudo registrar el pago'
       },
       success: 'Solicitud enviada. Te contactaremos para validar el pago.',
@@ -93,6 +109,8 @@ function getRechargeCopy(locale: string): RechargeCopy {
     subtitle: 'Confirm your USD payment to top up your account tokens.',
     paymentTitle: 'Payment details (USD)',
     paymentNote: 'Payment method: Zelle. Use your transfer reference.',
+    checkoutTitle: 'Checkout',
+    checkoutBody: 'Complete your payment and then submit the transfer reference here for validation.',
     fields: {
       amount: 'Amount in USD',
       reference: 'Payment reference',
@@ -107,11 +125,16 @@ function getRechargeCopy(locale: string): RechargeCopy {
       submit: 'Submit request',
       submitting: 'Submitting...'
     },
+    checkout: {
+      button: 'Pay now',
+      secureNote: 'An external payment page opens in a new tab.',
+      ctaLead: 'Pay securely with trends172 Pay'
+    },
     errors: {
       amountRequired: 'Enter the amount in USD',
       amountInvalid: 'Amount must be greater than 0',
       referenceRequired: 'Enter the payment reference',
-      zelleMissing: 'Zelle details are missing. Contact support.',
+      paymentConfigMissing: 'No payment method is configured. Contact support.',
       requestFailed: 'Payment request failed'
     },
     success: 'Request sent. We will contact you to validate the payment.',
@@ -125,11 +148,44 @@ function getRechargeCopy(locale: string): RechargeCopy {
   };
 }
 
+function buildCheckoutUrl({
+  baseUrl,
+  amount,
+  amountParam
+}: {
+  baseUrl: string;
+  amount: string;
+  amountParam?: string | null;
+}) {
+  const trimmedAmount = amount.trim();
+  const numericAmount = Number(trimmedAmount);
+  if (Number.isNaN(numericAmount) || numericAmount <= 0) {
+    return baseUrl;
+  }
+
+  const normalizedAmount = numericAmount.toFixed(2);
+  if (baseUrl.includes('{amount}')) {
+    return baseUrl.replaceAll('{amount}', encodeURIComponent(normalizedAmount));
+  }
+
+  const paramName = amountParam?.trim() || 'amount';
+  try {
+    const url = new URL(baseUrl);
+    url.searchParams.set(paramName, normalizedAmount);
+    return url.toString();
+  } catch {
+    const separator = baseUrl.includes('?') ? '&' : '?';
+    return `${baseUrl}${separator}${encodeURIComponent(paramName)}=${encodeURIComponent(normalizedAmount)}`;
+  }
+}
+
 export function TokenRechargeForm({
   locale,
   zelleRecipientName,
   zelleEmail,
-  zellePhone
+  zellePhone,
+  paymentButtonUrl,
+  paymentAmountParam
 }: TokenRechargeFormProps) {
   const copy = getRechargeCopy(locale);
   const [amount, setAmount] = useState('');
@@ -140,6 +196,15 @@ export function TokenRechargeForm({
   const [isPending, startTransition] = useTransition();
 
   const hasZelleInfo = Boolean(zelleRecipientName || zelleEmail || zellePhone);
+  const hasPaymentButton = Boolean(paymentButtonUrl);
+  const hasPaymentMethod = hasZelleInfo || hasPaymentButton;
+  const checkoutUrl = hasPaymentButton
+    ? buildCheckoutUrl({
+        baseUrl: paymentButtonUrl ?? '',
+        amount,
+        amountParam: paymentAmountParam
+      })
+    : '#';
 
   const onSubmit = (event: React.FormEvent) => {
     event.preventDefault();
@@ -159,8 +224,8 @@ export function TokenRechargeForm({
       setError(copy.errors.referenceRequired);
       return;
     }
-    if (!hasZelleInfo) {
-      setError(copy.errors.zelleMissing);
+    if (!hasPaymentMethod) {
+      setError(copy.errors.paymentConfigMissing);
       return;
     }
 
@@ -240,14 +305,56 @@ export function TokenRechargeForm({
             </div>
             {error ? <p className="text-sm text-red-500">{error}</p> : null}
             {success ? <p className="text-sm text-emerald-500">{success}</p> : null}
-            <Button type="submit" disabled={isPending || !hasZelleInfo} className="w-full">
+            <Button type="submit" disabled={isPending || !hasPaymentMethod} className="w-full">
               {isPending ? copy.actions.submitting : copy.actions.submit}
             </Button>
           </form>
         </CardContent>
       </Card>
 
-      <Card>
+      <div className="space-y-6">
+        {hasPaymentButton ? (
+          <Card>
+            <CardHeader>
+              <CardTitle>{copy.checkoutTitle}</CardTitle>
+              <p className="text-sm text-slate-500 dark:text-slate-400">{copy.checkoutBody}</p>
+            </CardHeader>
+            <CardContent>
+              <section
+                id="trends172-pay-cta"
+                style={{
+                  marginTop: '24px',
+                  padding: '16px',
+                  border: '1px solid #1f2937',
+                  borderRadius: '12px',
+                  background: '#0b1220'
+                }}
+              >
+                <p style={{ margin: '0 0 10px', fontSize: '14px', color: '#cbd5e1' }}>{copy.checkout.ctaLead}</p>
+                <a
+                  href={checkoutUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  style={{
+                    display: 'inline-block',
+                    padding: '12px 20px',
+                    borderRadius: '10px',
+                    background: '#06b6d4',
+                    color: '#0b1220',
+                    textDecoration: 'none',
+                    fontWeight: 700,
+                    fontFamily: 'system-ui'
+                  }}
+                >
+                  {copy.checkout.button}
+                </a>
+              </section>
+              <p className="mt-3 text-xs text-slate-500 dark:text-slate-400">{copy.checkout.secureNote}</p>
+            </CardContent>
+          </Card>
+        ) : null}
+
+        <Card>
         <CardHeader>
           <CardTitle>{copy.paymentTitle}</CardTitle>
           <p className="text-sm text-slate-500 dark:text-slate-400">{copy.paymentNote}</p>
@@ -277,11 +384,12 @@ export function TokenRechargeForm({
               <span className="font-semibold text-slate-900 dark:text-white">{zellePhone || '---'}</span>
             </div>
           </div>
-          {!hasZelleInfo ? (
-            <p className="text-xs text-red-500">{copy.errors.zelleMissing}</p>
+          {!hasPaymentMethod ? (
+            <p className="text-xs text-red-500">{copy.errors.paymentConfigMissing}</p>
           ) : null}
         </CardContent>
       </Card>
+      </div>
     </div>
   );
 }

@@ -59,6 +59,8 @@ export default async function RechargePage({
           zelleRecipientName={settings?.zelleRecipientName ?? null}
           zelleEmail={settings?.zelleEmail ?? null}
           zellePhone={settings?.zellePhone ?? null}
+          paymentButtonUrl={process.env.NEXT_PUBLIC_PAYMENT_BUTTON_URL ?? null}
+          paymentAmountParam={process.env.NEXT_PUBLIC_PAYMENT_AMOUNT_PARAM ?? null}
         />
       ) : (
         <div className="space-y-6">
