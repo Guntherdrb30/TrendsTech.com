@@ -31,7 +31,7 @@
     "intakeBadge": "ASESOR TRENDS172 TECH",
     "intakeTitle": "Habla con un asesor experto",
     "intakeSubtitle": "Empieza por una de estas dos rutas: conocer LUNA a fondo o diagnosticar que agentes necesita tu empresa.",
-    "intakeNote": "Si eliges LUNA te explicamos modulos, beneficios, PWA, caso Carpihogar y opciones de implementacion. Si eliges agentes, analiza tu URL o tu descripcion y recomienda la combinacion correcta.",
+    "intakeNote": "Si la conversacion va hacia LUNA o hacia el sistema, el asesor debe preguntarte primero que tipo de empresa tienes para adaptar mejor la propuesta. Si eliges agentes, analiza tu URL o tu descripcion y recomienda la combinacion correcta.",
     "intakeExamplesTitle": "Rutas de asesoramiento",
     "intakeExamples": {
       "e1Label": "Salud y clinicas",
@@ -55,9 +55,9 @@
     "chatSuggestionsTitle": "Preguntas iniciales",
     "chatSuggestions": {
       "s1Label": "Quiero saber mas de LUNA",
-      "s1Prompt": "Quiero saber mas de LUNA. Actua como asesor comercial senior de Trends172 Tech y explicame el sistema completo con foco en: que es, para que tipo de empresa aplica, beneficios principales, modulos de ventas, inventario, clientes, cobros, despachos, reportes, paneles por rol, experiencia PWA instalable, respaldo del caso real Carpihogar y siguientes pasos para demo o implementacion. Responde en espanol claro, consultivo y orientado a venta.",
+      "s1Prompt": "Quiero saber mas de LUNA. Actua como asesor comercial senior de Trends172 Tech. Antes de explicarme el sistema, hazme primero esta pregunta: que tipo de empresa tienes y como funciona hoy tu operacion comercial. Despues adapta tu respuesta a ese tipo de empresa y explicame LUNA con foco en: para quien aplica, beneficios principales, modulos de ventas, inventario, clientes, cobros, despachos, reportes, paneles por rol, experiencia PWA instalable, respaldo del caso real Carpihogar y siguientes pasos para demo o implementacion. Responde en espanol claro, consultivo y orientado a venta.",
       "s2Label": "Danos tu URL o describe tu empresa",
-      "s2Prompt": "Voy a compartir mi URL o describir mi empresa. Quiero que me asesores sobre que agentes IA me convienen y si tambien deberia evaluar LUNA. Analiza el contexto, recomienda agentes concretos entre marketing, ventas, citas, soporte y voz, prioriza por impacto y justifica cada recomendacion. Si falta informacion, haz preguntas cortas antes de recomendar."
+      "s2Prompt": "Voy a compartir mi URL o describir mi empresa. Quiero que me asesores sobre que agentes IA me convienen y si tambien deberia evaluar LUNA. Analiza el contexto, recomienda agentes concretos entre marketing, ventas, citas, soporte y voz, prioriza por impacto y justifica cada recomendacion. Si detectas que puede encajar LUNA o si menciono el sistema, antes de recomendar LUNA preguntame primero que tipo de empresa tengo y como funciona hoy mi operacion. Si falta informacion, haz preguntas cortas antes de recomendar."
     },
     "carouselSecondaryCta": "Hablar con un asesor",
     "carousel": {

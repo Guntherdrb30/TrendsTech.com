@@ -31,7 +31,7 @@
     "intakeBadge": "TRENDS172 TECH ADVISOR",
     "intakeTitle": "Talk to an expert advisor",
     "intakeSubtitle": "Start with one of two paths: learn about LUNA in depth or diagnose which AI agents your company needs.",
-    "intakeNote": "If you choose LUNA, the advisor explains modules, benefits, PWA, the Carpihogar case, and implementation options. If you choose agents, it can analyze your URL or company description and recommend the right mix.",
+    "intakeNote": "If the conversation moves toward LUNA or the system, the advisor should first ask what kind of company you run so the proposal can be adapted correctly. If you choose agents, it can analyze your URL or company description and recommend the right mix.",
     "intakeExamplesTitle": "Advisory paths",
     "intakeExamples": {
       "e1Label": "Healthcare",
@@ -55,9 +55,9 @@
     "chatSuggestionsTitle": "Starting questions",
     "chatSuggestions": {
       "s1Label": "I want to learn more about LUNA",
-      "s1Prompt": "I want to learn more about LUNA. Act as a senior commercial advisor for Trends172 Tech and explain the full system with focus on: what it is, what kind of company it fits, main benefits, modules for sales, inventory, customers, collections, dispatches, reporting, role-based panels, installable PWA experience, proof from the real Carpihogar case, and next steps for a demo or implementation. Reply in clear, consultative, sales-oriented English.",
+      "s1Prompt": "I want to learn more about LUNA. Act as a senior commercial advisor for Trends172 Tech. Before explaining the system, ask me this first: what kind of company do you run and how does your commercial operation work today. Then adapt your explanation to that company type and explain LUNA with focus on: who it fits, main benefits, modules for sales, inventory, customers, collections, dispatches, reporting, role-based panels, installable PWA experience, proof from the real Carpihogar case, and next steps for a demo or implementation. Reply in clear, consultative, sales-oriented English.",
       "s2Label": "Share your URL or describe your company",
-      "s2Prompt": "I am going to share my URL or describe my company. I want you to advise me on which AI agents fit best and whether I should also evaluate LUNA. Analyze the context, recommend concrete agents among marketing, sales, appointments, support, and voice, prioritize them by impact, and justify each recommendation. If information is missing, ask short questions before recommending."
+      "s2Prompt": "I am going to share my URL or describe my company. I want you to advise me on which AI agents fit best and whether I should also evaluate LUNA. Analyze the context, recommend concrete agents among marketing, sales, appointments, support, and voice, prioritize them by impact, and justify each recommendation. If LUNA may fit or if I mention the system, ask me first what kind of company I run and how my operation works today before recommending LUNA. If information is missing, ask short questions before recommending."
     },
     "carouselSecondaryCta": "Talk to an advisor",
     "carousel": {
