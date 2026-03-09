@@ -2,7 +2,9 @@
   "nav": {
     "home": "Home",
     "agents": "Agents",
-    "projects": "Projects",
+    "systems": "Systems",
+    "projects": "Cases",
+    "news": "News",
     "pricing": "Pricing",
     "login": "Login",
     "register": "Register",
@@ -17,7 +19,9 @@
     "homeTitle": "Trends172 Tech",
     "homeSubtitle": "AI agent platform for analysis, creation, and distribution.",
     "agentsTitle": "Agents",
+    "systemsTitle": "Systems",
     "projectsTitle": "Projects",
+    "newsTitle": "News",
     "pricingTitle": "Pricing",
     "loginTitle": "Login",
     "dashboardTitle": "Dashboard",
@@ -81,12 +85,12 @@
       "f5": "Users and permissions",
       "f6": "Payments and tokens"
     },
-    "eyebrow": "ENTERPRISE AI SYSTEMS",
-    "heroHeadline": "Corporate-grade agent architecture",
-    "heroSubhead": "Design, deploy, and govern AI workflows with traceability and compliance.",
+    "eyebrow": "AI SOLUTIONS FOR BUSINESS",
+    "heroHeadline": "AI agents and business systems built for real operations",
+    "heroSubhead": "We sell specialized agents and full operational platforms for companies that need more control, speed, and traceability.",
     "heroCtaPrimary": "Explore agents",
-    "heroCtaSecondary": "View pricing",
-    "heroNote": "Go live in weeks with full control.",
+    "heroCtaSecondary": "View systems",
+    "heroNote": "Professional implementation for real operations.",
     "metrics": {
       "m1Value": "99.9%",
       "m1Label": "uptime target",
@@ -139,17 +143,61 @@
       "p4Title": "Scaling",
       "p4Body": "We measure, iterate, and optimize with data."
     },
-    "clientsTitle": "Our clients",
-    "clientsNote": "Support Venezuelan development with artificial intelligence.",
-    "ctaTitle": "Elevate your operation to enterprise level",
-    "ctaBody": "Activate AI agents with full control and consistent performance.",
-    "ctaPrimary": "View pricing",
-    "ctaSecondary": "Login"
+    "solutionLinesEyebrow": "TWO BUSINESS LINES",
+    "solutionLinesTitle": "One brand, two ways to transform operations",
+    "solutionLinesBody": "At Trends172 Tech we sell ready-to-deploy AI agents and full business systems for companies that need a more structured operation.",
+    "solutionLines": {
+      "cards": {
+        "agents": {
+          "title": "AI agents",
+          "body": "Specialized agents for marketing, sales, appointments, support, and voice. Ideal for automating focused workflows and improving response time fast.",
+          "cta": "View agents",
+          "highlights": {
+            "h1": "Agent catalog by business use case",
+            "h2": "Fast activation on web and conversational channels",
+            "h3": "Ideal base for demand capture, follow-up, and support"
+          }
+        },
+        "systems": {
+          "title": "Business systems",
+          "body": "Platforms like LUNA for companies that need to sell, control inventory, coordinate orders, deliveries, and operations with more structure, including an installable app-like experience through PWA.",
+          "cta": "Explore LUNA",
+          "highlights": {
+            "h1": "Commercial, administrative, and logistics operations in one environment",
+            "h2": "Scalable for companies with complex workflows",
+            "h3": "Backed by a real-world Carpihogar implementation with installable PWA experience"
+          }
+        }
+      }
+    },
+    "agentLineupTitle": "Agents available today",
+    "agentLineupBody": "We currently offer agents for marketing, sales, appointments, support, and public voice to solve concrete business needs and accelerate outcomes.",
+    "newsroomEyebrow": "NEWS",
+    "newsroomTitle": "Improvements, launches, and technology in motion",
+    "newsroomBody": "This area will communicate releases, product updates, new capabilities, technical news, and everything the company continues to add to its solutions.",
+    "newsroomCta": "View news",
+    "newsroom": {
+      "fallbackCategory": "Update",
+      "cards": {
+        "n1Title": "New agents and systems",
+        "n1Body": "We will publish new agent lines, business modules, and ready-to-deploy solutions for different industries.",
+        "n2Title": "Continuous platform improvements",
+        "n2Body": "We will share updates around performance, user experience, operational security, and product evolution.",
+        "n3Title": "Technical and business news",
+        "n3Body": "We will surface future integrations, architecture decisions, featured cases, and key milestones from Trends172 Tech."
+      }
+    },
+    "clientsTitle": "Real cases",
+    "clientsNote": "Products built from real operational and growth needs.",
+    "ctaTitle": "Your company can grow with more control and less improvisation",
+    "ctaBody": "Combine AI agents and business systems depending on the level of complexity your operation needs.",
+    "ctaPrimary": "View LUNA",
+    "ctaSecondary": "Explore agents"
   },
   "projectsPage": {
-    "eyebrow": "TECH PROJECTS",
-    "title": "Projects that prove our capabilities",
-    "subtitle": "We deliver professional development, automation, and custom platforms.",
+    "eyebrow": "REAL CASES",
+    "title": "Real implementations that support our offer",
+    "subtitle": "We showcase projects built from real sales, operational, and growth needs.",
     "ctaPrimary": "Explore plans",
     "ctaSecondary": "Sign in",
     "capabilitiesTitle": "Capabilities",
@@ -162,18 +210,169 @@
       "c5": "Sales and follow-up flows",
       "c6": "Omnichannel experiences"
     },
-    "projectsTitle": "Featured projects",
-    "projectsSubtitle": "We show real work and complete deliveries for growing clients.",
-    "projectBadge": "Project",
-    "projectTag": "Shipped",
+    "projectsTitle": "Featured cases",
+    "projectsSubtitle": "Deployed solutions that show how we turn real workflows into more structured digital operations.",
+    "projectBadge": "Case",
+    "projectTag": "Live operation",
     "projectCta": "Visit",
     "projects": {
       "carpihogar": {
         "title": "Carpihogar.com",
-        "body": "Home ecommerce with dynamic catalog, integrations, and sales automation.",
-        "tagline1": "Ecommerce + payments",
-        "tagline2": "Sales automation"
+        "body": "Real implementation built for ecommerce, commercial control, inventory, operations, and an installable PWA experience; the conceptual base behind LUNA.",
+        "tagline1": "Real case",
+        "tagline2": "PWA + LUNA foundation"
       }
+    }
+  },
+  "systemsPage": {
+    "eyebrow": "BUSINESS SYSTEMS",
+    "title": "Platforms built for more order, control, and speed",
+    "subtitle": "Here we group our reusable business systems for companies that need much more than an informational website or a basic store.",
+    "ctaPrimary": "Explore LUNA",
+    "ctaSecondary": "View AI agents",
+    "focusTitle": "Designed for companies that need",
+    "focusNote": "The goal is not just to digitize. It is to professionalize the full operation.",
+    "focus": {
+      "f1": "Real control over sales, orders, stock, and operations",
+      "f2": "Less dependence on spreadsheets, messages, and manual workflows",
+      "f3": "Visibility for multiple teams and roles",
+      "f4": "Capacity to grow without losing traceability"
+    },
+    "catalogTitle": "Current systems portfolio",
+    "catalogBody": "LUNA is our main system for companies with commercial, administrative, and logistics operations that need a stronger platform.",
+    "catalogBadge": "Featured system",
+    "catalogTag": "Scalable",
+    "lunaBody": "LUNA centralizes sales, inventory, customers, collections, dispatches, reporting, role-based panels, and an installable PWA experience in a single platform so the business can operate with clarity and structure.",
+    "lunaHighlights": {
+      "h1": "Manage sales and orders from one environment",
+      "h2": "Control inventory, movements, and real availability",
+      "h3": "Track collections, deliveries, and daily operations",
+      "h4": "Organize teams by role and install the system as an app through PWA"
+    },
+    "catalogPrimary": "View LUNA details",
+    "catalogSecondary": "See real case",
+    "agentsTitle": "AI agents that complement the operation",
+    "agentsBody": "Alongside the system, we offer AI agents that can strengthen marketing, sales, appointments, support, and voice channels inside a broader commercial and operational strategy."
+  },
+  "lunaPage": {
+    "back": "Back to systems",
+    "eyebrow": "LUNA",
+    "title": "LUNA: the system that organizes, accelerates, and grows your business",
+    "subtitle": "Manage sales, inventory, customers, dispatches, reporting, and operations from one platform.",
+    "subcopy": "If your company sells products, manages stock, coordinates orders, collects payments, dispatches, and needs real control over the business, LUNA gives you the technology structure to operate faster, with fewer errors, higher profitability, and an installable app-like experience through its PWA.",
+    "ctaPrimary": "Request demo",
+    "ctaSecondary": "Talk to an advisor",
+    "valueTitle": "One platform, full control",
+    "valueProps": {
+      "v1": "Centralizes commercial, administrative, and logistics operations.",
+      "v2": "Reduces human error in pricing, inventory, orders, and collections.",
+      "v3": "Accelerates response times and customer attention.",
+      "v4": "Improves internal business control.",
+      "v5": "Lets the company grow without losing visibility.",
+      "v6": "Turns improvised processes into professional workflows.",
+      "v7": "Improves the final customer experience.",
+      "v8": "Supports decisions with real-time information."
+    },
+    "problemTitle": "The problem",
+    "problemHeadline": "As the business grows, disorder grows too",
+    "problemBody": "Many companies lose time and money because they operate with spreadsheets, WhatsApp messages, manual controls, incomplete systems, or teams without visibility. What once felt manageable starts slowing sales, creating errors, and reducing profitability.",
+    "solutionTitle": "The solution",
+    "solutionHeadline": "LUNA connects the full operation in one system",
+    "solutionBody": "It is not just a website. It is a management platform to sell better and operate better, with structure, visibility, and speed across the business.",
+    "outcomesTitle": "What your company gains with LUNA",
+    "outcomes": {
+      "o1Title": "More efficiency",
+      "o1Body": "Your team works faster, with less rework and fewer manual tasks.",
+      "o2Title": "More control",
+      "o2Body": "You know what was sold, what is in stock, what is pending, what was collected, and what is still waiting to ship.",
+      "o3Title": "More sales",
+      "o3Body": "With faster processes, better follow-up, and a more ordered operation, more opportunities get closed.",
+      "o4Title": "Fewer losses",
+      "o4Body": "You reduce stock errors, operational failures, administrative disorder, and follow-up issues.",
+      "o5Title": "Better customer experience",
+      "o5Body": "Customers get faster answers, better managed orders, and a more professional experience.",
+      "o6Title": "Real scalability",
+      "o6Body": "The system grows with the business without relying on improvised tools."
+    },
+    "modulesTitle": "Modules and capabilities",
+    "modulesBody": "LUNA can adapt to companies that need much more than a simple ecommerce setup, including operations with large catalogs, custom products, and complex internal workflows.",
+    "modules": {
+      "m1Title": "Sales and orders",
+      "m1Body": "Manage quotes, orders, sales, and commercial follow-up in one environment.",
+      "m2Title": "Inventory",
+      "m2Body": "Control products, stock, movements, inbound, outbound, and real availability.",
+      "m3Title": "Customers and users",
+      "m3Body": "Organize profiles, addresses, history, and the commercial relationship with each customer.",
+      "m4Title": "Collections and payments",
+      "m4Body": "Register payments, references, validations, and operational collections control.",
+      "m5Title": "Dispatch and logistics",
+      "m5Body": "Track deliveries, shipping statuses, and distribution operations.",
+      "m6Title": "Reports and metrics",
+      "m6Body": "Access key indicators to make decisions with data instead of assumptions.",
+      "m7Title": "Role-based panels",
+      "m7Body": "Each user enters a workspace adapted to their role: admin, sales, customers, partners, or logistics.",
+      "m8Title": "Specialized operation",
+      "m8Body": "Adapts to sectors that need more advanced processes than a basic online store, including installable PWA deployment."
+    },
+    "agentsTitle": "AI agents you can add to LUNA",
+    "agentsBody": "Trends172 Tech also offers AI agents for marketing, sales, appointments, support, and voice. That means LUNA can evolve not only as an operational system, but also with conversational automation where the business needs it.",
+    "proofTitle": "Tested in a real operation",
+    "proofHeadline": "LUNA was not born as a theoretical idea",
+    "proofBody": "Developed from a real implementation at Carpihogar, LUNA was designed to answer real commercial, operational, and administrative needs, including full system usage and an installable PWA experience.",
+    "proofNote": "That means it was created to solve concrete day-to-day business problems, not just to remain a polished software concept.",
+    "proofCta": "View real case",
+    "reasonsTitle": "Why choose LUNA",
+    "reasons": {
+      "r1": "Because it replaces manual processes with an integrated digital operation.",
+      "r2": "Because it improves business control without making the team's work harder.",
+      "r3": "Because it adapts to companies that need more than a basic online store.",
+      "r4": "Because it helps professionalize the operation.",
+      "r5": "Because it helps the business grow with order, speed, and traceability."
+    },
+    "finalTitle": "Your company does not need more isolated tools",
+    "finalBody": "It needs a system that connects the full operation. Install LUNA and move toward management that is faster, clearer, and more profitable.",
+    "finalPrimary": "I want a demo",
+    "finalSecondary": "I want to implement LUNA"
+  },
+  "newsPage": {
+    "eyebrow": "TRENDS172 TECH NEWS",
+    "title": "News, updates, and progress across our solutions",
+    "subtitle": "This is where we present the evolution of our AI agents, business systems, implementations, product updates, and the technical decisions that matter to our clients.",
+    "ctaPrimary": "View LUNA",
+    "ctaSecondary": "Explore agents",
+    "streamsTitle": "What you will find here",
+    "streams": {
+      "s1Title": "Product launches",
+      "s1Body": "New agents, new systems, new capabilities, and new business lines.",
+      "s2Title": "Operational improvements",
+      "s2Body": "Adjustments that improve speed, order, control, and scalability across our products.",
+      "s3Title": "Technology context",
+      "s3Body": "Architecture changes, technical criteria, and decisions that strengthen the Trends172 Tech offer."
+    },
+    "updatesTitle": "Initial editorial blocks",
+    "updatesBody": "This first version leaves the structure ready to communicate updates to clients, prospects, and partners from a single corporate section.",
+    "featuredLabel": "Featured",
+    "updates": {
+      "u1Badge": "AI Agents",
+      "u1Title": "A living catalog of agents by use case",
+      "u1Body": "The brand already has a clear base of agents for marketing, sales, appointments, support, and voice, ready to expand with more specializations.",
+      "u2Badge": "Systems",
+      "u2Title": "LUNA as the main business product line",
+      "u2Body": "The site can now communicate reusable business systems, starting with LUNA as the higher-ticket and larger-scale offer.",
+      "u3Badge": "Cases",
+      "u3Title": "Real cases as commercial proof",
+      "u3Body": "Carpihogar is positioned as a real operation that validates the offer and explains the functional origin of LUNA.",
+      "u4Badge": "Brand",
+      "u4Title": "Corporate showcase for projects and updates",
+      "u4Body": "Trends172 Tech now has a section prepared to show progress, news, improvements, and product evolution without depending on scattered pages."
+    },
+    "promiseTitle": "Editorial direction",
+    "promiseHeadline": "This section is meant to sustain the perception of a company that is active and evolving",
+    "promises": {
+      "p1": "Communicate new developments and capabilities with clear commercial language.",
+      "p2": "Keep clients and prospects informed about relevant improvements.",
+      "p3": "Build trust by showing continuous product evolution.",
+      "p4": "Connect technology, business, and real cases inside one brand narrative."
     }
   },
   "common": {

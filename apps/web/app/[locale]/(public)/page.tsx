@@ -2,6 +2,8 @@ import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import { IBM_Plex_Sans, Space_Grotesk } from "next/font/google";
 import { PublicConciergeChat } from "./public-concierge-chat";
+import { AGENT_PRODUCTS } from "./agents/agent-products";
+import { formatNewsDate, getPublishedNewsPosts } from "@/lib/news";
 
 const display = Space_Grotesk({
   subsets: ["latin"],
@@ -18,8 +20,10 @@ const body = IBM_Plex_Sans({
 export default async function HomePage({ params }: { params: Promise<{ locale: string }> }) {
   const t = await getTranslations("pages");
   const home = await getTranslations("home");
+  const agents = await getTranslations("agents");
   const { locale } = await params;
   const base = `/${locale}`;
+  const publishedNews = await getPublishedNewsPosts(locale, 3);
 
   const metrics = [
     { value: home("metrics.m1Value"), label: home("metrics.m1Label") },
@@ -105,6 +109,66 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
     home("sidebarFeatures.f5"),
     home("sidebarFeatures.f6")
   ];
+
+  const solutionLines = [
+    {
+      title: home("solutionLines.cards.agents.title"),
+      body: home("solutionLines.cards.agents.body"),
+      cta: home("solutionLines.cards.agents.cta"),
+      href: `${base}/agents`,
+      highlights: [
+        home("solutionLines.cards.agents.highlights.h1"),
+        home("solutionLines.cards.agents.highlights.h2"),
+        home("solutionLines.cards.agents.highlights.h3")
+      ]
+    },
+    {
+      title: home("solutionLines.cards.systems.title"),
+      body: home("solutionLines.cards.systems.body"),
+      cta: home("solutionLines.cards.systems.cta"),
+      href: `${base}/systems/luna`,
+      highlights: [
+        home("solutionLines.cards.systems.highlights.h1"),
+        home("solutionLines.cards.systems.highlights.h2"),
+        home("solutionLines.cards.systems.highlights.h3")
+      ]
+    }
+  ];
+
+  const featuredAgents = AGENT_PRODUCTS.map((agent) => ({
+    key: agent.key,
+    name: agents(`${agent.key}.name`),
+    tagline: agents(`${agent.key}.tagline`)
+  }));
+
+  const newsroomItems =
+    publishedNews.length > 0
+      ? publishedNews.map((post) => ({
+          title: post.title,
+          body: post.summary,
+          category: post.category,
+          date: formatNewsDate(post.publishedAt, locale)
+        }))
+      : [
+          {
+            title: home("newsroom.cards.n1Title"),
+            body: home("newsroom.cards.n1Body"),
+            category: home("newsroom.fallbackCategory"),
+            date: null
+          },
+          {
+            title: home("newsroom.cards.n2Title"),
+            body: home("newsroom.cards.n2Body"),
+            category: home("newsroom.fallbackCategory"),
+            date: null
+          },
+          {
+            title: home("newsroom.cards.n3Title"),
+            body: home("newsroom.cards.n3Body"),
+            category: home("newsroom.fallbackCategory"),
+            date: null
+          }
+        ];
 
   return (
     <div className={`${display.variable} ${body.variable} font-[var(--font-body)]`}>
@@ -199,13 +263,13 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
             </div>
             <div className="flex flex-wrap items-center gap-3">
               <Link
-                href="agents"
+                href={`${base}/agents`}
                 className="reveal inline-flex items-center justify-center rounded-full bg-slate-900 px-5 py-2.5 text-sm font-semibold text-white shadow-[0_18px_40px_-20px_rgba(15,23,42,0.6)] transition hover:-translate-y-0.5 hover:bg-slate-800 dark:bg-white dark:text-slate-950 dark:hover:bg-slate-200"
               >
                 {home("heroCtaPrimary")}
               </Link>
               <Link
-                href="pricing"
+                href={`${base}/systems`}
                 className="reveal reveal-delay-1 inline-flex items-center justify-center rounded-full border border-slate-300 bg-white/80 px-5 py-2.5 text-sm font-semibold text-slate-700 backdrop-blur transition hover:-translate-y-0.5 hover:border-slate-400 dark:border-slate-700 dark:bg-slate-900/60 dark:text-slate-200"
               >
                 {home("heroCtaSecondary")}
@@ -340,6 +404,111 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         </div>
       </section>
 
+      <section className="space-y-6">
+        <div className="space-y-3">
+          <div className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-400">
+            {home("solutionLinesEyebrow")}
+          </div>
+          <h2 className="text-3xl font-[var(--font-display)] font-semibold text-slate-900 dark:text-white">
+            {home("solutionLinesTitle")}
+          </h2>
+          <p className="max-w-3xl text-base text-slate-600 dark:text-slate-300">
+            {home("solutionLinesBody")}
+          </p>
+        </div>
+        <div className="grid gap-6 lg:grid-cols-2">
+          {solutionLines.map((line) => (
+            <article
+              key={line.title}
+              className="rounded-3xl border border-slate-200 bg-white/90 p-6 shadow-[0_30px_90px_-70px_rgba(15,23,42,0.45)] dark:border-slate-800 dark:bg-slate-950/70"
+            >
+              <div className="space-y-4">
+                <h3 className="text-2xl font-[var(--font-display)] font-semibold text-slate-900 dark:text-white">
+                  {line.title}
+                </h3>
+                <p className="text-sm leading-relaxed text-slate-600 dark:text-slate-300">
+                  {line.body}
+                </p>
+                <ul className="space-y-2 text-sm text-slate-600 dark:text-slate-300">
+                  {line.highlights.map((highlight) => (
+                    <li key={highlight} className="flex items-start gap-2">
+                      <span className="mt-2 h-1.5 w-1.5 rounded-full bg-teal-500" aria-hidden="true" />
+                      <span>{highlight}</span>
+                    </li>
+                  ))}
+                </ul>
+                <Link
+                  href={line.href}
+                  className="inline-flex items-center justify-center rounded-full border border-slate-300 bg-white/80 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:-translate-y-0.5 hover:border-slate-400 dark:border-slate-700 dark:bg-slate-900/60 dark:text-slate-200"
+                >
+                  {line.cta}
+                </Link>
+              </div>
+            </article>
+          ))}
+        </div>
+
+        <div className="rounded-3xl border border-slate-200 bg-slate-50/80 p-6 dark:border-slate-800 dark:bg-slate-950/60">
+          <div className="space-y-3">
+            <h3 className="text-2xl font-[var(--font-display)] font-semibold text-slate-900 dark:text-white">
+              {home("agentLineupTitle")}
+            </h3>
+            <p className="max-w-3xl text-sm text-slate-600 dark:text-slate-300">
+              {home("agentLineupBody")}
+            </p>
+          </div>
+          <div className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+            {featuredAgents.map((agent) => (
+              <Link
+                key={agent.key}
+                href={`${base}/agents/${agent.key}`}
+                className="rounded-2xl border border-slate-200 bg-white px-4 py-4 text-sm shadow-sm transition hover:-translate-y-0.5 dark:border-slate-800 dark:bg-slate-900/70"
+              >
+                <div className="font-semibold text-slate-900 dark:text-white">{agent.name}</div>
+                <p className="mt-2 text-slate-600 dark:text-slate-300">{agent.tagline}</p>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="space-y-6">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+          <div className="space-y-3">
+            <div className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-400">
+              {home("newsroomEyebrow")}
+            </div>
+            <h2 className="text-3xl font-[var(--font-display)] font-semibold text-slate-900 dark:text-white">
+              {home("newsroomTitle")}
+            </h2>
+            <p className="max-w-3xl text-base text-slate-600 dark:text-slate-300">
+              {home("newsroomBody")}
+            </p>
+          </div>
+          <Link
+            href={`${base}/news`}
+            className="inline-flex items-center justify-center rounded-full border border-slate-300 bg-white/80 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:-translate-y-0.5 hover:border-slate-400 dark:border-slate-700 dark:bg-slate-900/60 dark:text-slate-200"
+          >
+            {home("newsroomCta")}
+          </Link>
+        </div>
+        <div className="grid gap-4 lg:grid-cols-3">
+          {newsroomItems.map((item) => (
+            <article
+              key={item.title}
+              className="rounded-2xl border border-slate-200 bg-white px-5 py-5 text-sm text-slate-600 shadow-sm dark:border-slate-800 dark:bg-slate-950/60 dark:text-slate-300"
+            >
+              <div className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-400">
+                {item.category}
+                {item.date ? ` · ${item.date}` : ""}
+              </div>
+              <div className="text-base font-semibold text-slate-900 dark:text-white">{item.title}</div>
+              <p className="mt-2 leading-relaxed">{item.body}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
       <section className="relative overflow-hidden rounded-3xl border border-slate-200 bg-slate-950 px-6 py-10 text-white shadow-[0_40px_120px_-80px_rgba(15,23,42,0.6)] dark:border-slate-800 sm:px-10 sm:py-12">
         <div className="absolute inset-0 opacity-70" aria-hidden="true">
           <div className="absolute -left-32 top-1/2 h-72 w-72 -translate-y-1/2 rounded-full bg-[radial-gradient(circle_at_center,_rgba(45,212,191,0.35),_transparent_70%)] blur-2xl" />
@@ -352,13 +521,13 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
           </div>
           <div className="flex flex-wrap items-center gap-3">
             <Link
-              href="pricing"
+              href={`${base}/systems/luna`}
               className="inline-flex items-center justify-center rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-slate-900 shadow-[0_20px_40px_-20px_rgba(15,23,42,0.6)] transition hover:-translate-y-0.5 hover:bg-slate-100"
             >
               {home("ctaPrimary")}
             </Link>
             <Link
-              href="login"
+              href={`${base}/agents`}
               className="inline-flex items-center justify-center rounded-full border border-slate-500 px-5 py-2.5 text-sm font-semibold text-slate-200 transition hover:-translate-y-0.5 hover:border-slate-300"
             >
               {home("ctaSecondary")}

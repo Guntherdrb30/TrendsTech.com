@@ -1,5 +1,6 @@
 import { hash } from 'bcryptjs';
 import { z } from 'zod';
+import Link from 'next/link';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { prisma } from '@trends172tech/db';
@@ -485,6 +486,9 @@ export default async function RootPage({ params }: { params: Promise<{ locale: s
             <a href="#reportes" className="hover:text-slate-900 dark:hover:text-white">
               Reportes
             </a>
+            <Link href={`/${locale}/root/news`} className="hover:text-slate-900 dark:hover:text-white">
+              Novedades
+            </Link>
             <a href="#ajustes" className="hover:text-slate-900 dark:hover:text-white">
               Ajustes globales
             </a>

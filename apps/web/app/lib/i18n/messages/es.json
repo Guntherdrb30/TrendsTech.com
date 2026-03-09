@@ -2,7 +2,9 @@
   "nav": {
     "home": "Inicio",
     "agents": "Agentes",
-    "projects": "Proyectos",
+    "systems": "Sistemas",
+    "projects": "Casos",
+    "news": "Novedades",
     "pricing": "Precios",
     "login": "Iniciar sesion",
     "register": "Crear cuenta",
@@ -17,7 +19,9 @@
     "homeTitle": "Trends172 Tech",
     "homeSubtitle": "Plataforma de agentes IA para analisis, creacion y distribucion.",
     "agentsTitle": "Agentes",
+    "systemsTitle": "Sistemas",
     "projectsTitle": "Proyectos",
+    "newsTitle": "Novedades",
     "pricingTitle": "Precios",
     "loginTitle": "Iniciar sesion",
     "dashboardTitle": "Panel",
@@ -82,11 +86,11 @@
       "f6": "Pagos y tokens"
     },
     "eyebrow": "SOLUCIONES DE IA PARA EMPRESAS",
-    "heroHeadline": "Arquitectura de agentes con enfoque corporativo",
-    "heroSubhead": "Diseno, despliegue y gobierno de flujos IA con trazabilidad y cumplimiento.",
+    "heroHeadline": "Agentes IA y sistemas empresariales para crecer con orden",
+    "heroSubhead": "Vendemos agentes especializados y plataformas operativas completas para empresas que necesitan mas control, velocidad y trazabilidad.",
     "heroCtaPrimary": "Explorar agentes",
-    "heroCtaSecondary": "Ver precios",
-    "heroNote": "Implementacion en semanas con control total.",
+    "heroCtaSecondary": "Ver sistemas",
+    "heroNote": "Implementacion profesional para operacion real.",
     "metrics": {
       "m1Value": "99.9%",
       "m1Label": "disponibilidad objetivo",
@@ -139,17 +143,61 @@
       "p4Title": "Escalamiento",
       "p4Body": "Medimos, iteramos y optimizamos con data."
     },
-    "clientsTitle": "Nuestros clientes",
-    "clientsNote": "Apoya el desarrollo venezolano con inteligencia artificial.",
-    "ctaTitle": "Lleva tu operacion a nivel enterprise",
-    "ctaBody": "Activa agentes IA con control total y performance consistente.",
-    "ctaPrimary": "Ver precios",
-    "ctaSecondary": "Iniciar sesion"
+    "solutionLinesEyebrow": "DOS LINEAS DE NEGOCIO",
+    "solutionLinesTitle": "Una marca, dos formas de transformar operaciones",
+    "solutionLinesBody": "En Trends172 Tech vendemos agentes IA listos para acelerar procesos y sistemas empresariales completos para ordenar toda la operacion del negocio.",
+    "solutionLines": {
+      "cards": {
+        "agents": {
+          "title": "Agentes IA",
+          "body": "Agentes especializados para marketing, ventas, citas, soporte y voz. Ideales para automatizar tareas concretas y mejorar la atencion con rapidez.",
+          "cta": "Ver agentes",
+          "highlights": {
+            "h1": "Catalogo de agentes por caso de uso",
+            "h2": "Activacion rapida en web y canales conversacionales",
+            "h3": "Base ideal para captacion, seguimiento y soporte"
+          }
+        },
+        "systems": {
+          "title": "Sistemas empresariales",
+          "body": "Plataformas como LUNA para empresas que necesitan vender, controlar inventario, coordinar pedidos, despachos y operaciones con mas estructura, incluyendo experiencia instalable tipo app con PWA.",
+          "cta": "Conocer LUNA",
+          "highlights": {
+            "h1": "Operacion comercial, administrativa y logistica en un solo entorno",
+            "h2": "Escalable para negocios con procesos complejos",
+            "h3": "Respaldado por una implementacion real en Carpihogar con experiencia PWA instalable"
+          }
+        }
+      }
+    },
+    "agentLineupTitle": "Agentes disponibles hoy",
+    "agentLineupBody": "Actualmente contamos con agentes de marketing, ventas, citas, soporte y voz al publico para resolver necesidades concretas y acelerar resultados.",
+    "newsroomEyebrow": "NOVEDADES",
+    "newsroomTitle": "Mejoras, lanzamientos y tecnologia en evolucion",
+    "newsroomBody": "Esta area servira para comunicar releases, avances de producto, nuevas capacidades, noticias tecnicas y todo lo que la empresa vaya incorporando a sus soluciones.",
+    "newsroomCta": "Ver novedades",
+    "newsroom": {
+      "fallbackCategory": "Actualizacion",
+      "cards": {
+        "n1Title": "Lanzamientos de agentes y sistemas",
+        "n1Body": "Publicaremos nuevas lineas de agentes, modulos empresariales y soluciones listas para distintos sectores.",
+        "n2Title": "Mejoras continuas de plataforma",
+        "n2Body": "Compartiremos actualizaciones de rendimiento, experiencia de usuario, seguridad operativa y evolucion del producto.",
+        "n3Title": "Noticias tecnicas y de negocio",
+        "n3Body": "Mostraremos integraciones futuras, decisiones de arquitectura, casos destacados y avances clave de Trends172 Tech."
+      }
+    },
+    "clientsTitle": "Casos reales",
+    "clientsNote": "Desarrollos nacidos de necesidades reales de operacion y crecimiento empresarial.",
+    "ctaTitle": "Tu empresa puede crecer con mas control y menos improvisacion",
+    "ctaBody": "Combina agentes IA y sistemas empresariales segun el nivel de complejidad que necesita tu operacion.",
+    "ctaPrimary": "Ver LUNA",
+    "ctaSecondary": "Explorar agentes"
   },
   "projectsPage": {
-    "eyebrow": "PROYECTOS TECNOLOGICOS",
-    "title": "Proyectos que demuestran nuestras capacidades",
-    "subtitle": "Desarrollamos soluciones profesionales, automatizaciones y plataformas a medida.",
+    "eyebrow": "CASOS REALES",
+    "title": "Implementaciones reales que respaldan nuestra propuesta",
+    "subtitle": "Mostramos proyectos desarrollados sobre necesidades reales de venta, operacion y crecimiento empresarial.",
     "ctaPrimary": "Explorar planes",
     "ctaSecondary": "Iniciar sesion",
     "capabilitiesTitle": "Capacidades",
@@ -162,18 +210,169 @@
       "c5": "Flujos de venta y seguimiento",
       "c6": "Experiencias omnicanal"
     },
-    "projectsTitle": "Proyectos destacados",
-    "projectsSubtitle": "Mostramos trabajo real y entregas completas para clientes en crecimiento.",
-    "projectBadge": "Proyecto",
-    "projectTag": "Lanzado",
+    "projectsTitle": "Casos destacados",
+    "projectsSubtitle": "Soluciones desplegadas que demuestran como llevamos procesos reales a una operacion digital mas ordenada.",
+    "projectBadge": "Caso",
+    "projectTag": "Operacion real",
     "projectCta": "Visitar",
     "projects": {
       "carpihogar": {
         "title": "Carpihogar.com",
-        "body": "Ecommerce para hogar con catalogo dinamico, integraciones y automatizacion comercial.",
-        "tagline1": "Ecommerce + pagos",
-        "tagline2": "Automatizacion comercial"
+        "body": "Implementacion real desarrollada para ecommerce, control comercial, inventario, operaciones y experiencia PWA instalable; base conceptual del sistema LUNA.",
+        "tagline1": "Caso real",
+        "tagline2": "PWA + base de LUNA"
       }
+    }
+  },
+  "systemsPage": {
+    "eyebrow": "SISTEMAS EMPRESARIALES",
+    "title": "Plataformas para operar con mas orden, control y velocidad",
+    "subtitle": "Aqui reunimos nuestros sistemas empresariales reutilizables para companias que necesitan mucho mas que una web informativa o una tienda basica.",
+    "ctaPrimary": "Conocer LUNA",
+    "ctaSecondary": "Ver agentes IA",
+    "focusTitle": "Pensado para empresas que necesitan",
+    "focusNote": "La meta no es solo digitalizar: es profesionalizar la operacion completa.",
+    "focus": {
+      "f1": "Control real de ventas, pedidos, stock y operaciones",
+      "f2": "Menos dependencia de Excel, mensajes y procesos manuales",
+      "f3": "Visibilidad para distintas areas y distintos roles",
+      "f4": "Capacidad de crecer sin perder trazabilidad"
+    },
+    "catalogTitle": "Portafolio actual de sistemas",
+    "catalogBody": "LUNA es nuestro sistema principal para empresas con operacion comercial, administrativa y logistica que necesitan una plataforma mas robusta.",
+    "catalogBadge": "Sistema destacado",
+    "catalogTag": "Escalable",
+    "lunaBody": "LUNA centraliza ventas, inventario, clientes, cobros, despachos, reportes, paneles por rol y experiencia PWA instalable en una sola plataforma para que el negocio opere con claridad y estructura.",
+    "lunaHighlights": {
+      "h1": "Gestiona ventas y pedidos desde un solo entorno",
+      "h2": "Controla inventario, movimientos y disponibilidad real",
+      "h3": "Da seguimiento a cobros, entregas y operacion diaria",
+      "h4": "Organiza equipos por rol y permite instalar el sistema como app con PWA"
+    },
+    "catalogPrimary": "Ver detalle de LUNA",
+    "catalogSecondary": "Ver caso real",
+    "agentsTitle": "Agentes IA que complementan la operacion",
+    "agentsBody": "Ademas del sistema, contamos con agentes IA que pueden potenciar marketing, ventas, citas, soporte y canales de voz dentro de una estrategia comercial y operativa mas amplia."
+  },
+  "lunaPage": {
+    "back": "Volver a sistemas",
+    "eyebrow": "LUNA",
+    "title": "LUNA: el sistema que organiza, acelera y hace crecer tu negocio",
+    "subtitle": "Administra ventas, inventario, clientes, despachos, reportes y operaciones desde una sola plataforma.",
+    "subcopy": "Si tu empresa vende productos, maneja stock, coordina pedidos, cobra, despacha y necesita control real del negocio, LUNA te da la estructura tecnologica para operar con mas velocidad, menos errores, mayor rentabilidad y una experiencia instalable tipo app gracias a su PWA.",
+    "ctaPrimary": "Solicitar demo",
+    "ctaSecondary": "Hablar con un asesor",
+    "valueTitle": "Una plataforma, todo el control",
+    "valueProps": {
+      "v1": "Centraliza la operacion comercial, administrativa y logistica.",
+      "v2": "Reduce errores humanos en precios, inventario, pedidos y cobros.",
+      "v3": "Acelera los tiempos de respuesta y atencion al cliente.",
+      "v4": "Mejora el control interno de la empresa.",
+      "v5": "Permite crecer sin perder visibilidad del negocio.",
+      "v6": "Convierte procesos improvisados en flujos de trabajo profesionales.",
+      "v7": "Mejora la experiencia del cliente final.",
+      "v8": "Facilita decisiones con informacion en tiempo real."
+    },
+    "problemTitle": "El problema",
+    "problemHeadline": "Cuando el negocio crece, el desorden tambien",
+    "problemBody": "Muchas empresas pierden tiempo y dinero porque trabajan con hojas de calculo, mensajes por WhatsApp, controles manuales, sistemas incompletos o equipos sin visibilidad. Lo que antes parecia manejable termina frenando ventas, generando errores y afectando la rentabilidad.",
+    "solutionTitle": "La solucion",
+    "solutionHeadline": "LUNA integra toda la operacion en un solo sistema",
+    "solutionBody": "No es solo una pagina web. Es una herramienta de gestion para vender mejor y operar mejor, con estructura, visibilidad y velocidad para las distintas areas del negocio.",
+    "outcomesTitle": "Que gana tu empresa con LUNA",
+    "outcomes": {
+      "o1Title": "Mas eficiencia",
+      "o1Body": "Tu equipo trabaja mas rapido, con menos retrabajo y menos tareas manuales.",
+      "o2Title": "Mas control",
+      "o2Body": "Sabes que se vendio, que hay en inventario, que esta pendiente, que se cobro y que falta por despachar.",
+      "o3Title": "Mas ventas",
+      "o3Body": "Con procesos mas agiles, mejor seguimiento y una operacion ordenada, se cierran mas oportunidades.",
+      "o4Title": "Menos perdidas",
+      "o4Body": "Disminuyen errores de stock, fallos operativos, desorden administrativo y problemas de seguimiento.",
+      "o5Title": "Mejor experiencia para el cliente",
+      "o5Body": "El cliente recibe respuestas mas rapidas, pedidos mejor gestionados y una experiencia mas profesional.",
+      "o6Title": "Escalabilidad real",
+      "o6Body": "El sistema acompana el crecimiento del negocio sin depender de soluciones improvisadas."
+    },
+    "modulesTitle": "Modulos y capacidades",
+    "modulesBody": "LUNA puede adaptarse a empresas que necesitan mucho mas que un ecommerce simple, incluyendo operaciones con catalogos amplios, productos personalizados y procesos internos complejos.",
+    "modules": {
+      "m1Title": "Ventas y pedidos",
+      "m1Body": "Gestiona cotizaciones, pedidos, ventas y seguimiento comercial en un solo entorno.",
+      "m2Title": "Inventario",
+      "m2Body": "Controla productos, stock, movimientos, entradas, salidas y disponibilidad real.",
+      "m3Title": "Clientes y usuarios",
+      "m3Body": "Organiza perfiles, direcciones, historial y relacion comercial con cada cliente.",
+      "m4Title": "Cobros y pagos",
+      "m4Body": "Registra pagos, referencias, validaciones y control operativo de cobranzas.",
+      "m5Title": "Despacho y logistica",
+      "m5Body": "Da seguimiento a entregas, estados de envio y operacion de distribucion.",
+      "m6Title": "Reportes y metricas",
+      "m6Body": "Accede a indicadores clave para tomar decisiones con datos y no con suposiciones.",
+      "m7Title": "Paneles por rol",
+      "m7Body": "Cada usuario entra a un entorno adaptado a su funcion: administracion, ventas, clientes, aliados o logistica.",
+      "m8Title": "Operacion especializada",
+      "m8Body": "Se adapta a sectores que necesitan procesos mas avanzados que una tienda online basica, incluyendo despliegue PWA instalable tipo app."
+    },
+    "agentsTitle": "Agentes IA que puedes sumar a LUNA",
+    "agentsBody": "Trends172 Tech tambien ofrece agentes IA para marketing, ventas, citas, soporte y voz. Esto permite que LUNA no solo ordene la operacion, sino que tambien pueda evolucionar con automatizacion conversacional donde el negocio lo necesite.",
+    "proofTitle": "Probado en una operacion real",
+    "proofHeadline": "LUNA no nace como una idea teorica",
+    "proofBody": "Desarrollado a partir de una implementacion real en Carpihogar, LUNA fue disenado para responder a necesidades comerciales, operativas y administrativas del mundo real, incluyendo uso completo del sistema y su experiencia PWA instalable.",
+    "proofNote": "Eso significa que fue pensado para resolver problemas concretos del dia a dia empresarial, no para quedarse solo en una propuesta bonita de software.",
+    "proofCta": "Ver caso real",
+    "reasonsTitle": "Por que elegir LUNA",
+    "reasons": {
+      "r1": "Porque reemplaza procesos manuales por una operacion digital integrada.",
+      "r2": "Porque mejora el control del negocio sin complicar el trabajo del equipo.",
+      "r3": "Porque se adapta a empresas que necesitan mas que una tienda online basica.",
+      "r4": "Porque permite profesionalizar la operacion.",
+      "r5": "Porque ayuda a crecer con orden, velocidad y trazabilidad."
+    },
+    "finalTitle": "Tu empresa no necesita mas herramientas aisladas",
+    "finalBody": "Necesita un sistema que conecte toda la operacion. Instala LUNA y da el paso hacia una gestion mas rapida, mas clara y mas rentable.",
+    "finalPrimary": "Quiero una demo",
+    "finalSecondary": "Quiero implementar LUNA"
+  },
+  "newsPage": {
+    "eyebrow": "NOVEDADES TRENDS172 TECH",
+    "title": "Noticias, mejoras y avances de nuestras soluciones",
+    "subtitle": "Aqui mostraremos la evolucion de nuestros agentes IA, sistemas empresariales, implementaciones, mejoras del producto y decisiones tecnicas relevantes para nuestros clientes.",
+    "ctaPrimary": "Ver LUNA",
+    "ctaSecondary": "Explorar agentes",
+    "streamsTitle": "Que encontraras aqui",
+    "streams": {
+      "s1Title": "Lanzamientos de producto",
+      "s1Body": "Nuevos agentes, nuevos sistemas, nuevas capacidades y nuevas lineas de negocio.",
+      "s2Title": "Mejoras operativas",
+      "s2Body": "Ajustes que impactan velocidad, orden, control y escalabilidad en nuestros desarrollos.",
+      "s3Title": "Contexto tecnologico",
+      "s3Body": "Cambios de arquitectura, criterios tecnicos y decisiones que fortalecen la propuesta de Trends172 Tech."
+    },
+    "updatesTitle": "Bloques editoriales iniciales",
+    "updatesBody": "Esta primera version deja lista la estructura para comunicar novedades a clientes, prospectos y aliados desde una sola seccion corporativa.",
+    "featuredLabel": "Destacado",
+    "updates": {
+      "u1Badge": "Agentes IA",
+      "u1Title": "Catalogo vivo de agentes por caso de uso",
+      "u1Body": "La marca ya cuenta con una base clara de agentes para marketing, ventas, citas, soporte y voz, lista para seguir creciendo con nuevas especializaciones.",
+      "u2Badge": "Sistemas",
+      "u2Title": "LUNA como linea empresarial principal",
+      "u2Body": "La web ahora puede comunicar sistemas empresariales reutilizables, empezando por LUNA como oferta de mayor escala y ticket.",
+      "u3Badge": "Casos",
+      "u3Title": "Casos reales como respaldo comercial",
+      "u3Body": "Carpihogar queda posicionado como operacion real que valida la propuesta y da contexto al origen funcional de LUNA.",
+      "u4Badge": "Marca",
+      "u4Title": "Vitrina corporativa para proyectos y mejoras",
+      "u4Body": "Trends172 Tech ya tiene una seccion preparada para mostrar avances, noticias, mejoras y evolucion de su tecnologia sin depender de paginas sueltas."
+    },
+    "promiseTitle": "Direccion editorial",
+    "promiseHeadline": "La idea de esta seccion es sostener la percepcion de una empresa viva y en evolucion",
+    "promises": {
+      "p1": "Comunicar nuevos desarrollos y capacidades con lenguaje comercial claro.",
+      "p2": "Mantener informados a clientes y prospectos sobre mejoras relevantes.",
+      "p3": "Construir confianza mostrando evolucion continua del producto.",
+      "p4": "Conectar tecnologia, negocio y casos reales dentro de una sola narrativa de marca."
     }
   },
   "common": {

@@ -8,7 +8,8 @@
   "scripts": {
     "prisma": "prisma",
     "generate": "prisma generate",
-    "migrate:deploy": "prisma migrate deploy"
+    "migrate:deploy": "prisma migrate deploy",
+    "seed:news": "tsx scripts/seed-news-posts.ts"
   },
   "prisma": {
     "schema": "prisma/schema.prisma",

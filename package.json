@@ -15,6 +15,7 @@
     "prisma": "npm --workspace packages/db run prisma",
     "db:migrate": "npm --workspace packages/db run prisma migrate dev",
     "db:studio": "npm --workspace packages/db run prisma studio",
-    "db:seed": "npm --workspace packages/db run prisma db seed"
+    "db:seed": "npm --workspace packages/db run prisma db seed",
+    "db:seed-news": "npm --workspace packages/db run seed:news"
   }
 }

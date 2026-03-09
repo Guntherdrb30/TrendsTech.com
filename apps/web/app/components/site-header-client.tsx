@@ -20,7 +20,9 @@ type SiteHeaderClientProps = {
   labels: {
     home: string;
     agents: string;
+    systems: string;
     projects: string;
+    news: string;
     pricing: string;
     login: string;
     register: string;
@@ -130,8 +132,14 @@ export function SiteHeaderClient({ base, isAuthenticated, labels, agentOptions }
                 <Link href={`${base}/agents`} onClick={() => setMenuOpen(false)}>
                   {labels.agents}
                 </Link>
+                <Link href={`${base}/systems`} onClick={() => setMenuOpen(false)}>
+                  {labels.systems}
+                </Link>
                 <Link href={`${base}/projects`} onClick={() => setMenuOpen(false)}>
                   {labels.projects}
+                </Link>
+                <Link href={`${base}/news`} onClick={() => setMenuOpen(false)}>
+                  {labels.news}
                 </Link>
                 <Link href={`${base}/pricing`} onClick={() => setMenuOpen(false)}>
                   {labels.pricing}
@@ -182,7 +190,9 @@ export function SiteHeaderClient({ base, isAuthenticated, labels, agentOptions }
             <nav className="flex items-center gap-3 text-xs whitespace-nowrap">
               <Link href={base}>{labels.home}</Link>
               <Link href={`${base}/agents`}>{labels.agents}</Link>
+              <Link href={`${base}/systems`}>{labels.systems}</Link>
               <Link href={`${base}/projects`}>{labels.projects}</Link>
+              <Link href={`${base}/news`}>{labels.news}</Link>
               <Link href={`${base}/pricing`}>{labels.pricing}</Link>
             </nav>
           </div>
