@@ -1,0 +1,32 @@
+<svg width="1600" height="1000" viewBox="0 0 1600 1000" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1600" height="1000" fill="#050816"/>
+  <rect width="1600" height="1000" fill="url(#bg)"/>
+  <circle cx="1270" cy="168" r="220" fill="#22D3EE" fill-opacity="0.18"/>
+  <circle cx="210" cy="814" r="280" fill="#8B5CF6" fill-opacity="0.14"/>
+  <rect x="126" y="176" width="560" height="650" rx="44" fill="#091221" stroke="#243244"/>
+  <rect x="180" y="244" width="452" height="88" rx="28" fill="#101B32"/>
+  <rect x="214" y="270" width="194" height="16" rx="8" fill="#F8FAFC"/>
+  <rect x="214" y="298" width="244" height="10" rx="5" fill="#A5F3FC"/>
+  <circle cx="404" cy="498" r="136" fill="#0F172A" stroke="#334155" stroke-width="12"/>
+  <path d="M404 434V564" stroke="#22D3EE" stroke-width="26" stroke-linecap="round"/>
+  <path d="M336 500C336 537.555 366.445 568 404 568C441.555 568 472 537.555 472 500" stroke="#F97316" stroke-width="24" stroke-linecap="round"/>
+  <path d="M362 620C382 632 392 637 404 637C416 637 426 632 446 620" stroke="#CBD5E1" stroke-width="18" stroke-linecap="round"/>
+  <rect x="180" y="684" width="210" height="66" rx="22" fill="#22D3EE" fill-opacity="0.18" stroke="#22D3EE"/>
+  <rect x="422" y="684" width="210" height="66" rx="22" fill="#F97316" fill-opacity="0.16" stroke="#FB923C"/>
+  <rect x="780" y="202" width="692" height="594" rx="46" fill="#0A1020" stroke="#22304A"/>
+  <text x="842" y="294" fill="#F8FAFC" font-family="Arial, sans-serif" font-size="70" font-weight="700">Agente de Soporte y Voz</text>
+  <text x="842" y="360" fill="#CBD5E1" font-family="Arial, sans-serif" font-size="30">Atencion guiada, respuestas claras y escalamiento cuando hace falta.</text>
+  <rect x="842" y="434" width="560" height="90" rx="26" fill="#0F1A33"/>
+  <text x="876" y="488" fill="#E2E8F0" font-family="Arial, sans-serif" font-size="24">Cliente: necesito ayuda con mi pedido y prefiero hablar por voz.</text>
+  <rect x="912" y="564" width="490" height="124" rx="34" fill="#0B1627" stroke="#27364C"/>
+  <text x="948" y="618" fill="#A5F3FC" font-family="Arial, sans-serif" font-size="24">Asistente: te ayudo ahora mismo. Puedo revisar pedido, estado</text>
+  <text x="948" y="654" fill="#A5F3FC" font-family="Arial, sans-serif" font-size="24">de despacho y, si hace falta, te paso con un asesor humano.</text>
+  <text x="842" y="738" fill="#C4B5FD" font-family="Arial, sans-serif" font-size="24" letter-spacing="4">SOPORTE  ·  VOZ  ·  EXPERIENCIA OMNICANAL</text>
+  <defs>
+    <linearGradient id="bg" x1="112" y1="120" x2="1488" y2="930" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#020617"/>
+      <stop offset="0.44" stop-color="#111C3A"/>
+      <stop offset="1" stop-color="#1E1B4B"/>
+    </linearGradient>
+  </defs>
+</svg>

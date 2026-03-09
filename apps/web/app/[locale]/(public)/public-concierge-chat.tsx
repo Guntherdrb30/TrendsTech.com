@@ -6,13 +6,14 @@ import type { SupportedLocale } from "@openai/chatkit";
 
 type ConciergeCopy = {
   locale: string;
+  intakeBadge: string;
   intakeTitle: string;
   intakeSubtitle: string;
   intakeNote: string;
   chatPlaceholder: string;
   chatClearLabel: string;
   chatSuggestionsTitle: string;
-  chatSuggestions: string[];
+  chatSuggestions: Array<{ label: string; prompt: string }>;
 };
 
 const THREAD_STORAGE_KEY = "publicConciergeThread";
@@ -174,8 +175,8 @@ export function PublicConciergeChat({ copy }: { copy: ConciergeCopy }) {
   const startPrompts = useMemo(
     () =>
       copy.chatSuggestions
-        .filter((item) => item && item.trim())
-        .map((item) => ({ label: item, prompt: item })),
+        .filter((item) => item.label && item.prompt)
+        .map((item) => ({ label: item.label, prompt: item.prompt })),
     [copy.chatSuggestions]
   );
 
@@ -296,6 +297,9 @@ export function PublicConciergeChat({ copy }: { copy: ConciergeCopy }) {
       />
       <div className="relative mx-auto flex max-w-4xl flex-col items-center gap-6 text-center">
         <div className="space-y-3">
+          <div className="inline-flex rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.24em] text-cyan-200">
+            {copy.intakeBadge}
+          </div>
           <h2 className="text-3xl font-[var(--font-display)] font-semibold sm:text-4xl">
             {copy.intakeTitle}
           </h2>

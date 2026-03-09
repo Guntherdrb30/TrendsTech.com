@@ -1,0 +1,37 @@
+<svg width="1600" height="1000" viewBox="0 0 1600 1000" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1600" height="1000" fill="#061021"/>
+  <rect width="1600" height="1000" fill="url(#bg)"/>
+  <circle cx="1322" cy="176" r="240" fill="#14B8A6" fill-opacity="0.16"/>
+  <circle cx="186" cy="792" r="270" fill="#0EA5E9" fill-opacity="0.14"/>
+  <rect x="132" y="160" width="1336" height="690" rx="48" fill="#08111E" stroke="#253347"/>
+  <rect x="182" y="214" width="1236" height="92" rx="28" fill="#0F1B32"/>
+  <rect x="224" y="246" width="282" height="16" rx="8" fill="#F8FAFC"/>
+  <rect x="224" y="275" width="372" height="10" rx="5" fill="#93C5FD"/>
+  <rect x="1180" y="232" width="198" height="54" rx="18" fill="#14B8A6" fill-opacity="0.16" stroke="#14B8A6"/>
+  <rect x="182" y="350" width="850" height="402" rx="34" fill="#0B1627"/>
+  <rect x="224" y="392" width="390" height="16" rx="8" fill="#F8FAFC"/>
+  <rect x="224" y="426" width="540" height="12" rx="6" fill="#94A3B8"/>
+  <rect x="224" y="468" width="180" height="234" rx="26" fill="#0F1B32"/>
+  <rect x="432" y="468" width="180" height="234" rx="26" fill="#0F1B32"/>
+  <rect x="640" y="468" width="180" height="234" rx="26" fill="#0F1B32"/>
+  <rect x="848" y="468" width="142" height="234" rx="26" fill="#0F1B32"/>
+  <rect x="262" y="608" width="54" height="62" rx="16" fill="#22C55E"/>
+  <rect x="470" y="568" width="54" height="102" rx="16" fill="#38BDF8"/>
+  <rect x="678" y="526" width="54" height="144" rx="16" fill="#F97316"/>
+  <rect x="886" y="494" width="54" height="176" rx="16" fill="#14B8A6"/>
+  <rect x="1070" y="350" width="348" height="402" rx="34" fill="#0B1627"/>
+  <text x="1110" y="414" fill="#F8FAFC" font-family="Arial, sans-serif" font-size="34" font-weight="700">Agente IA de Reportes</text>
+  <text x="1110" y="460" fill="#CBD5E1" font-family="Arial, sans-serif" font-size="22">Preguntas ejecutivas con respuesta accionable.</text>
+  <rect x="1110" y="506" width="268" height="52" rx="18" fill="#111C33"/>
+  <rect x="1110" y="578" width="220" height="52" rx="18" fill="#111C33"/>
+  <rect x="1110" y="650" width="244" height="52" rx="18" fill="#111C33"/>
+  <text x="190" y="104" fill="#F8FAFC" font-family="Arial, sans-serif" font-size="74" font-weight="700">Caso de uso: reportes ejecutivos con IA</text>
+  <text x="190" y="860" fill="#A7F3D0" font-family="Arial, sans-serif" font-size="24" letter-spacing="4">VENTAS  ·  INVENTARIO  ·  COMPRAS  ·  MENSAJERIA  ·  DECISIONES</text>
+  <defs>
+    <linearGradient id="bg" x1="124" y1="116" x2="1494" y2="938" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#06101D"/>
+      <stop offset="0.48" stop-color="#0B1C33"/>
+      <stop offset="1" stop-color="#052E2B"/>
+    </linearGradient>
+  </defs>
+</svg>

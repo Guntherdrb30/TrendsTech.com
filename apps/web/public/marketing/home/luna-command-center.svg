@@ -1,0 +1,42 @@
+<svg width="1600" height="1000" viewBox="0 0 1600 1000" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1600" height="1000" fill="#050816"/>
+  <rect width="1600" height="1000" fill="url(#bg)"/>
+  <circle cx="1270" cy="150" r="220" fill="#F97316" fill-opacity="0.18"/>
+  <circle cx="210" cy="140" r="180" fill="#22D3EE" fill-opacity="0.2"/>
+  <circle cx="1120" cy="760" r="320" fill="#0EA5E9" fill-opacity="0.14"/>
+  <path d="M1125 205C1125 310.486 1039.49 396 934 396C888.97 396 847.58 380.414 814.939 354.348C859.697 345.806 901.856 324.82 936.906 293.484C971.956 262.148 998.682 221.583 1014.41 176.336C1019.44 161.865 1023.39 147.008 1026.21 131.841C1084.46 166.506 1125 229.938 1125 302.5V205Z" fill="#FDE68A" fill-opacity="0.95"/>
+  <rect x="120" y="180" width="620" height="620" rx="36" fill="#081226" stroke="#1E293B"/>
+  <rect x="165" y="225" width="530" height="90" rx="24" fill="#0F172A"/>
+  <rect x="185" y="246" width="220" height="18" rx="9" fill="#67E8F9"/>
+  <rect x="185" y="276" width="150" height="14" rx="7" fill="#CBD5E1" fill-opacity="0.58"/>
+  <rect x="165" y="345" width="250" height="190" rx="28" fill="#0B132A" stroke="#1F2A44"/>
+  <rect x="190" y="370" width="125" height="16" rx="8" fill="#F8FAFC"/>
+  <rect x="190" y="400" width="180" height="12" rx="6" fill="#94A3B8"/>
+  <path d="M208 498C238 455 265 437 289 444C313 451 325 477 344 487C363 497 387 492 416 468" stroke="#22D3EE" stroke-width="14" stroke-linecap="round"/>
+  <rect x="445" y="345" width="250" height="190" rx="28" fill="#0B132A" stroke="#1F2A44"/>
+  <rect x="470" y="370" width="140" height="16" rx="8" fill="#F8FAFC"/>
+  <rect x="470" y="400" width="170" height="12" rx="6" fill="#94A3B8"/>
+  <rect x="470" y="438" width="84" height="54" rx="18" fill="#F97316"/>
+  <rect x="566" y="438" width="104" height="54" rx="18" fill="#14B8A6"/>
+  <rect x="165" y="565" width="530" height="190" rx="28" fill="#0B132A" stroke="#1F2A44"/>
+  <rect x="190" y="590" width="220" height="16" rx="8" fill="#F8FAFC"/>
+  <rect x="190" y="620" width="280" height="12" rx="6" fill="#94A3B8"/>
+  <rect x="190" y="660" width="140" height="48" rx="18" fill="#0EA5E9" fill-opacity="0.28" stroke="#38BDF8"/>
+  <rect x="348" y="660" width="160" height="48" rx="18" fill="#F97316" fill-opacity="0.18" stroke="#FB923C"/>
+  <rect x="910" y="410" width="510" height="300" rx="36" fill="#07111E" stroke="#263246"/>
+  <rect x="960" y="470" width="180" height="18" rx="9" fill="#F8FAFC"/>
+  <rect x="960" y="505" width="250" height="12" rx="6" fill="#94A3B8"/>
+  <rect x="960" y="548" width="160" height="66" rx="24" fill="#14B8A6" fill-opacity="0.16" stroke="#14B8A6"/>
+  <rect x="1140" y="548" width="220" height="66" rx="24" fill="#F97316" fill-opacity="0.14" stroke="#FB923C"/>
+  <rect x="960" y="640" width="400" height="16" rx="8" fill="#CBD5E1" fill-opacity="0.28"/>
+  <text x="905" y="160" fill="#F8FAFC" font-family="Arial, sans-serif" font-size="74" font-weight="700">LUNA by Trends172 Tech</text>
+  <text x="905" y="230" fill="#CBD5E1" font-family="Arial, sans-serif" font-size="30">Sistema empresarial para ventas, inventario, pedidos, despachos y control operativo.</text>
+  <text x="905" y="282" fill="#67E8F9" font-family="Arial, sans-serif" font-size="24" letter-spacing="4">PWA  ·  PANEL POR ROL  ·  OPERACION EN PRODUCCION</text>
+  <defs>
+    <linearGradient id="bg" x1="146" y1="84" x2="1472" y2="920" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#020617"/>
+      <stop offset="0.45" stop-color="#071A33"/>
+      <stop offset="1" stop-color="#1E1B4B"/>
+    </linearGradient>
+  </defs>
+</svg>
