@@ -1,0 +1,25 @@
+<svg width="920" height="720" viewBox="0 0 920 720" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="920" height="720" rx="36" fill="#EEF2F7"/>
+  <rect x="44" y="44" width="180" height="632" rx="26" fill="#FFFFFF" stroke="#E5E7EB"/>
+  <rect x="78" y="94" width="112" height="18" rx="9" fill="#111827"/>
+  <rect x="62" y="146" width="144" height="42" rx="14" fill="#F3F4F6" stroke="#CBD5E1"/>
+  <g fill="#6B7280"><rect x="78" y="238" width="104" height="16" rx="8"/><rect x="78" y="282" width="120" height="16" rx="8"/><rect x="78" y="326" width="120" height="16" rx="8"/><rect x="78" y="370" width="120" height="16" rx="8"/><rect x="78" y="414" width="120" height="16" rx="8"/><rect x="78" y="458" width="120" height="16" rx="8"/></g>
+  <rect x="256" y="72" width="620" height="300" rx="34" fill="url(#navy)"/>
+  <text x="300" y="126" fill="#5EEAD4" font-family="Arial, sans-serif" font-size="22" font-weight="700" letter-spacing="0.2em">NOTIFICACIONES</text>
+  <text x="300" y="190" fill="#FFFFFF" font-family="Arial, sans-serif" font-size="56" font-weight="700">Dashboard administrador</text>
+  <rect x="300" y="232" width="180" height="110" rx="24" fill="#1F2A44" stroke="#334155"/>
+  <rect x="500" y="232" width="180" height="110" rx="24" fill="#1F2A44" stroke="#334155"/>
+  <rect x="700" y="232" width="140" height="110" rx="24" fill="#1F2A44" stroke="#334155"/>
+  <rect x="256" y="396" width="620" height="250" rx="32" fill="#6B7280"/>
+  <rect x="286" y="512" width="560" height="106" rx="20" fill="#FFFFFF" stroke="#CBD5E1"/>
+  <rect x="316" y="548" width="204" height="34" rx="10" fill="#E5E7EB"/>
+  <rect x="536" y="548" width="92" height="34" rx="10" fill="#10B981"/>
+  <text x="300" y="460" fill="#E5E7EB" font-family="Arial, sans-serif" font-size="22" font-weight="700" letter-spacing="0.18em">LABORATORIO 3D</text>
+  <text x="300" y="500" fill="#FFFFFF" font-family="Arial, sans-serif" font-size="40" font-weight="700">Modulos para disenar cocinas</text>
+  <defs>
+    <linearGradient id="navy" x1="256" y1="72" x2="876" y2="372" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#00103A"/>
+      <stop offset="1" stop-color="#1F2A44"/>
+    </linearGradient>
+  </defs>
+</svg>

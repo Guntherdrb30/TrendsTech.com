@@ -1,0 +1,25 @@
+<svg width="920" height="720" viewBox="0 0 920 720" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="920" height="720" rx="36" fill="#F8FAFC"/>
+  <rect x="52" y="54" width="380" height="380" rx="28" fill="url(#prod)"/>
+  <rect x="52" y="458" width="92" height="74" rx="16" fill="#DBEAFE" stroke="#DC2626" stroke-width="4"/>
+  <rect x="160" y="458" width="92" height="74" rx="16" fill="#E5E7EB"/>
+  <text x="472" y="126" fill="#111827" font-family="Arial, sans-serif" font-size="44" font-weight="700">Producto con ficha</text>
+  <text x="472" y="174" fill="#111827" font-family="Arial, sans-serif" font-size="26" font-weight="700">17.23 USD</text>
+  <rect x="472" y="222" width="336" height="18" rx="9" fill="#111827"/>
+  <rect x="472" y="252" width="304" height="14" rx="7" fill="#6B7280"/>
+  <rect x="472" y="278" width="278" height="14" rx="7" fill="#6B7280"/>
+  <rect x="472" y="340" width="110" height="20" rx="10" fill="#F3F4F6"/>
+  <rect x="598" y="340" width="76" height="20" rx="10" fill="#E5E7EB"/>
+  <rect x="472" y="392" width="336" height="56" rx="28" fill="#DC2626"/>
+  <rect x="472" y="468" width="336" height="56" rx="28" fill="#22C55E"/>
+  <rect x="472" y="574" width="80" height="80" rx="40" fill="#2563EB"/>
+  <rect x="572" y="574" width="80" height="80" rx="40" fill="#111827"/>
+  <rect x="672" y="574" width="80" height="80" rx="40" fill="#22C55E"/>
+  <text x="54" y="612" fill="#111827" font-family="Arial, sans-serif" font-size="30" font-weight="700">Compra directa + WhatsApp</text>
+  <defs>
+    <linearGradient id="prod" x1="66" y1="84" x2="376" y2="404" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#9CC6F4"/>
+      <stop offset="1" stop-color="#1E3A8A"/>
+    </linearGradient>
+  </defs>
+</svg>

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { getTranslations } from "next-intl/server";
 import { IBM_Plex_Sans, Space_Grotesk } from "next/font/google";
 import { Button } from "@/components/ui/button";
@@ -72,6 +73,49 @@ export default async function LunaPage({
     t("reasons.r5")
   ];
 
+  const galleryItems = [
+    {
+      image: "/cases/carpihogar/carpihogar-pwa-home.svg",
+      title: t("gallery.g1Title"),
+      body: t("gallery.g1Body")
+    },
+    {
+      image: "/cases/carpihogar/carpihogar-catalog-grid.svg",
+      title: t("gallery.g2Title"),
+      body: t("gallery.g2Body")
+    },
+    {
+      image: "/cases/carpihogar/carpihogar-product-detail.svg",
+      title: t("gallery.g3Title"),
+      body: t("gallery.g3Body")
+    },
+    {
+      image: "/cases/carpihogar/carpihogar-news.svg",
+      title: t("gallery.g4Title"),
+      body: t("gallery.g4Body")
+    },
+    {
+      image: "/cases/carpihogar/carpihogar-admin-dashboard.svg",
+      title: t("gallery.g5Title"),
+      body: t("gallery.g5Body")
+    },
+    {
+      image: "/cases/carpihogar/carpihogar-sales-form.svg",
+      title: t("gallery.g6Title"),
+      body: t("gallery.g6Body")
+    },
+    {
+      image: "/cases/carpihogar/carpihogar-ai-modules.svg",
+      title: t("gallery.g7Title"),
+      body: t("gallery.g7Body")
+    },
+    {
+      image: "/cases/carpihogar/carpihogar-exec-reports.svg",
+      title: t("gallery.g8Title"),
+      body: t("gallery.g8Body")
+    }
+  ];
+
   return (
     <div className={`${display.variable} ${body.variable} space-y-16 font-[var(--font-body)]`}>
       <section className="relative overflow-hidden rounded-3xl border border-slate-200 bg-gradient-to-br from-white via-slate-50 to-slate-100 px-6 py-10 shadow-[0_40px_120px_-80px_rgba(15,23,42,0.45)] dark:border-slate-800 dark:from-slate-950 dark:via-slate-900 dark:to-slate-900 sm:px-10 sm:py-14">
@@ -87,6 +131,16 @@ export default async function LunaPage({
             >
               {t("back")}
             </Link>
+            <div className="inline-flex rounded-[28px] border border-amber-200 bg-white/90 p-3 shadow-[0_18px_50px_-30px_rgba(245,158,11,0.55)] backdrop-blur dark:border-amber-500/20 dark:bg-slate-900/80">
+              <Image
+                src="/branding/luna-logo.svg"
+                alt="LUNA by trends172tech"
+                width={320}
+                height={90}
+                className="h-auto w-[220px] sm:w-[280px]"
+                priority
+              />
+            </div>
             <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white/80 px-3 py-1 text-xs font-medium uppercase tracking-[0.2em] text-slate-500 shadow-sm dark:border-slate-800 dark:bg-slate-900/70 dark:text-slate-400">
               <span className="h-2 w-2 rounded-full bg-teal-500 shadow-[0_0_12px_rgba(20,184,166,0.6)]" />
               {t("eyebrow")}
@@ -248,6 +302,46 @@ export default async function LunaPage({
           <Button asChild variant="outline">
             <Link href={`${base}/projects`}>{t("proofCta")}</Link>
           </Button>
+        </div>
+      </section>
+
+      <section className="space-y-6">
+        <div className="space-y-3">
+          <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">
+            {t("galleryEyebrow")}
+          </div>
+          <h2 className="text-3xl font-[var(--font-display)] font-semibold text-slate-900 dark:text-white">
+            {t("galleryTitle")}
+          </h2>
+          <p className="max-w-3xl text-base text-slate-600 dark:text-slate-300">
+            {t("galleryBody")}
+          </p>
+        </div>
+        <div className="grid gap-6 md:grid-cols-2">
+          {galleryItems.map((item) => (
+            <article
+              key={item.title}
+              className="overflow-hidden rounded-3xl border border-slate-200 bg-white/90 shadow-[0_30px_90px_-70px_rgba(15,23,42,0.45)] dark:border-slate-800 dark:bg-slate-950/70"
+            >
+              <div className="relative aspect-[4/3] overflow-hidden bg-slate-100 dark:bg-slate-900">
+                <Image
+                  src={item.image}
+                  alt={item.title}
+                  fill
+                  className="object-cover"
+                  sizes="(min-width: 768px) 50vw, 100vw"
+                />
+              </div>
+              <div className="space-y-3 p-6">
+                <h3 className="text-xl font-[var(--font-display)] font-semibold text-slate-900 dark:text-white">
+                  {item.title}
+                </h3>
+                <p className="text-sm leading-relaxed text-slate-600 dark:text-slate-300">
+                  {item.body}
+                </p>
+              </div>
+            </article>
+          ))}
         </div>
       </section>
 

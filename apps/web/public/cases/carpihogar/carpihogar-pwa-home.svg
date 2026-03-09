@@ -1,0 +1,30 @@
+<svg width="920" height="720" viewBox="0 0 920 720" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="920" height="720" rx="36" fill="#F5F0E6"/>
+  <rect x="298" y="32" width="324" height="656" rx="42" fill="#111827"/>
+  <rect x="314" y="48" width="292" height="624" rx="32" fill="#F9FAFB"/>
+  <rect x="394" y="60" width="132" height="20" rx="10" fill="#E5E7EB"/>
+  <rect x="334" y="102" width="252" height="56" rx="18" fill="#FFFFFF" stroke="#E5E7EB"/>
+  <text x="356" y="136" fill="#9CA3AF" font-family="Arial, sans-serif" font-size="20">Buscar productos...</text>
+  <rect x="334" y="176" width="252" height="168" rx="24" fill="url(#hero)"/>
+  <rect x="334" y="364" width="118" height="112" rx="22" fill="#FFF7ED" stroke="#F59E0B"/>
+  <text x="352" y="394" fill="#F97316" font-family="Arial, sans-serif" font-size="16" font-weight="700">MODO IA</text>
+  <text x="352" y="426" fill="#111827" font-family="Arial, sans-serif" font-size="24" font-weight="700">Busqueda</text>
+  <text x="352" y="454" fill="#6B7280" font-family="Arial, sans-serif" font-size="15">por texto, uso</text>
+  <rect x="468" y="364" width="118" height="112" rx="22" fill="#F3F4F6" stroke="#E5E7EB"/>
+  <text x="486" y="394" fill="#6B7280" font-family="Arial, sans-serif" font-size="16" font-weight="700">CATALOGO</text>
+  <text x="486" y="426" fill="#111827" font-family="Arial, sans-serif" font-size="24" font-weight="700">Productos</text>
+  <text x="486" y="454" fill="#6B7280" font-family="Arial, sans-serif" font-size="15">y ranking</text>
+  <rect x="334" y="496" width="252" height="136" rx="24" fill="#FFFFFF" stroke="#E5E7EB"/>
+  <rect x="352" y="516" width="92" height="92" rx="18" fill="#DBEAFE"/>
+  <rect x="460" y="518" width="108" height="18" rx="9" fill="#111827"/>
+  <rect x="460" y="546" width="84" height="14" rx="7" fill="#9CA3AF"/>
+  <rect x="460" y="576" width="104" height="20" rx="10" fill="#DC2626"/>
+  <rect x="460" y="602" width="104" height="20" rx="10" fill="#22C55E"/>
+  <text x="334" y="652" fill="#111827" font-family="Arial, sans-serif" font-size="28" font-weight="700">PWA lista para instalar</text>
+  <defs>
+    <linearGradient id="hero" x1="334" y1="176" x2="586" y2="344" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#D6C4A8"/>
+      <stop offset="1" stop-color="#6B5B4D"/>
+    </linearGradient>
+  </defs>
+</svg>
