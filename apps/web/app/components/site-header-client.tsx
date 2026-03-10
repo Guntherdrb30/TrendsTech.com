@@ -89,17 +89,17 @@ export function SiteHeaderClient({ base, isAuthenticated, labels, agentOptions }
   };
 
   return (
-    <header className="border-b border-slate-200 dark:border-slate-800">
-      <div className="w-full px-4 py-2">
+    <header className="sticky top-0 z-40 border-b border-[#e6d7c8] bg-[#fbf8f2]/88 backdrop-blur-xl dark:border-slate-800 dark:bg-slate-950/88">
+      <div className="mx-auto w-full max-w-[1400px] px-4 py-3 sm:px-6 lg:px-8">
         <div className="flex flex-col gap-3 lg:hidden">
           <div className="flex items-center justify-between gap-3">
-            <Link href={base} className="flex items-center gap-2 text-xs font-semibold">
+            <Link href={base} className="flex items-center gap-3 text-sm font-semibold text-slate-900 dark:text-white">
               <Image
                 src="/branding/ttech-logo.svg"
                 alt="Trends172 Tech"
                 width={36}
                 height={36}
-                className="h-9 w-9"
+                className="h-10 w-10"
                 priority
               />
               <span className="hidden sm:inline">Trends172 Tech</span>
@@ -107,7 +107,7 @@ export function SiteHeaderClient({ base, isAuthenticated, labels, agentOptions }
             <button
               type="button"
               onClick={() => setMenuOpen((prev) => !prev)}
-              className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 text-slate-600 transition hover:text-slate-900 dark:border-slate-800 dark:text-slate-300 dark:hover:text-white"
+              className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#decfbe] bg-white/80 text-slate-700 transition hover:text-slate-900 dark:border-slate-800 dark:bg-slate-900/80 dark:text-slate-300 dark:hover:text-white"
               aria-expanded={menuOpen}
               aria-label={menuOpen ? labels.menuClose : labels.menuOpen}
             >
@@ -124,7 +124,7 @@ export function SiteHeaderClient({ base, isAuthenticated, labels, agentOptions }
           />
 
           {menuOpen ? (
-            <div className="space-y-4 rounded-2xl border border-slate-200 bg-white px-4 py-4 text-sm text-slate-700 shadow-sm dark:border-slate-800 dark:bg-slate-950/80 dark:text-slate-200">
+            <div className="space-y-4 rounded-3xl border border-[#e5d7c8] bg-white/92 px-4 py-4 text-sm text-slate-700 shadow-[0_25px_80px_-60px_rgba(15,23,42,0.35)] dark:border-slate-800 dark:bg-slate-950/80 dark:text-slate-200">
               <nav className="flex flex-col gap-2">
                 <Link href={base} onClick={() => setMenuOpen(false)}>
                   {labels.home}
@@ -174,26 +174,38 @@ export function SiteHeaderClient({ base, isAuthenticated, labels, agentOptions }
           ) : null}
         </div>
 
-        <div className="hidden items-center justify-between gap-4 lg:flex">
+        <div className="hidden items-center justify-between gap-5 lg:flex">
           <div className="flex min-w-0 items-center gap-4">
-            <Link href={base} className="flex items-center gap-2 text-xs font-semibold">
+            <Link href={base} className="flex items-center gap-3 text-sm font-semibold text-slate-900 dark:text-white">
               <Image
                 src="/branding/ttech-logo.svg"
                 alt="Trends172 Tech"
                 width={36}
                 height={36}
-                className="h-9 w-9"
+                className="h-10 w-10"
                 priority
               />
               <span className="whitespace-nowrap">Trends172 Tech</span>
             </Link>
-            <nav className="flex items-center gap-3 text-xs whitespace-nowrap">
-              <Link href={base}>{labels.home}</Link>
-              <Link href={`${base}/agents`}>{labels.agents}</Link>
-              <Link href={`${base}/systems`}>{labels.systems}</Link>
-              <Link href={`${base}/projects`}>{labels.projects}</Link>
-              <Link href={`${base}/news`}>{labels.news}</Link>
-              <Link href={`${base}/pricing`}>{labels.pricing}</Link>
+            <nav className="flex items-center gap-2 text-sm whitespace-nowrap text-slate-700 dark:text-slate-200">
+              <Link href={base} className="rounded-full px-3 py-2 transition hover:bg-white/90 hover:text-slate-900 dark:hover:bg-slate-900/70">
+                {labels.home}
+              </Link>
+              <Link href={`${base}/agents`} className="rounded-full px-3 py-2 transition hover:bg-white/90 hover:text-slate-900 dark:hover:bg-slate-900/70">
+                {labels.agents}
+              </Link>
+              <Link href={`${base}/systems`} className="rounded-full px-3 py-2 transition hover:bg-white/90 hover:text-slate-900 dark:hover:bg-slate-900/70">
+                {labels.systems}
+              </Link>
+              <Link href={`${base}/projects`} className="rounded-full px-3 py-2 transition hover:bg-white/90 hover:text-slate-900 dark:hover:bg-slate-900/70">
+                {labels.projects}
+              </Link>
+              <Link href={`${base}/news`} className="rounded-full px-3 py-2 transition hover:bg-white/90 hover:text-slate-900 dark:hover:bg-slate-900/70">
+                {labels.news}
+              </Link>
+              <Link href={`${base}/pricing`} className="rounded-full px-3 py-2 transition hover:bg-white/90 hover:text-slate-900 dark:hover:bg-slate-900/70">
+                {labels.pricing}
+              </Link>
             </nav>
           </div>
           <AgentSearch
@@ -201,20 +213,29 @@ export function SiteHeaderClient({ base, isAuthenticated, labels, agentOptions }
             placeholder={labels.searchPlaceholder}
             label={labels.searchLabel}
             options={agentOptions}
-            className="min-w-[200px] flex-1 max-w-sm"
+            className="min-w-[220px] flex-1 max-w-md"
           />
-          <div className="flex items-center gap-2 text-xs whitespace-nowrap">
+          <div className="flex items-center gap-3 text-sm whitespace-nowrap text-slate-700 dark:text-slate-200">
             {isAuthenticated ? (
               <>
-                <Link href={`${base}/dashboard`}>{labels.dashboard}</Link>
+                <Link href={`${base}/dashboard`} className="rounded-full px-3 py-2 transition hover:bg-white/90 hover:text-slate-900 dark:hover:bg-slate-900/70">
+                  {labels.dashboard}
+                </Link>
                 <button type="button" onClick={handleSignOut}>
                   {labels.logout}
                 </button>
               </>
             ) : (
               <>
-                <Link href={loginHref}>{labels.login}</Link>
-                <Link href={registerHref}>{labels.register}</Link>
+                <Link href={loginHref} className="rounded-full px-3 py-2 transition hover:bg-white/90 hover:text-slate-900 dark:hover:bg-slate-900/70">
+                  {labels.login}
+                </Link>
+                <Link
+                  href={registerHref}
+                  className="inline-flex items-center justify-center rounded-full border border-slate-900 px-4 py-2 font-semibold text-slate-900 transition hover:bg-slate-900 hover:text-white dark:border-slate-200 dark:text-slate-100 dark:hover:bg-slate-100 dark:hover:text-slate-950"
+                >
+                  {labels.register}
+                </Link>
               </>
             )}
             <LocaleSwitcher />

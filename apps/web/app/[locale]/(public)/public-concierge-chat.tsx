@@ -245,16 +245,16 @@ export function PublicConciergeChat({ copy }: { copy: ConciergeCopy }) {
       }
     },
     theme: {
-      colorScheme: "dark",
+      colorScheme: "light",
       radius: "round",
       typography: {
         fontFamily: "var(--font-body)",
         fontFamilyMono: "var(--font-display)"
       },
       color: {
-        grayscale: { hue: 220, tint: 6, shade: -2 },
-        surface: { background: "#0b1120", foreground: "#e2e8f0" },
-        accent: { primary: "#f97316", level: 2 }
+        grayscale: { hue: 34, tint: 4, shade: -1 },
+        surface: { background: "#fffdf9", foreground: "#0f172a" },
+        accent: { primary: "#d97706", level: 2 }
       }
     },
     onThreadChange: ({ threadId }) => {
@@ -286,40 +286,40 @@ export function PublicConciergeChat({ copy }: { copy: ConciergeCopy }) {
   const isClearDisabled = isResponding || !isReady;
 
   return (
-    <section className="reveal relative overflow-hidden rounded-[32px] border border-slate-900 bg-slate-950 px-6 py-12 text-white shadow-[0_50px_140px_-90px_rgba(15,23,42,0.85)] sm:px-10">
+    <section className="reveal relative overflow-hidden rounded-[34px] border border-[#decebc] bg-[linear-gradient(180deg,#fffdf9_0%,#f5eee6_100%)] px-6 py-12 text-slate-900 shadow-[0_45px_120px_-85px_rgba(15,23,42,0.32)] sm:px-10">
       <div
-        className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(59,130,246,0.18),_transparent_55%)]"
+        className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(14,165,233,0.12),_transparent_55%)]"
         aria-hidden="true"
       />
       <div
-        className="absolute -right-24 -top-20 h-64 w-64 rounded-full bg-[radial-gradient(circle_at_center,_rgba(234,88,12,0.32),_transparent_70%)] blur-2xl"
+        className="absolute -right-24 -top-20 h-64 w-64 rounded-full bg-[radial-gradient(circle_at_center,_rgba(234,88,12,0.18),_transparent_70%)] blur-2xl"
         aria-hidden="true"
       />
       <div className="relative mx-auto flex max-w-4xl flex-col items-center gap-6 text-center">
         <div className="space-y-3">
-          <div className="inline-flex rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.24em] text-cyan-200">
+          <div className="inline-flex rounded-full border border-[#eadbca] bg-white/90 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.24em] text-[#8a6b52]">
             {copy.intakeBadge}
           </div>
           <h2 className="text-3xl font-[var(--font-display)] font-semibold sm:text-4xl">
             {copy.intakeTitle}
           </h2>
-          <p className="text-sm text-slate-300 sm:text-base">
+          <p className="text-sm text-slate-600 sm:text-base">
             {copy.intakeSubtitle}
           </p>
-          <div className="flex flex-wrap items-center justify-center gap-3 text-[10px] uppercase tracking-[0.28em] text-slate-500">
+          <div className="flex flex-wrap items-center justify-center gap-3 text-[10px] uppercase tracking-[0.28em] text-[#8a6b52]">
             <span>{copy.chatSuggestionsTitle}</span>
             <button
               type="button"
               onClick={clearChat}
               disabled={isClearDisabled}
-              className="inline-flex items-center justify-center rounded-full border border-[#25d0c7]/60 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-[#25d0c7] transition hover:border-[#25d0c7] hover:text-white disabled:cursor-not-allowed disabled:border-slate-700/60 disabled:text-slate-500"
+              className="inline-flex items-center justify-center rounded-full border border-[#d6c2ad] px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-700 transition hover:border-slate-900 hover:text-slate-900 disabled:cursor-not-allowed disabled:border-slate-300 disabled:text-slate-400"
             >
               {copy.chatClearLabel}
             </button>
           </div>
         </div>
 
-        <div className="h-[60vh] min-h-[320px] w-full overflow-hidden rounded-[28px] border border-slate-800 bg-slate-950/60 shadow-[0_28px_80px_-60px_rgba(0,0,0,0.7)] backdrop-blur sm:h-[65vh] sm:min-h-[420px]">
+        <div className="h-[54vh] min-h-[320px] w-full overflow-hidden rounded-[28px] border border-[#e2d5c8] bg-white/92 shadow-[0_28px_80px_-60px_rgba(15,23,42,0.35)] backdrop-blur sm:h-[58vh] sm:min-h-[420px]">
           <ChatKit
             control={chatkit.control}
             className="block h-full w-full"

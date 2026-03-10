@@ -88,6 +88,36 @@
         "s6Cta": "View cases"
       }
     },
+    "premiumSection": {
+      "eyebrow": "HIGH-TECH COMPANY",
+      "title": "Premium technology for companies that expect more than a pretty website",
+      "body": "We build technology products and projects that adapt to each company's real operation. Today we sell business systems like LUNA and AI agents by function, with a clear, consultative, high-value narrative."
+    },
+    "advisorySection": {
+      "eyebrow": "CONSULTATIVE ADVISORY",
+      "title": "An advisor that sells through diagnosis, not a cold catalog",
+      "body": "The goal is not to show technology for the sake of it. We want to detect whether your company needs a system like LUNA, AI agents by function, or a combination of both. That is why the experience starts by understanding your company and then grounding the proposal.",
+      "cards": {
+        "c1": "Path 1: full advisory about LUNA based on the company type and its operation.",
+        "c2": "Path 2: AI agent diagnosis by URL, area, commercial process, or operational need.",
+        "c3": "Every answer should become an actionable recommendation: demo, implementation, or next commercial step."
+      }
+    },
+    "salesStrategy": {
+      "eyebrow": "SALES STRATEGY",
+      "title": "This is how our technology products are sold and landed",
+      "body": "The best sale does not happen when we only show tools. It happens when we connect problem, operational impact, real case, and a clear implementation path."
+    },
+    "salesPlaybook": {
+      "eyebrow": "VALUE-LED SALES",
+      "title": "A stronger way to sell complex technology",
+      "body": "To sell this kind of product well, it is not enough to show features. You need to sell through business scenarios, operational impact, and real use cases.",
+      "cards": {
+        "c1": "Present each solution as a transformation asset: what problem it solves, what company it fits, and what operational change it delivers.",
+        "c2": "Use project cards that open into deeper detail, with real screenshots, benefits, modules, use case, and consultative CTA instead of a flat technical sheet.",
+        "c3": "Separate reusable product, specialized agent, and real case clearly. That raises the perception of maturity and reduces commercial confusion."
+      }
+    },
     "sidebarTitle": "System panel",
     "sidebarSubtitle": "Quick access and operational control.",
     "sidebarSectionCore": "Core",

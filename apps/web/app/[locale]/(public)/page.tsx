@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import { IBM_Plex_Sans, Space_Grotesk } from "next/font/google";
@@ -21,6 +22,8 @@ const body = IBM_Plex_Sans({
 export default async function HomePage({ params }: { params: Promise<{ locale: string }> }) {
   const home = await getTranslations("home");
   const agents = await getTranslations("agents");
+  const systems = await getTranslations("systemsPage");
+  const projects = await getTranslations("projectsPage");
   const { locale } = await params;
   const base = `/${locale}`;
   const publishedNews = await getPublishedNewsPosts(locale, 3);
@@ -29,27 +32,6 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
     { value: home("metrics.m1Value"), label: home("metrics.m1Label") },
     { value: home("metrics.m2Value"), label: home("metrics.m2Label") },
     { value: home("metrics.m3Value"), label: home("metrics.m3Label") }
-  ];
-
-  const capabilities = [
-    { title: home("capabilities.c1Title"), body: home("capabilities.c1Body") },
-    { title: home("capabilities.c2Title"), body: home("capabilities.c2Body") },
-    { title: home("capabilities.c3Title"), body: home("capabilities.c3Body") },
-    { title: home("capabilities.c4Title"), body: home("capabilities.c4Body") }
-  ];
-
-  const stackItems = [
-    home("stackItems.s1"),
-    home("stackItems.s2"),
-    home("stackItems.s3"),
-    home("stackItems.s4")
-  ];
-
-  const processSteps = [
-    { step: "01", title: home("processSteps.p1Title"), body: home("processSteps.p1Body") },
-    { step: "02", title: home("processSteps.p2Title"), body: home("processSteps.p2Body") },
-    { step: "03", title: home("processSteps.p3Title"), body: home("processSteps.p3Body") },
-    { step: "04", title: home("processSteps.p4Title"), body: home("processSteps.p4Body") }
   ];
 
   const carouselItems = [
@@ -82,7 +64,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
       title: home("carousel.slides.s4Title"),
       body: home("carousel.slides.s4Body"),
       image: "/marketing/home/case-carpihogar-pwa.svg",
-      href: `${base}/systems/luna`,
+      href: `${base}/projects`,
       cta: home("carousel.slides.s4Cta")
     },
     {
@@ -124,71 +106,63 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
     ]
   };
 
-  const sidebarSections = [
-    {
-      title: home("sidebarSectionCore"),
-      items: [
-        { label: home("sidebarNavDashboard"), href: `${base}/dashboard` },
-        { label: home("sidebarNavAgents"), href: `${base}/dashboard/agents` },
-        { label: home("sidebarNavInstalls"), href: `${base}/dashboard/installs` }
-      ]
-    },
-    {
-      title: home("sidebarSectionTeam"),
-      items: [
-        { label: home("sidebarNavUsers"), href: `${base}/dashboard/users` },
-        { label: home("sidebarNavProfile"), href: `${base}/dashboard/profile` }
-      ]
-    },
-    {
-      title: home("sidebarSectionOps"),
-      items: [
-        { label: home("sidebarNavPayments"), href: `${base}/recharge` },
-        { label: home("sidebarNavPricing"), href: `${base}/pricing` },
-        { label: home("sidebarNavSupport"), href: `${base}/login` }
-      ]
-    }
-  ];
-
-  const sidebarFeatures = [
-    home("sidebarFeatures.f1"),
-    home("sidebarFeatures.f2"),
-    home("sidebarFeatures.f3"),
-    home("sidebarFeatures.f4"),
-    home("sidebarFeatures.f5"),
-    home("sidebarFeatures.f6")
-  ];
-
-  const solutionLines = [
-    {
-      title: home("solutionLines.cards.agents.title"),
-      body: home("solutionLines.cards.agents.body"),
-      cta: home("solutionLines.cards.agents.cta"),
-      href: `${base}/agents`,
-      highlights: [
-        home("solutionLines.cards.agents.highlights.h1"),
-        home("solutionLines.cards.agents.highlights.h2"),
-        home("solutionLines.cards.agents.highlights.h3")
-      ]
-    },
-    {
-      title: home("solutionLines.cards.systems.title"),
-      body: home("solutionLines.cards.systems.body"),
-      cta: home("solutionLines.cards.systems.cta"),
-      href: `${base}/systems/luna`,
-      highlights: [
-        home("solutionLines.cards.systems.highlights.h1"),
-        home("solutionLines.cards.systems.highlights.h2"),
-        home("solutionLines.cards.systems.highlights.h3")
-      ]
-    }
-  ];
-
   const featuredAgents = AGENT_PRODUCTS.map((agent) => ({
     key: agent.key,
     name: agents(`${agent.key}.name`),
     tagline: agents(`${agent.key}.tagline`)
   }));
+
+  const showcaseCards = [
+    {
+      label: systems("catalogBadge"),
+      title: "LUNA",
+      body: systems("lunaBody"),
+      image: "/marketing/home/luna-command-center.svg",
+      href: `${base}/systems/luna`,
+      cta: systems("catalogPrimary"),
+      highlights: [
+        systems("lunaHighlights.h1"),
+        systems("lunaHighlights.h2"),
+        systems("lunaHighlights.h4")
+      ]
+    },
+    {
+      label: home("solutionLines.cards.agents.title"),
+      title: home("agentLineupTitle"),
+      body: home("solutionLines.cards.agents.body"),
+      image: "/marketing/home/agent-sales-velocity.svg",
+      href: `${base}/agents`,
+      cta: home("solutionLines.cards.agents.cta"),
+      highlights: featuredAgents.slice(0, 3).map((agent) => agent.name)
+    },
+    {
+      label: projects("projectBadge"),
+      title: projects("projects.carpihogar.title"),
+      body: projects("projects.carpihogar.body"),
+      image: "/marketing/home/case-carpihogar-pwa.svg",
+      href: `${base}/projects`,
+      cta: projects("projectCta"),
+      highlights: [
+        projects("projects.carpihogar.tagline1"),
+        projects("projects.carpihogar.tagline2"),
+        home("solutionLines.cards.systems.highlights.h3")
+      ]
+    }
+  ];
+
+  const premiumPoints = [
+    home("capabilities.c1Title"),
+    home("capabilities.c2Title"),
+    home("capabilities.c3Title"),
+    home("capabilities.c4Title")
+  ];
+
+  const processSteps = [
+    { step: "01", title: home("processSteps.p1Title"), body: home("processSteps.p1Body") },
+    { step: "02", title: home("processSteps.p2Title"), body: home("processSteps.p2Body") },
+    { step: "03", title: home("processSteps.p3Title"), body: home("processSteps.p3Body") },
+    { step: "04", title: home("processSteps.p4Title"), body: home("processSteps.p4Body") }
+  ];
 
   const newsroomItems =
     publishedNews.length > 0
@@ -220,314 +194,230 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         ];
 
   return (
-    <div className={`${display.variable} ${body.variable} font-[var(--font-body)]`}>
-      <div className="relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] w-screen px-4 lg:px-0">
-        <div className="grid gap-10 lg:grid-cols-[300px_minmax(0,1fr)] lg:items-start">
-          <aside className="relative overflow-hidden rounded-3xl border border-slate-900 bg-slate-950 text-white shadow-[0_40px_120px_-80px_rgba(15,23,42,0.8)] lg:sticky lg:top-6">
-            <div
-              className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(37,208,199,0.18),_transparent_60%)]"
-              aria-hidden="true"
-            />
-            <div className="relative space-y-6 px-5 py-6">
-              <div className="space-y-2">
-                <p className="text-xs uppercase tracking-[0.24em] text-slate-400">
-                  {home("sidebarTitle")}
-                </p>
-                <p className="text-sm text-slate-300">{home("sidebarSubtitle")}</p>
+    <div className={`${display.variable} ${body.variable} bg-[linear-gradient(180deg,#f8f7f2_0%,#f5efe7_38%,#ffffff_100%)] font-[var(--font-body)] text-slate-900 dark:bg-slate-950`}>
+      <div className="mx-auto flex w-full max-w-[1400px] flex-col gap-20 px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
+        <MarketingHeroCarousel
+          items={carouselItems}
+          metrics={metrics}
+          secondaryHref={`${base}/systems/luna`}
+          secondaryCta={home("carouselSecondaryCta")}
+        />
+
+        <section className="grid gap-8 xl:grid-cols-[0.72fr_1.28fr]">
+            <div className="space-y-6">
+              <div className="inline-flex rounded-full border border-[#d7c7b4] bg-white/85 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.24em] text-[#8a6b52] shadow-sm">
+                {home("premiumSection.eyebrow")}
               </div>
-
-              <nav className="space-y-5 text-sm">
-                {sidebarSections.map((section) => (
-                  <div key={section.title} className="space-y-2">
-                    <p className="text-[11px] uppercase tracking-[0.2em] text-slate-500">
-                      {section.title}
-                    </p>
-                    <div className="space-y-2">
-                      {section.items.map((item) => (
-                        <Link
-                          key={item.label}
-                          href={item.href}
-                          className="flex items-center gap-2 text-slate-200 transition hover:text-white"
-                        >
-                          <span className="h-2 w-2 rounded-full bg-[#25d0c7]/70" aria-hidden="true" />
-                          {item.label}
-                        </Link>
-                      ))}
-                    </div>
-                  </div>
-                ))}
-              </nav>
-
-              <div className="rounded-2xl border border-slate-800 bg-slate-900/60 px-4 py-4">
-                <div className="text-sm font-semibold">{home("sidebarPaymentsTitle")}</div>
-                <p className="mt-2 text-xs text-slate-300">{home("sidebarPaymentsBody")}</p>
-                <Link
-                  href={`${base}/recharge`}
-                  className="mt-4 inline-flex items-center justify-center rounded-full border border-[#25d0c7] px-4 py-1.5 text-xs font-semibold text-[#25d0c7] transition hover:bg-[#25d0c7] hover:text-slate-950"
+              <div className="space-y-4">
+                <h2 className="text-4xl font-[var(--font-display)] font-semibold leading-tight text-slate-900 sm:text-5xl">
+                  {home("premiumSection.title")}
+                </h2>
+                <p className="max-w-xl text-base leading-relaxed text-slate-600 sm:text-lg">
+                  {home("premiumSection.body")}
+                </p>
+              </div>
+            <div className="grid gap-3">
+              {premiumPoints.map((point) => (
+                <div
+                  key={point}
+                  className="rounded-2xl border border-[#e4d8ca] bg-white/80 px-4 py-4 text-sm text-slate-700 shadow-[0_20px_60px_-50px_rgba(15,23,42,0.4)]"
                 >
-                  {home("sidebarPaymentsCta")}
-                </Link>
-                <p className="mt-3 text-[10px] uppercase tracking-[0.2em] text-slate-500">
-                  {home("sidebarPaymentsNote")}
-                </p>
-              </div>
+                  {point}
+                </div>
+              ))}
+            </div>
+          </div>
 
-              <div className="space-y-2">
-                <p className="text-[11px] uppercase tracking-[0.2em] text-slate-500">
-                  {home("sidebarFeaturesTitle")}
-                </p>
-                <ul className="space-y-2 text-xs text-slate-300">
-                  {sidebarFeatures.map((feature) => (
-                    <li key={feature} className="flex items-start gap-2">
-                      <span className="mt-1 h-1.5 w-1.5 rounded-full bg-[#25d0c7]" aria-hidden="true" />
-                      <span>{feature}</span>
-                    </li>
-                  ))}
-                </ul>
+          <div className="grid gap-6 lg:grid-cols-3">
+            {showcaseCards.map((card) => (
+              <article
+                key={card.title}
+                className="group overflow-hidden rounded-[30px] border border-[#e4d8ca] bg-white/88 shadow-[0_30px_90px_-65px_rgba(15,23,42,0.3)] backdrop-blur transition hover:-translate-y-1 hover:shadow-[0_45px_110px_-65px_rgba(15,23,42,0.38)]"
+              >
+                <div className="relative aspect-[5/4] overflow-hidden bg-[#efe8de]">
+                  <Image
+                    src={card.image}
+                    alt={card.title}
+                    fill
+                    className="object-cover transition duration-500 group-hover:scale-[1.03]"
+                    sizes="(min-width: 1280px) 28vw, (min-width: 768px) 50vw, 100vw"
+                  />
+                </div>
+                <div className="space-y-4 p-6">
+                  <div className="inline-flex rounded-full border border-[#e7d8c8] bg-[#fff9f4] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.22em] text-[#8a6b52]">
+                    {card.label}
+                  </div>
+                  <div className="space-y-2">
+                    <h3 className="text-2xl font-[var(--font-display)] font-semibold text-slate-900">
+                      {card.title}
+                    </h3>
+                    <p className="text-sm leading-relaxed text-slate-600">{card.body}</p>
+                  </div>
+                  <ul className="space-y-2 text-sm text-slate-600">
+                    {card.highlights.map((highlight) => (
+                      <li key={highlight} className="flex items-start gap-2">
+                        <span className="mt-2 h-1.5 w-1.5 rounded-full bg-[#d97706]" aria-hidden="true" />
+                        <span>{highlight}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  <Link
+                    href={card.href}
+                    className="inline-flex items-center justify-center rounded-full border border-slate-900 px-4 py-2 text-sm font-semibold text-slate-900 transition hover:-translate-y-0.5 hover:bg-slate-900 hover:text-white"
+                  >
+                    {card.cta}
+                  </Link>
+                </div>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        <section className="grid gap-8 xl:grid-cols-[0.82fr_1.18fr]">
+          <div className="space-y-6 rounded-[32px] border border-[#e4d8ca] bg-[linear-gradient(180deg,#fffdfb_0%,#f5ede4_100%)] p-8 shadow-[0_35px_90px_-70px_rgba(15,23,42,0.35)]">
+            <div className="inline-flex rounded-full border border-[#eadbca] bg-white/85 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.24em] text-[#8a6b52]">
+              {home("advisorySection.eyebrow")}
+            </div>
+            <div className="space-y-4">
+              <h2 className="text-3xl font-[var(--font-display)] font-semibold text-slate-900 sm:text-4xl">
+                {home("advisorySection.title")}
+              </h2>
+              <p className="text-base leading-relaxed text-slate-600">
+                {home("advisorySection.body")}
+              </p>
+            </div>
+            <div className="grid gap-3">
+              <div className="rounded-2xl border border-[#eadbca] bg-white/90 px-4 py-4 text-sm text-slate-700">
+                {home("advisorySection.cards.c1")}
+              </div>
+              <div className="rounded-2xl border border-[#eadbca] bg-white/90 px-4 py-4 text-sm text-slate-700">
+                {home("advisorySection.cards.c2")}
+              </div>
+              <div className="rounded-2xl border border-[#eadbca] bg-white/90 px-4 py-4 text-sm text-slate-700">
+                {home("advisorySection.cards.c3")}
               </div>
             </div>
-          </aside>
-
-          <div className="space-y-16">
-            <MarketingHeroCarousel
-              items={carouselItems}
-              metrics={metrics}
-              secondaryHref={`${base}/systems/luna`}
-              secondaryCta={home("carouselSecondaryCta")}
-            />
-
-            <PublicConciergeChat copy={intakeCopy} />
-
-            <section className="grid gap-8 lg:grid-cols-[1.2fr_0.8fr]">
-              <div className="space-y-6">
-                <div className="space-y-3">
-                  <h2 className="text-3xl font-[var(--font-display)] font-semibold text-slate-900 dark:text-white">
-                    {home("capabilitiesTitle")}
-                  </h2>
-                  <p className="max-w-2xl text-base text-slate-600 dark:text-slate-300">
-                    {home("capabilitiesBody")}
-                  </p>
-                </div>
-                <div className="grid gap-4 sm:grid-cols-2">
-                  {capabilities.map((capability) => (
-                    <div
-                      key={capability.title}
-                      className="reveal rounded-2xl border border-slate-200 bg-white px-5 py-5 text-sm text-slate-600 shadow-sm dark:border-slate-800 dark:bg-slate-950/60 dark:text-slate-300"
-                    >
-                      <div className="text-base font-semibold text-slate-900 dark:text-white">
-                        {capability.title}
-                      </div>
-                      <p className="mt-2 text-sm leading-relaxed text-slate-500 dark:text-slate-400">
-                        {capability.body}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="reveal reveal-delay-2 relative overflow-hidden rounded-3xl border border-slate-200 bg-gradient-to-br from-slate-50 via-white to-slate-100 p-6 shadow-[0_30px_80px_-70px_rgba(15,23,42,0.45)] dark:border-slate-800 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
-                <div className="absolute inset-0 opacity-70" aria-hidden="true">
-                  <div className="absolute -right-24 -top-16 h-52 w-52 rounded-full bg-[radial-gradient(circle_at_center,_rgba(56,189,248,0.25),_transparent_70%)] blur-2xl" />
-                </div>
-                <div className="relative space-y-4">
-                  <h3 className="text-xl font-[var(--font-display)] font-semibold text-slate-900 dark:text-white">
-                    {home("stackTitle")}
-                  </h3>
-                  <p className="text-sm text-slate-600 dark:text-slate-300">{home("stackBody")}</p>
-                  <div className="flex flex-wrap gap-2">
-                    {stackItems.map((item) => (
-                      <span
-                        key={item}
-                        className="rounded-full border border-slate-200 bg-white/80 px-3 py-1 text-xs font-semibold text-slate-600 shadow-sm dark:border-slate-700 dark:bg-slate-900/70 dark:text-slate-200"
-                      >
-                        {item}
-                      </span>
-                    ))}
-                  </div>
-                  <div className="rounded-2xl border border-slate-200 bg-white/80 px-4 py-4 text-xs text-slate-500 dark:border-slate-800 dark:bg-slate-950/60 dark:text-slate-400">
-                    SLAs, compliance, and governance ready.
-                  </div>
-                </div>
-              </div>
-            </section>
-
-            <section className="space-y-6">
-              <div className="space-y-3">
-                <h2 className="text-3xl font-[var(--font-display)] font-semibold text-slate-900 dark:text-white">
-                  {home("processTitle")}
-                </h2>
-                <p className="max-w-2xl text-base text-slate-600 dark:text-slate-300">
-                  {home("processBody")}
-                </p>
-              </div>
-              <div className="grid gap-4 lg:grid-cols-4">
-                {processSteps.map((step) => (
-                  <div
-                    key={step.step}
-                    className="reveal rounded-2xl border border-slate-200 bg-white px-5 py-5 text-sm text-slate-600 shadow-sm dark:border-slate-800 dark:bg-slate-950/60 dark:text-slate-300"
-                  >
-                    <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">
-                      {step.step}
-                    </div>
-                    <div className="mt-3 text-base font-semibold text-slate-900 dark:text-white">
-                      {step.title}
-                    </div>
-                    <p className="mt-2 text-sm leading-relaxed text-slate-500 dark:text-slate-400">
-                      {step.body}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </section>
-
-            <section className="space-y-6">
-              <div className="space-y-3">
-                <div className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-400">
-                  {home("solutionLinesEyebrow")}
-                </div>
-                <h2 className="text-3xl font-[var(--font-display)] font-semibold text-slate-900 dark:text-white">
-                  {home("solutionLinesTitle")}
-                </h2>
-                <p className="max-w-3xl text-base text-slate-600 dark:text-slate-300">
-                  {home("solutionLinesBody")}
-                </p>
-              </div>
-              <div className="grid gap-6 lg:grid-cols-2">
-                {solutionLines.map((line) => (
-                  <article
-                    key={line.title}
-                    className="rounded-3xl border border-slate-200 bg-white/90 p-6 shadow-[0_30px_90px_-70px_rgba(15,23,42,0.45)] dark:border-slate-800 dark:bg-slate-950/70"
-                  >
-                    <div className="space-y-4">
-                      <h3 className="text-2xl font-[var(--font-display)] font-semibold text-slate-900 dark:text-white">
-                        {line.title}
-                      </h3>
-                      <p className="text-sm leading-relaxed text-slate-600 dark:text-slate-300">
-                        {line.body}
-                      </p>
-                      <ul className="space-y-2 text-sm text-slate-600 dark:text-slate-300">
-                        {line.highlights.map((highlight) => (
-                          <li key={highlight} className="flex items-start gap-2">
-                            <span className="mt-2 h-1.5 w-1.5 rounded-full bg-teal-500" aria-hidden="true" />
-                            <span>{highlight}</span>
-                          </li>
-                        ))}
-                      </ul>
-                      <Link
-                        href={line.href}
-                        className="inline-flex items-center justify-center rounded-full border border-slate-300 bg-white/80 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:-translate-y-0.5 hover:border-slate-400 dark:border-slate-700 dark:bg-slate-900/60 dark:text-slate-200"
-                      >
-                        {line.cta}
-                      </Link>
-                    </div>
-                  </article>
-                ))}
-              </div>
-
-              <div className="rounded-3xl border border-slate-200 bg-slate-50/80 p-6 dark:border-slate-800 dark:bg-slate-950/60">
-                <div className="space-y-3">
-                  <h3 className="text-2xl font-[var(--font-display)] font-semibold text-slate-900 dark:text-white">
-                    {home("agentLineupTitle")}
-                  </h3>
-                  <p className="max-w-3xl text-sm text-slate-600 dark:text-slate-300">
-                    {home("agentLineupBody")}
-                  </p>
-                </div>
-                <div className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-                  {featuredAgents.map((agent) => (
-                    <Link
-                      key={agent.key}
-                      href={`${base}/agents/${agent.key}`}
-                      className="rounded-2xl border border-slate-200 bg-white px-4 py-4 text-sm shadow-sm transition hover:-translate-y-0.5 dark:border-slate-800 dark:bg-slate-900/70"
-                    >
-                      <div className="font-semibold text-slate-900 dark:text-white">{agent.name}</div>
-                      <p className="mt-2 text-slate-600 dark:text-slate-300">{agent.tagline}</p>
-                    </Link>
-                  ))}
-                </div>
-              </div>
-            </section>
-
-            <section className="space-y-6">
-              <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-                <div className="space-y-3">
-                  <div className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-400">
-                    {home("newsroomEyebrow")}
-                  </div>
-                  <h2 className="text-3xl font-[var(--font-display)] font-semibold text-slate-900 dark:text-white">
-                    {home("newsroomTitle")}
-                  </h2>
-                  <p className="max-w-3xl text-base text-slate-600 dark:text-slate-300">
-                    {home("newsroomBody")}
-                  </p>
-                </div>
-                <Link
-                  href={`${base}/news`}
-                  className="inline-flex items-center justify-center rounded-full border border-slate-300 bg-white/80 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:-translate-y-0.5 hover:border-slate-400 dark:border-slate-700 dark:bg-slate-900/60 dark:text-slate-200"
-                >
-                  {home("newsroomCta")}
-                </Link>
-              </div>
-              <div className="grid gap-4 lg:grid-cols-3">
-                {newsroomItems.map((item) => (
-                  <article
-                    key={item.title}
-                    className="rounded-2xl border border-slate-200 bg-white px-5 py-5 text-sm text-slate-600 shadow-sm dark:border-slate-800 dark:bg-slate-950/60 dark:text-slate-300"
-                  >
-                    <div className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-400">
-                      {item.category}
-                      {item.date ? ` - ${item.date}` : ""}
-                    </div>
-                    <div className="mt-2 text-base font-semibold text-slate-900 dark:text-white">
-                      {item.title}
-                    </div>
-                    <p className="mt-2 leading-relaxed">{item.body}</p>
-                  </article>
-                ))}
-              </div>
-            </section>
-
-            <section className="relative overflow-hidden rounded-3xl border border-slate-200 bg-slate-950 px-6 py-10 text-white shadow-[0_40px_120px_-80px_rgba(15,23,42,0.6)] dark:border-slate-800 sm:px-10 sm:py-12">
-              <div className="absolute inset-0 opacity-70" aria-hidden="true">
-                <div className="absolute -left-32 top-1/2 h-72 w-72 -translate-y-1/2 rounded-full bg-[radial-gradient(circle_at_center,_rgba(45,212,191,0.35),_transparent_70%)] blur-2xl" />
-                <div className="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-[radial-gradient(circle_at_center,_rgba(251,191,36,0.3),_transparent_70%)] blur-2xl" />
-              </div>
-              <div className="relative z-10 flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
-                <div className="space-y-3">
-                  <h2 className="text-3xl font-[var(--font-display)] font-semibold">
-                    {home("ctaTitle")}
-                  </h2>
-                  <p className="max-w-2xl text-base text-slate-200">{home("ctaBody")}</p>
-                </div>
-                <div className="flex flex-wrap items-center gap-3">
-                  <Link
-                    href={`${base}/systems/luna`}
-                    className="inline-flex items-center justify-center rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-slate-900 shadow-[0_20px_40px_-20px_rgba(15,23,42,0.6)] transition hover:-translate-y-0.5 hover:bg-slate-100"
-                  >
-                    {home("ctaPrimary")}
-                  </Link>
-                  <Link
-                    href={`${base}/agents`}
-                    className="inline-flex items-center justify-center rounded-full border border-slate-500 px-5 py-2.5 text-sm font-semibold text-slate-200 transition hover:-translate-y-0.5 hover:border-slate-300"
-                  >
-                    {home("ctaSecondary")}
-                  </Link>
-                </div>
-              </div>
-            </section>
-
-            <section className="relative overflow-hidden rounded-3xl border border-slate-200 bg-white/80 px-6 py-10 shadow-[0_35px_90px_-70px_rgba(15,23,42,0.35)] dark:border-slate-800 dark:bg-slate-950/60 sm:px-10 sm:py-12">
-              <div className="space-y-3">
-                <h2 className="text-3xl font-[var(--font-display)] font-semibold text-slate-900 dark:text-white">
-                  {home("clientsTitle")}
-                </h2>
-                <p className="text-sm text-slate-600 dark:text-slate-300">
-                  {home("clientsNote")}
-                </p>
-              </div>
-            </section>
           </div>
-        </div>
+
+          <PublicConciergeChat copy={intakeCopy} />
+        </section>
+
+        <section className="grid gap-8 xl:grid-cols-[0.95fr_1.05fr]">
+          <div className="space-y-6">
+            <div className="space-y-3">
+              <div className="text-xs font-semibold uppercase tracking-[0.22em] text-[#8a6b52]">
+                {home("salesStrategy.eyebrow")}
+              </div>
+              <h2 className="text-3xl font-[var(--font-display)] font-semibold text-slate-900 sm:text-4xl">
+                {home("salesStrategy.title")}
+              </h2>
+              <p className="max-w-2xl text-base text-slate-600">{home("salesStrategy.body")}</p>
+            </div>
+            <div className="grid gap-4 sm:grid-cols-2">
+              {processSteps.map((step) => (
+                <div
+                  key={step.step}
+                  className="rounded-2xl border border-[#e7ddd1] bg-white/88 px-5 py-5 text-sm text-slate-600 shadow-[0_20px_60px_-50px_rgba(15,23,42,0.3)]"
+                >
+                  <div className="text-xs font-semibold uppercase tracking-[0.22em] text-[#8a6b52]">
+                    {step.step}
+                  </div>
+                  <div className="mt-3 text-base font-semibold text-slate-900">{step.title}</div>
+                  <p className="mt-2 leading-relaxed">{step.body}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="space-y-6 rounded-[32px] border border-[#e4d8ca] bg-white/88 p-8 shadow-[0_35px_90px_-70px_rgba(15,23,42,0.3)]">
+            <div className="space-y-3">
+              <div className="text-xs font-semibold uppercase tracking-[0.22em] text-[#8a6b52]">
+                {home("salesPlaybook.eyebrow")}
+              </div>
+              <h3 className="text-3xl font-[var(--font-display)] font-semibold text-slate-900">
+                {home("salesPlaybook.title")}
+              </h3>
+              <p className="text-base text-slate-600">
+                {home("salesPlaybook.body")}
+              </p>
+            </div>
+            <div className="grid gap-4">
+              <div className="rounded-2xl border border-[#eadbca] bg-[#fff9f4] px-4 py-4 text-sm text-slate-700">
+                {home("salesPlaybook.cards.c1")}
+              </div>
+              <div className="rounded-2xl border border-[#eadbca] bg-[#fff9f4] px-4 py-4 text-sm text-slate-700">
+                {home("salesPlaybook.cards.c2")}
+              </div>
+              <div className="rounded-2xl border border-[#eadbca] bg-[#fff9f4] px-4 py-4 text-sm text-slate-700">
+                {home("salesPlaybook.cards.c3")}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="space-y-6">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+            <div className="space-y-3">
+              <div className="text-xs font-semibold uppercase tracking-[0.22em] text-[#8a6b52]">
+                {home("newsroomEyebrow")}
+              </div>
+              <h2 className="text-3xl font-[var(--font-display)] font-semibold text-slate-900 sm:text-4xl">
+                {home("newsroomTitle")}
+              </h2>
+              <p className="max-w-3xl text-base text-slate-600">{home("newsroomBody")}</p>
+            </div>
+            <Link
+              href={`${base}/news`}
+              className="inline-flex items-center justify-center rounded-full border border-slate-900 bg-white/80 px-4 py-2 text-sm font-semibold text-slate-900 transition hover:-translate-y-0.5 hover:bg-slate-900 hover:text-white"
+            >
+              {home("newsroomCta")}
+            </Link>
+          </div>
+          <div className="grid gap-4 lg:grid-cols-3">
+            {newsroomItems.map((item) => (
+              <article
+                key={item.title}
+                className="rounded-2xl border border-[#e7ddd1] bg-white/88 px-5 py-5 text-sm text-slate-600 shadow-[0_20px_60px_-50px_rgba(15,23,42,0.3)]"
+              >
+                <div className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#8a6b52]">
+                  {item.category}
+                  {item.date ? ` - ${item.date}` : ""}
+                </div>
+                <div className="mt-2 text-base font-semibold text-slate-900">{item.title}</div>
+                <p className="mt-2 leading-relaxed">{item.body}</p>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        <section className="relative overflow-hidden rounded-[36px] border border-[#d9c7b2] bg-[linear-gradient(135deg,#fffaf5_0%,#f3eadf_60%,#e8ddd0_100%)] px-8 py-10 shadow-[0_45px_120px_-85px_rgba(15,23,42,0.35)] sm:px-10 sm:py-12">
+          <div className="absolute inset-0 opacity-70" aria-hidden="true">
+            <div className="absolute -left-24 top-1/2 h-64 w-64 -translate-y-1/2 rounded-full bg-[radial-gradient(circle_at_center,_rgba(249,115,22,0.14),_transparent_70%)] blur-2xl" />
+            <div className="absolute -right-10 -top-16 h-56 w-56 rounded-full bg-[radial-gradient(circle_at_center,_rgba(14,165,233,0.14),_transparent_70%)] blur-2xl" />
+          </div>
+          <div className="relative z-10 flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+            <div className="space-y-3">
+              <h2 className="text-3xl font-[var(--font-display)] font-semibold text-slate-900 sm:text-4xl">
+                {home("ctaTitle")}
+              </h2>
+              <p className="max-w-3xl text-base text-slate-600">{home("ctaBody")}</p>
+            </div>
+            <div className="flex flex-wrap items-center gap-3">
+              <Link
+                href={`${base}/systems/luna`}
+                className="inline-flex items-center justify-center rounded-full bg-slate-900 px-5 py-2.5 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:bg-slate-800"
+              >
+                {home("ctaPrimary")}
+              </Link>
+              <Link
+                href={`${base}/agents`}
+                className="inline-flex items-center justify-center rounded-full border border-slate-900 px-5 py-2.5 text-sm font-semibold text-slate-900 transition hover:-translate-y-0.5 hover:bg-slate-900 hover:text-white"
+              >
+                {home("ctaSecondary")}
+              </Link>
+            </div>
+          </div>
+        </section>
       </div>
     </div>
   );

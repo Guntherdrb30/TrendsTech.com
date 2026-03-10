@@ -88,6 +88,36 @@
         "s6Cta": "Ver casos"
       }
     },
+    "premiumSection": {
+      "eyebrow": "EMPRESA DE ALTA TECNOLOGIA",
+      "title": "Tecnologia premium para empresas que exigen mas que una web bonita",
+      "body": "Desarrollamos productos y proyectos tecnologicos que se adaptan a la operacion real de cada empresa. Hoy vendemos sistemas empresariales como LUNA y agentes IA por funcion, con una narrativa clara, consultiva y de alto valor."
+    },
+    "advisorySection": {
+      "eyebrow": "ASESORAMIENTO CONSULTIVO",
+      "title": "Un asesor que vende por diagnostico, no por catalogo frio",
+      "body": "El objetivo no es mostrar tecnologia por mostrarla. Queremos detectar si tu empresa necesita un sistema como LUNA, agentes por funcion o una combinacion de ambos. Por eso la experiencia empieza por entender tu empresa y luego aterrizar la propuesta.",
+      "cards": {
+        "c1": "Ruta 1: asesoramiento completo sobre LUNA segun el tipo de empresa y su operacion.",
+        "c2": "Ruta 2: diagnostico de agentes IA por URL, area, proceso comercial o necesidad operativa.",
+        "c3": "Cada respuesta debe traducirse en una recomendacion accionable: demo, implementacion o siguiente paso comercial."
+      }
+    },
+    "salesStrategy": {
+      "eyebrow": "ESTRATEGIA DE VENTA",
+      "title": "Asi se venden y aterrizan nuestros productos tecnologicos",
+      "body": "La mejor venta no ocurre cuando solo mostramos herramientas. Ocurre cuando conectamos problema, impacto operativo, caso real y ruta clara de implementacion."
+    },
+    "salesPlaybook": {
+      "eyebrow": "VENTA POR VALOR",
+      "title": "Lo mas nuevo para vender tecnologia compleja",
+      "body": "Para vender bien este tipo de productos no conviene mostrar solo caracteristicas. Conviene vender por escenarios de negocio, por impacto operativo y por casos de uso reales.",
+      "cards": {
+        "c1": "Presenta cada solucion como una pieza de transformacion: que problema resuelve, en que empresa aplica y que cambio operativo produce.",
+        "c2": "Usa tarjetas de proyecto con apertura a detalle, screenshots reales, beneficios, modulos, caso de uso y CTA consultivo en vez de una ficha tecnica plana.",
+        "c3": "Separa bien producto reutilizable, agente especializado y caso real. Eso eleva la percepcion de madurez y reduce confusion comercial."
+      }
+    },
     "sidebarTitle": "Panel del sistema",
     "sidebarSubtitle": "Accesos rapidos y control operativo.",
     "sidebarSectionCore": "Nucleo",
