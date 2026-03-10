@@ -22,7 +22,6 @@ const body = IBM_Plex_Sans({
 export default async function HomePage({ params }: { params: Promise<{ locale: string }> }) {
   const home = await getTranslations("home");
   const agents = await getTranslations("agents");
-  const systems = await getTranslations("systemsPage");
   const projects = await getTranslations("projectsPage");
   const { locale } = await params;
   const base = `/${locale}`;
@@ -47,41 +46,33 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
       eyebrow: home("carousel.slides.s2Eyebrow"),
       title: home("carousel.slides.s2Title"),
       body: home("carousel.slides.s2Body"),
-      image: "/marketing/home/agent-sales-velocity.svg",
-      href: `${base}/agents/sales`,
+      image: "/marketing/home/luna-pwa-commerce.svg",
+      href: `${base}/systems/luna`,
       cta: home("carousel.slides.s2Cta")
     },
     {
       eyebrow: home("carousel.slides.s3Eyebrow"),
       title: home("carousel.slides.s3Title"),
       body: home("carousel.slides.s3Body"),
-      image: "/marketing/home/agent-support-voice.svg",
-      href: `${base}/agents/support`,
+      image: "/marketing/home/luna-operations-core.svg",
+      href: `${base}/systems/luna`,
       cta: home("carousel.slides.s3Cta")
     },
     {
       eyebrow: home("carousel.slides.s4Eyebrow"),
       title: home("carousel.slides.s4Title"),
       body: home("carousel.slides.s4Body"),
-      image: "/marketing/home/case-carpihogar-pwa.svg",
-      href: `${base}/projects`,
+      image: "/marketing/home/luna-role-panels.svg",
+      href: `${base}/systems/luna`,
       cta: home("carousel.slides.s4Cta")
     },
     {
       eyebrow: home("carousel.slides.s5Eyebrow"),
       title: home("carousel.slides.s5Title"),
       body: home("carousel.slides.s5Body"),
-      image: "/marketing/home/case-executive-reporting.svg",
+      image: "/marketing/home/luna-executive-intelligence.svg",
       href: `${base}/systems/luna`,
       cta: home("carousel.slides.s5Cta")
-    },
-    {
-      eyebrow: home("carousel.slides.s6Eyebrow"),
-      title: home("carousel.slides.s6Title"),
-      body: home("carousel.slides.s6Body"),
-      image: "/marketing/home/case-operations-flow.svg",
-      href: `${base}/projects`,
-      cta: home("carousel.slides.s6Cta")
     }
   ];
 
@@ -114,19 +105,6 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
 
   const showcaseCards = [
     {
-      label: systems("catalogBadge"),
-      title: "LUNA",
-      body: systems("lunaBody"),
-      image: "/marketing/home/luna-command-center.svg",
-      href: `${base}/systems/luna`,
-      cta: systems("catalogPrimary"),
-      highlights: [
-        systems("lunaHighlights.h1"),
-        systems("lunaHighlights.h2"),
-        systems("lunaHighlights.h4")
-      ]
-    },
-    {
       label: home("solutionLines.cards.agents.title"),
       title: home("agentLineupTitle"),
       body: home("solutionLines.cards.agents.body"),
@@ -146,6 +124,19 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         projects("projects.carpihogar.tagline1"),
         projects("projects.carpihogar.tagline2"),
         home("solutionLines.cards.systems.highlights.h3")
+      ]
+    },
+    {
+      label: home("newsroomEyebrow"),
+      title: home("newsroomTitle"),
+      body: home("newsroomBody"),
+      image: "/marketing/home/case-executive-reporting.svg",
+      href: `${base}/news`,
+      cta: home("newsroomCta"),
+      highlights: [
+        home("newsroom.cards.n1Title"),
+        home("newsroom.cards.n2Title"),
+        home("newsroom.cards.n3Title")
       ]
     }
   ];
@@ -203,20 +194,22 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
           secondaryCta={home("carouselSecondaryCta")}
         />
 
-        <section className="grid gap-8 xl:grid-cols-[0.72fr_1.28fr]">
-            <div className="space-y-6">
+        <section className="space-y-8">
+          <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+            <div className="space-y-4">
               <div className="inline-flex rounded-full border border-[#d7c7b4] bg-white/85 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.24em] text-[#8a6b52] shadow-sm">
-                {home("premiumSection.eyebrow")}
+                {home("subheroSection.eyebrow")}
               </div>
               <div className="space-y-4">
-                <h2 className="text-4xl font-[var(--font-display)] font-semibold leading-tight text-slate-900 sm:text-5xl">
-                  {home("premiumSection.title")}
+                <h2 className="max-w-3xl text-3xl font-[var(--font-display)] font-semibold leading-tight text-slate-900 sm:text-4xl">
+                  {home("subheroSection.title")}
                 </h2>
-                <p className="max-w-xl text-base leading-relaxed text-slate-600 sm:text-lg">
-                  {home("premiumSection.body")}
+                <p className="max-w-3xl text-base leading-relaxed text-slate-600 sm:text-lg">
+                  {home("subheroSection.body")}
                 </p>
               </div>
-            <div className="grid gap-3">
+            </div>
+            <div className="grid max-w-md gap-3">
               {premiumPoints.map((point) => (
                 <div
                   key={point}
