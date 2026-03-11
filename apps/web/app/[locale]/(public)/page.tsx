@@ -6,6 +6,8 @@ import { PublicConciergeChat } from "./public-concierge-chat";
 import { MarketingHeroCarousel } from "./marketing-hero-carousel";
 import { AGENT_PRODUCTS } from "./agents/agent-products";
 import { formatNewsDate, getPublishedNewsPosts } from "@/lib/news";
+import { getPublicSiteAssets } from "@/lib/site-assets";
+import { SiteAssetSection } from "@trends172tech/db";
 
 const display = Space_Grotesk({
   subsets: ["latin"],
@@ -26,6 +28,10 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
   const { locale } = await params;
   const base = `/${locale}`;
   const publishedNews = await getPublishedNewsPosts(locale, 3);
+  const [heroAssets, showcaseAssets] = await Promise.all([
+    getPublicSiteAssets(SiteAssetSection.HOME_HERO, locale),
+    getPublicSiteAssets(SiteAssetSection.HOME_SHOWCASE, locale)
+  ]);
 
   const metrics = [
     { value: home("metrics.m1Value"), label: home("metrics.m1Label") },
@@ -33,7 +39,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
     { value: home("metrics.m3Value"), label: home("metrics.m3Label") }
   ];
 
-  const carouselItems = [
+  const fallbackCarouselItems = [
     {
       eyebrow: home("carousel.slides.s1Eyebrow"),
       title: home("carousel.slides.s1Title"),
@@ -76,6 +82,18 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
     }
   ];
 
+  const carouselItems =
+    heroAssets.length > 0
+      ? heroAssets.map((asset) => ({
+          eyebrow: asset.eyebrow ?? asset.badge ?? "",
+          title: asset.title,
+          body: asset.body,
+          image: asset.imageUrl,
+          href: asset.ctaHref ?? `${base}/systems/luna`,
+          cta: asset.ctaLabel ?? home("carouselSecondaryCta")
+        }))
+      : fallbackCarouselItems;
+
   const intakeCopy = {
     locale,
     intakeBadge: home("intakeBadge"),
@@ -103,7 +121,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
     tagline: agents(`${agent.key}.tagline`)
   }));
 
-  const showcaseCards = [
+  const fallbackShowcaseCards = [
     {
       label: home("solutionLines.cards.agents.title"),
       title: home("agentLineupTitle"),
@@ -140,6 +158,19 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
       ]
     }
   ];
+
+  const showcaseCards =
+    showcaseAssets.length > 0
+      ? showcaseAssets.map((asset) => ({
+          label: asset.badge ?? asset.eyebrow ?? home("subheroSection.eyebrow"),
+          title: asset.title,
+          body: asset.body,
+          image: asset.imageUrl,
+          href: asset.ctaHref ?? `${base}/systems/luna`,
+          cta: asset.ctaLabel ?? home("ctaPrimary"),
+          highlights: asset.highlights
+        }))
+      : fallbackShowcaseCards;
 
   const premiumPoints = [
     home("capabilities.c1Title"),

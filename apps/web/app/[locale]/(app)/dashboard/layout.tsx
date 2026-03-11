@@ -99,6 +99,14 @@ export default async function DashboardLayout({
                 Users
               </Link>
             )}
+            {(profile?.role === 'TENANT_ADMIN' || profile?.role === 'ROOT') && (
+              <Link
+                href={`/${locale}/dashboard/site-media`}
+                className="hover:text-slate-900 dark:hover:text-white"
+              >
+                Site media
+              </Link>
+            )}
             <Link
               href={`/${locale}/dashboard/installs`}
               className="hover:text-slate-900 dark:hover:text-white"

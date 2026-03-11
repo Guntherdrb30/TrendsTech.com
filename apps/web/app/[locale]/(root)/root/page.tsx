@@ -489,6 +489,12 @@ export default async function RootPage({ params }: { params: Promise<{ locale: s
             <Link href={`/${locale}/root/news`} className="hover:text-slate-900 dark:hover:text-white">
               Novedades
             </Link>
+            <Link
+              href={`/${locale}/dashboard/site-media`}
+              className="hover:text-slate-900 dark:hover:text-white"
+            >
+              Media del sitio
+            </Link>
             <a href="#ajustes" className="hover:text-slate-900 dark:hover:text-white">
               Ajustes globales
             </a>
@@ -1014,6 +1020,20 @@ export default async function RootPage({ params }: { params: Promise<{ locale: s
                 Configura tasas, limites y datos de pago.
               </p>
             </div>
+            <Card>
+              <CardHeader>
+                <CardTitle>Control visual del sitio</CardTitle>
+              </CardHeader>
+              <CardContent className="flex flex-col gap-3 text-sm text-slate-600 dark:text-slate-300 sm:flex-row sm:items-center sm:justify-between">
+                <p>
+                  Administra el hero principal, tarjetas comerciales e imagenes del sitio desde el
+                  nuevo centro de media.
+                </p>
+                <Button asChild>
+                  <Link href={`/${locale}/dashboard/site-media`}>Abrir media del sitio</Link>
+                </Button>
+              </CardContent>
+            </Card>
             <RootClient
               usdToVesRate={settings?.usdToVesRate?.toString() ?? '0'}
               usdPaymentDiscountPercent={settings?.usdPaymentDiscountPercent?.toString() ?? '0'}

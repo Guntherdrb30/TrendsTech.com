@@ -18,6 +18,7 @@
     "@trends172tech/core": "file:../../packages/core",
     "@trends172tech/db": "file:../../packages/db",
     "@trends172tech/openai": "file:../../packages/openai",
+    "@vercel/blob": "^2.3.1",
     "bcryptjs": "^2.4.3",
     "bullmq": "^5.66.4",
     "cheerio": "^1.0.0-rc.12",

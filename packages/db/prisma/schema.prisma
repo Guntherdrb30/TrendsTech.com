@@ -93,6 +93,11 @@ enum NewsPostStatus {
   PUBLISHED
 }
 
+enum SiteAssetSection {
+  HOME_HERO
+  HOME_SHOWCASE
+}
+
 model Tenant {
   id             String           @id @default(cuid())
   name           String
@@ -135,6 +140,7 @@ model User {
   reviewedPayments   ManualPayment[] @relation("ManualPaymentReviewedBy")
   auditLogs          AuditLog[]      @relation("AuditLogActor")
   updatedSettings    GlobalSettings[]
+  updatedSiteAssets  SiteAsset[]      @relation("SiteAssetUpdatedBy")
   passwordResets     PasswordResetToken[]
   newsPosts          NewsPost[]       @relation("NewsPostAuthor")
 
@@ -480,4 +486,29 @@ model NewsPost {
   @@index([status, language, publishedAt])
   @@index([featured, status, publishedAt])
   @@index([authorUserId])
+}
+
+model SiteAsset {
+  id              String           @id @default(cuid())
+  section         SiteAssetSection
+  language        Language         @default(ES)
+  eyebrow         String?
+  badge           String?
+  title           String
+  body            String           @db.Text
+  imageUrl        String
+  blobUrl         String?
+  ctaLabel        String?
+  ctaHref         String?
+  highlightsJson  Json?
+  sortOrder       Int              @default(0)
+  isActive        Boolean          @default(true)
+  updatedByUserId String?
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+
+  updatedBy       User?            @relation("SiteAssetUpdatedBy", fields: [updatedByUserId], references: [id])
+
+  @@index([section, language, isActive, sortOrder])
+  @@index([updatedByUserId])
 }
