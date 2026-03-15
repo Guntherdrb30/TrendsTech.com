@@ -1,10 +1,12 @@
 import { prisma } from '@trends172tech/db';
 import { requireAuth } from '@/lib/auth/guards';
 import { ProfileForm } from '@/components/profile-form';
+import { ChangePasswordForm } from '@/components/change-password-form';
 
 export const dynamic = 'force-dynamic';
 
-export default async function ProfilePage() {
+export default async function ProfilePage({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
   const user = await requireAuth();
   const profile = await prisma.user.findUnique({
     where: { id: user.id },
@@ -39,6 +41,7 @@ export default async function ProfilePage() {
         initialPhone={profile.phone ?? ''}
         initialAvatarUrl={profile.avatarUrl ?? ''}
       />
+      <ChangePasswordForm locale={locale} />
     </section>
   );
 }

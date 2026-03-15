@@ -29,6 +29,10 @@ function getTokenSecret() {
   return process.env.RESET_TOKEN_SECRET ?? process.env.AUTH_SECRET ?? null;
 }
 
+function isEmailResetConfigured() {
+  return Boolean(process.env.RESEND_API_KEY && process.env.EMAIL_FROM);
+}
+
 export async function POST(request: Request) {
   let payload: z.infer<typeof requestSchema>;
   try {
@@ -48,6 +52,18 @@ export async function POST(request: Request) {
     return NextResponse.json(
       { error: 'Missing reset token secret.' },
       { status: 500, headers: { 'Cache-Control': 'no-store' } }
+    );
+  }
+
+  if (!isEmailResetConfigured()) {
+    return NextResponse.json(
+      {
+        error:
+          locale.startsWith('es')
+            ? 'Recuperacion por correo no configurada. Inicia sesion y cambia tu contrasena desde Perfil, o solicita a ROOT que la restablezca.'
+            : 'Email recovery is not configured. Sign in and change your password from Profile, or ask a ROOT user to reset it.'
+      },
+      { status: 503, headers: { 'Cache-Control': 'no-store' } }
     );
   }
 
