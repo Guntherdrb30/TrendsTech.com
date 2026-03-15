@@ -73,7 +73,8 @@ export async function POST(request: Request) {
       await tx.devExecutionQueue.create({
         data: {
           taskId: createdTask.id,
-          status: DevQueueStatus.PENDING
+          status: DevQueueStatus.PENDING,
+          runtime: parsed.data.runtime
         }
       });
 
@@ -85,6 +86,7 @@ export async function POST(request: Request) {
           metadata: {
             projectId: project.id,
             executionMode: parsed.data.executionMode,
+            runtime: parsed.data.runtime,
             aiProvider: parsed.data.aiProvider ?? null
           }
         }
@@ -104,6 +106,7 @@ export async function POST(request: Request) {
           title: task.title,
           projectId: task.projectId,
           executionMode: task.executionMode,
+          runtime: parsed.data.runtime,
           priority: task.priority
         }
       }

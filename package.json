@@ -12,6 +12,8 @@
     "start": "npm --workspace apps/web run start",
     "lint": "npm --workspace apps/web run lint",
     "typecheck": "npm --workspace apps/web run typecheck",
+    "luna:runner:build": "npm --workspace packages/luna-runner run build",
+    "luna:runner:start": "npm --workspace packages/luna-runner run start",
     "prisma": "npm --workspace packages/db run prisma",
     "db:migrate": "npm --workspace packages/db run prisma migrate dev",
     "db:studio": "npm --workspace packages/db run prisma studio",

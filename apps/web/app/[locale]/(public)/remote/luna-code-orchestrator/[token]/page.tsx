@@ -34,6 +34,26 @@ export default async function LunaRemotePage({
     select: { id: true, name: true }
   });
 
+  const recentTasks = await prisma.devTask.findMany({
+    where: {
+      tenantId: session.tenantId,
+      createdByUserId: session.userId
+    },
+    orderBy: { createdAt: "desc" },
+    take: 8,
+    include: {
+      queue: {
+        include: {
+          runner: {
+            select: {
+              name: true
+            }
+          }
+        }
+      }
+    }
+  });
+
   return (
     <div className="min-h-screen bg-[linear-gradient(180deg,#f8fafc_0%,#eef2ff_100%)] px-4 py-8 text-slate-900">
       <div className="mx-auto max-w-2xl space-y-6">
@@ -53,6 +73,34 @@ export default async function LunaRemotePage({
           ) : (
             <RemoteTaskClient token={token} projects={projects} />
           )}
+        </div>
+
+        <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+          <div className="space-y-1">
+            <h2 className="text-lg font-semibold">Actividad reciente</h2>
+            <p className="text-sm text-slate-500">Revisa estado, runtime y runner de tus ultimas tareas moviles.</p>
+          </div>
+          <div className="mt-4 space-y-3">
+            {recentTasks.length === 0 ? (
+              <p className="text-sm text-slate-500">Aun no hay tareas creadas desde esta sesion.</p>
+            ) : (
+              recentTasks.map((task) => (
+                <div key={task.id} className="rounded-2xl border border-slate-200 px-4 py-3 text-sm">
+                  <div className="flex flex-wrap items-center justify-between gap-3">
+                    <div className="font-semibold text-slate-900">{task.title}</div>
+                    <span className="rounded-full bg-slate-100 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-700">
+                      {task.status}
+                    </span>
+                  </div>
+                  <div className="mt-2 flex flex-wrap gap-3 text-xs text-slate-500">
+                    <span>Queue: {task.queue?.status ?? "none"}</span>
+                    <span>Runtime: {task.queue?.runtime ?? "dry-run"}</span>
+                    <span>Runner: {task.queue?.runner?.name ?? "sin asignar"}</span>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
         </div>
       </div>
     </div>

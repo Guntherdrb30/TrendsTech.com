@@ -16,18 +16,29 @@ export default async function LunaCodeOrchestratorPage({
   const user = await requireRole("TENANT_OPERATOR");
   const tenantId = await requireTenantId();
 
-  const [projectCount, activeTasks, queuedTasks, recentTasks, remoteSessions, providers, plan] =
+  const [projectCount, activeTasks, queuedTasks, runnerCount, busyRunners, recentTasks, remoteSessions, providers, plan] =
     await Promise.all([
       prisma.devProject.count({ where: { tenantId, isActive: true } }),
       prisma.devTask.count({ where: { tenantId, status: { in: ["RUNNING", "REVIEW"] } } }),
       prisma.devExecutionQueue.count({ where: { task: { tenantId }, status: "PENDING" } }),
+      prisma.devRunner.count({ where: { tenantId } }),
+      prisma.devRunner.count({ where: { tenantId, status: { in: ["ONLINE", "BUSY"] } } }),
       prisma.devTask.findMany({
         where: { tenantId },
         orderBy: { createdAt: "desc" },
         take: 6,
         include: {
           project: { select: { name: true } },
-          queue: true
+          queue: {
+            include: {
+              runner: {
+                select: {
+                  id: true,
+                  name: true
+                }
+              }
+            }
+          }
         }
       }),
       prisma.remoteSession.count({
@@ -62,9 +73,14 @@ export default async function LunaCodeOrchestratorPage({
         </Card>
         <Card>
           <CardHeader>
-            <CardTitle>Sesiones QR activas</CardTitle>
+            <CardTitle>Runners y QR</CardTitle>
           </CardHeader>
-          <CardContent className="text-3xl font-semibold">{remoteSessions}</CardContent>
+          <CardContent className="space-y-2">
+            <div className="text-3xl font-semibold">{runnerCount}</div>
+            <div className="text-xs text-slate-500 dark:text-slate-400">
+              {busyRunners} runner(s) online o busy · {remoteSessions} sesiones QR activas
+            </div>
+          </CardContent>
         </Card>
       </div>
 
@@ -97,6 +113,8 @@ export default async function LunaCodeOrchestratorPage({
                   </div>
                   <div className="mt-3 flex flex-wrap gap-3 text-xs text-slate-500 dark:text-slate-400">
                     <span>Queue: {task.queue?.status ?? "none"}</span>
+                    <span>Runtime: {task.queue?.runtime ?? "dry-run"}</span>
+                    <span>Runner: {task.queue?.runner?.name ?? "sin asignar"}</span>
                     <Link
                       href={`/${locale}/dashboard/agents/luna-code-orchestrator/tasks/${task.id}`}
                       className="font-semibold text-blue-600 hover:underline"
@@ -119,15 +137,15 @@ export default async function LunaCodeOrchestratorPage({
               <p>
                 Plan actual: <span className="font-semibold text-slate-900 dark:text-white">{plan.planKey}</span>
               </p>
-              <p>Límite orientativo de tareas: {plan.taskLimitLabel}</p>
-              <p>Límite orientativo de proyectos: {plan.projectLimitLabel}</p>
+              <p>Limite orientativo de tareas: {plan.taskLimitLabel}</p>
+              <p>Limite orientativo de proyectos: {plan.projectLimitLabel}</p>
               <p>Proveedores IA activos: {providers}</p>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader>
-              <CardTitle>Acciones rápidas</CardTitle>
+              <CardTitle>Acciones rapidas</CardTitle>
             </CardHeader>
             <CardContent className="grid gap-3">
               <Link
@@ -141,6 +159,12 @@ export default async function LunaCodeOrchestratorPage({
                 className="rounded-2xl border border-slate-200 px-4 py-3 text-sm font-semibold text-slate-700 transition hover:border-slate-900 hover:text-slate-900 dark:border-slate-800 dark:text-slate-200"
               >
                 Crear tarea nueva
+              </Link>
+              <Link
+                href={`/${locale}/dashboard/agents/luna-code-orchestrator/runners`}
+                className="rounded-2xl border border-slate-200 px-4 py-3 text-sm font-semibold text-slate-700 transition hover:border-slate-900 hover:text-slate-900 dark:border-slate-800 dark:text-slate-200"
+              >
+                Emparejar runners
               </Link>
               <Link
                 href={`/${locale}/dashboard/agents/luna-code-orchestrator/settings`}

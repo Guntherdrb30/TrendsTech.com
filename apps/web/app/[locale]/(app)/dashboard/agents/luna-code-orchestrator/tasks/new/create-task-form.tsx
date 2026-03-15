@@ -1,6 +1,12 @@
 "use client";
 
-import { DevAIProviderType, DevExecutionMode, DevTaskPriority, type DevProject } from "@trends172tech/db";
+import {
+  DevAIProviderType,
+  DevExecutionMode,
+  DevExecutionRuntime,
+  DevTaskPriority,
+  type DevProject
+} from "@trends172tech/db";
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
@@ -33,6 +39,7 @@ export function CreateTaskForm({
   const [branch, setBranch] = useState("");
   const [prompt, setPrompt] = useState("");
   const [executionMode, setExecutionMode] = useState<DevExecutionMode>(DevExecutionMode.LOCAL);
+  const [runtime, setRuntime] = useState<DevExecutionRuntime>(DevExecutionRuntime.DRY_RUN);
   const [priority, setPriority] = useState<DevTaskPriority>(DevTaskPriority.MEDIUM);
   const [aiProvider, setAiProvider] = useState<DevAIProviderType | "">(
     providers.find((provider) => provider.isDefault)?.provider ?? ""
@@ -53,6 +60,7 @@ export function CreateTaskForm({
           branch,
           prompt,
           executionMode,
+          runtime,
           priority,
           aiProvider: aiProvider || undefined
         })
@@ -109,7 +117,7 @@ export function CreateTaskForm({
               className="min-h-28 w-full rounded border border-slate-200 bg-white px-3 py-2 text-sm shadow-sm outline-none focus:border-slate-400 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
             />
           </div>
-          <div className="grid gap-4 md:grid-cols-3">
+          <div className="grid gap-4 md:grid-cols-4">
             <div className="space-y-2">
               <Label htmlFor="task-priority">Prioridad</Label>
               <select
@@ -135,6 +143,19 @@ export function CreateTaskForm({
                 <option value={DevExecutionMode.LOCAL}>Local</option>
                 <option value={DevExecutionMode.REMOTE}>Remote</option>
                 <option value={DevExecutionMode.GITHUB}>GitHub</option>
+              </select>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="task-runtime">Runtime</Label>
+              <select
+                id="task-runtime"
+                className="h-9 w-full rounded border border-slate-200 bg-white px-3 text-sm dark:border-slate-700 dark:bg-slate-900"
+                value={runtime}
+                onChange={(event) => setRuntime(event.target.value as DevExecutionRuntime)}
+              >
+                <option value={DevExecutionRuntime.DRY_RUN}>Dry run</option>
+                <option value={DevExecutionRuntime.SHELL}>Shell</option>
+                <option value={DevExecutionRuntime.CODEX_CLI}>Codex CLI</option>
               </select>
             </div>
             <div className="space-y-2">

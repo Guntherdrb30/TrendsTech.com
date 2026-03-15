@@ -44,3 +44,11 @@ export function createRemoteToken() {
 export function hashRemoteToken(token: string) {
   return createHash("sha256").update(token).digest("hex");
 }
+
+export function createRunnerToken() {
+  return createRemoteToken();
+}
+
+export function hashRunnerToken(token: string) {
+  return hashRemoteToken(token);
+}

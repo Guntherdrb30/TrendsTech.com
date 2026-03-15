@@ -1,8 +1,11 @@
 import type {
   DevAIProvider,
   DevExecutionMode,
+  DevExecutionRuntime,
   DevExecutionQueue,
   DevProject,
+  DevRunner,
+  DevRunnerEvent,
   DevTask,
   DevTaskFile,
   DevTaskLog,
@@ -17,6 +20,9 @@ export type LunaAiProvider = DevAIProvider;
 export type LunaRemoteSession = RemoteSession;
 export type LunaQueueItem = DevExecutionQueue;
 export type LunaExecutionMode = DevExecutionMode;
+export type LunaExecutionRuntime = DevExecutionRuntime;
+export type LunaRunner = DevRunner;
+export type LunaRunnerEvent = DevRunnerEvent;
 
 export type LunaPlanSnapshot = {
   planKey: string;

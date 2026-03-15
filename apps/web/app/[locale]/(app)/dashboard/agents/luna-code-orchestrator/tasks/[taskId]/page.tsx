@@ -23,9 +23,20 @@ export default async function LunaTaskDetailPage({
     where: { id: taskId, tenantId },
     include: {
       project: true,
-      queue: true,
+      queue: {
+        include: {
+          runner: true
+        }
+      },
       logs: { orderBy: { createdAt: "desc" }, take: 20 },
-      files: { orderBy: { createdAt: "desc" }, take: 20 }
+      files: { orderBy: { createdAt: "desc" }, take: 20 },
+      runnerEvents: {
+        orderBy: { createdAt: "desc" },
+        take: 10,
+        include: {
+          runner: true
+        }
+      }
     }
   });
 
@@ -39,7 +50,7 @@ export default async function LunaTaskDetailPage({
         <CardHeader>
           <CardTitle>{task.title}</CardTitle>
         </CardHeader>
-        <CardContent className="grid gap-4 md:grid-cols-2 xl:grid-cols-4 text-sm text-slate-600 dark:text-slate-300">
+        <CardContent className="grid gap-4 text-sm text-slate-600 dark:text-slate-300 md:grid-cols-2 xl:grid-cols-4">
           <div>
             <div className="text-xs uppercase tracking-[0.2em] text-slate-400">Proyecto</div>
             <div className="mt-1 font-semibold text-slate-900 dark:text-white">{task.project.name}</div>
@@ -50,7 +61,9 @@ export default async function LunaTaskDetailPage({
           </div>
           <div>
             <div className="text-xs uppercase tracking-[0.2em] text-slate-400">Cola</div>
-            <div className="mt-1 font-semibold text-slate-900 dark:text-white">{task.queue?.status ?? "none"}</div>
+            <div className="mt-1 font-semibold text-slate-900 dark:text-white">
+              {task.queue?.status ?? "none"} {task.queue ? `· ${task.queue.runtime}` : ""}
+            </div>
           </div>
           <div>
             <div className="text-xs uppercase tracking-[0.2em] text-slate-400">Proveedor</div>
@@ -76,6 +89,10 @@ export default async function LunaTaskDetailPage({
             <div>
               <div className="text-xs uppercase tracking-[0.2em] text-slate-400">Resultado</div>
               <p className="mt-2 whitespace-pre-wrap">{task.resultSummary ?? "Pendiente."}</p>
+            </div>
+            <div>
+              <div className="text-xs uppercase tracking-[0.2em] text-slate-400">Runner asignado</div>
+              <p className="mt-2">{task.queue?.runner?.name ?? "Sin runner asignado."}</p>
             </div>
           </CardContent>
         </Card>
@@ -118,6 +135,31 @@ export default async function LunaTaskDetailPage({
                   </span>
                 </div>
                 <p className="mt-2 whitespace-pre-wrap text-slate-600 dark:text-slate-300">{log.message}</p>
+              </div>
+            ))
+          )}
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Eventos del runner</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-3 text-sm">
+          {task.runnerEvents.length === 0 ? (
+            <p className="text-slate-500 dark:text-slate-400">Aun no hay eventos del runner.</p>
+          ) : (
+            task.runnerEvents.map((event) => (
+              <div key={event.id} className="rounded-2xl border border-slate-200 px-4 py-3 dark:border-slate-800">
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  <span className="font-semibold text-slate-900 dark:text-white">
+                    {event.type} · {event.runner.name}
+                  </span>
+                  <span className="text-xs text-slate-500 dark:text-slate-400">
+                    {event.createdAt.toISOString()}
+                  </span>
+                </div>
+                <p className="mt-2 whitespace-pre-wrap text-slate-600 dark:text-slate-300">{event.message}</p>
               </div>
             ))
           )}

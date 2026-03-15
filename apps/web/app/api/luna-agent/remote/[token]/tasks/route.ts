@@ -64,7 +64,8 @@ export async function POST(
     await tx.devExecutionQueue.create({
       data: {
         taskId: createdTask.id,
-        status: DevQueueStatus.PENDING
+        status: DevQueueStatus.PENDING,
+        runtime: parsed.data.runtime
       }
     });
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { DevExecutionMode, DevTaskPriority, type DevProject } from "@trends172tech/db";
+import { DevExecutionMode, DevExecutionRuntime, DevTaskPriority, type DevProject } from "@trends172tech/db";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -20,6 +20,7 @@ export function RemoteTaskClient({
   const [prompt, setPrompt] = useState("");
   const [projectId, setProjectId] = useState(projects[0]?.id ?? "");
   const [priority, setPriority] = useState<DevTaskPriority>(DevTaskPriority.MEDIUM);
+  const [runtime, setRuntime] = useState<DevExecutionRuntime>(DevExecutionRuntime.DRY_RUN);
 
   const submitTask = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -35,7 +36,8 @@ export function RemoteTaskClient({
         prompt,
         projectId,
         priority,
-        executionMode: DevExecutionMode.REMOTE
+        executionMode: DevExecutionMode.REMOTE,
+        runtime
       })
     });
 
@@ -105,6 +107,19 @@ export function RemoteTaskClient({
           <option value={DevTaskPriority.MEDIUM}>Medium</option>
           <option value={DevTaskPriority.HIGH}>High</option>
           <option value={DevTaskPriority.URGENT}>Urgent</option>
+        </select>
+      </div>
+      <div className="space-y-2">
+        <Label htmlFor="remote-runtime">Runtime</Label>
+        <select
+          id="remote-runtime"
+          className="h-10 w-full rounded border border-slate-200 bg-white px-3 text-sm"
+          value={runtime}
+          onChange={(event) => setRuntime(event.target.value as DevExecutionRuntime)}
+        >
+          <option value={DevExecutionRuntime.DRY_RUN}>Dry run</option>
+          <option value={DevExecutionRuntime.SHELL}>Shell</option>
+          <option value={DevExecutionRuntime.CODEX_CLI}>Codex CLI</option>
         </select>
       </div>
       {status ? <p className="text-sm text-emerald-600">{status}</p> : null}

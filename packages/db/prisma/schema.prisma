@@ -142,9 +142,40 @@ enum RemoteSessionStatus {
 
 enum DevQueueStatus {
   PENDING
+  CLAIMED
   PROCESSING
   COMPLETED
   FAILED
+  CANCELED
+}
+
+enum DevRunnerMode {
+  LOCAL
+  REMOTE
+  GITHUB
+}
+
+enum DevRunnerStatus {
+  ONLINE
+  OFFLINE
+  BUSY
+  DISABLED
+}
+
+enum DevRunnerEventType {
+  HEARTBEAT
+  TASK_CLAIMED
+  TASK_STARTED
+  TASK_PROGRESS
+  TASK_COMPLETED
+  TASK_FAILED
+  TASK_CANCELED
+}
+
+enum DevExecutionRuntime {
+  DRY_RUN
+  SHELL
+  CODEX_CLI
 }
 
 enum SiteAssetSection {
@@ -179,6 +210,7 @@ model Tenant {
   devProjects    DevProject[]
   devTasks       DevTask[]
   remoteSessions RemoteSession[]
+  devRunners     DevRunner[]
 }
 
 model User {
@@ -204,6 +236,7 @@ model User {
   devTasks           DevTask[]        @relation("DevTaskCreatedBy")
   devAiProviders     DevAIProvider[]
   remoteSessions     RemoteSession[]
+  createdDevRunners  DevRunner[]      @relation("DevRunnerCreatedBy")
 
   @@index([tenantId])
 }
@@ -622,6 +655,7 @@ model DevTask {
   logs            DevTaskLog[]
   files           DevTaskFile[]
   queue           DevExecutionQueue?
+  runnerEvents    DevRunnerEvent[]
 
   @@index([tenantId, status, createdAt])
   @@index([projectId, createdAt])
@@ -694,12 +728,61 @@ model DevExecutionQueue {
   id          String         @id @default(cuid())
   taskId       String         @unique
   status      DevQueueStatus @default(PENDING)
+  runnerId    String?
+  runtime     DevExecutionRuntime @default(DRY_RUN)
+  attemptCount Int           @default(0)
+  lastError   String?        @db.Text
+  payloadJson Json?
   startedAt   DateTime?
   finishedAt  DateTime?
   createdAt   DateTime       @default(now())
   updatedAt   DateTime       @updatedAt
 
   task        DevTask        @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  runner      DevRunner?     @relation(fields: [runnerId], references: [id], onDelete: SetNull)
 
   @@index([status, createdAt])
+  @@index([runnerId, status])
+}
+
+model DevRunner {
+  id                 String            @id @default(cuid())
+  tenantId           String
+  createdByUserId    String
+  name               String
+  slug               String
+  mode               DevRunnerMode     @default(LOCAL)
+  status             DevRunnerStatus   @default(OFFLINE)
+  host               String?
+  machineLabel       String?
+  authTokenHash      String
+  lastHeartbeatAt    DateTime?
+  capabilitiesJson   Json?
+  createdAt          DateTime          @default(now())
+  updatedAt          DateTime          @updatedAt
+
+  tenant             Tenant            @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  createdBy          User              @relation("DevRunnerCreatedBy", fields: [createdByUserId], references: [id])
+  queueItems         DevExecutionQueue[]
+  events             DevRunnerEvent[]
+
+  @@unique([tenantId, slug])
+  @@index([tenantId, status])
+  @@index([createdByUserId])
+}
+
+model DevRunnerEvent {
+  id          String             @id @default(cuid())
+  runnerId     String
+  taskId      String?
+  type        DevRunnerEventType
+  message     String             @db.Text
+  payloadJson Json?
+  createdAt   DateTime           @default(now())
+
+  runner      DevRunner          @relation(fields: [runnerId], references: [id], onDelete: Cascade)
+  task        DevTask?           @relation(fields: [taskId], references: [id], onDelete: SetNull)
+
+  @@index([runnerId, createdAt])
+  @@index([taskId, createdAt])
 }
