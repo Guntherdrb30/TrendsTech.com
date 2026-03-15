@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@trends172tech/db";
 import { AuthError, requireRole } from "@/lib/auth/guards";
+import { enforceLunaProviderCreation, incrementLunaMetric } from "@/lib/luna-agent/billing";
 import { encryptSecret } from "@/lib/luna-agent/security";
 import { createAiProviderSchema } from "@/lib/validators/luna-agent";
 
@@ -44,6 +45,12 @@ export async function POST(request: Request) {
       );
     }
 
+    if (!user.tenantId) {
+      return NextResponse.json({ error: "User is not attached to a tenant." }, { status: 400 });
+    }
+
+    await enforceLunaProviderCreation(user.tenantId, user.id, user.id);
+
     if (parsed.data.isDefault) {
       await prisma.devAIProvider.updateMany({
         where: { userId: user.id },
@@ -77,6 +84,8 @@ export async function POST(request: Request) {
         }
       }
     });
+
+    await incrementLunaMetric(user.tenantId, "AI_PROVIDERS_SAVED");
 
     return NextResponse.json(
       {

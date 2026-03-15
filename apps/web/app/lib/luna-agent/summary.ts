@@ -1,25 +1,21 @@
-import { prisma } from "@trends172tech/db";
+import { getLunaBillingSnapshot } from "@/lib/luna-agent/billing";
 import type { LunaPlanSnapshot } from "@/types/luna-agent";
 
 export async function getLunaPlanSnapshot(tenantId: string): Promise<LunaPlanSnapshot> {
-  const subscription = await prisma.subscription.findFirst({
-    where: { tenantId, status: "ACTIVE" },
-    orderBy: { startedAt: "desc" },
-    include: { plan: true }
-  });
-
-  const limits = (subscription?.plan?.limitsJson ?? {}) as {
-    lunaTaskLimit?: number;
-    lunaProjectLimit?: number;
-  };
+  const snapshot = await getLunaBillingSnapshot(tenantId);
 
   return {
-    planKey: subscription?.plan?.key ?? "starter",
+    planKey: snapshot.policy.sourcePlanKey,
+    planTier: snapshot.policy.planKey,
+    supportsRemote: snapshot.policy.supportsRemote,
+    supportsMultiProvider: snapshot.policy.supportsMultiProvider,
+    supportsRunnerExecution: snapshot.policy.supportsRunnerExecution,
+    supportsAdvancedRuntime: snapshot.policy.supportsAdvancedRuntime,
     taskLimitLabel:
-      typeof limits.lunaTaskLimit === "number" ? String(limits.lunaTaskLimit) : "segun plan activo",
+      snapshot.policy.taskLimit === null ? "ilimitado o segun acuerdo" : String(snapshot.policy.taskLimit),
     projectLimitLabel:
-      typeof limits.lunaProjectLimit === "number"
-        ? String(limits.lunaProjectLimit)
-        : "segun plan activo"
+      snapshot.policy.projectLimit === null
+        ? "ilimitado o segun acuerdo"
+        : String(snapshot.policy.projectLimit)
   };
 }

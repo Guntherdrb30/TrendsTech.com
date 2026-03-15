@@ -46,6 +46,8 @@ export default async function LunaCodeOrchestratorLayout({
           { href: `/${locale}/dashboard/agents/luna-code-orchestrator/tasks/new`, label: "Nueva tarea" },
           { href: `/${locale}/dashboard/agents/luna-code-orchestrator/queue`, label: "Cola" },
           { href: `/${locale}/dashboard/agents/luna-code-orchestrator/runners`, label: "Runners" },
+          { href: `/${locale}/dashboard/agents/luna-code-orchestrator/billing`, label: "Billing" },
+          { href: `/${locale}/dashboard/agents/luna-code-orchestrator/usage`, label: "Usage" },
           { href: `/${locale}/dashboard/agents/luna-code-orchestrator/settings`, label: "Settings" }
         ].map((item) => (
           <Link

@@ -2,6 +2,7 @@
 
 import { DevAIProviderType, type DevAIProvider, type RemoteSession } from "@trends172tech/db";
 import QRCode from "qrcode";
+import Link from "next/link";
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
@@ -13,14 +14,37 @@ type SafeProvider = Pick<DevAIProvider, "id" | "label" | "provider" | "isActive"
 
 type SafeSession = Pick<RemoteSession, "id" | "status" | "createdAt" | "expiresAt" | "lastSeenAt">;
 
+type BillingSnapshot = {
+  policy: {
+    sourcePlanKey: string;
+    planKey: "basic" | "pro" | "enterprise";
+    supportsRemote: boolean;
+    supportsMultiProvider: boolean;
+    supportsRunnerExecution: boolean;
+    supportsAdvancedRuntime: boolean;
+    taskLimit: number | null;
+    projectLimit: number | null;
+    subscriptionStatus: string;
+  };
+  usage: {
+    tasksCreated: number;
+    activeProjects: number;
+    activeProviders: number;
+    activeRunners: number;
+    remoteSessions: number;
+  };
+};
+
 export function SettingsClient({
   locale,
   providers,
-  sessions
+  sessions,
+  snapshot
 }: {
   locale: string;
   providers: SafeProvider[];
   sessions: SafeSession[];
+  snapshot: BillingSnapshot;
 }) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
@@ -34,10 +58,25 @@ export function SettingsClient({
   const [expiresInMinutes, setExpiresInMinutes] = useState("30");
   const [activeRemoteUrl, setActiveRemoteUrl] = useState<string | null>(null);
   const [activeQrDataUrl, setActiveQrDataUrl] = useState<string | null>(null);
+  const providerLocked = !snapshot.policy.supportsMultiProvider && providers.length >= 1;
+  const remoteLocked = !snapshot.policy.supportsRemote;
+  const taskLabel =
+    snapshot.policy.taskLimit === null
+      ? `${snapshot.usage.tasksCreated} / ilimitado`
+      : `${snapshot.usage.tasksCreated} / ${snapshot.policy.taskLimit}`;
+  const projectLabel =
+    snapshot.policy.projectLimit === null
+      ? `${snapshot.usage.activeProjects} / ilimitado`
+      : `${snapshot.usage.activeProjects} / ${snapshot.policy.projectLimit}`;
 
   const submitProvider = (event: React.FormEvent) => {
     event.preventDefault();
     setProviderError(null);
+
+    if (providerLocked) {
+      setProviderError("Tu plan actual solo permite un proveedor IA activo. Sube de plan para agregar mas.");
+      return;
+    }
 
     startTransition(async () => {
       const response = await fetch("/api/luna-agent/providers", {
@@ -66,6 +105,11 @@ export function SettingsClient({
 
   const createRemoteSession = () => {
     setSessionError(null);
+
+    if (remoteLocked) {
+      setSessionError("Tu plan actual no habilita sesiones remotas QR.");
+      return;
+    }
 
     startTransition(async () => {
       const response = await fetch("/api/luna-agent/remote-sessions", {
@@ -100,6 +144,59 @@ export function SettingsClient({
   return (
     <div className="grid gap-6 xl:grid-cols-[0.9fr_1.1fr]">
       <div className="space-y-6">
+        <Card className="border-slate-200/90 bg-gradient-to-br from-white via-slate-50 to-amber-50 dark:border-slate-800 dark:from-slate-950 dark:via-slate-950 dark:to-slate-900">
+          <CardHeader>
+            <CardTitle>Plan comercial de Luna</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="flex flex-wrap items-center gap-3">
+              <div className="rounded-full bg-slate-900 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-white dark:bg-white dark:text-slate-900">
+                {snapshot.policy.sourcePlanKey}
+              </div>
+              <div className="text-xs uppercase tracking-[0.18em] text-slate-500">
+                Estado {snapshot.policy.subscriptionStatus}
+              </div>
+            </div>
+            <div className="grid gap-3 md:grid-cols-2">
+              <div className="rounded-2xl border border-slate-200 bg-white px-4 py-4 text-sm dark:border-slate-800 dark:bg-slate-950/70">
+                <div className="text-xs uppercase tracking-[0.16em] text-slate-500">Tareas del mes</div>
+                <div className="mt-2 text-2xl font-semibold text-slate-900 dark:text-white">{taskLabel}</div>
+              </div>
+              <div className="rounded-2xl border border-slate-200 bg-white px-4 py-4 text-sm dark:border-slate-800 dark:bg-slate-950/70">
+                <div className="text-xs uppercase tracking-[0.16em] text-slate-500">Proyectos activos</div>
+                <div className="mt-2 text-2xl font-semibold text-slate-900 dark:text-white">{projectLabel}</div>
+              </div>
+            </div>
+            <div className="grid gap-2 sm:grid-cols-2">
+              {[
+                { label: "Control remoto QR", enabled: snapshot.policy.supportsRemote },
+                { label: "Multiples proveedores IA", enabled: snapshot.policy.supportsMultiProvider },
+                { label: "Runners", enabled: snapshot.policy.supportsRunnerExecution },
+                { label: "Codex CLI", enabled: snapshot.policy.supportsAdvancedRuntime }
+              ].map((item) => (
+                <div
+                  key={item.label}
+                  className={`rounded-full px-3 py-2 text-xs font-semibold uppercase tracking-[0.15em] ${
+                    item.enabled
+                      ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-950/40 dark:text-emerald-200"
+                      : "bg-amber-100 text-amber-800 dark:bg-amber-950/40 dark:text-amber-200"
+                  }`}
+                >
+                  {item.label}
+                </div>
+              ))}
+            </div>
+            <div className="flex flex-wrap gap-3 text-sm">
+              <Button asChild size="sm">
+                <Link href={`/${locale}/dashboard/agents/luna-code-orchestrator/billing`}>Ver billing</Link>
+              </Button>
+              <Button asChild size="sm" variant="outline">
+                <Link href={`/${locale}/pricing`}>Subir de plan</Link>
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+
         <Card>
           <CardHeader>
             <CardTitle>Proveedor IA</CardTitle>
@@ -135,8 +232,13 @@ export function SettingsClient({
                 <input type="checkbox" checked={isDefault} onChange={(event) => setIsDefault(event.target.checked)} />
                 Definir como proveedor por defecto
               </label>
+              {providerLocked ? (
+                <div className="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800 dark:border-amber-900 dark:bg-amber-950/40 dark:text-amber-200">
+                  Tu plan actual ya tiene su cupo de proveedores IA cubierto. Para conectar multiples motores sube a Pro o Enterprise.
+                </div>
+              ) : null}
               {providerError ? <p className="text-sm text-red-500">{providerError}</p> : null}
-              <Button type="submit" disabled={isPending}>
+              <Button type="submit" disabled={isPending || providerLocked}>
                 Guardar proveedor
               </Button>
             </form>
@@ -156,8 +258,13 @@ export function SettingsClient({
                 onChange={(event) => setExpiresInMinutes(event.target.value)}
               />
             </div>
+            {remoteLocked ? (
+              <div className="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800 dark:border-amber-900 dark:bg-amber-950/40 dark:text-amber-200">
+                El control remoto por QR no esta habilitado para este plan. Activalo desde un upgrade comercial.
+              </div>
+            ) : null}
             {sessionError ? <p className="text-sm text-red-500">{sessionError}</p> : null}
-            <Button type="button" onClick={createRemoteSession} disabled={isPending}>
+            <Button type="button" onClick={createRemoteSession} disabled={isPending || remoteLocked}>
               Generar sesion remota
             </Button>
             {activeRemoteUrl && activeQrDataUrl ? (
@@ -199,6 +306,9 @@ export function SettingsClient({
                 </div>
               ))
             )}
+            <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-xs text-slate-600 dark:border-slate-800 dark:bg-slate-950/40 dark:text-slate-300">
+              Proveedores activos: {snapshot.usage.activeProviders}. Runners activos: {snapshot.usage.activeRunners}.
+            </div>
           </CardContent>
         </Card>
 

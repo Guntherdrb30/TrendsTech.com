@@ -1,5 +1,6 @@
 import { prisma } from "@trends172tech/db";
 import { requireRole } from "@/lib/auth/guards";
+import { getLunaBillingSnapshot } from "@/lib/luna-agent/billing";
 import { requireTenantId } from "@/lib/tenant";
 import { SettingsClient } from "./settings-client";
 
@@ -14,7 +15,7 @@ export default async function LunaSettingsPage({
   const user = await requireRole("TENANT_OPERATOR");
   const tenantId = await requireTenantId();
 
-  const [providers, sessions] = await Promise.all([
+  const [providers, sessions, snapshot] = await Promise.all([
     prisma.devAIProvider.findMany({
       where: { userId: user.id },
       orderBy: [{ isDefault: "desc" }, { createdAt: "desc" }]
@@ -23,8 +24,11 @@ export default async function LunaSettingsPage({
       where: { tenantId },
       orderBy: { createdAt: "desc" },
       take: 10
-    })
+    }),
+    getLunaBillingSnapshot(tenantId)
   ]);
 
-  return <SettingsClient locale={locale} providers={providers} sessions={sessions} />;
+  return (
+    <SettingsClient locale={locale} providers={providers} sessions={sessions} snapshot={snapshot} />
+  );
 }

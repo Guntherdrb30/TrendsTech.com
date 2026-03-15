@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@trends172tech/db";
 import { AuthError, requireRole } from "@/lib/auth/guards";
+import { enforceLunaProjectCreation } from "@/lib/luna-agent/billing";
 import { createDevProjectSchema } from "@/lib/validators/luna-agent";
 import { requireTenantId } from "@/lib/tenant";
 
@@ -40,6 +41,8 @@ export async function POST(request: Request) {
         { status: 400 }
       );
     }
+
+    await enforceLunaProjectCreation(tenantId, user.id);
 
     const project = await prisma.devProject.create({
       data: {

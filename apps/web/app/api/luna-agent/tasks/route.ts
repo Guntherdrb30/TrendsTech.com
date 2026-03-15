@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { DevQueueStatus, DevTaskStatus, prisma } from "@trends172tech/db";
 import { AuthError, requireRole } from "@/lib/auth/guards";
+import { enforceLunaTaskCreation, incrementLunaMetric } from "@/lib/luna-agent/billing";
 import { createDevTaskSchema } from "@/lib/validators/luna-agent";
 import { requireTenantId } from "@/lib/tenant";
 
@@ -53,6 +54,8 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Project not found for tenant." }, { status: 404 });
     }
 
+    await enforceLunaTaskCreation(tenantId, user.id, parsed.data.runtime);
+
     const task = await prisma.$transaction(async (tx) => {
       const createdTask = await tx.devTask.create({
         data: {
@@ -94,6 +97,8 @@ export async function POST(request: Request) {
 
       return createdTask;
     });
+
+    await incrementLunaMetric(tenantId, "TASKS_CREATED");
 
     await prisma.auditLog.create({
       data: {

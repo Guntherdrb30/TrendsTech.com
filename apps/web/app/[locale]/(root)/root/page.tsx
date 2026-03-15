@@ -490,6 +490,12 @@ export default async function RootPage({ params }: { params: Promise<{ locale: s
               Novedades
             </Link>
             <Link
+              href={`/${locale}/root/luna-code-orchestrator`}
+              className="hover:text-slate-900 dark:hover:text-white"
+            >
+              Luna Orchestrator
+            </Link>
+            <Link
               href={`/${locale}/dashboard/site-media`}
               className="hover:text-slate-900 dark:hover:text-white"
             >

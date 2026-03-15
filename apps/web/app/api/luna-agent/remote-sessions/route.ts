@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@trends172tech/db";
 import { AuthError, requireRole } from "@/lib/auth/guards";
+import { enforceLunaRemoteSession, incrementLunaMetric } from "@/lib/luna-agent/billing";
 import { createRemoteToken, hashRemoteToken } from "@/lib/luna-agent/security";
 import { createRemoteSessionSchema } from "@/lib/validators/luna-agent";
 import { requireTenantId } from "@/lib/tenant";
@@ -42,6 +43,8 @@ export async function POST(request: Request) {
       );
     }
 
+    await enforceLunaRemoteSession(tenantId, user.id);
+
     const token = createRemoteToken();
     const expiresAt = new Date(Date.now() + parsed.data.expiresInMinutes * 60 * 1000);
     const session = await prisma.remoteSession.create({
@@ -65,6 +68,8 @@ export async function POST(request: Request) {
         }
       }
     });
+
+    await incrementLunaMetric(tenantId, "REMOTE_SESSIONS");
 
     return NextResponse.json({
       data: {

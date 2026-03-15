@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { DevQueueStatus, DevTaskStatus, prisma } from "@trends172tech/db";
+import { enforceLunaTaskCreation, incrementLunaMetric } from "@/lib/luna-agent/billing";
 import { createRemoteTaskSchema } from "@/lib/validators/luna-agent";
 import { hashRemoteToken } from "@/lib/luna-agent/security";
 
@@ -46,6 +47,8 @@ export async function POST(
     return NextResponse.json({ error: "Project not found for remote session." }, { status: 404 });
   }
 
+  await enforceLunaTaskCreation(session.tenantId, session.userId, parsed.data.runtime);
+
   const task = await prisma.$transaction(async (tx) => {
     const createdTask = await tx.devTask.create({
       data: {
@@ -87,6 +90,8 @@ export async function POST(
 
     return createdTask;
   });
+
+  await incrementLunaMetric(session.tenantId, "TASKS_CREATED");
 
   return NextResponse.json({ data: task }, { status: 201 });
 }

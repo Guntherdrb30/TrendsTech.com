@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@trends172tech/db";
 import { AuthError, requireRole } from "@/lib/auth/guards";
+import { enforceLunaRunnerCreation, incrementLunaMetric } from "@/lib/luna-agent/billing";
 import { createRunnerToken, hashRunnerToken } from "@/lib/luna-agent/security";
 import { createRunnerSchema } from "@/lib/validators/luna-agent";
 import { requireTenantId } from "@/lib/tenant";
@@ -42,6 +43,8 @@ export async function POST(request: Request) {
       );
     }
 
+    await enforceLunaRunnerCreation(tenantId, user.id);
+
     const token = createRunnerToken();
     const runner = await prisma.devRunner.create({
       data: {
@@ -69,6 +72,8 @@ export async function POST(request: Request) {
         }
       }
     });
+
+    await incrementLunaMetric(tenantId, "RUNNERS_REGISTERED");
 
     return NextResponse.json({ data: runner, token }, { status: 201 });
   } catch (error) {

@@ -6,6 +6,7 @@ import {
   createTaskLog,
   logRunnerEvent
 } from "@/lib/luna-agent/runners";
+import { incrementLunaMetric } from "@/lib/luna-agent/billing";
 import { runnerCompleteSchema } from "@/lib/validators/luna-agent";
 
 const completionMap = {
@@ -107,6 +108,14 @@ export async function POST(request: Request) {
         fileCount: parsed.data.files.length
       }
     });
+
+    if (parsed.data.status === "DONE") {
+      await incrementLunaMetric(runner.tenantId, "TASKS_EXECUTED");
+    }
+
+    if (parsed.data.status === "FAILED") {
+      await incrementLunaMetric(runner.tenantId, "TASKS_FAILED");
+    }
 
     return NextResponse.json({
       data: {

@@ -26,6 +26,11 @@ export type LunaRunnerEvent = DevRunnerEvent;
 
 export type LunaPlanSnapshot = {
   planKey: string;
+  planTier: "basic" | "pro" | "enterprise";
+  supportsRemote: boolean;
+  supportsMultiProvider: boolean;
+  supportsRunnerExecution: boolean;
+  supportsAdvancedRuntime: boolean;
   taskLimitLabel: string;
   projectLimitLabel: string;
 };

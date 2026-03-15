@@ -178,6 +178,15 @@ enum DevExecutionRuntime {
   CODEX_CLI
 }
 
+enum DevUsageMetricType {
+  TASKS_CREATED
+  TASKS_EXECUTED
+  TASKS_FAILED
+  REMOTE_SESSIONS
+  RUNNERS_REGISTERED
+  AI_PROVIDERS_SAVED
+}
+
 enum SiteAssetSection {
   HOME_HERO
   HOME_SHOWCASE
@@ -211,6 +220,7 @@ model Tenant {
   devTasks       DevTask[]
   remoteSessions RemoteSession[]
   devRunners     DevRunner[]
+  devUsageMetrics DevUsageMetric[]
 }
 
 model User {
@@ -785,4 +795,21 @@ model DevRunnerEvent {
 
   @@index([runnerId, createdAt])
   @@index([taskId, createdAt])
+}
+
+model DevUsageMetric {
+  id          String             @id @default(cuid())
+  tenantId    String
+  metricType  DevUsageMetricType
+  periodMonth Int
+  periodYear  Int
+  value       Int                @default(0)
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @updatedAt
+
+  tenant      Tenant             @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@unique([tenantId, metricType, periodMonth, periodYear])
+  @@index([tenantId, periodYear, periodMonth])
+  @@index([metricType, periodYear, periodMonth])
 }
