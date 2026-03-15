@@ -5,13 +5,16 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import type { LunaPlanSnapshot } from "@/types/luna-agent";
 
 export function RemoteTaskClient({
   token,
-  projects
+  projects,
+  plan
 }: {
   token: string;
   projects: Pick<DevProject, "id" | "name">[];
+  plan: LunaPlanSnapshot;
 }) {
   const [status, setStatus] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -21,6 +24,8 @@ export function RemoteTaskClient({
   const [projectId, setProjectId] = useState(projects[0]?.id ?? "");
   const [priority, setPriority] = useState<DevTaskPriority>(DevTaskPriority.MEDIUM);
   const [runtime, setRuntime] = useState<DevExecutionRuntime>(DevExecutionRuntime.DRY_RUN);
+  const supportsRunnerExecution = plan.supportsRunnerExecution;
+  const supportsAdvancedRuntime = plan.supportsAdvancedRuntime;
 
   const submitTask = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -118,10 +123,24 @@ export function RemoteTaskClient({
           onChange={(event) => setRuntime(event.target.value as DevExecutionRuntime)}
         >
           <option value={DevExecutionRuntime.DRY_RUN}>Dry run</option>
-          <option value={DevExecutionRuntime.SHELL}>Shell</option>
-          <option value={DevExecutionRuntime.CODEX_CLI}>Codex CLI</option>
+          <option value={DevExecutionRuntime.SHELL} disabled={!supportsRunnerExecution}>
+            Shell
+          </option>
+          <option value={DevExecutionRuntime.CODEX_CLI} disabled={!supportsAdvancedRuntime}>
+            Codex CLI
+          </option>
         </select>
       </div>
+      {!supportsRunnerExecution ? (
+        <p className="text-xs text-amber-700">
+          Tu plan actual solo permite tareas remotas en modo dry run.
+        </p>
+      ) : null}
+      {supportsRunnerExecution && !supportsAdvancedRuntime ? (
+        <p className="text-xs text-amber-700">
+          Codex CLI requiere un plan avanzado. Usa Shell o sube de plan.
+        </p>
+      ) : null}
       {status ? <p className="text-sm text-emerald-600">{status}</p> : null}
       {error ? <p className="text-sm text-red-500">{error}</p> : null}
       <Button type="submit">Enviar al agente</Button>

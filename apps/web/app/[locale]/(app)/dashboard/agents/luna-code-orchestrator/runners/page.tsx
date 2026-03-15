@@ -1,5 +1,6 @@
 import { prisma } from "@trends172tech/db";
 import { requireRole } from "@/lib/auth/guards";
+import { syncRunnerHealth } from "@/lib/luna-agent/runtime";
 import { requireTenantId } from "@/lib/tenant";
 import { RunnersClient } from "./runners-client";
 
@@ -13,6 +14,8 @@ export default async function LunaRunnersPage({
   const { locale } = await params;
   const user = await requireRole("TENANT_OPERATOR");
   const tenantId = await requireTenantId();
+
+  await syncRunnerHealth(tenantId);
 
   const [runners, recentEvents, pendingQueue, processingQueue, failedQueue] = await Promise.all([
     prisma.devRunner.findMany({

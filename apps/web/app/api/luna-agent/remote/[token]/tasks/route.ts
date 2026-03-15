@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { DevQueueStatus, DevTaskStatus, prisma } from "@trends172tech/db";
 import { enforceLunaTaskCreation, incrementLunaMetric } from "@/lib/luna-agent/billing";
+import { expireRemoteSessions } from "@/lib/luna-agent/runtime";
 import { createRemoteTaskSchema } from "@/lib/validators/luna-agent";
 import { hashRemoteToken } from "@/lib/luna-agent/security";
 
@@ -22,6 +23,8 @@ export async function POST(
       { status: 400 }
     );
   }
+
+  await expireRemoteSessions();
 
   const session = await prisma.remoteSession.findFirst({
     where: {

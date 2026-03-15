@@ -163,12 +163,17 @@ export function RunnersClient({
                 </p>
               ) : (
                 runners.map((runner) => (
-                  <div key={runner.id} className="rounded-2xl border border-slate-200 px-4 py-4 text-sm dark:border-slate-800">
+                  <div
+                    key={runner.id}
+                    className="rounded-2xl border border-slate-200 px-4 py-4 text-sm dark:border-slate-800"
+                  >
                     <div className="flex flex-wrap items-center justify-between gap-3">
                       <div>
-                        <div className="font-semibold text-slate-900 dark:text-white">{runner.name}</div>
+                        <div className="font-semibold text-slate-900 dark:text-white">
+                          {runner.name}
+                        </div>
                         <div className="text-xs text-slate-500 dark:text-slate-400">
-                          {runner.slug} · {runner.mode} · {runner.machineLabel ?? runner.host ?? "sin label"}
+                          {runner.slug} | {runner.mode} | {runner.machineLabel ?? runner.host ?? "sin label"}
                         </div>
                       </div>
                       <span className="rounded-full bg-slate-100 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-700 dark:bg-slate-800 dark:text-slate-200">
@@ -180,7 +185,9 @@ export function RunnersClient({
                       <span>Eventos: {runner._count.events}</span>
                       <span>
                         Heartbeat:{" "}
-                        {runner.lastHeartbeatAt ? new Date(runner.lastHeartbeatAt).toLocaleString() : "sin señal"}
+                        {runner.lastHeartbeatAt
+                          ? new Date(runner.lastHeartbeatAt).toLocaleString()
+                          : "sin senal"}
                       </span>
                     </div>
                     <div className="mt-3 flex flex-wrap gap-3">
@@ -206,10 +213,13 @@ export function RunnersClient({
                 <p className="text-sm text-slate-500 dark:text-slate-400">No hay eventos todavia.</p>
               ) : (
                 recentEvents.map((event) => (
-                  <div key={event.id} className="rounded-2xl border border-slate-200 px-4 py-3 text-sm dark:border-slate-800">
+                  <div
+                    key={event.id}
+                    className="rounded-2xl border border-slate-200 px-4 py-3 text-sm dark:border-slate-800"
+                  >
                     <div className="flex flex-wrap items-center justify-between gap-3">
                       <div className="font-semibold text-slate-900 dark:text-white">
-                        {event.runner.name} · {event.type}
+                        {event.runner.name} | {event.type}
                       </div>
                       <div className="text-xs text-slate-500 dark:text-slate-400">
                         {new Date(event.createdAt).toLocaleString()}
@@ -245,11 +255,21 @@ export function RunnersClient({
                 <form onSubmit={submitRunner} className="space-y-4">
                   <div className="space-y-2">
                     <Label htmlFor="runner-name">Nombre</Label>
-                    <Input id="runner-name" value={name} onChange={(event) => handleNameChange(event.target.value)} required />
+                    <Input
+                      id="runner-name"
+                      value={name}
+                      onChange={(event) => handleNameChange(event.target.value)}
+                      required
+                    />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="runner-slug">Slug</Label>
-                    <Input id="runner-slug" value={slug} onChange={(event) => setSlug(event.target.value)} required />
+                    <Input
+                      id="runner-slug"
+                      value={slug}
+                      onChange={(event) => setSlug(event.target.value)}
+                      required
+                    />
                   </div>
                   <div className="grid gap-4 md:grid-cols-2">
                     <div className="space-y-2">
@@ -267,7 +287,11 @@ export function RunnersClient({
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="runner-machine">Machine label</Label>
-                      <Input id="runner-machine" value={machineLabel} onChange={(event) => setMachineLabel(event.target.value)} />
+                      <Input
+                        id="runner-machine"
+                        value={machineLabel}
+                        onChange={(event) => setMachineLabel(event.target.value)}
+                      />
                     </div>
                   </div>
                   <div className="space-y-2">

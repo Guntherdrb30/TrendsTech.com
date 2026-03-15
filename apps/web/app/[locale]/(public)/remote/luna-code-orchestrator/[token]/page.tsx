@@ -1,5 +1,7 @@
 import { notFound } from "next/navigation";
 import { prisma } from "@trends172tech/db";
+import { getLunaPlanSnapshot } from "@/lib/luna-agent/summary";
+import { expireRemoteSessions } from "@/lib/luna-agent/runtime";
 import { hashRemoteToken } from "@/lib/luna-agent/security";
 import { RemoteTaskClient } from "./remote-task-client";
 
@@ -15,6 +17,7 @@ export default async function LunaRemotePage({
   params: Promise<RouteParams>;
 }) {
   const { token } = await params;
+  await expireRemoteSessions();
 
   const session = await prisma.remoteSession.findFirst({
     where: {
@@ -28,31 +31,33 @@ export default async function LunaRemotePage({
     notFound();
   }
 
-  const projects = await prisma.devProject.findMany({
-    where: { tenantId: session.tenantId, isActive: true },
-    orderBy: { createdAt: "desc" },
-    select: { id: true, name: true }
-  });
-
-  const recentTasks = await prisma.devTask.findMany({
-    where: {
-      tenantId: session.tenantId,
-      createdByUserId: session.userId
-    },
-    orderBy: { createdAt: "desc" },
-    take: 8,
-    include: {
-      queue: {
-        include: {
-          runner: {
-            select: {
-              name: true
+  const [projects, recentTasks, plan] = await Promise.all([
+    prisma.devProject.findMany({
+      where: { tenantId: session.tenantId, isActive: true },
+      orderBy: { createdAt: "desc" },
+      select: { id: true, name: true }
+    }),
+    prisma.devTask.findMany({
+      where: {
+        tenantId: session.tenantId,
+        createdByUserId: session.userId
+      },
+      orderBy: { createdAt: "desc" },
+      take: 8,
+      include: {
+        queue: {
+          include: {
+            runner: {
+              select: {
+                name: true
+              }
             }
           }
         }
       }
-    }
-  });
+    }),
+    getLunaPlanSnapshot(session.tenantId)
+  ]);
 
   return (
     <div className="min-h-screen bg-[linear-gradient(180deg,#f8fafc_0%,#eef2ff_100%)] px-4 py-8 text-slate-900">
@@ -71,7 +76,7 @@ export default async function LunaRemotePage({
           {projects.length === 0 ? (
             <p className="text-sm text-slate-500">No hay proyectos activos disponibles para esta sesion.</p>
           ) : (
-            <RemoteTaskClient token={token} projects={projects} />
+            <RemoteTaskClient token={token} projects={projects} plan={plan} />
           )}
         </div>
 

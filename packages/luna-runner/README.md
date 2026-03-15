@@ -19,6 +19,7 @@ Este paquete reclama tareas desde la cola de `Luna Code Orchestrator`, reporta p
 - `LUNA_RUNNER_DEFAULT_WORKDIR`: directorio de trabajo por defecto.
 - `LUNA_RUNNER_HOST`: host reportado al panel.
 - `LUNA_RUNNER_MACHINE_LABEL`: label descriptivo de la maquina.
+- `LUNA_RUNNER_STALE_MINUTES`: minutos maximos sin heartbeat antes de marcar el runner como offline.
 
 ## Flujo recomendado
 
@@ -40,3 +41,4 @@ Este paquete reclama tareas desde la cola de `Luna Code Orchestrator`, reporta p
 - `CODEX_CLI` no ejecuta aun un comando final de orquestacion completo; la deteccion y el adaptador inicial ya estan listos.
 - La cola corre por polling.
 - El runner depende de que la API web este accesible desde la maquina que lo ejecuta.
+- El runtime `SHELL` ya no usa `shell=true`; ejecuta comando + argumentos con allowlist, por lo que cualquier comando fuera de la lista se bloquea.

@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { prisma } from "@trends172tech/db";
 import { requireRole } from "@/lib/auth/guards";
+import { syncRunnerHealth } from "@/lib/luna-agent/runtime";
 import { requireTenantId } from "@/lib/tenant";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
@@ -18,6 +19,8 @@ export default async function LunaRunnerDetailPage({
   const { runnerId } = await params;
   await requireRole("TENANT_OPERATOR");
   const tenantId = await requireTenantId();
+
+  await syncRunnerHealth(tenantId);
 
   const runner = await prisma.devRunner.findFirst({
     where: {
@@ -79,7 +82,7 @@ export default async function LunaRunnerDetailPage({
           <div>
             <div className="text-xs uppercase tracking-[0.2em] text-slate-400">Heartbeat</div>
             <div className="mt-1 font-semibold text-slate-900 dark:text-white">
-              {runner.lastHeartbeatAt?.toISOString() ?? "sin señal"}
+              {runner.lastHeartbeatAt?.toISOString() ?? "sin senal"}
             </div>
           </div>
           <div>
@@ -132,10 +135,12 @@ export default async function LunaRunnerDetailPage({
                     <div>
                       <div className="font-semibold text-slate-900 dark:text-white">{item.task.title}</div>
                       <div className="text-xs text-slate-500 dark:text-slate-400">
-                        {item.task.project.name} · {item.runtime} · {item.status}
+                        {item.task.project.name} | {item.runtime} | {item.status}
                       </div>
                     </div>
-                    <span className="text-xs text-slate-500 dark:text-slate-400">{item.createdAt.toISOString()}</span>
+                    <span className="text-xs text-slate-500 dark:text-slate-400">
+                      {item.createdAt.toISOString()}
+                    </span>
                   </div>
                   {item.lastError ? (
                     <div className="mt-2 rounded-2xl bg-red-50 px-3 py-2 text-xs text-red-700 dark:bg-red-950/40 dark:text-red-300">
@@ -161,7 +166,7 @@ export default async function LunaRunnerDetailPage({
               <div key={event.id} className="rounded-2xl border border-slate-200 px-4 py-3 dark:border-slate-800">
                 <div className="flex flex-wrap items-center justify-between gap-3">
                   <span className="font-semibold text-slate-900 dark:text-white">
-                    {event.type} {event.task ? `· ${event.task.title}` : ""}
+                    {event.type} {event.task ? `| ${event.task.title}` : ""}
                   </span>
                   <span className="text-xs text-slate-500 dark:text-slate-400">
                     {event.createdAt.toISOString()}

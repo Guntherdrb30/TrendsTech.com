@@ -24,6 +24,8 @@ const config = {
   machineLabel: process.env.LUNA_RUNNER_MACHINE_LABEL ?? os.hostname()
 };
 
+let runnerStatus: "ONLINE" | "BUSY" | "OFFLINE" | "DISABLED" = "ONLINE";
+
 function ensureConfig() {
   for (const key of ["apiBaseUrl", "runnerId", "runnerToken"] as const) {
     if (!config[key]) {
@@ -61,6 +63,7 @@ async function main() {
     try {
       const claim = await client.claim([config.runtime]);
       if (!claim) {
+        runnerStatus = "ONLINE";
         await sleep(config.pollIntervalMs);
         continue;
       }
@@ -77,7 +80,7 @@ async function heartbeatLoop(client: RunnerApiClient, capabilities: Record<strin
   for (;;) {
     try {
       await client.heartbeat({
-        status: "ONLINE",
+        status: runnerStatus,
         capabilities
       });
     } catch (error) {
@@ -90,6 +93,7 @@ async function heartbeatLoop(client: RunnerApiClient, capabilities: Record<strin
 
 async function handleTask(client: RunnerApiClient, claim: RunnerClaimTask) {
   const startedAt = Date.now();
+  runnerStatus = "BUSY";
 
   const onProgress = async (
     message: string,
@@ -123,6 +127,7 @@ async function handleTask(client: RunnerApiClient, claim: RunnerClaimTask) {
       resultSummary: `${result.resultSummary}\nTiempo total: ${Math.round((Date.now() - startedAt) / 1000)}s`,
       files: result.files
     });
+    runnerStatus = "ONLINE";
   } catch (error) {
     const message = error instanceof Error ? error.message : "Fallo desconocido del runner.";
 
@@ -137,6 +142,7 @@ async function handleTask(client: RunnerApiClient, claim: RunnerClaimTask) {
         status: "FAILED",
         lastError: message
       });
+      runnerStatus = "ONLINE";
     } catch (completeError) {
       console.error("[luna-runner] complete error", completeError);
     }

@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import type { LunaPlanSnapshot } from "@/types/luna-agent";
 
 type ProviderOption = {
   id: string;
@@ -24,11 +25,13 @@ type ProviderOption = {
 export function CreateTaskForm({
   locale,
   projects,
-  providers
+  providers,
+  plan
 }: {
   locale: string;
   projects: DevProject[];
   providers: ProviderOption[];
+  plan: LunaPlanSnapshot;
 }) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
@@ -44,6 +47,8 @@ export function CreateTaskForm({
   const [aiProvider, setAiProvider] = useState<DevAIProviderType | "">(
     providers.find((provider) => provider.isDefault)?.provider ?? ""
   );
+  const supportsRunnerExecution = plan.supportsRunnerExecution;
+  const supportsAdvancedRuntime = plan.supportsAdvancedRuntime;
 
   const submitTask = (event: React.FormEvent) => {
     event.preventDefault();
@@ -154,8 +159,12 @@ export function CreateTaskForm({
                 onChange={(event) => setRuntime(event.target.value as DevExecutionRuntime)}
               >
                 <option value={DevExecutionRuntime.DRY_RUN}>Dry run</option>
-                <option value={DevExecutionRuntime.SHELL}>Shell</option>
-                <option value={DevExecutionRuntime.CODEX_CLI}>Codex CLI</option>
+                <option value={DevExecutionRuntime.SHELL} disabled={!supportsRunnerExecution}>
+                  Shell
+                </option>
+                <option value={DevExecutionRuntime.CODEX_CLI} disabled={!supportsAdvancedRuntime}>
+                  Codex CLI
+                </option>
               </select>
             </div>
             <div className="space-y-2">
@@ -189,6 +198,16 @@ export function CreateTaskForm({
               className="min-h-32 w-full rounded border border-slate-200 bg-white px-3 py-2 text-sm shadow-sm outline-none focus:border-slate-400 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
             />
           </div>
+          {!supportsRunnerExecution ? (
+            <p className="text-sm text-amber-700">
+              Tu plan actual solo permite crear tareas en modo dry run.
+            </p>
+          ) : null}
+          {supportsRunnerExecution && !supportsAdvancedRuntime ? (
+            <p className="text-sm text-amber-700">
+              Codex CLI permanece bloqueado para este plan. Usa Shell o actualiza a un plan avanzado.
+            </p>
+          ) : null}
           {error ? <p className="text-sm text-red-500">{error}</p> : null}
           <Button type="submit" disabled={isPending || projects.length === 0}>
             {isPending ? "Creando..." : "Crear tarea"}

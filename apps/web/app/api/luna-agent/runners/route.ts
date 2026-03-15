@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@trends172tech/db";
 import { AuthError, requireRole } from "@/lib/auth/guards";
 import { enforceLunaRunnerCreation, incrementLunaMetric } from "@/lib/luna-agent/billing";
+import { syncRunnerHealth } from "@/lib/luna-agent/runtime";
 import { createRunnerToken, hashRunnerToken } from "@/lib/luna-agent/security";
 import { createRunnerSchema } from "@/lib/validators/luna-agent";
 import { requireTenantId } from "@/lib/tenant";
@@ -18,6 +19,7 @@ export async function GET() {
   try {
     await requireRole("TENANT_OPERATOR");
     const tenantId = await requireTenantId();
+    await syncRunnerHealth(tenantId);
     const runners = await prisma.devRunner.findMany({
       where: { tenantId },
       orderBy: { createdAt: "desc" }
