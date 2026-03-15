@@ -161,6 +161,23 @@ export default async function DashboardPage({ params }: { params: Promise<{ loca
           </Link>
         </CardContent>
       </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Luna Code Orchestrator</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-2">
+          <p className="text-sm text-slate-500 dark:text-slate-400">
+            Gestiona proyectos, tareas, proveedores IA y control remoto QR para desarrollo asistido.
+          </p>
+          <Link
+            className="text-sm text-blue-600 hover:underline"
+            href={`/${locale}/dashboard/agents/luna-code-orchestrator`}
+          >
+            Abrir agente
+          </Link>
+        </CardContent>
+      </Card>
     </section>
   );
 }

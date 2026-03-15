@@ -108,6 +108,12 @@ export default async function DashboardLayout({
               </Link>
             )}
             <Link
+              href={`/${locale}/dashboard/agents/luna-code-orchestrator`}
+              className="hover:text-slate-900 dark:hover:text-white"
+            >
+              Luna Code
+            </Link>
+            <Link
               href={`/${locale}/dashboard/installs`}
               className="hover:text-slate-900 dark:hover:text-white"
             >

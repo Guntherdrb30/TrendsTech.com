@@ -45,9 +45,14 @@ export default async function AgentsPage({ params }: { params: Promise<PageParam
             Listado de agentes configurados para este tenant.
           </p>
         </div>
-        <Link className="text-sm text-blue-600 hover:underline" href={`/${locale}/dashboard`}>
-          Configurar nuevo agente
-        </Link>
+        <div className="flex flex-wrap gap-4">
+          <Link className="text-sm text-blue-600 hover:underline" href={`/${locale}/dashboard/agents/luna-code-orchestrator`}>
+            Abrir Luna Code
+          </Link>
+          <Link className="text-sm text-blue-600 hover:underline" href={`/${locale}/dashboard`}>
+            Configurar nuevo agente
+          </Link>
+        </div>
       </div>
 
       <Card>

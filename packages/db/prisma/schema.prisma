@@ -93,6 +93,60 @@ enum NewsPostStatus {
   PUBLISHED
 }
 
+enum DevExecutionMode {
+  LOCAL
+  REMOTE
+  GITHUB
+}
+
+enum DevTaskStatus {
+  PENDING
+  QUEUED
+  RUNNING
+  REVIEW
+  DONE
+  FAILED
+}
+
+enum DevTaskPriority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+enum DevTaskLogLevel {
+  INFO
+  WARNING
+  ERROR
+  SUCCESS
+}
+
+enum DevTaskFileChangeType {
+  CREATED
+  UPDATED
+  DELETED
+}
+
+enum DevAIProviderType {
+  CODEX
+  CLAUDE
+  CUSTOM
+}
+
+enum RemoteSessionStatus {
+  ACTIVE
+  EXPIRED
+  REVOKED
+}
+
+enum DevQueueStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+}
+
 enum SiteAssetSection {
   HOME_HERO
   HOME_SHOWCASE
@@ -122,6 +176,9 @@ model Tenant {
   tokenUsageLogs TokenUsageLog[]
   agentSessions  AgentSession[]
   accessLogs     AccessLog[]
+  devProjects    DevProject[]
+  devTasks       DevTask[]
+  remoteSessions RemoteSession[]
 }
 
 model User {
@@ -143,6 +200,10 @@ model User {
   updatedSiteAssets  SiteAsset[]      @relation("SiteAssetUpdatedBy")
   passwordResets     PasswordResetToken[]
   newsPosts          NewsPost[]       @relation("NewsPostAuthor")
+  devProjects        DevProject[]     @relation("DevProjectCreatedBy")
+  devTasks           DevTask[]        @relation("DevTaskCreatedBy")
+  devAiProviders     DevAIProvider[]
+  remoteSessions     RemoteSession[]
 
   @@index([tenantId])
 }
@@ -511,4 +572,134 @@ model SiteAsset {
 
   @@index([section, language, isActive, sortOrder])
   @@index([updatedByUserId])
+}
+
+model DevProject {
+  id              String           @id @default(cuid())
+  tenantId        String
+  createdByUserId String
+  name            String
+  slug            String
+  repositoryUrl   String?
+  localPath       String?
+  defaultBranch   String?
+  executionMode   DevExecutionMode @default(LOCAL)
+  isActive        Boolean          @default(true)
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+
+  tenant          Tenant           @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  createdBy       User             @relation("DevProjectCreatedBy", fields: [createdByUserId], references: [id])
+  tasks           DevTask[]
+
+  @@unique([tenantId, slug])
+  @@index([tenantId, isActive])
+  @@index([createdByUserId])
+}
+
+model DevTask {
+  id              String           @id @default(cuid())
+  tenantId        String
+  projectId       String
+  createdByUserId String
+  title           String
+  description     String?          @db.Text
+  status          DevTaskStatus    @default(PENDING)
+  priority        DevTaskPriority  @default(MEDIUM)
+  branch          String?
+  executionMode   DevExecutionMode @default(LOCAL)
+  aiProvider      DevAIProviderType?
+  prompt          String?          @db.Text
+  resultSummary   String?          @db.Text
+  startedAt       DateTime?
+  completedAt     DateTime?
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+
+  tenant          Tenant           @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  project         DevProject       @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  createdBy       User             @relation("DevTaskCreatedBy", fields: [createdByUserId], references: [id])
+  logs            DevTaskLog[]
+  files           DevTaskFile[]
+  queue           DevExecutionQueue?
+
+  @@index([tenantId, status, createdAt])
+  @@index([projectId, createdAt])
+  @@index([createdByUserId])
+}
+
+model DevTaskLog {
+  id         String          @id @default(cuid())
+  taskId      String
+  level      DevTaskLogLevel @default(INFO)
+  message    String          @db.Text
+  metadata   Json?
+  createdAt  DateTime        @default(now())
+
+  task       DevTask         @relation(fields: [taskId], references: [id], onDelete: Cascade)
+
+  @@index([taskId, createdAt])
+}
+
+model DevTaskFile {
+  id          String                @id @default(cuid())
+  taskId       String
+  filePath    String
+  changeType  DevTaskFileChangeType
+  summary     String?               @db.Text
+  createdAt   DateTime              @default(now())
+
+  task        DevTask               @relation(fields: [taskId], references: [id], onDelete: Cascade)
+
+  @@index([taskId, createdAt])
+}
+
+model DevAIProvider {
+  id              String            @id @default(cuid())
+  userId          String
+  provider        DevAIProviderType
+  label           String
+  apiKeyEncrypted String           @db.Text
+  baseUrl         String?
+  isActive        Boolean          @default(true)
+  isDefault       Boolean          @default(false)
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+
+  user            User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, isActive])
+  @@index([userId, isDefault])
+}
+
+model RemoteSession {
+  id          String              @id @default(cuid())
+  tenantId    String
+  userId      String
+  tokenHash   String              @unique
+  status      RemoteSessionStatus @default(ACTIVE)
+  lastSeenAt  DateTime?
+  expiresAt   DateTime
+  createdAt   DateTime            @default(now())
+  updatedAt   DateTime            @updatedAt
+
+  tenant      Tenant              @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  user        User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId, status, expiresAt])
+  @@index([userId, status])
+}
+
+model DevExecutionQueue {
+  id          String         @id @default(cuid())
+  taskId       String         @unique
+  status      DevQueueStatus @default(PENDING)
+  startedAt   DateTime?
+  finishedAt  DateTime?
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  task        DevTask        @relation(fields: [taskId], references: [id], onDelete: Cascade)
+
+  @@index([status, createdAt])
 }
