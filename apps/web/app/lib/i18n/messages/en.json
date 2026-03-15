@@ -620,6 +620,98 @@
         "o1": "Faster assistance.",
         "o2": "Better voice experience."
       }
+    },
+    "luna_code_orchestrator": {
+      "name": "Luna Code Orchestrator",
+      "tagline": "A premium agent for multi-IA development orchestration, runners, and remote execution from one platform.",
+      "summary": "Luna Code Orchestrator turns AI-assisted development into a productized operation: projects, queue, AI providers, runners, QR remote control, and tenant-level visibility inside Trends172 Tech.",
+      "demoUser": "I want to organize a technical project with tasks, runners, and remote control from a phone.",
+      "demoAgent": "I explain how to structure projects, create tasks, activate runners, and scale into a multi-IA workflow with billing and plan-based governance.",
+      "ideal": "Technology companies, software studios, internal engineering teams, and operators that want to sell or run a serious coding orchestration layer.",
+      "features": {
+        "f1": "Manage projects, tasks, logs, changed files, and execution queue from a professional dashboard.",
+        "f2": "Support multiple AI providers and user-owned API keys depending on the commercial plan.",
+        "f3": "Enable QR remote control to create tasks and supervise execution from mobile.",
+        "f4": "Connect local or remote runners for dry-run, controlled shell, and an initial Codex CLI foundation.",
+        "f5": "Apply commercial limits, usage tracking, auditability, and ROOT visibility per tenant."
+      },
+      "steps": {
+        "s1": "Register the tenant, define the plan, and enable the commercial workspace for the agent.",
+        "s2": "Connect projects, AI providers, and remote sessions according to the client workflow.",
+        "s3": "Register runners and activate the task lifecycle with control and traceability.",
+        "s4": "Monitor usage, limits, blocked actions, and scale from billing, usage, and ROOT dashboards."
+      },
+      "outcomes": {
+        "o1": "More control over the AI-assisted development lifecycle.",
+        "o2": "A premium SaaS offer that can be sold to technical teams or enterprise clients.",
+        "o3": "Stronger governance through audit trails, limits, runners, and multi-tenant operation."
+      },
+      "commercial": {
+        "eyebrow": "PREMIUM ORCHESTRATION AGENT",
+        "title": "Sell and operate AI-assisted development as a serious, multi-tenant, scalable product",
+        "valueTitle": "What Luna Code Orchestrator is",
+        "painTitle": "The problem it solves",
+        "painBody": "Many companies already test Codex, Claude, or isolated automations, but they still lack a commercial and operational layer to organize projects, tasks, remote execution, permissions, runners, consumption, and control by client or team.",
+        "fitTitle": "Ideal for",
+        "fit": {
+          "i1": "Software factories, delivery studios, and internal teams that need governance around AI-assisted coding tasks.",
+          "i2": "Companies that want to sell development or automation services as a premium product.",
+          "i3": "Multi-tenant operations that need runners, remote control, and traceability by user, tenant, or plan."
+        },
+        "capabilitiesTitle": "Commercial and operational capabilities",
+        "capabilitiesBody": "Luna Code Orchestrator is not sold as a simple chat. It is sold as a productive orchestration layer for multi-IA development with governance, enterprise UX, and monetization.",
+        "capabilities": {
+          "c1": "Dashboard for projects, tasks, queue, logs, and execution-touched files.",
+          "c2": "User-configurable AI providers with encryption and access control.",
+          "c3": "QR remote sessions to launch tasks from mobile in real time.",
+          "c4": "Local or remote runners for dry-run, controlled shell, and an advanced execution base.",
+          "c5": "Billing, usage, plan limits, and backend enforcement ready for commercialization.",
+          "c6": "ROOT visibility to monitor adoption, blocked events, consumption, and operational health."
+        },
+        "plansTitle": "Initial commercial offer",
+        "plansBody": "This is the offer structure you can present to clients or use as the base for the public pricing of the product.",
+        "plans": {
+          "basic": {
+            "name": "Basic",
+            "price": "$19 / month",
+            "summary": "Fast entry point for small teams or controlled pilots.",
+            "items": {
+              "i1": "50 tasks per month",
+              "i2": "1 active project",
+              "i3": "QR remote control",
+              "i4": "Customer-owned API key"
+            }
+          },
+          "pro": {
+            "name": "Pro",
+            "price": "$49 / month",
+            "summary": "The most balanced commercial version for real orchestration sales.",
+            "items": {
+              "i1": "300 tasks per month",
+              "i2": "Up to 5 projects",
+              "i3": "Multiple AI providers",
+              "i4": "Runners and operational queue"
+            }
+          },
+          "enterprise": {
+            "name": "Enterprise",
+            "price": "$99 / month",
+            "summary": "Advanced scale for multi-role teams and more serious deployments.",
+            "items": {
+              "i1": "Expanded or unlimited usage",
+              "i2": "Multiple projects and teams",
+              "i3": "Advanced runners",
+              "i4": "Base ready for GitHub and Codex CLI integrations"
+            }
+          }
+        },
+        "ctaTitle": "Commercial next step",
+        "ctaBody": "If you want to sell it well, position it as a multi-IA development orchestration platform with remote control, runners, and commercial governance, not as a simple experimental automation.",
+        "primaryCta": "View pricing",
+        "secondaryCta": "Talk on WhatsApp",
+        "systemCta": "Explore the LUNA ecosystem",
+        "workspaceCta": "Open the workspace"
+      }
     }
   }
 }

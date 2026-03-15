@@ -620,6 +620,98 @@
         "o1": "Atencion agil.",
         "o2": "Mejor experiencia de voz."
       }
+    },
+    "luna_code_orchestrator": {
+      "name": "Luna Code Orchestrator",
+      "tagline": "El agente premium para coordinar desarrollo multi-IA, runners y ejecucion remota desde una sola plataforma.",
+      "summary": "Luna Code Orchestrator convierte tareas de desarrollo en una operacion comercializable: proyectos, cola, proveedores IA, runners, control remoto por QR y visibilidad por tenant dentro de Trends172 Tech.",
+      "demoUser": "Quiero organizar un proyecto con tareas tecnicas, runners y control remoto desde el telefono.",
+      "demoAgent": "Te explico como estructurar proyectos, crear tareas, activar runners y escalar a un flujo multi-IA con billing y control por plan.",
+      "ideal": "Empresas de tecnologia, estudios de software, equipos internos de desarrollo y operaciones que quieren vender o usar una capa de orquestacion real sobre IA de codigo.",
+      "features": {
+        "f1": "Gestiona proyectos, tareas, logs, archivos modificados y cola de ejecucion desde un dashboard profesional.",
+        "f2": "Permite trabajar con multiples proveedores IA y API keys propias segun el plan comercial.",
+        "f3": "Activa control remoto por QR para crear tareas y supervisar ejecucion desde telefono.",
+        "f4": "Conecta runners locales o remotos para dry run, shell controlado y base de Codex CLI.",
+        "f5": "Aplica limites comerciales, usage tracking, auditoria y visibilidad ROOT por tenant."
+      },
+      "steps": {
+        "s1": "Se registra el tenant, se define el plan y se crea el entorno comercial del agente.",
+        "s2": "Se conectan proyectos, proveedores IA y sesiones remotas segun la operacion del cliente.",
+        "s3": "Se registran runners y se habilita el flujo de tareas con control y trazabilidad.",
+        "s4": "Se monitorea uso, limites, bloqueos y escalamiento desde paneles de billing, usage y ROOT."
+      },
+      "outcomes": {
+        "o1": "Mas control sobre el ciclo de desarrollo asistido por IA.",
+        "o2": "Una oferta vendible tipo SaaS premium para equipos tecnicos o clientes enterprise.",
+        "o3": "Mejor governance: auditoria, limites, runners y operacion multi-tenant."
+      },
+      "commercial": {
+        "eyebrow": "AGENTE PREMIUM DE ORQUESTACION",
+        "title": "Vende y opera desarrollo asistido por IA como un producto serio, multi-tenant y escalable",
+        "valueTitle": "Que es Luna Code Orchestrator",
+        "painTitle": "El problema que resuelve",
+        "painBody": "Muchas empresas ya prueban Codex, Claude o automatizaciones aisladas, pero no tienen una capa comercial y operativa para organizar proyectos, tareas, ejecucion remota, permisos, runners, consumo y control por cliente o equipo.",
+        "fitTitle": "Ideal para",
+        "fit": {
+          "i1": "Software factories, estudios de desarrollo y equipos internos que necesitan gobernar tareas asistidas por IA.",
+          "i2": "Empresas que quieren ofrecer servicios de desarrollo o automatizacion como producto de alto valor.",
+          "i3": "Operaciones multi-tenant que necesitan runners, control remoto y trazabilidad por usuario, tenant o plan."
+        },
+        "capabilitiesTitle": "Capacidades comerciales y operativas",
+        "capabilitiesBody": "Luna Code Orchestrator no se vende como un simple chat. Se vende como una capa de orquestacion productiva para coordinar desarrollo multi-IA con gobernanza, UX empresarial y monetizacion.",
+        "capabilities": {
+          "c1": "Dashboard para proyectos, tareas, cola, logs y archivos tocados por ejecucion.",
+          "c2": "Proveedores IA configurables por usuario con cifrado y control de acceso.",
+          "c3": "Sesiones remotas por QR para disparar tareas desde telefono en tiempo real.",
+          "c4": "Runners locales o remotos para dry run, shell controlado y base de ejecucion avanzada.",
+          "c5": "Billing, usage, limites por plan y enforcement backend listo para vender.",
+          "c6": "Visibilidad ROOT para monitorear adopcion, bloqueos, consumo y salud operativa."
+        },
+        "plansTitle": "Oferta inicial para venta",
+        "plansBody": "Esta es la estructura comercial con la que puedes presentar el producto a clientes o usarla como base para tu pricing publico.",
+        "plans": {
+          "basic": {
+            "name": "Basic",
+            "price": "$19 / mes",
+            "summary": "Entrada rapida para equipos pequenos o pruebas controladas.",
+            "items": {
+              "i1": "50 tareas al mes",
+              "i2": "1 proyecto activo",
+              "i3": "Control remoto QR",
+              "i4": "API propia del usuario"
+            }
+          },
+          "pro": {
+            "name": "Pro",
+            "price": "$49 / mes",
+            "summary": "La version comercial mas equilibrada para vender orquestacion real.",
+            "items": {
+              "i1": "300 tareas al mes",
+              "i2": "Hasta 5 proyectos",
+              "i3": "Multiples proveedores IA",
+              "i4": "Runners y cola operativa"
+            }
+          },
+          "enterprise": {
+            "name": "Enterprise",
+            "price": "$99 / mes",
+            "summary": "Escala avanzada para equipos multirol y despliegues mas serios.",
+            "items": {
+              "i1": "Uso ampliado o ilimitado",
+              "i2": "Multiples proyectos y equipos",
+              "i3": "Runners avanzados",
+              "i4": "Base lista para integraciones GitHub y Codex CLI"
+            }
+          }
+        },
+        "ctaTitle": "Siguiente paso comercial",
+        "ctaBody": "Si quieres venderlo bien, presentalo como una plataforma de orquestacion de desarrollo multi-IA con control remoto, runners y gobierno comercial, no como una simple automatizacion experimental.",
+        "primaryCta": "Ver pricing",
+        "secondaryCta": "Hablar por WhatsApp",
+        "systemCta": "Ver el ecosistema LUNA",
+        "workspaceCta": "Entrar al workspace"
+      }
     }
   }
 }
