@@ -26,7 +26,8 @@ export default async function DashboardSiteMediaPage({
               Ajustes visuales del hero y bloques comerciales
             </h1>
             <p className="max-w-3xl text-sm text-slate-500 dark:text-slate-400">
-              Administra las imagenes, mensajes y llamadas a la accion del sitio corporativo.
+              Administra las imagenes, mensajes y llamadas a la accion del sitio corporativo. El
+              hero principal ahora usa estas piezas como carrusel de pantalla completa.
               Acceso disponible para {user.role === "ROOT" ? "ROOT" : "TENANT_ADMIN"}.
             </p>
           </div>

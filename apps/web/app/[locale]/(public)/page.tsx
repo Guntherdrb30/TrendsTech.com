@@ -217,14 +217,14 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
 
   return (
     <div className={`${display.variable} ${body.variable} bg-[linear-gradient(180deg,#f8f7f2_0%,#f5efe7_38%,#ffffff_100%)] font-[var(--font-body)] text-slate-900 dark:bg-slate-950`}>
-      <div className="mx-auto flex w-full max-w-[1400px] flex-col gap-20 px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
-        <MarketingHeroCarousel
-          items={carouselItems}
-          metrics={metrics}
-          secondaryHref={`${base}/systems/luna`}
-          secondaryCta={home("carouselSecondaryCta")}
-        />
+      <MarketingHeroCarousel
+        items={carouselItems}
+        metrics={metrics}
+        secondaryHref={`${base}/systems/luna`}
+        secondaryCta={home("carouselSecondaryCta")}
+      />
 
+      <div className="mx-auto flex w-full max-w-[1400px] flex-col gap-20 px-4 py-10 sm:px-6 lg:px-8 lg:py-14">
         <section className="space-y-8">
           <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
             <div className="space-y-4">

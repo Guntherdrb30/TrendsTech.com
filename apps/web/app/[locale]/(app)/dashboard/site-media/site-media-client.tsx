@@ -34,7 +34,7 @@ type SectionConfig = {
 const sectionConfig: Record<SiteAssetSection, SectionConfig> = {
   HOME_HERO: {
     title: "Hero principal",
-    description: "Slides de apertura de la home. Aqui controlas el impacto inicial de LUNA y las piezas premium del sitio.",
+    description: "Slides de apertura de la home en formato full-screen. Usa imagenes reales y de alta calidad para que el hero venda el producto desde el primer scroll.",
     addLabel: "Nuevo slide"
   },
   HOME_SHOWCASE: {
@@ -277,6 +277,10 @@ export function SiteMediaClient({
             Desde aqui puedes controlar el hero principal y los bloques visuales de la home. Si no
             guardas piezas personalizadas, el sitio sigue usando el contenido por defecto del codigo.
           </p>
+          <div className="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-4 text-sm text-amber-900 dark:border-amber-900/50 dark:bg-amber-950/30 dark:text-amber-100">
+            Recomendacion para el hero: imagenes reales en horizontal, minimo 1920x1080, poco
+            texto incrustado en la foto y buen contraste para titulares sobre la imagen.
+          </div>
           <div className="flex flex-wrap gap-3">
             <Button type="button" onClick={() => void reloadAssets()} disabled={isReloading}>
               {isReloading ? "Recargando..." : "Recargar contenido"}
