@@ -24,6 +24,9 @@ const body = IBM_Plex_Sans({
   variable: "--font-body"
 });
 
+const LUNA_DARK_VISUAL = "/marketing/luna/luna-hero-dark.png";
+const LUNA_LIGHT_VISUAL = "/marketing/luna/luna-hero-light.png";
+
 export default async function LunaPage({
   params
 }: {
@@ -37,12 +40,18 @@ export default async function LunaPage({
     ? {
         platformState: "Estado de plataforma",
         enterpriseCore: "Nucleo empresarial",
-        platformBody: "Visibilidad comercial, administrativa, logistica y ejecutiva alineada dentro de un mismo sistema."
+        platformBody: "Visibilidad comercial, administrativa, logistica y ejecutiva alineada dentro de un mismo sistema.",
+        visualPreview: "Vista del sistema",
+        visualCaption: "Interfaz enterprise, operaciones por rol y experiencia PWA dentro de una sola superficie.",
+        heroAlt: "Vista premium de LUNA en desktop y mobile"
       }
     : {
         platformState: "Platform state",
         enterpriseCore: "Enterprise core",
-        platformBody: "Commercial, administrative, logistics, and executive visibility aligned in one system."
+        platformBody: "Commercial, administrative, logistics, and executive visibility aligned in one system.",
+        visualPreview: "System preview",
+        visualCaption: "Enterprise interface, role-based operations, and PWA experience in a single surface.",
+        heroAlt: "Premium LUNA preview across desktop and mobile"
       };
 
   const valueProps = [
@@ -85,6 +94,22 @@ export default async function LunaPage({
   ];
 
   const galleryItems = [
+    {
+      image: LUNA_DARK_VISUAL,
+      title: locale.startsWith("es") ? "Vista comercial principal" : "Primary commercial view",
+      body:
+        locale.startsWith("es")
+          ? "Composicion hero para ventas, inventario y operacion con lenguaje visual de plataforma enterprise."
+          : "Hero composition for sales, inventory, and operations with a true enterprise platform visual language."
+    },
+    {
+      image: LUNA_LIGHT_VISUAL,
+      title: locale.startsWith("es") ? "Vista premium del sistema" : "Premium system view",
+      body:
+        locale.startsWith("es")
+          ? "Lectura clara de dashboard, cobros, inventario, despachos y uso instalable en mobile."
+          : "Clear dashboard view across collections, inventory, dispatches, and installable mobile use."
+    },
     {
       image: "/cases/carpihogar/carpihogar-pwa-home.svg",
       title: t("gallery.g1Title"),
@@ -183,21 +208,27 @@ export default async function LunaPage({
           <div className="interactive-panel premium-metal relative overflow-hidden rounded-[36px] border border-black/8 bg-white/78 p-5 shadow-[0_40px_110px_-74px_rgba(15,23,42,0.42)]">
             <div className="absolute inset-x-8 top-0 h-px bg-[linear-gradient(90deg,transparent_0%,rgba(255,255,255,0.96)_50%,transparent_100%)]" aria-hidden="true" />
             <div className="grid gap-4">
-              <div className="rounded-[28px] border border-white/60 bg-white/78 px-5 py-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.9)]">
-                <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">
-                  {t("valueTitle")}
+              <div className="rounded-[28px] border border-white/60 bg-white/78 p-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.9)]">
+                <div className="mb-3 flex items-center justify-between gap-3 px-2">
+                  <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+                    {uiCopy.visualPreview}
+                  </div>
+                  <div className="inline-flex items-center gap-2 rounded-full border border-black/8 bg-white/88 px-3 py-1 text-[11px] font-semibold text-slate-500">
+                    <span className="h-2 w-2 rounded-full bg-emerald-500" />
+                    <span>{uiCopy.enterpriseCore}</span>
+                  </div>
                 </div>
-                <ul className="mt-4 grid gap-3 text-sm text-slate-600">
-                  {valueProps.slice(0, 4).map((item) => (
-                    <li
-                      key={item}
-                      className="flex items-start gap-3 rounded-[18px] border border-black/6 bg-slate-50/80 px-3 py-3"
-                    >
-                      <span className="mt-1.5 h-2 w-2 rounded-full bg-emerald-500" aria-hidden="true" />
-                      <span>{item}</span>
-                    </li>
-                  ))}
-                </ul>
+                <div className="relative aspect-[16/10] overflow-hidden rounded-[22px] border border-black/8 bg-slate-100 shadow-[0_30px_80px_-58px_rgba(15,23,42,0.28)]">
+                  <Image
+                    src={LUNA_LIGHT_VISUAL}
+                    alt={uiCopy.heroAlt}
+                    fill
+                    priority
+                    className="object-cover"
+                    sizes="(min-width: 1280px) 42vw, (min-width: 768px) 50vw, 100vw"
+                  />
+                </div>
+                <p className="mt-4 px-2 text-sm leading-relaxed text-slate-600">{uiCopy.visualCaption}</p>
               </div>
               <div className="rounded-[28px] border border-black/8 bg-slate-950 px-5 py-5 shadow-[0_28px_70px_-48px_rgba(15,23,42,0.5)]">
                 <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
@@ -209,6 +240,17 @@ export default async function LunaPage({
                 <p className="mt-3 text-sm leading-relaxed text-slate-300">
                   {uiCopy.platformBody}
                 </p>
+                <ul className="mt-4 grid gap-3 text-sm text-slate-200">
+                  {valueProps.slice(0, 4).map((item) => (
+                    <li
+                      key={item}
+                      className="flex items-start gap-3 rounded-[18px] border border-white/10 bg-white/6 px-3 py-3"
+                    >
+                      <span className="mt-1.5 h-2 w-2 rounded-full bg-emerald-400" aria-hidden="true" />
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
               </div>
             </div>
           </div>

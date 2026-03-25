@@ -21,6 +21,14 @@ const body = IBM_Plex_Sans({
   variable: "--font-body"
 });
 
+const LUNA_HERO_VISUALS = [
+  "/marketing/luna/luna-hero-dark.png",
+  "/marketing/luna/luna-hero-light.png",
+  "/marketing/home/luna-operations-core.svg",
+  "/marketing/home/luna-role-panels.svg",
+  "/marketing/home/luna-executive-intelligence.svg"
+];
+
 export default async function HomePage({ params }: { params: Promise<{ locale: string }> }) {
   const home = await getTranslations("home");
   const agents = await getTranslations("agents");
@@ -140,7 +148,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
   ];
 
   const carouselItems =
-    heroAssets.length > 0
+    (heroAssets.length > 0
       ? heroAssets.map((asset) => ({
           eyebrow: asset.eyebrow ?? asset.badge ?? "",
           title: asset.title,
@@ -149,7 +157,11 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
           href: asset.ctaHref ?? `${base}/systems/luna`,
           cta: asset.ctaLabel ?? home("carouselSecondaryCta")
         }))
-      : fallbackCarouselItems;
+      : fallbackCarouselItems
+    ).map((item, index) => ({
+      ...item,
+      image: LUNA_HERO_VISUALS[index] ?? item.image
+    }));
 
   const intakeCopy = {
     locale,
