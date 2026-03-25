@@ -85,6 +85,8 @@ export function SiteMediaClient({
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const textareaClassName =
+    "interactive-field min-h-28 w-full rounded-[22px] border border-slate-200 bg-white/96 px-4 py-3 text-sm text-slate-900 shadow-[0_14px_35px_-28px_rgba(15,23,42,0.35)] outline-none ring-0 transition focus:border-slate-300 focus:ring-2 focus:ring-slate-200 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100";
 
   const groupedAssets = useMemo(() => {
     return assets.reduce<Record<SiteAssetSection, Record<Language, EditableSiteAsset[]>>>(
@@ -268,8 +270,9 @@ export function SiteMediaClient({
 
   return (
     <div className="space-y-8">
-      <Card>
-        <CardHeader>
+      <Card className="interactive-panel">
+        <CardHeader className="space-y-2">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500">Content operations</p>
           <CardTitle>Centro visual del sitio</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4 text-sm text-slate-600 dark:text-slate-300">
@@ -277,7 +280,7 @@ export function SiteMediaClient({
             Desde aqui puedes controlar el hero principal y los bloques visuales de la home. Si no
             guardas piezas personalizadas, el sitio sigue usando el contenido por defecto del codigo.
           </p>
-          <div className="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-4 text-sm text-amber-900 dark:border-amber-900/50 dark:bg-amber-950/30 dark:text-amber-100">
+          <div className="interactive-panel rounded-2xl border border-amber-200 bg-amber-50 px-4 py-4 text-sm text-amber-900 dark:border-amber-900/50 dark:bg-amber-950/30 dark:text-amber-100">
             Recomendacion para el hero: imagenes reales en horizontal, minimo 1920x1080, poco
             texto incrustado en la foto y buen contraste para titulares sobre la imagen.
           </div>
@@ -286,8 +289,16 @@ export function SiteMediaClient({
               {isReloading ? "Recargando..." : "Recargar contenido"}
             </Button>
           </div>
-          {message ? <p className="text-sm text-emerald-600">{message}</p> : null}
-          {error ? <p className="text-sm text-red-500">{error}</p> : null}
+          {message ? (
+            <div className="rounded-[18px] border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
+              {message}
+            </div>
+          ) : null}
+          {error ? (
+            <div className="rounded-[18px] border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
+              {error}
+            </div>
+          ) : null}
         </CardContent>
       </Card>
 
@@ -304,7 +315,7 @@ export function SiteMediaClient({
 
           <div className="grid gap-6 xl:grid-cols-2">
             {(Object.keys(languageLabels) as Language[]).map((language) => (
-              <Card key={`${section}-${language}`} className="overflow-hidden">
+              <Card key={`${section}-${language}`} className="interactive-panel overflow-hidden">
                 <CardHeader className="border-b border-slate-200 bg-slate-50/80 dark:border-slate-800 dark:bg-slate-900/60">
                   <div className="flex flex-wrap items-center justify-between gap-3">
                     <div>
@@ -324,7 +335,7 @@ export function SiteMediaClient({
                 </CardHeader>
                 <CardContent className="space-y-5 p-5">
                   {groupedAssets[section][language].length === 0 ? (
-                    <div className="rounded-2xl border border-dashed border-slate-300 p-5 text-sm text-slate-500 dark:border-slate-700 dark:text-slate-400">
+                    <div className="interactive-panel rounded-2xl border border-dashed border-slate-300 p-5 text-sm text-slate-500 dark:border-slate-700 dark:text-slate-400">
                       Aun no hay piezas personalizadas en {languageLabels[language]} para esta
                       seccion.
                     </div>
@@ -333,7 +344,7 @@ export function SiteMediaClient({
                   {groupedAssets[section][language].map((asset) => (
                     <article
                       key={asset.id}
-                      className="space-y-4 rounded-3xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-950/60"
+                      className="interactive-panel space-y-4 rounded-3xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-950/60"
                     >
                       <div className="flex flex-wrap items-center justify-between gap-3">
                         <div className="text-sm font-semibold text-slate-900 dark:text-white">
@@ -348,6 +359,7 @@ export function SiteMediaClient({
                               onChange={(event) =>
                                 updateAsset(asset.id, { isActive: event.target.checked })
                               }
+                              className="h-4 w-4 rounded border-slate-300 text-slate-900 focus:ring-slate-300"
                             />
                           </label>
                           <Label htmlFor={`sortOrder-${asset.id}`}>Orden</Label>
@@ -381,7 +393,7 @@ export function SiteMediaClient({
                           )}
                         </div>
                         <div className="flex flex-wrap gap-3">
-                          <label className="inline-flex cursor-pointer items-center rounded-full border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:border-slate-900 hover:text-slate-900 dark:border-slate-700 dark:text-slate-200">
+                          <label className="interactive-chip inline-flex cursor-pointer items-center rounded-full border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:border-slate-900 hover:text-slate-900 dark:border-slate-700 dark:text-slate-200">
                             {uploadingId === asset.id ? "Subiendo..." : "Subir imagen"}
                             <input
                               type="file"
@@ -449,7 +461,7 @@ export function SiteMediaClient({
                           value={asset.body}
                           onChange={(event) => updateAsset(asset.id, { body: event.target.value })}
                           rows={4}
-                          className="min-h-28 w-full rounded border border-slate-200 bg-white px-3 py-2 text-sm shadow-sm outline-none ring-0 focus:border-slate-400 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
+                          className={textareaClassName}
                         />
                       </div>
 
@@ -491,7 +503,7 @@ export function SiteMediaClient({
                             })
                           }
                           rows={4}
-                          className="min-h-24 w-full rounded border border-slate-200 bg-white px-3 py-2 text-sm shadow-sm outline-none ring-0 focus:border-slate-400 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
+                          className={textareaClassName}
                         />
                       </div>
 

@@ -35,6 +35,8 @@ export function DashboardClient({ tenantMode, endCustomers, profilePhone }: Dash
   const [endCustomerId, setEndCustomerId] = useState('');
   const [useProfilePhone, setUseProfilePhone] = useState(Boolean(profilePhone));
   const [agentPhone, setAgentPhone] = useState('');
+  const selectClassName =
+    'interactive-field h-11 w-full rounded-2xl border border-slate-200 bg-white/96 px-4 text-sm text-slate-900 shadow-[0_14px_35px_-28px_rgba(15,23,42,0.35)] outline-none transition focus:border-slate-300 focus:ring-2 focus:ring-slate-200 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:focus:border-slate-600 dark:focus:ring-slate-700/40';
 
   const submitEndCustomer = (event: React.FormEvent) => {
     event.preventDefault();
@@ -100,12 +102,18 @@ export function DashboardClient({ tenantMode, endCustomers, profilePhone }: Dash
   return (
     <div className="grid gap-6 lg:grid-cols-2">
       {tenantMode === 'RESELLER' ? (
-        <Card>
-          <CardHeader>
-            <CardTitle>Create End Customer</CardTitle>
+        <Card className="interactive-panel premium-noise">
+          <CardHeader className="space-y-2">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500">
+              Reseller workspace
+            </p>
+            <CardTitle className="text-2xl">Create End Customer</CardTitle>
+            <p className="text-sm text-slate-500">
+              Registra nuevos clientes finales con una captura limpia y lista para operacion.
+            </p>
           </CardHeader>
           <CardContent>
-            <form onSubmit={submitEndCustomer} className="space-y-4">
+            <form onSubmit={submitEndCustomer} className="space-y-5">
               <div className="space-y-2">
                 <Label htmlFor="endCustomerName">Name</Label>
                 <Input
@@ -133,7 +141,7 @@ export function DashboardClient({ tenantMode, endCustomers, profilePhone }: Dash
                 />
               </div>
               {endCustomerError ? <p className="text-sm text-red-500">{endCustomerError}</p> : null}
-              <Button type="submit" disabled={isPending}>
+              <Button type="submit" disabled={isPending} className="w-full sm:w-auto">
                 Create end customer
               </Button>
             </form>
@@ -141,12 +149,18 @@ export function DashboardClient({ tenantMode, endCustomers, profilePhone }: Dash
         </Card>
       ) : null}
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Configurar agente</CardTitle>
+      <Card className="interactive-panel premium-noise">
+        <CardHeader className="space-y-2">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500">
+            Agent studio
+          </p>
+          <CardTitle className="text-2xl">Configurar agente</CardTitle>
+          <p className="text-sm text-slate-500">
+            Define canal, idioma y contacto operativo con un setup mas claro para produccion.
+          </p>
         </CardHeader>
         <CardContent>
-          <form onSubmit={submitAgent} className="space-y-4">
+          <form onSubmit={submitAgent} className="space-y-5">
             <div className="space-y-2">
               <Label htmlFor="agentName">Nombre del agente</Label>
               <Input
@@ -160,7 +174,7 @@ export function DashboardClient({ tenantMode, endCustomers, profilePhone }: Dash
               <Label htmlFor="baseAgentKey">Tipo de agente</Label>
               <select
                 id="baseAgentKey"
-                className="h-9 w-full rounded border border-slate-200 bg-white px-3 text-sm dark:border-slate-700 dark:bg-slate-900"
+                className={selectClassName}
                 value={baseAgentKey}
                 onChange={(event) =>
                   setBaseAgentKey(
@@ -180,7 +194,7 @@ export function DashboardClient({ tenantMode, endCustomers, profilePhone }: Dash
                 <Label htmlFor="languageDefault">Idioma</Label>
                 <select
                   id="languageDefault"
-                  className="h-9 w-full rounded border border-slate-200 bg-white px-3 text-sm dark:border-slate-700 dark:bg-slate-900"
+                  className={selectClassName}
                   value={languageDefault}
                   onChange={(event) => setLanguageDefault(event.target.value as 'ES' | 'EN')}
                 >
@@ -192,7 +206,7 @@ export function DashboardClient({ tenantMode, endCustomers, profilePhone }: Dash
                 <Label htmlFor="status">Estado</Label>
                 <select
                   id="status"
-                  className="h-9 w-full rounded border border-slate-200 bg-white px-3 text-sm dark:border-slate-700 dark:bg-slate-900"
+                  className={selectClassName}
                   value={status}
                   onChange={(event) => setStatus(event.target.value as 'DRAFT' | 'ACTIVE' | 'PAUSED')}
                 >
@@ -207,7 +221,7 @@ export function DashboardClient({ tenantMode, endCustomers, profilePhone }: Dash
                 <Label htmlFor="endCustomerId">Cliente final</Label>
                 <select
                   id="endCustomerId"
-                  className="h-9 w-full rounded border border-slate-200 bg-white px-3 text-sm dark:border-slate-700 dark:bg-slate-900"
+                  className={selectClassName}
                   value={endCustomerId}
                   onChange={(event) => setEndCustomerId(event.target.value)}
                 >
@@ -221,12 +235,13 @@ export function DashboardClient({ tenantMode, endCustomers, profilePhone }: Dash
               </div>
             ) : null}
             {profilePhone ? (
-              <div className="space-y-2 rounded-lg border border-slate-200 bg-slate-50 px-3 py-3 text-xs text-slate-600 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300">
+              <div className="interactive-panel space-y-2 rounded-[22px] border border-black/8 bg-slate-50/90 px-4 py-4 text-xs text-slate-600 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300">
                 <label className="flex items-center gap-2">
                   <input
                     type="checkbox"
                     checked={useProfilePhone}
                     onChange={(event) => setUseProfilePhone(event.target.checked)}
+                    className="h-4 w-4 rounded border-slate-300 text-slate-900 focus:ring-slate-300"
                   />
                   Usar telefono del perfil ({profilePhone})
                 </label>
@@ -244,7 +259,7 @@ export function DashboardClient({ tenantMode, endCustomers, profilePhone }: Dash
               </div>
             ) : null}
             {agentError ? <p className="text-sm text-red-500">{agentError}</p> : null}
-            <Button type="submit" disabled={isPending}>
+            <Button type="submit" disabled={isPending} className="w-full sm:w-auto">
               Guardar configuracion
             </Button>
           </form>

@@ -280,12 +280,18 @@ export function RegisterForm({ locale, redirectTo }: RegisterFormProps) {
   };
 
   return (
-    <Card className="max-w-md">
-      <CardHeader>
-        <CardTitle>{copy.title}</CardTitle>
+    <Card className="interactive-panel premium-noise w-full max-w-[540px] overflow-hidden">
+      <CardHeader className="space-y-3">
+        <div className="inline-flex w-fit rounded-full border border-black/8 bg-white/88 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+          Account setup
+        </div>
+        <CardTitle className="text-2xl tracking-[-0.03em]">{copy.title}</CardTitle>
+        <p className="text-sm leading-relaxed text-slate-500">
+          Alta inicial para entorno operativo, demos y administracion de agentes.
+        </p>
       </CardHeader>
       <CardContent>
-        <form onSubmit={onSubmit} className="space-y-4">
+        <form onSubmit={onSubmit} className="space-y-5">
           <div className="space-y-2">
             <Label htmlFor="name">{copy.labels.name}</Label>
             <Input
@@ -419,7 +425,11 @@ export function RegisterForm({ locale, redirectTo }: RegisterFormProps) {
               </p>
             ) : null}
           </div>
-          {error ? <p className="text-sm text-red-500">{error}</p> : null}
+          {error ? (
+            <div className="rounded-[18px] border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
+              {error}
+            </div>
+          ) : null}
           <Button type="submit" disabled={isPending} className="w-full">
             {isPending ? copy.actions.submitting : copy.actions.submit}
           </Button>

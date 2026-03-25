@@ -226,18 +226,36 @@ export default async function AgentChannelsPage({ params }: { params: Promise<Pa
 
   const baseUrl = resolveBaseUrl();
   const webhookUrl = `${baseUrl}/api/orchestrator/webhooks/whatsapp`;
+  const selectClassName =
+    'interactive-field h-11 w-full rounded-2xl border border-slate-200 bg-white/96 px-4 text-sm text-slate-900 shadow-[0_14px_35px_-28px_rgba(15,23,42,0.35)] outline-none transition focus:border-slate-300 focus:ring-2 focus:ring-slate-200';
 
   return (
     <section className="space-y-6">
-      <div className="space-y-2">
-        <h1 className="text-2xl font-semibold">WhatsApp channel</h1>
-        <p className="text-sm text-slate-500 dark:text-slate-400">
-          {agentInstance.name} | {agentInstance.baseAgentKey}
-        </p>
+      <div className="interactive-panel premium-noise overflow-hidden rounded-[34px] border border-black/8 bg-[linear-gradient(180deg,#ffffff_0%,#f8fafc_100%)] px-6 py-7 shadow-[0_35px_100px_-72px_rgba(15,23,42,0.35)] sm:px-8">
+        <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+          <div className="space-y-3">
+            <div className="inline-flex rounded-full border border-black/8 bg-white/90 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-500">
+              Channel delivery
+            </div>
+            <div className="space-y-2">
+              <h1 className="text-3xl font-semibold tracking-[-0.04em] text-slate-950 sm:text-4xl">WhatsApp channel</h1>
+              <p className="text-sm text-slate-500 dark:text-slate-400">
+                {agentInstance.name} | {agentInstance.baseAgentKey}
+              </p>
+            </div>
+          </div>
+          <Link
+            className="interactive-chip inline-flex rounded-full border border-black/8 bg-white/90 px-4 py-2 text-sm font-semibold text-slate-900 transition hover:bg-slate-900 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900/15 focus-visible:ring-offset-2"
+            href={`/${locale}/dashboard/agents/${agentId}`}
+          >
+            Back to agent
+          </Link>
+        </div>
       </div>
 
-      <Card>
-        <CardHeader>
+      <Card className="interactive-panel">
+        <CardHeader className="space-y-2">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500">Webhook endpoint</p>
           <CardTitle>Webhook</CardTitle>
         </CardHeader>
         <CardContent className="space-y-2 text-sm text-slate-600 dark:text-slate-300">
@@ -249,8 +267,9 @@ export default async function AgentChannelsPage({ params }: { params: Promise<Pa
         </CardContent>
       </Card>
 
-      <Card>
-        <CardHeader>
+      <Card className="interactive-panel">
+        <CardHeader className="space-y-2">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500">Plan usage</p>
           <CardTitle>Plan limits</CardTitle>
         </CardHeader>
         <CardContent className="text-sm text-slate-600 dark:text-slate-300 space-y-1">
@@ -264,8 +283,9 @@ export default async function AgentChannelsPage({ params }: { params: Promise<Pa
         </CardContent>
       </Card>
 
-      <Card>
-        <CardHeader>
+      <Card className="interactive-panel">
+        <CardHeader className="space-y-2">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500">Provider setup</p>
           <CardTitle>Channel configuration</CardTitle>
         </CardHeader>
         <CardContent>
@@ -288,7 +308,7 @@ export default async function AgentChannelsPage({ params }: { params: Promise<Pa
                 id="provider"
                 name="provider"
                 defaultValue={channel?.provider ?? 'META'}
-                className="w-full rounded border border-slate-300 bg-transparent px-3 py-2 text-sm dark:border-slate-700"
+                className={selectClassName}
               >
                 <option value="META">META</option>
                 <option value="BSP">BSP</option>
@@ -309,7 +329,7 @@ export default async function AgentChannelsPage({ params }: { params: Promise<Pa
                 id="status"
                 name="status"
                 defaultValue={channel?.status ?? 'ACTIVE'}
-                className="w-full rounded border border-slate-300 bg-transparent px-3 py-2 text-sm dark:border-slate-700"
+                className={selectClassName}
               >
                 <option value="ACTIVE">ACTIVE</option>
                 <option value="PAUSED">PAUSED</option>
@@ -321,8 +341,9 @@ export default async function AgentChannelsPage({ params }: { params: Promise<Pa
       </Card>
 
       {channel ? (
-        <Card>
-          <CardHeader>
+        <Card className="interactive-panel">
+          <CardHeader className="space-y-2">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500">Channel state</p>
             <CardTitle>Quick actions</CardTitle>
           </CardHeader>
           <CardContent className="space-y-2 text-sm text-slate-600 dark:text-slate-300">
@@ -344,7 +365,10 @@ export default async function AgentChannelsPage({ params }: { params: Promise<Pa
         </Card>
       ) : null}
 
-      <Link className="text-sm text-blue-600 hover:underline" href={`/${locale}/dashboard/agents/${agentId}`}>
+      <Link
+        className="interactive-chip inline-flex rounded-full border border-black/8 bg-white/90 px-4 py-2 text-sm font-semibold text-slate-900 transition hover:bg-slate-900 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900/15 focus-visible:ring-offset-2"
+        href={`/${locale}/dashboard/agents/${agentId}`}
+      >
         Back to agent
       </Link>
     </section>

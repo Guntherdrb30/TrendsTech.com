@@ -60,14 +60,54 @@ export default async function DashboardPage({ params }: { params: Promise<{ loca
   });
   const tokenBalance = tokenWallet?.balance ?? 0;
   const tokenBalanceLabel = `$${formatUsdFromMicros(tokenBalance)}`;
+  const activeAgentCount = agentInstances.filter((agent) => agent.status === 'ACTIVE').length;
+  const linkClass =
+    'interactive-chip text-sm font-semibold text-slate-900 transition hover:text-slate-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900/15 focus-visible:ring-offset-2';
 
   return (
     <section className="space-y-6">
-      <div className="space-y-2">
-        <h1 className="text-2xl font-semibold">Tenant dashboard</h1>
-        <p className="text-sm text-slate-500 dark:text-slate-400">
-          {tenant.name} | {tenant.mode} | role: {user.role}
-        </p>
+      <div className="interactive-panel premium-noise overflow-hidden rounded-[36px] border border-black/8 bg-[linear-gradient(180deg,#ffffff_0%,#f8fafc_100%)] px-6 py-7 shadow-[0_40px_110px_-78px_rgba(15,23,42,0.42)] sm:px-8 sm:py-8">
+        <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+          <div className="space-y-3">
+            <div className="inline-flex rounded-full border border-black/8 bg-white/90 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-500">
+              Tenant control center
+            </div>
+            <div className="space-y-2">
+              <h1 className="text-3xl font-semibold tracking-[-0.04em] text-slate-950 sm:text-4xl">
+                Tenant dashboard
+              </h1>
+              <p className="text-sm text-slate-500 dark:text-slate-400">
+                {tenant.name} | {tenant.mode} | role: {user.role}
+              </p>
+            </div>
+          </div>
+          <div className="grid gap-3 sm:grid-cols-3">
+            <div className="interactive-panel rounded-[24px] border border-black/8 bg-white/92 px-5 py-4 shadow-[0_20px_55px_-45px_rgba(15,23,42,0.3)]">
+              <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+                Balance
+              </div>
+              <div className="mt-2 text-2xl font-semibold tracking-[-0.03em] text-slate-950">
+                {tokenBalanceLabel}
+              </div>
+            </div>
+            <div className="interactive-panel rounded-[24px] border border-black/8 bg-white/92 px-5 py-4 shadow-[0_20px_55px_-45px_rgba(15,23,42,0.3)]">
+              <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+                Active agents
+              </div>
+              <div className="mt-2 text-2xl font-semibold tracking-[-0.03em] text-slate-950">
+                {activeAgentCount}
+              </div>
+            </div>
+            <div className="interactive-panel rounded-[24px] border border-black/8 bg-white/92 px-5 py-4 shadow-[0_20px_55px_-45px_rgba(15,23,42,0.3)]">
+              <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+                End customers
+              </div>
+              <div className="mt-2 text-2xl font-semibold tracking-[-0.03em] text-slate-950">
+                {endCustomers.length}
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
       <DashboardClient
@@ -76,108 +116,117 @@ export default async function DashboardPage({ params }: { params: Promise<{ loca
         profilePhone={profile?.phone ?? null}
       />
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Tokens disponibles</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-2">
-          <p className="text-3xl font-semibold">{tokenBalanceLabel}</p>
-          <Link className="text-sm text-blue-600 hover:underline" href={`/${locale}/recharge`}>
-            Recargar tokens
-          </Link>
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>Agentes configurados</CardTitle>
-        </CardHeader>
-        <CardContent>
-          {agentInstances.length === 0 ? (
-            <p className="text-sm text-slate-500 dark:text-slate-400">Sin agentes configurados.</p>
-          ) : (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Name</TableHead>
-                  <TableHead>Base key</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>End customer</TableHead>
-                  <TableHead>Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {agentInstances.map((agent) => (
-                  <TableRow key={agent.id}>
-                    <TableCell>{agent.name}</TableCell>
-                    <TableCell>{agent.baseAgentKey}</TableCell>
-                    <TableCell>{agent.status}</TableCell>
-                    <TableCell>{agent.endCustomer?.name ?? '-'}</TableCell>
-                    <TableCell>
-                      <Link
-                        className="text-sm text-blue-600 hover:underline"
-                        href={`/${locale}/dashboard/agents/${agent.id}`}
-                      >
-                        View detail
-                      </Link>
-                    </TableCell>
+      <div className="grid gap-6 xl:grid-cols-[1.15fr_0.85fr]">
+        <Card className="interactive-panel overflow-hidden">
+          <CardHeader className="space-y-2">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500">
+              Operations ledger
+            </p>
+            <CardTitle className="text-2xl">Agentes configurados</CardTitle>
+            <p className="text-sm text-slate-500">
+              Vista rapida del inventario operativo de agentes activos y en preparacion.
+            </p>
+          </CardHeader>
+          <CardContent>
+            {agentInstances.length === 0 ? (
+              <p className="text-sm text-slate-500 dark:text-slate-400">Sin agentes configurados.</p>
+            ) : (
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Name</TableHead>
+                    <TableHead>Base key</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>End customer</TableHead>
+                    <TableHead>Actions</TableHead>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          )}
-        </CardContent>
-      </Card>
+                </TableHeader>
+                <TableBody>
+                  {agentInstances.map((agent) => (
+                    <TableRow key={agent.id}>
+                      <TableCell className="font-medium text-slate-900">{agent.name}</TableCell>
+                      <TableCell>{agent.baseAgentKey}</TableCell>
+                      <TableCell>{agent.status}</TableCell>
+                      <TableCell>{agent.endCustomer?.name ?? '-'}</TableCell>
+                      <TableCell>
+                        <Link className={linkClass} href={`/${locale}/dashboard/agents/${agent.id}`}>
+                          View detail
+                        </Link>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            )}
+          </CardContent>
+        </Card>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Widget installs</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <Link className="text-sm text-blue-600 hover:underline" href={`/${locale}/dashboard/installs`}>
-            Manage installs and domains
-          </Link>
-        </CardContent>
-      </Card>
+        <div className="grid gap-6">
+          <Card className="interactive-panel">
+            <CardHeader className="space-y-2">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500">
+                Finance
+              </p>
+              <CardTitle className="text-2xl">Tokens disponibles</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <p className="text-4xl font-semibold tracking-[-0.04em]">{tokenBalanceLabel}</p>
+              <Link className={linkClass} href={`/${locale}/recharge`}>
+                Recargar tokens
+              </Link>
+            </CardContent>
+          </Card>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Widget access</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <Link className="text-sm text-blue-600 hover:underline" href={`/${locale}/dashboard/access`}>
-            Manage embedded agent access
-          </Link>
-        </CardContent>
-      </Card>
+          <Card className="interactive-panel bg-slate-950 text-white">
+            <CardHeader className="space-y-2 border-white/10">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-400">
+                Advanced development
+              </p>
+              <CardTitle className="text-2xl text-white">Luna Code Orchestrator</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <p className="text-sm text-slate-300">
+                Gestiona proyectos, tareas, proveedores IA y control remoto QR para desarrollo asistido.
+              </p>
+              <Link
+                className="interactive-chip inline-flex rounded-full border border-white/12 bg-white/10 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/16 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/25 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950"
+                href={`/${locale}/dashboard/agents/luna-code-orchestrator`}
+              >
+                Abrir agente
+              </Link>
+            </CardContent>
+          </Card>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>User management</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <Link className="text-sm text-blue-600 hover:underline" href={`/${locale}/dashboard/users`}>
-            Manage team access
-          </Link>
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>Luna Code Orchestrator</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-2">
-          <p className="text-sm text-slate-500 dark:text-slate-400">
-            Gestiona proyectos, tareas, proveedores IA y control remoto QR para desarrollo asistido.
-          </p>
-          <Link
-            className="text-sm text-blue-600 hover:underline"
-            href={`/${locale}/dashboard/agents/luna-code-orchestrator`}
-          >
-            Abrir agente
-          </Link>
-        </CardContent>
-      </Card>
+          <Card className="interactive-panel">
+            <CardHeader className="space-y-2">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500">
+                Admin shortcuts
+              </p>
+              <CardTitle className="text-2xl">Gestion rapida</CardTitle>
+            </CardHeader>
+            <CardContent className="grid gap-4">
+              <div className="interactive-panel rounded-[24px] border border-black/8 bg-slate-50/90 px-4 py-4">
+                <div className="text-sm font-semibold text-slate-900">Widget installs</div>
+                <Link className={`${linkClass} mt-2 inline-flex`} href={`/${locale}/dashboard/installs`}>
+                  Manage installs and domains
+                </Link>
+              </div>
+              <div className="interactive-panel rounded-[24px] border border-black/8 bg-slate-50/90 px-4 py-4">
+                <div className="text-sm font-semibold text-slate-900">Widget access</div>
+                <Link className={`${linkClass} mt-2 inline-flex`} href={`/${locale}/dashboard/access`}>
+                  Manage embedded agent access
+                </Link>
+              </div>
+              <div className="interactive-panel rounded-[24px] border border-black/8 bg-slate-50/90 px-4 py-4">
+                <div className="text-sm font-semibold text-slate-900">User management</div>
+                <Link className={`${linkClass} mt-2 inline-flex`} href={`/${locale}/dashboard/users`}>
+                  Manage team access
+                </Link>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
     </section>
   );
 }

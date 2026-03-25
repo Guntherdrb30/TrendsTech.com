@@ -111,6 +111,8 @@ export default async function UsersPage({ params }: { params: Promise<PageParams
   const { locale } = await params;
   await requireRole('TENANT_ADMIN');
   const tenantId = await requireTenantId();
+  const selectClassName =
+    'interactive-field h-11 w-full rounded-2xl border border-slate-200 bg-white/96 px-4 text-sm text-slate-900 shadow-[0_14px_35px_-28px_rgba(15,23,42,0.35)] outline-none transition focus:border-slate-300 focus:ring-2 focus:ring-slate-200';
 
   const users = await prisma.user.findMany({
     where: { tenantId },
@@ -119,15 +121,29 @@ export default async function UsersPage({ params }: { params: Promise<PageParams
 
   return (
     <section className="space-y-6">
-      <div className="space-y-2">
-        <h1 className="text-2xl font-semibold">Users</h1>
-        <p className="text-sm text-slate-500 dark:text-slate-400">
-          Manage team access for this tenant.
-        </p>
+      <div className="interactive-panel premium-noise overflow-hidden rounded-[34px] border border-black/8 bg-[linear-gradient(180deg,#ffffff_0%,#f8fafc_100%)] px-6 py-7 shadow-[0_35px_100px_-72px_rgba(15,23,42,0.35)] sm:px-8">
+        <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+          <div className="space-y-3">
+            <div className="inline-flex rounded-full border border-black/8 bg-white/90 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-500">
+              Team administration
+            </div>
+            <div className="space-y-2">
+              <h1 className="text-3xl font-semibold tracking-[-0.04em] text-slate-950 sm:text-4xl">Users</h1>
+              <p className="max-w-2xl text-sm leading-relaxed text-slate-500">
+                Manage team access, operational roles, and workspace permissions for this tenant.
+              </p>
+            </div>
+          </div>
+          <div className="interactive-panel rounded-[24px] border border-black/8 bg-white/92 px-5 py-4 shadow-[0_18px_45px_-36px_rgba(15,23,42,0.24)]">
+            <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">Workspace users</div>
+            <div className="mt-2 text-2xl font-semibold tracking-[-0.03em] text-slate-950">{users.length}</div>
+          </div>
+        </div>
       </div>
 
-      <Card>
-        <CardHeader>
+      <Card className="interactive-panel">
+        <CardHeader className="space-y-2">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500">Provisioning</p>
           <CardTitle>Create user</CardTitle>
         </CardHeader>
         <CardContent>
@@ -155,7 +171,7 @@ export default async function UsersPage({ params }: { params: Promise<PageParams
                 id="role"
                 name="role"
                 defaultValue="TENANT_VIEWER"
-                className="w-full rounded border border-slate-300 bg-transparent px-3 py-2 text-sm dark:border-slate-700"
+                className={selectClassName}
               >
                 <option value="TENANT_ADMIN">Tenant admin</option>
                 <option value="TENANT_OPERATOR">Tenant operator</option>
@@ -169,13 +185,16 @@ export default async function UsersPage({ params }: { params: Promise<PageParams
         </CardContent>
       </Card>
 
-      <Card>
-        <CardHeader>
+      <Card className="interactive-panel">
+        <CardHeader className="space-y-2">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500">Directory</p>
           <CardTitle>Existing users</CardTitle>
         </CardHeader>
         <CardContent>
           {users.length === 0 ? (
-            <p className="text-sm text-slate-500 dark:text-slate-400">No users yet.</p>
+            <div className="interactive-panel rounded-[24px] border border-dashed border-black/10 bg-slate-50/80 px-5 py-6 text-sm text-slate-500">
+              No users yet. Create the first account to start assigning roles.
+            </div>
           ) : (
             <Table>
               <TableHeader>
@@ -199,7 +218,7 @@ export default async function UsersPage({ params }: { params: Promise<PageParams
                         <select
                           name="role"
                           defaultValue={user.role}
-                          className="rounded border border-slate-300 bg-transparent px-2 py-1 text-xs dark:border-slate-700"
+                          className="interactive-field rounded-xl border border-slate-200 bg-white/96 px-3 py-2 text-xs text-slate-900 outline-none transition focus:border-slate-300 focus:ring-2 focus:ring-slate-200"
                         >
                           <option value="TENANT_ADMIN">Tenant admin</option>
                           <option value="TENANT_OPERATOR">Tenant operator</option>

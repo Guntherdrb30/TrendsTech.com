@@ -463,6 +463,35 @@
   "common": {
     "comingSoon": "Proximamente"
   },
+  "footer": {
+    "eyebrow": "TRUSTED ENTERPRISE DELIVERY",
+    "title": "Arquitectura, agentes y sistemas con una presencia digital de nivel corporativo.",
+    "body": "Disenamos experiencias, paneles y plataformas con foco en claridad operativa, venta consultiva y ejecucion real para empresas que quieren verse y operar a otro nivel.",
+    "navTitle": "Explorar",
+    "contactTitle": "Contacto directo",
+    "contactBody": "Conversa con Trends172 Tech para demos, implementacion, alcance y siguientes pasos.",
+    "legal": "Trends172 Tech",
+    "tagline": "AI Systems, Agents and Enterprise Interfaces"
+  },
+  "pricingPage": {
+    "eyebrow": "COMMERCIAL ARCHITECTURE",
+    "title": "Precios y modelos de activacion para agentes y sistemas premium.",
+    "subtitle": "Estamos organizando la capa comercial final para mostrar paquetes mas claros, activaciones por servicio y rutas enterprise por alcance.",
+    "statusTitle": "Estado actual",
+    "statusBody": "La matriz comercial se esta afinando para presentar precios con mejor claridad de implantacion, soporte y expansion.",
+    "plansTitle": "Estructura prevista",
+    "plansBody": "La publicacion final incluira paquetes para agentes, implementaciones por sistema y acompanamiento enterprise.",
+    "ctaPrimary": "Hablar por WhatsApp",
+    "ctaSecondary": "Ver sistemas",
+    "cards": {
+      "c1Title": "Agents",
+      "c1Body": "Activacion guiada, configuracion base y puesta en marcha por canal.",
+      "c2Title": "Systems",
+      "c2Body": "Implementaciones modulares, paneles por rol y despliegue operativo.",
+      "c3Title": "Enterprise",
+      "c3Body": "Alcance a medida, integraciones, rollout y acompanamiento estrategico."
+    }
+  },
   "agentsPage": {
     "eyebrow": "CATALOGO DE AGENTES",
     "title": "Agentes listos para tu negocio",

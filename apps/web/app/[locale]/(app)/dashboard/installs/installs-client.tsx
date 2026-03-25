@@ -41,6 +41,10 @@ export function InstallsClient({ installs, agentInstances, widgetScriptUrl }: In
   const [editedDomains, setEditedDomains] = useState<Record<string, string>>({});
 
   const hasAgents = agentInstances.length > 0;
+  const selectClassName =
+    'interactive-field h-11 w-full rounded-2xl border border-slate-200 bg-white/96 px-4 text-sm text-slate-900 shadow-[0_14px_35px_-28px_rgba(15,23,42,0.35)] outline-none transition focus:border-slate-300 focus:ring-2 focus:ring-slate-200';
+  const textareaClassName =
+    'interactive-field min-h-[96px] w-full rounded-[22px] border border-slate-200 bg-white/96 p-4 text-sm text-slate-900 shadow-[0_14px_35px_-28px_rgba(15,23,42,0.35)] outline-none transition focus:border-slate-300 focus:ring-2 focus:ring-slate-200';
 
   const snippet = useMemo(
     () =>
@@ -122,12 +126,12 @@ export function InstallsClient({ installs, agentInstances, widgetScriptUrl }: In
 
   return (
     <div className="space-y-6">
-      <form onSubmit={handleCreate} className="space-y-3">
+      <form onSubmit={handleCreate} className="interactive-panel space-y-4 rounded-[28px] border border-black/8 bg-[linear-gradient(180deg,#ffffff_0%,#f8fafc_100%)] p-5 shadow-[0_24px_70px_-54px_rgba(15,23,42,0.24)]">
         <div className="space-y-2">
           <Label htmlFor="agentInstanceId">Agente</Label>
           <select
             id="agentInstanceId"
-            className="w-full rounded border border-slate-200 bg-white p-2 text-sm dark:border-slate-700 dark:bg-slate-900"
+            className={selectClassName}
             value={agentInstanceId}
             onChange={(event) => setAgentInstanceId(event.target.value)}
             disabled={!hasAgents}
@@ -147,7 +151,7 @@ export function InstallsClient({ installs, agentInstances, widgetScriptUrl }: In
           <Label htmlFor="allowedDomains">Dominios permitidos</Label>
           <textarea
             id="allowedDomains"
-            className="min-h-[90px] w-full rounded border border-slate-200 bg-white p-3 text-sm dark:border-slate-700 dark:bg-slate-900"
+            className={textareaClassName}
             value={domainsInput}
             onChange={(event) => setDomainsInput(event.target.value)}
             placeholder="miempresa.com&#10;app.miempresa.com"
@@ -158,31 +162,42 @@ export function InstallsClient({ installs, agentInstances, widgetScriptUrl }: In
         </Button>
       </form>
 
-      {error ? <p className="text-sm text-red-500">{error}</p> : null}
+      {error ? (
+        <div className="rounded-[18px] border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
+          {error}
+        </div>
+      ) : null}
 
       <div className="space-y-4">
         {rows.length === 0 ? (
-          <p className="text-sm text-slate-500 dark:text-slate-400">No hay installs todavia.</p>
+          <div className="interactive-panel rounded-[24px] border border-dashed border-black/10 bg-slate-50/80 px-5 py-6 text-sm text-slate-500">
+            No hay installs todavia. Crea el primero para generar el script y dominios permitidos.
+          </div>
         ) : (
           rows.map((install) => {
             const domainValue = editedDomains[install.publicKey] ?? install.allowedDomains.join('\n');
             return (
-              <div key={install.id} className="space-y-3 rounded border border-slate-200 p-4 dark:border-slate-700">
+              <div
+                key={install.id}
+                className="interactive-panel space-y-4 rounded-[28px] border border-black/8 bg-white/92 p-5 shadow-[0_24px_70px_-54px_rgba(15,23,42,0.24)]"
+              >
                 <div className="flex flex-col gap-2 text-sm md:flex-row md:items-center md:justify-between">
                   <div>
-                    <p className="font-medium">{install.agentInstance.name}</p>
+                    <p className="font-medium text-slate-900">{install.agentInstance.name}</p>
                     <p className="text-xs text-slate-500 dark:text-slate-400">
                       installId: <span className="font-mono">{install.publicKey}</span>
                     </p>
                   </div>
-                  <div className="text-xs text-slate-500 dark:text-slate-400">{install.status}</div>
+                  <div className="rounded-full border border-black/8 bg-white/88 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+                    {install.status}
+                  </div>
                 </div>
 
                 <div className="space-y-2">
                   <Label htmlFor={`domains-${install.id}`}>Dominios</Label>
                   <textarea
                     id={`domains-${install.id}`}
-                    className="min-h-[80px] w-full rounded border border-slate-200 bg-white p-3 text-sm dark:border-slate-700 dark:bg-slate-900"
+                    className={textareaClassName}
                     value={domainValue}
                     onChange={(event) =>
                       setEditedDomains((prev) => ({ ...prev, [install.publicKey]: event.target.value }))
@@ -199,7 +214,7 @@ export function InstallsClient({ installs, agentInstances, widgetScriptUrl }: In
                   </Button>
                 </div>
 
-                <div className="rounded border border-dashed border-slate-200 bg-slate-50 p-3 text-xs font-mono text-slate-600 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300">
+                <div className="rounded-[22px] border border-dashed border-black/10 bg-slate-50/90 p-4 text-xs font-mono leading-relaxed text-slate-600">
                   {snippet(install.publicKey)}
                 </div>
               </div>

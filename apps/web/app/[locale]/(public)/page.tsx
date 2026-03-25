@@ -172,11 +172,23 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         }))
       : fallbackShowcaseCards;
 
+  const showcaseMeta = [
+    { status: "Live stack", detail: "System module", accent: "bg-emerald-500" },
+    { status: "Delivery mode", detail: "Implementation case", accent: "bg-amber-600" },
+    { status: "Intel feed", detail: "Executive stream", accent: "bg-slate-900" }
+  ];
+
   const premiumPoints = [
     home("capabilities.c1Title"),
     home("capabilities.c2Title"),
     home("capabilities.c3Title"),
     home("capabilities.c4Title")
+  ];
+  const advisorySignals = [
+    "AI intake live",
+    "Lead routing ready",
+    "Enterprise guidance",
+    "Human handoff aware"
   ];
 
   const processSteps = [
@@ -216,7 +228,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         ];
 
   return (
-    <div className={`${display.variable} ${body.variable} bg-[linear-gradient(180deg,#f8f7f2_0%,#f5efe7_38%,#ffffff_100%)] font-[var(--font-body)] text-slate-900 dark:bg-slate-950`}>
+    <div className={`${display.variable} ${body.variable} bg-[linear-gradient(180deg,#f6f8fb_0%,#ffffff_18%,#f8fafc_100%)] font-[var(--font-body)] text-slate-900 dark:bg-slate-950`}>
       <MarketingHeroCarousel
         items={carouselItems}
         metrics={metrics}
@@ -224,218 +236,333 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         secondaryCta={home("carouselSecondaryCta")}
       />
 
-      <div className="mx-auto flex w-full max-w-[1400px] flex-col gap-20 px-4 py-10 sm:px-6 lg:px-8 lg:py-14">
-        <section className="space-y-8">
-          <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-            <div className="space-y-4">
-              <div className="inline-flex rounded-full border border-[#d7c7b4] bg-white/85 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.24em] text-[#8a6b52] shadow-sm">
-                {home("subheroSection.eyebrow")}
+      <div className="flex w-full flex-col gap-[4.5rem] py-10 lg:gap-24 lg:py-14">
+        <section className="w-full">
+          <div className="mx-auto flex w-full max-w-[1760px] flex-col gap-8 px-6 sm:px-8 lg:gap-10 lg:px-12 xl:px-16 2xl:px-20">
+            <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+              <div className="reveal space-y-4">
+                <div className="inline-flex rounded-full border border-black/8 bg-white/90 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.24em] text-slate-500 shadow-[0_18px_35px_-30px_rgba(15,23,42,0.25)]">
+                  {home("subheroSection.eyebrow")}
+                </div>
+                <div className="space-y-4">
+                  <h2 className="max-w-4xl text-3xl font-[var(--font-display)] font-semibold leading-tight text-slate-900 sm:text-4xl lg:text-5xl">
+                    {home("subheroSection.title")}
+                  </h2>
+                  <p className="max-w-4xl text-base leading-relaxed text-slate-600 sm:text-lg">
+                    {home("subheroSection.body")}
+                  </p>
+                </div>
               </div>
-              <div className="space-y-4">
-                <h2 className="max-w-3xl text-3xl font-[var(--font-display)] font-semibold leading-tight text-slate-900 sm:text-4xl">
-                  {home("subheroSection.title")}
+              <div className="grid max-w-2xl gap-3 sm:grid-cols-2">
+                {premiumPoints.map((point, index) => (
+                  <div
+                    key={point}
+                    className={`interactive-panel reveal rounded-[24px] border border-black/8 bg-white/88 px-4 py-4 text-sm text-slate-700 shadow-[0_24px_60px_-48px_rgba(15,23,42,0.35)] backdrop-blur ${
+                      index === 0 ? "reveal-delay-1" : index === 1 ? "reveal-delay-2" : "reveal-delay-3"
+                    }`}
+                  >
+                    {point}
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="grid gap-6 xl:grid-cols-3">
+              {showcaseCards.map((card, index) => (
+                <article
+                  key={card.title}
+                  className="group interactive-panel premium-spotlight overflow-hidden rounded-[34px] border border-black/8 bg-[linear-gradient(180deg,rgba(255,255,255,0.96)_0%,rgba(248,250,252,0.96)_100%)] shadow-[0_36px_100px_-64px_rgba(15,23,42,0.34)] backdrop-blur transition hover:shadow-[0_48px_120px_-68px_rgba(15,23,42,0.4)]"
+                >
+                  <div className="flex items-center justify-between border-b border-black/6 px-6 py-4">
+                    <div className="space-y-1">
+                      <div className="text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-500">
+                        {card.label}
+                      </div>
+                      <div className="text-sm font-semibold text-slate-900">{showcaseMeta[index]?.detail ?? "Product module"}</div>
+                    </div>
+                    <div className="inline-flex items-center gap-2 rounded-full border border-black/8 bg-white/86 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-600">
+                      <span className={`h-2 w-2 rounded-full ${showcaseMeta[index]?.accent ?? "bg-slate-900"}`} />
+                      <span>{showcaseMeta[index]?.status ?? "Active"}</span>
+                    </div>
+                  </div>
+                  <div className="grid gap-5 p-6">
+                    <div className="grid gap-5 lg:grid-cols-[1.08fr_0.92fr]">
+                      <div className="space-y-4">
+                        <div className="space-y-2">
+                          <h3 className="text-[2rem] font-[var(--font-display)] font-semibold leading-[1] tracking-[-0.04em] text-slate-900">
+                            {card.title}
+                          </h3>
+                          <p className="text-sm leading-relaxed text-slate-600">{card.body}</p>
+                        </div>
+                        <div className="grid gap-3 sm:grid-cols-2">
+                          <div className="interactive-panel rounded-[22px] border border-black/8 bg-white/86 px-4 py-4">
+                            <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+                              Highlights
+                            </div>
+                            <div className="mt-2 text-2xl font-[var(--font-display)] font-semibold tracking-[-0.04em] text-slate-950">
+                              {String(card.highlights.length).padStart(2, "0")}
+                            </div>
+                          </div>
+                          <div className="interactive-panel rounded-[22px] border border-black/8 bg-white/86 px-4 py-4">
+                            <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+                              Surface
+                            </div>
+                            <div className="mt-2 text-sm font-semibold text-slate-900">
+                              Premium control panel
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="premium-metal interactive-panel relative min-h-[240px] overflow-hidden rounded-[28px] border border-black/8 bg-slate-100 p-3 shadow-[0_28px_80px_-60px_rgba(15,23,42,0.35)]">
+                        <div className="absolute inset-x-5 top-0 h-px bg-[linear-gradient(90deg,transparent_0%,rgba(255,255,255,0.94)_50%,transparent_100%)]" aria-hidden="true" />
+                        <div className="relative h-full overflow-hidden rounded-[22px] border border-white/65 bg-white/40">
+                          <Image
+                            src={card.image}
+                            alt={card.title}
+                            fill
+                            className="object-cover transition duration-500 group-hover:scale-[1.03]"
+                            sizes="(min-width: 1536px) 20vw, (min-width: 1280px) 24vw, (min-width: 768px) 50vw, 100vw"
+                          />
+                          <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(15,23,42,0.18)_0%,transparent_28%,rgba(255,255,255,0.16)_56%,transparent_72%,rgba(15,23,42,0.12)_100%)]" aria-hidden="true" />
+                        </div>
+                      </div>
+                    </div>
+                    <div className="interactive-panel rounded-[26px] border border-black/8 bg-white/84 px-5 py-5">
+                      <div className="mb-3 flex items-center justify-between gap-3">
+                        <div className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500">
+                          Operational notes
+                        </div>
+                        <div className="rounded-full border border-black/8 bg-slate-950 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-white">
+                          Ready
+                        </div>
+                      </div>
+                      <ul className="grid gap-3 text-sm text-slate-600 sm:grid-cols-2">
+                        {card.highlights.map((highlight) => (
+                          <li
+                            key={highlight}
+                            className="flex items-start gap-3 rounded-[18px] border border-black/6 bg-slate-50/80 px-3 py-3"
+                          >
+                            <span className="mt-1.5 h-2 w-2 rounded-full bg-[#8b5e34]" aria-hidden="true" />
+                            <span>{highlight}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                    <div className="flex items-center justify-between gap-4">
+                      <div className="text-xs uppercase tracking-[0.18em] text-slate-500">
+                        {showcaseMeta[index]?.detail ?? "System block"}
+                      </div>
+                      <Link
+                        href={card.href}
+                        className="interactive-chip inline-flex items-center justify-center rounded-full border border-slate-900 px-4 py-2 text-sm font-semibold text-slate-900 transition hover:bg-slate-900 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900/15 focus-visible:ring-offset-2"
+                      >
+                        {card.cta}
+                      </Link>
+                    </div>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className="premium-noise relative w-full overflow-hidden border-y border-black/8 bg-[linear-gradient(180deg,#ffffff_0%,#f8fafc_100%)] py-12 shadow-[0_35px_90px_-70px_rgba(15,23,42,0.18)]">
+          <div className="premium-grid absolute inset-0 opacity-60" aria-hidden="true" />
+          <div className="relative mx-auto grid w-full max-w-[1760px] gap-8 px-6 sm:px-8 lg:px-12 xl:grid-cols-[0.82fr_1.18fr] xl:px-16 2xl:px-20">
+            <div className="interactive-panel premium-spotlight relative overflow-hidden rounded-[34px] border border-black/8 bg-[linear-gradient(180deg,#ffffff_0%,#f7fafc_100%)] p-7 shadow-[0_35px_90px_-70px_rgba(15,23,42,0.35)] sm:p-8 lg:p-9">
+              <div className="absolute inset-x-0 top-0 h-px bg-[linear-gradient(90deg,transparent_0%,rgba(255,255,255,0.96)_50%,transparent_100%)]" aria-hidden="true" />
+              <div className="relative space-y-6">
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  <div className="inline-flex rounded-full border border-black/8 bg-white/90 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.24em] text-slate-500">
+                    {home("advisorySection.eyebrow")}
+                  </div>
+                  <div className="inline-flex items-center gap-2 rounded-full border border-black/8 bg-slate-950 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-white">
+                    <span className="h-2 w-2 rounded-full bg-emerald-400" />
+                    <span>Console online</span>
+                  </div>
+                </div>
+                <div className="space-y-4">
+                  <h2 className="max-w-3xl text-3xl font-[var(--font-display)] font-semibold tracking-[-0.04em] text-slate-900 sm:text-4xl lg:text-5xl">
+                    {home("advisorySection.title")}
+                  </h2>
+                  <p className="max-w-2xl text-base leading-relaxed text-slate-600">
+                    {home("advisorySection.body")}
+                  </p>
+                </div>
+                <div className="grid gap-3 sm:grid-cols-2">
+                  {advisorySignals.map((signal) => (
+                    <div
+                      key={signal}
+                      className="interactive-panel rounded-[22px] border border-black/8 bg-white/88 px-4 py-4 text-sm font-medium text-slate-700 shadow-[0_18px_45px_-36px_rgba(15,23,42,0.24)]"
+                    >
+                      <div className="flex items-center gap-3">
+                        <span className="h-2.5 w-2.5 rounded-full bg-emerald-500" />
+                        <span>{signal}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <div className="grid gap-4">
+                  <div className="interactive-panel rounded-[24px] border border-black/8 bg-white/92 px-5 py-5">
+                    <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+                      Advisory block
+                    </div>
+                    <p className="mt-3 text-sm leading-relaxed text-slate-700">
+                      {home("advisorySection.cards.c1")}
+                    </p>
+                  </div>
+                  <div className="interactive-panel rounded-[24px] border border-black/8 bg-white/92 px-5 py-5">
+                    <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+                      Sales readiness
+                    </div>
+                    <p className="mt-3 text-sm leading-relaxed text-slate-700">
+                      {home("advisorySection.cards.c2")}
+                    </p>
+                  </div>
+                  <div className="interactive-panel rounded-[24px] border border-black/8 bg-white/92 px-5 py-5">
+                    <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+                      Deployment logic
+                    </div>
+                    <p className="mt-3 text-sm leading-relaxed text-slate-700">
+                      {home("advisorySection.cards.c3")}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <PublicConciergeChat copy={intakeCopy} />
+          </div>
+        </section>
+
+        <section className="w-full">
+          <div className="mx-auto grid w-full max-w-[1760px] gap-8 px-6 sm:px-8 lg:px-12 xl:grid-cols-[0.95fr_1.05fr] xl:px-16 2xl:px-20">
+            <div className="space-y-6">
+              <div className="space-y-3">
+                <div className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
+                  {home("salesStrategy.eyebrow")}
+                </div>
+                <h2 className="max-w-4xl text-3xl font-[var(--font-display)] font-semibold text-slate-900 sm:text-4xl lg:text-5xl">
+                  {home("salesStrategy.title")}
                 </h2>
-                <p className="max-w-3xl text-base leading-relaxed text-slate-600 sm:text-lg">
-                  {home("subheroSection.body")}
+                <p className="max-w-3xl text-base text-slate-600">{home("salesStrategy.body")}</p>
+              </div>
+              <div className="grid gap-4 lg:grid-cols-2">
+                {processSteps.map((step) => (
+                  <div
+                    key={step.step}
+                    className="interactive-panel premium-spotlight rounded-[26px] border border-black/8 bg-white/92 px-5 py-5 text-sm text-slate-600 shadow-[0_24px_64px_-52px_rgba(15,23,42,0.3)]"
+                  >
+                    <div className="flex items-center justify-between gap-3">
+                      <div className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
+                        {step.step}
+                      </div>
+                      <div className="rounded-full border border-black/8 bg-white/84 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+                        Sequence
+                      </div>
+                    </div>
+                    <div className="mt-4 text-base font-semibold text-slate-900">{step.title}</div>
+                    <p className="mt-2 leading-relaxed">{step.body}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="interactive-panel space-y-6 rounded-[32px] border border-black/8 bg-white/92 p-7 shadow-[0_35px_90px_-70px_rgba(15,23,42,0.3)] sm:p-8 lg:p-9">
+              <div className="space-y-3">
+                <div className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
+                  {home("salesPlaybook.eyebrow")}
+                </div>
+                <h3 className="text-3xl font-[var(--font-display)] font-semibold text-slate-900 lg:text-4xl">
+                  {home("salesPlaybook.title")}
+                </h3>
+                <p className="max-w-2xl text-base text-slate-600">
+                  {home("salesPlaybook.body")}
                 </p>
               </div>
-            </div>
-            <div className="grid max-w-md gap-3">
-              {premiumPoints.map((point) => (
-                <div
-                  key={point}
-                  className="rounded-2xl border border-[#e4d8ca] bg-white/80 px-4 py-4 text-sm text-slate-700 shadow-[0_20px_60px_-50px_rgba(15,23,42,0.4)]"
-                >
-                  {point}
+              <div className="grid gap-4">
+                <div className="interactive-panel rounded-[24px] border border-black/8 bg-slate-50 px-4 py-4 text-sm text-slate-700">
+                  {home("salesPlaybook.cards.c1")}
                 </div>
+                <div className="interactive-panel rounded-[24px] border border-black/8 bg-slate-50 px-4 py-4 text-sm text-slate-700">
+                  {home("salesPlaybook.cards.c2")}
+                </div>
+                <div className="interactive-panel rounded-[24px] border border-black/8 bg-slate-50 px-4 py-4 text-sm text-slate-700">
+                  {home("salesPlaybook.cards.c3")}
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="relative w-full overflow-hidden border-y border-black/8 bg-[linear-gradient(180deg,#f8fafc_0%,#ffffff_40%,#f8fafc_100%)] py-12">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_rgba(15,23,42,0.08),_transparent_22%),radial-gradient(circle_at_left,_rgba(120,53,15,0.08),_transparent_18%)]" aria-hidden="true" />
+          <div className="relative mx-auto w-full max-w-[1760px] space-y-6 px-6 sm:px-8 lg:px-12 xl:px-16 2xl:px-20">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+              <div className="space-y-3">
+                <div className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
+                  {home("newsroomEyebrow")}
+                </div>
+                <h2 className="max-w-4xl text-3xl font-[var(--font-display)] font-semibold text-slate-900 sm:text-4xl lg:text-5xl">
+                  {home("newsroomTitle")}
+                </h2>
+                <p className="max-w-4xl text-base text-slate-600">{home("newsroomBody")}</p>
+              </div>
+              <Link
+                href={`${base}/news`}
+                className="interactive-chip inline-flex items-center justify-center rounded-full border border-slate-900 bg-white/80 px-4 py-2 text-sm font-semibold text-slate-900 transition hover:bg-slate-900 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900/15 focus-visible:ring-offset-2"
+              >
+                {home("newsroomCta")}
+              </Link>
+            </div>
+            <div className="grid gap-4 xl:grid-cols-3">
+              {newsroomItems.map((item) => (
+                <article
+                  key={item.title}
+                  className="interactive-panel premium-spotlight rounded-[26px] border border-black/8 bg-white/92 px-5 py-5 text-sm text-slate-600 shadow-[0_24px_64px_-52px_rgba(15,23,42,0.3)]"
+                >
+                  <div className="flex items-center justify-between gap-3">
+                    <div className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500">
+                      {item.category}
+                    </div>
+                    <div className="rounded-full border border-black/8 bg-white/86 px-3 py-1 text-[11px] font-semibold text-slate-500">
+                      {item.date ?? "Brief"}
+                    </div>
+                  </div>
+                  <div className="mt-4 text-base font-semibold text-slate-900">{item.title}</div>
+                  <p className="mt-2 leading-relaxed">{item.body}</p>
+                  <div className="mt-4 h-px w-full bg-[linear-gradient(90deg,rgba(15,23,42,0.08)_0%,rgba(15,23,42,0.02)_100%)]" />
+                  <div className="mt-4 text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+                    Executive news signal
+                  </div>
+                </article>
               ))}
             </div>
           </div>
-
-          <div className="grid gap-6 lg:grid-cols-3">
-            {showcaseCards.map((card) => (
-              <article
-                key={card.title}
-                className="group overflow-hidden rounded-[30px] border border-[#e4d8ca] bg-white/88 shadow-[0_30px_90px_-65px_rgba(15,23,42,0.3)] backdrop-blur transition hover:-translate-y-1 hover:shadow-[0_45px_110px_-65px_rgba(15,23,42,0.38)]"
-              >
-                <div className="relative aspect-[5/4] overflow-hidden bg-[#efe8de]">
-                  <Image
-                    src={card.image}
-                    alt={card.title}
-                    fill
-                    className="object-cover transition duration-500 group-hover:scale-[1.03]"
-                    sizes="(min-width: 1280px) 28vw, (min-width: 768px) 50vw, 100vw"
-                  />
-                </div>
-                <div className="space-y-4 p-6">
-                  <div className="inline-flex rounded-full border border-[#e7d8c8] bg-[#fff9f4] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.22em] text-[#8a6b52]">
-                    {card.label}
-                  </div>
-                  <div className="space-y-2">
-                    <h3 className="text-2xl font-[var(--font-display)] font-semibold text-slate-900">
-                      {card.title}
-                    </h3>
-                    <p className="text-sm leading-relaxed text-slate-600">{card.body}</p>
-                  </div>
-                  <ul className="space-y-2 text-sm text-slate-600">
-                    {card.highlights.map((highlight) => (
-                      <li key={highlight} className="flex items-start gap-2">
-                        <span className="mt-2 h-1.5 w-1.5 rounded-full bg-[#d97706]" aria-hidden="true" />
-                        <span>{highlight}</span>
-                      </li>
-                    ))}
-                  </ul>
-                  <Link
-                    href={card.href}
-                    className="inline-flex items-center justify-center rounded-full border border-slate-900 px-4 py-2 text-sm font-semibold text-slate-900 transition hover:-translate-y-0.5 hover:bg-slate-900 hover:text-white"
-                  >
-                    {card.cta}
-                  </Link>
-                </div>
-              </article>
-            ))}
-          </div>
         </section>
 
-        <section className="grid gap-8 xl:grid-cols-[0.82fr_1.18fr]">
-          <div className="space-y-6 rounded-[32px] border border-[#e4d8ca] bg-[linear-gradient(180deg,#fffdfb_0%,#f5ede4_100%)] p-8 shadow-[0_35px_90px_-70px_rgba(15,23,42,0.35)]">
-            <div className="inline-flex rounded-full border border-[#eadbca] bg-white/85 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.24em] text-[#8a6b52]">
-              {home("advisorySection.eyebrow")}
-            </div>
-            <div className="space-y-4">
-              <h2 className="text-3xl font-[var(--font-display)] font-semibold text-slate-900 sm:text-4xl">
-                {home("advisorySection.title")}
-              </h2>
-              <p className="text-base leading-relaxed text-slate-600">
-                {home("advisorySection.body")}
-              </p>
-            </div>
-            <div className="grid gap-3">
-              <div className="rounded-2xl border border-[#eadbca] bg-white/90 px-4 py-4 text-sm text-slate-700">
-                {home("advisorySection.cards.c1")}
-              </div>
-              <div className="rounded-2xl border border-[#eadbca] bg-white/90 px-4 py-4 text-sm text-slate-700">
-                {home("advisorySection.cards.c2")}
-              </div>
-              <div className="rounded-2xl border border-[#eadbca] bg-white/90 px-4 py-4 text-sm text-slate-700">
-                {home("advisorySection.cards.c3")}
-              </div>
-            </div>
-          </div>
-
-          <PublicConciergeChat copy={intakeCopy} />
-        </section>
-
-        <section className="grid gap-8 xl:grid-cols-[0.95fr_1.05fr]">
-          <div className="space-y-6">
-            <div className="space-y-3">
-              <div className="text-xs font-semibold uppercase tracking-[0.22em] text-[#8a6b52]">
-                {home("salesStrategy.eyebrow")}
-              </div>
-              <h2 className="text-3xl font-[var(--font-display)] font-semibold text-slate-900 sm:text-4xl">
-                {home("salesStrategy.title")}
-              </h2>
-              <p className="max-w-2xl text-base text-slate-600">{home("salesStrategy.body")}</p>
-            </div>
-            <div className="grid gap-4 sm:grid-cols-2">
-              {processSteps.map((step) => (
-                <div
-                  key={step.step}
-                  className="rounded-2xl border border-[#e7ddd1] bg-white/88 px-5 py-5 text-sm text-slate-600 shadow-[0_20px_60px_-50px_rgba(15,23,42,0.3)]"
-                >
-                  <div className="text-xs font-semibold uppercase tracking-[0.22em] text-[#8a6b52]">
-                    {step.step}
-                  </div>
-                  <div className="mt-3 text-base font-semibold text-slate-900">{step.title}</div>
-                  <p className="mt-2 leading-relaxed">{step.body}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="space-y-6 rounded-[32px] border border-[#e4d8ca] bg-white/88 p-8 shadow-[0_35px_90px_-70px_rgba(15,23,42,0.3)]">
-            <div className="space-y-3">
-              <div className="text-xs font-semibold uppercase tracking-[0.22em] text-[#8a6b52]">
-                {home("salesPlaybook.eyebrow")}
-              </div>
-              <h3 className="text-3xl font-[var(--font-display)] font-semibold text-slate-900">
-                {home("salesPlaybook.title")}
-              </h3>
-              <p className="text-base text-slate-600">
-                {home("salesPlaybook.body")}
-              </p>
-            </div>
-            <div className="grid gap-4">
-              <div className="rounded-2xl border border-[#eadbca] bg-[#fff9f4] px-4 py-4 text-sm text-slate-700">
-                {home("salesPlaybook.cards.c1")}
-              </div>
-              <div className="rounded-2xl border border-[#eadbca] bg-[#fff9f4] px-4 py-4 text-sm text-slate-700">
-                {home("salesPlaybook.cards.c2")}
-              </div>
-              <div className="rounded-2xl border border-[#eadbca] bg-[#fff9f4] px-4 py-4 text-sm text-slate-700">
-                {home("salesPlaybook.cards.c3")}
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section className="space-y-6">
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-            <div className="space-y-3">
-              <div className="text-xs font-semibold uppercase tracking-[0.22em] text-[#8a6b52]">
-                {home("newsroomEyebrow")}
-              </div>
-              <h2 className="text-3xl font-[var(--font-display)] font-semibold text-slate-900 sm:text-4xl">
-                {home("newsroomTitle")}
-              </h2>
-              <p className="max-w-3xl text-base text-slate-600">{home("newsroomBody")}</p>
-            </div>
-            <Link
-              href={`${base}/news`}
-              className="inline-flex items-center justify-center rounded-full border border-slate-900 bg-white/80 px-4 py-2 text-sm font-semibold text-slate-900 transition hover:-translate-y-0.5 hover:bg-slate-900 hover:text-white"
-            >
-              {home("newsroomCta")}
-            </Link>
-          </div>
-          <div className="grid gap-4 lg:grid-cols-3">
-            {newsroomItems.map((item) => (
-              <article
-                key={item.title}
-                className="rounded-2xl border border-[#e7ddd1] bg-white/88 px-5 py-5 text-sm text-slate-600 shadow-[0_20px_60px_-50px_rgba(15,23,42,0.3)]"
-              >
-                <div className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#8a6b52]">
-                  {item.category}
-                  {item.date ? ` - ${item.date}` : ""}
-                </div>
-                <div className="mt-2 text-base font-semibold text-slate-900">{item.title}</div>
-                <p className="mt-2 leading-relaxed">{item.body}</p>
-              </article>
-            ))}
-          </div>
-        </section>
-
-        <section className="relative overflow-hidden rounded-[36px] border border-[#d9c7b2] bg-[linear-gradient(135deg,#fffaf5_0%,#f3eadf_60%,#e8ddd0_100%)] px-8 py-10 shadow-[0_45px_120px_-85px_rgba(15,23,42,0.35)] sm:px-10 sm:py-12">
+        <section className="relative w-full overflow-hidden border-y border-black/8 bg-[linear-gradient(135deg,#ffffff_0%,#f8fafc_55%,#eef2f7_100%)] py-12 shadow-[0_45px_120px_-85px_rgba(15,23,42,0.18)]">
           <div className="absolute inset-0 opacity-70" aria-hidden="true">
-            <div className="absolute -left-24 top-1/2 h-64 w-64 -translate-y-1/2 rounded-full bg-[radial-gradient(circle_at_center,_rgba(249,115,22,0.14),_transparent_70%)] blur-2xl" />
-            <div className="absolute -right-10 -top-16 h-56 w-56 rounded-full bg-[radial-gradient(circle_at_center,_rgba(14,165,233,0.14),_transparent_70%)] blur-2xl" />
+            <div className="absolute -left-24 top-1/2 h-64 w-64 -translate-y-1/2 rounded-full bg-[radial-gradient(circle_at_center,_rgba(120,53,15,0.12),_transparent_70%)] blur-2xl" />
+            <div className="absolute -right-10 -top-16 h-56 w-56 rounded-full bg-[radial-gradient(circle_at_center,_rgba(15,23,42,0.12),_transparent_70%)] blur-2xl" />
           </div>
-          <div className="relative z-10 flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+          <div className="relative z-10 mx-auto flex w-full max-w-[1760px] flex-col gap-6 px-6 sm:px-8 lg:flex-row lg:items-center lg:justify-between lg:px-12 xl:px-16 2xl:px-20">
             <div className="space-y-3">
-              <h2 className="text-3xl font-[var(--font-display)] font-semibold text-slate-900 sm:text-4xl">
+              <h2 className="max-w-4xl text-3xl font-[var(--font-display)] font-semibold text-slate-900 sm:text-4xl lg:text-5xl">
                 {home("ctaTitle")}
               </h2>
-              <p className="max-w-3xl text-base text-slate-600">{home("ctaBody")}</p>
+              <p className="max-w-4xl text-base text-slate-600">{home("ctaBody")}</p>
             </div>
             <div className="flex flex-wrap items-center gap-3">
               <Link
                 href={`${base}/systems/luna`}
-                className="inline-flex items-center justify-center rounded-full bg-slate-900 px-5 py-2.5 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:bg-slate-800"
+                className="interactive-chip inline-flex items-center justify-center rounded-full bg-slate-900 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900/15 focus-visible:ring-offset-2"
               >
                 {home("ctaPrimary")}
               </Link>
               <Link
                 href={`${base}/agents`}
-                className="inline-flex items-center justify-center rounded-full border border-slate-900 px-5 py-2.5 text-sm font-semibold text-slate-900 transition hover:-translate-y-0.5 hover:bg-slate-900 hover:text-white"
+                className="interactive-chip inline-flex items-center justify-center rounded-full border border-slate-900 px-5 py-2.5 text-sm font-semibold text-slate-900 transition hover:bg-slate-900 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900/15 focus-visible:ring-offset-2"
               >
                 {home("ctaSecondary")}
               </Link>

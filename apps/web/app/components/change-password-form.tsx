@@ -118,12 +118,13 @@ export function ChangePasswordForm({ locale }: ChangePasswordFormProps) {
   };
 
   return (
-    <Card>
-      <CardHeader>
+    <Card className="interactive-panel premium-noise">
+      <CardHeader className="space-y-2">
+        <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500">Security</p>
         <CardTitle>{copy.title}</CardTitle>
       </CardHeader>
       <CardContent>
-        <form onSubmit={onSubmit} className="space-y-4">
+        <form onSubmit={onSubmit} className="space-y-5">
           <p className="text-sm text-slate-500 dark:text-slate-400">{copy.body}</p>
           <div className="space-y-2">
             <Label htmlFor="currentPassword">{copy.currentLabel}</Label>
@@ -156,8 +157,16 @@ export function ChangePasswordForm({ locale }: ChangePasswordFormProps) {
             />
           </div>
           <p className="text-xs text-slate-500 dark:text-slate-400">{copy.help}</p>
-          {error ? <p className="text-sm text-red-500">{error}</p> : null}
-          {saved ? <p className="text-sm text-emerald-600">{copy.success}</p> : null}
+          {error ? (
+            <div className="rounded-[18px] border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
+              {error}
+            </div>
+          ) : null}
+          {saved ? (
+            <div className="rounded-[18px] border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
+              {copy.success}
+            </div>
+          ) : null}
           <Button type="submit" disabled={isPending}>
             {isPending ? copy.submitting : copy.submit}
           </Button>

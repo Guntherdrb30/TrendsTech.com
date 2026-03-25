@@ -49,6 +49,8 @@ export function AgentAccessManager({ agentInstanceId, agentName, agentAccesses }
   const [maxTokensInput, setMaxTokensInput] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
+  const textareaClassName =
+    "interactive-field min-h-[96px] w-full rounded-[22px] border border-slate-200 bg-white/96 p-4 text-sm text-slate-900 shadow-[0_14px_35px_-28px_rgba(15,23,42,0.35)] outline-none transition focus:border-slate-300 focus:ring-2 focus:ring-slate-200";
 
   const summary = useMemo(() => {
     if (rows.length === 0) {
@@ -136,7 +138,7 @@ export function AgentAccessManager({ agentInstanceId, agentName, agentAccesses }
         return;
       }
       const body = await response.json();
-      setRows((prev) => prev.map((item) => (item.id === body.data.id ? mapAccessToRow(body.data) : item)));
+      setRows((prev) => prev.map((item) => (item.id === row.id ? mapAccessToRow(body.data) : item)));
     });
   };
 
@@ -150,7 +152,10 @@ export function AgentAccessManager({ agentInstanceId, agentName, agentAccesses }
         <h2 className="text-xl font-semibold">Accesos para {agentName}</h2>
         <p className="text-sm text-slate-500 dark:text-slate-400">{summary}</p>
       </div>
-      <form onSubmit={handleCreate} className="space-y-3 rounded border border-slate-200 p-4 dark:border-slate-700">
+      <form
+        onSubmit={handleCreate}
+        className="interactive-panel space-y-4 rounded-[28px] border border-black/8 bg-[linear-gradient(180deg,#ffffff_0%,#f8fafc_100%)] p-5 shadow-[0_24px_70px_-54px_rgba(15,23,42,0.24)]"
+      >
         <div className="grid gap-4 md:grid-cols-2">
           <div className="space-y-2">
             <Label htmlFor="access-name">Nombre</Label>
@@ -177,7 +182,7 @@ export function AgentAccessManager({ agentInstanceId, agentName, agentAccesses }
           <Label htmlFor="access-domains">Dominios permitidos</Label>
           <textarea
             id="access-domains"
-            className="min-h-[90px] w-full rounded border border-slate-200 bg-white p-3 text-sm dark:border-slate-700 dark:bg-slate-900"
+            className={textareaClassName}
             value={domainsInput}
             onChange={(event) => setDomainsInput(event.target.value)}
             placeholder="miempresa.com\napp.miempresa.com"
@@ -186,12 +191,24 @@ export function AgentAccessManager({ agentInstanceId, agentName, agentAccesses }
         <Button type="submit" disabled={isPending}>
           Crear acceso
         </Button>
-        {error ? <p className="text-sm text-red-500">{error}</p> : null}
+        {error ? (
+          <div className="rounded-[18px] border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
+            {error}
+          </div>
+        ) : null}
       </form>
+      {rows.length === 0 ? (
+        <div className="interactive-panel rounded-[24px] border border-dashed border-black/10 bg-slate-50/80 px-5 py-6 text-sm text-slate-500">
+          No hay accesos configurados. Crea el primero para controlar dominios, estado y consumo.
+        </div>
+      ) : null}
       {rows.map((row) => {
         const baseId = `access-${row.id}`;
         return (
-          <div key={row.id} className="space-y-3 rounded border border-slate-200 p-4 dark:border-slate-700">
+          <div
+            key={row.id}
+            className="interactive-panel space-y-4 rounded-[28px] border border-black/8 bg-white/92 p-5 shadow-[0_24px_70px_-54px_rgba(15,23,42,0.24)]"
+          >
             <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-slate-500 dark:text-slate-400">
               <span>
                 accessId: <span className="font-mono">{row.id}</span>
@@ -202,7 +219,7 @@ export function AgentAccessManager({ agentInstanceId, agentName, agentAccesses }
                   type="checkbox"
                   checked={row.isActive}
                   onChange={(event) => updateField(row.id, "isActive", event.target.checked)}
-                  className="h-4 w-4"
+                  className="h-4 w-4 rounded border-slate-300 text-slate-900 focus:ring-slate-300"
                 />
                 Activo
               </Label>
@@ -231,7 +248,7 @@ export function AgentAccessManager({ agentInstanceId, agentName, agentAccesses }
               <Label htmlFor={`${baseId}-domains`}>Dominios</Label>
               <textarea
                 id={`${baseId}-domains`}
-                className="min-h-[80px] w-full rounded border border-slate-200 bg-white p-3 text-sm dark:border-slate-700 dark:bg-slate-900"
+                className={textareaClassName}
                 value={row.allowedDomainsText}
                 onChange={(event) => updateField(row.id, "allowedDomainsText", event.target.value)}
               />
