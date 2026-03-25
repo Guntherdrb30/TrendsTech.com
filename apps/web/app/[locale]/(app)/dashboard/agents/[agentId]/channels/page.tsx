@@ -161,6 +161,7 @@ async function toggleChannel(formData: FormData) {
 
 export default async function AgentChannelsPage({ params }: { params: Promise<PageParams> }) {
   const { locale, agentId } = await params;
+  const isEs = locale.startsWith('es');
   const user = await requireAuth();
   const tenant = await resolveTenantFromUser(user);
 
@@ -168,7 +169,7 @@ export default async function AgentChannelsPage({ params }: { params: Promise<Pa
     return (
       <section className="space-y-4">
         <h1 className="text-2xl font-semibold">Agent channels</h1>
-        <p className="text-sm text-slate-500 dark:text-slate-400">No tenant assigned.</p>
+        <p className="text-sm text-slate-500 dark:text-slate-400">{isEs ? 'No hay tenant asignado.' : 'No tenant assigned.'}</p>
       </section>
     );
   }
@@ -181,9 +182,9 @@ export default async function AgentChannelsPage({ params }: { params: Promise<Pa
     return (
       <section className="space-y-4">
         <h1 className="text-2xl font-semibold">Agent channels</h1>
-        <p className="text-sm text-slate-500 dark:text-slate-400">Agent instance not found.</p>
+        <p className="text-sm text-slate-500 dark:text-slate-400">{isEs ? 'Instancia de agente no encontrada.' : 'Agent instance not found.'}</p>
         <Link className="text-sm text-blue-600 hover:underline" href={`/${locale}/dashboard`}>
-          Back to dashboard
+          {isEs ? 'Volver al panel' : 'Back to dashboard'}
         </Link>
       </section>
     );
@@ -235,7 +236,7 @@ export default async function AgentChannelsPage({ params }: { params: Promise<Pa
         <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
           <div className="space-y-3">
             <div className="inline-flex rounded-full border border-black/8 bg-white/90 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-500">
-              Channel delivery
+              {isEs ? 'Entrega de canal' : 'Channel delivery'}
             </div>
             <div className="space-y-2">
               <h1 className="text-3xl font-semibold tracking-[-0.04em] text-slate-950 sm:text-4xl">WhatsApp channel</h1>
@@ -248,34 +249,34 @@ export default async function AgentChannelsPage({ params }: { params: Promise<Pa
             className="interactive-chip inline-flex rounded-full border border-black/8 bg-white/90 px-4 py-2 text-sm font-semibold text-slate-900 transition hover:bg-slate-900 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900/15 focus-visible:ring-offset-2"
             href={`/${locale}/dashboard/agents/${agentId}`}
           >
-            Back to agent
+            {isEs ? 'Volver al agente' : 'Back to agent'}
           </Link>
         </div>
       </div>
 
       <Card className="interactive-panel">
         <CardHeader className="space-y-2">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500">Webhook endpoint</p>
+          <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500">{isEs ? 'Endpoint webhook' : 'Webhook endpoint'}</p>
           <CardTitle>Webhook</CardTitle>
         </CardHeader>
         <CardContent className="space-y-2 text-sm text-slate-600 dark:text-slate-300">
-          <Label htmlFor="webhookUrl">Webhook URL</Label>
+          <Label htmlFor="webhookUrl">{isEs ? 'URL del webhook' : 'Webhook URL'}</Label>
           <Input id="webhookUrl" value={webhookUrl} readOnly />
           <p className="text-xs text-slate-500 dark:text-slate-400">
-            Use this URL in Meta Webhooks. Verify token comes from WHATSAPP_VERIFY_TOKEN.
+            {isEs ? 'Usa esta URL en Meta Webhooks. El token de verificacion sale de WHATSAPP_VERIFY_TOKEN.' : 'Use this URL in Meta Webhooks. Verify token comes from WHATSAPP_VERIFY_TOKEN.'}
           </p>
         </CardContent>
       </Card>
 
       <Card className="interactive-panel">
         <CardHeader className="space-y-2">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500">Plan usage</p>
-          <CardTitle>Plan limits</CardTitle>
+          <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500">{isEs ? 'Uso del plan' : 'Plan usage'}</p>
+          <CardTitle>{isEs ? 'Limites del plan' : 'Plan limits'}</CardTitle>
         </CardHeader>
         <CardContent className="text-sm text-slate-600 dark:text-slate-300 space-y-1">
-          <p>WhatsApp enabled: {limits.whatsappEnabled === false ? 'No' : 'Yes'}</p>
+          <p>{isEs ? 'WhatsApp habilitado' : 'WhatsApp enabled'}: {limits.whatsappEnabled === false ? 'No' : isEs ? 'Si' : 'Yes'}</p>
           <p>
-            Messages last 30 days:{' '}
+            {isEs ? 'Mensajes ultimos 30 dias' : 'Messages last 30 days'}:{' '}
             {limits.maxWhatsAppMessagesPerMonth
               ? `${usedMessages}/${limits.maxWhatsAppMessagesPerMonth}`
               : `${usedMessages}/unlimited`}
@@ -285,7 +286,7 @@ export default async function AgentChannelsPage({ params }: { params: Promise<Pa
 
       <Card className="interactive-panel">
         <CardHeader className="space-y-2">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500">Provider setup</p>
+          <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500">{isEs ? 'Configuracion del proveedor' : 'Provider setup'}</p>
           <CardTitle>Channel configuration</CardTitle>
         </CardHeader>
         <CardContent>
@@ -293,7 +294,7 @@ export default async function AgentChannelsPage({ params }: { params: Promise<Pa
             <input type="hidden" name="agentId" value={agentId} />
             <input type="hidden" name="locale" value={locale} />
             <div className="space-y-2">
-              <Label htmlFor="phoneNumber">Phone number ID (Meta)</Label>
+              <Label htmlFor="phoneNumber">{isEs ? 'ID del numero telefonico (Meta)' : 'Phone number ID (Meta)'}</Label>
               <Input
                 id="phoneNumber"
                 name="phoneNumber"
@@ -303,7 +304,7 @@ export default async function AgentChannelsPage({ params }: { params: Promise<Pa
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="provider">Provider</Label>
+              <Label htmlFor="provider">{isEs ? 'Proveedor' : 'Provider'}</Label>
               <select
                 id="provider"
                 name="provider"
@@ -324,7 +325,7 @@ export default async function AgentChannelsPage({ params }: { params: Promise<Pa
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="status">Status</Label>
+              <Label htmlFor="status">{isEs ? 'Estado' : 'Status'}</Label>
               <select
                 id="status"
                 name="status"
@@ -335,7 +336,7 @@ export default async function AgentChannelsPage({ params }: { params: Promise<Pa
                 <option value="PAUSED">PAUSED</option>
               </select>
             </div>
-            <Button type="submit">Save channel</Button>
+            <Button type="submit">{isEs ? 'Guardar canal' : 'Save channel'}</Button>
           </form>
         </CardContent>
       </Card>
@@ -343,11 +344,11 @@ export default async function AgentChannelsPage({ params }: { params: Promise<Pa
       {channel ? (
         <Card className="interactive-panel">
           <CardHeader className="space-y-2">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500">Channel state</p>
-            <CardTitle>Quick actions</CardTitle>
+            <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500">{isEs ? 'Estado del canal' : 'Channel state'}</p>
+            <CardTitle>{isEs ? 'Acciones rapidas' : 'Quick actions'}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-2 text-sm text-slate-600 dark:text-slate-300">
-            <p>Status: {channel.status}</p>
+            <p>{isEs ? 'Estado' : 'Status'}: {channel.status}</p>
             <form action={toggleChannel} className="flex items-center gap-3">
               <input type="hidden" name="channelId" value={channel.id} />
               <input type="hidden" name="agentId" value={agentId} />
@@ -358,7 +359,7 @@ export default async function AgentChannelsPage({ params }: { params: Promise<Pa
                 value={channel.status === 'ACTIVE' ? 'PAUSED' : 'ACTIVE'}
               />
               <Button type="submit" variant="outline">
-                {channel.status === 'ACTIVE' ? 'Pause channel' : 'Activate channel'}
+                {channel.status === 'ACTIVE' ? (isEs ? 'Pausar canal' : 'Pause channel') : (isEs ? 'Activar canal' : 'Activate channel')}
               </Button>
             </form>
           </CardContent>
@@ -369,7 +370,7 @@ export default async function AgentChannelsPage({ params }: { params: Promise<Pa
         className="interactive-chip inline-flex rounded-full border border-black/8 bg-white/90 px-4 py-2 text-sm font-semibold text-slate-900 transition hover:bg-slate-900 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900/15 focus-visible:ring-offset-2"
         href={`/${locale}/dashboard/agents/${agentId}`}
       >
-        Back to agent
+        {isEs ? 'Volver al agente' : 'Back to agent'}
       </Link>
     </section>
   );

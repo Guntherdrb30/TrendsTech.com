@@ -27,6 +27,63 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
   const projects = await getTranslations("projectsPage");
   const { locale } = await params;
   const base = `/${locale}`;
+  const uiCopy = locale.startsWith("es")
+    ? {
+        showcaseMeta: [
+          { status: "Stack activo", detail: "Modulo de sistema", accent: "bg-emerald-500" },
+          { status: "Modo de entrega", detail: "Caso de implementacion", accent: "bg-amber-600" },
+          { status: "Feed de inteligencia", detail: "Flujo ejecutivo", accent: "bg-slate-900" }
+        ],
+        advisorySignals: [
+          "Intake IA activo",
+          "Ruteo de leads listo",
+          "Guia empresarial",
+          "Escalamiento humano consciente"
+        ],
+        productModule: "Modulo de producto",
+        active: "Activo",
+        highlights: "Puntos clave",
+        surface: "Superficie",
+        premiumControlPanel: "Panel premium de control",
+        operationalNotes: "Notas operativas",
+        ready: "Listo",
+        systemBlock: "Bloque del sistema",
+        consoleOnline: "Consola en linea",
+        sequence: "Secuencia",
+        executiveNewsSignal: "Senal ejecutiva",
+        advisoryBlock: "Bloque de consultoria",
+        salesReadiness: "Preparacion comercial",
+        deploymentLogic: "Logica de despliegue",
+        brief: "Resumen"
+      }
+    : {
+        showcaseMeta: [
+          { status: "Live stack", detail: "System module", accent: "bg-emerald-500" },
+          { status: "Delivery mode", detail: "Implementation case", accent: "bg-amber-600" },
+          { status: "Intel feed", detail: "Executive stream", accent: "bg-slate-900" }
+        ],
+        advisorySignals: [
+          "AI intake live",
+          "Lead routing ready",
+          "Enterprise guidance",
+          "Human handoff aware"
+        ],
+        productModule: "Product module",
+        active: "Active",
+        highlights: "Highlights",
+        surface: "Surface",
+        premiumControlPanel: "Premium control panel",
+        operationalNotes: "Operational notes",
+        ready: "Ready",
+        systemBlock: "System block",
+        consoleOnline: "Console online",
+        sequence: "Sequence",
+        executiveNewsSignal: "Executive news signal",
+        advisoryBlock: "Advisory block",
+        salesReadiness: "Sales readiness",
+        deploymentLogic: "Deployment logic",
+        brief: "Brief"
+      };
   const publishedNews = await getPublishedNewsPosts(locale, 3);
   const [heroAssets, showcaseAssets] = await Promise.all([
     getPublicSiteAssets(SiteAssetSection.HOME_HERO, locale),
@@ -172,25 +229,12 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         }))
       : fallbackShowcaseCards;
 
-  const showcaseMeta = [
-    { status: "Live stack", detail: "System module", accent: "bg-emerald-500" },
-    { status: "Delivery mode", detail: "Implementation case", accent: "bg-amber-600" },
-    { status: "Intel feed", detail: "Executive stream", accent: "bg-slate-900" }
-  ];
-
   const premiumPoints = [
     home("capabilities.c1Title"),
     home("capabilities.c2Title"),
     home("capabilities.c3Title"),
     home("capabilities.c4Title")
   ];
-  const advisorySignals = [
-    "AI intake live",
-    "Lead routing ready",
-    "Enterprise guidance",
-    "Human handoff aware"
-  ];
-
   const processSteps = [
     { step: "01", title: home("processSteps.p1Title"), body: home("processSteps.p1Body") },
     { step: "02", title: home("processSteps.p2Title"), body: home("processSteps.p2Body") },
@@ -232,6 +276,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
       <MarketingHeroCarousel
         items={carouselItems}
         metrics={metrics}
+        locale={locale}
         secondaryHref={`${base}/systems/luna`}
         secondaryCta={home("carouselSecondaryCta")}
       />
@@ -278,11 +323,11 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
                       <div className="text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-500">
                         {card.label}
                       </div>
-                      <div className="text-sm font-semibold text-slate-900">{showcaseMeta[index]?.detail ?? "Product module"}</div>
+                      <div className="text-sm font-semibold text-slate-900">{uiCopy.showcaseMeta[index]?.detail ?? uiCopy.productModule}</div>
                     </div>
                     <div className="inline-flex items-center gap-2 rounded-full border border-black/8 bg-white/86 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-600">
-                      <span className={`h-2 w-2 rounded-full ${showcaseMeta[index]?.accent ?? "bg-slate-900"}`} />
-                      <span>{showcaseMeta[index]?.status ?? "Active"}</span>
+                      <span className={`h-2 w-2 rounded-full ${uiCopy.showcaseMeta[index]?.accent ?? "bg-slate-900"}`} />
+                      <span>{uiCopy.showcaseMeta[index]?.status ?? uiCopy.active}</span>
                     </div>
                   </div>
                   <div className="grid gap-5 p-6">
@@ -297,7 +342,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
                         <div className="grid gap-3 sm:grid-cols-2">
                           <div className="interactive-panel rounded-[22px] border border-black/8 bg-white/86 px-4 py-4">
                             <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">
-                              Highlights
+                              {uiCopy.highlights}
                             </div>
                             <div className="mt-2 text-2xl font-[var(--font-display)] font-semibold tracking-[-0.04em] text-slate-950">
                               {String(card.highlights.length).padStart(2, "0")}
@@ -305,10 +350,10 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
                           </div>
                           <div className="interactive-panel rounded-[22px] border border-black/8 bg-white/86 px-4 py-4">
                             <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">
-                              Surface
+                              {uiCopy.surface}
                             </div>
                             <div className="mt-2 text-sm font-semibold text-slate-900">
-                              Premium control panel
+                              {uiCopy.premiumControlPanel}
                             </div>
                           </div>
                         </div>
@@ -330,10 +375,10 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
                     <div className="interactive-panel rounded-[26px] border border-black/8 bg-white/84 px-5 py-5">
                       <div className="mb-3 flex items-center justify-between gap-3">
                         <div className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500">
-                          Operational notes
+                          {uiCopy.operationalNotes}
                         </div>
                         <div className="rounded-full border border-black/8 bg-slate-950 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-white">
-                          Ready
+                          {uiCopy.ready}
                         </div>
                       </div>
                       <ul className="grid gap-3 text-sm text-slate-600 sm:grid-cols-2">
@@ -350,7 +395,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
                     </div>
                     <div className="flex items-center justify-between gap-4">
                       <div className="text-xs uppercase tracking-[0.18em] text-slate-500">
-                        {showcaseMeta[index]?.detail ?? "System block"}
+                        {uiCopy.showcaseMeta[index]?.detail ?? uiCopy.systemBlock}
                       </div>
                       <Link
                         href={card.href}
@@ -378,7 +423,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
                   </div>
                   <div className="inline-flex items-center gap-2 rounded-full border border-black/8 bg-slate-950 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-white">
                     <span className="h-2 w-2 rounded-full bg-emerald-400" />
-                    <span>Console online</span>
+                    <span>{uiCopy.consoleOnline}</span>
                   </div>
                 </div>
                 <div className="space-y-4">
@@ -390,7 +435,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
                   </p>
                 </div>
                 <div className="grid gap-3 sm:grid-cols-2">
-                  {advisorySignals.map((signal) => (
+                  {uiCopy.advisorySignals.map((signal) => (
                     <div
                       key={signal}
                       className="interactive-panel rounded-[22px] border border-black/8 bg-white/88 px-4 py-4 text-sm font-medium text-slate-700 shadow-[0_18px_45px_-36px_rgba(15,23,42,0.24)]"
@@ -405,7 +450,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
                 <div className="grid gap-4">
                   <div className="interactive-panel rounded-[24px] border border-black/8 bg-white/92 px-5 py-5">
                     <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">
-                      Advisory block
+                      {uiCopy.advisoryBlock}
                     </div>
                     <p className="mt-3 text-sm leading-relaxed text-slate-700">
                       {home("advisorySection.cards.c1")}
@@ -413,7 +458,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
                   </div>
                   <div className="interactive-panel rounded-[24px] border border-black/8 bg-white/92 px-5 py-5">
                     <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">
-                      Sales readiness
+                      {uiCopy.salesReadiness}
                     </div>
                     <p className="mt-3 text-sm leading-relaxed text-slate-700">
                       {home("advisorySection.cards.c2")}
@@ -421,7 +466,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
                   </div>
                   <div className="interactive-panel rounded-[24px] border border-black/8 bg-white/92 px-5 py-5">
                     <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">
-                      Deployment logic
+                      {uiCopy.deploymentLogic}
                     </div>
                     <p className="mt-3 text-sm leading-relaxed text-slate-700">
                       {home("advisorySection.cards.c3")}
@@ -458,7 +503,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
                         {step.step}
                       </div>
                       <div className="rounded-full border border-black/8 bg-white/84 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">
-                        Sequence
+                        {uiCopy.sequence}
                       </div>
                     </div>
                     <div className="mt-4 text-base font-semibold text-slate-900">{step.title}</div>
@@ -526,14 +571,14 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
                       {item.category}
                     </div>
                     <div className="rounded-full border border-black/8 bg-white/86 px-3 py-1 text-[11px] font-semibold text-slate-500">
-                      {item.date ?? "Brief"}
+                      {item.date ?? uiCopy.brief}
                     </div>
                   </div>
                   <div className="mt-4 text-base font-semibold text-slate-900">{item.title}</div>
                   <p className="mt-2 leading-relaxed">{item.body}</p>
                   <div className="mt-4 h-px w-full bg-[linear-gradient(90deg,rgba(15,23,42,0.08)_0%,rgba(15,23,42,0.02)_100%)]" />
                   <div className="mt-4 text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">
-                    Executive news signal
+                    {uiCopy.executiveNewsSignal}
                   </div>
                 </article>
               ))}

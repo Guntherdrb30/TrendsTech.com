@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState, useTransition } from 'react';
+import { useLocale } from 'next-intl';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -29,6 +30,8 @@ type KnowledgeManagerProps = {
 };
 
 export function KnowledgeManager({ agentInstanceId }: KnowledgeManagerProps) {
+  const locale = useLocale();
+  const isEs = locale.startsWith('es');
   const [sources, setSources] = useState<KnowledgeSource[]>([]);
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
@@ -39,6 +42,49 @@ export function KnowledgeManager({ agentInstanceId }: KnowledgeManagerProps) {
   const [pdfFile, setPdfFile] = useState<File | null>(null);
   const textareaClassName =
     'interactive-field min-h-[120px] w-full rounded-[22px] border border-slate-200 bg-white/96 p-4 text-sm text-slate-900 shadow-[0_14px_35px_-28px_rgba(15,23,42,0.35)] outline-none transition focus:border-slate-300 focus:ring-2 focus:ring-slate-200 dark:border-slate-700 dark:bg-slate-900';
+  const uiCopy = isEs
+    ? {
+        urlError: 'No se pudo ingerir la URL.',
+        textError: 'No se pudo ingerir el texto.',
+        pdfRequired: 'Selecciona un archivo PDF.',
+        pdfError: 'No se pudo ingerir el PDF.',
+        reindexError: 'No se pudo reindexar la fuente.',
+        eyebrow: 'Base de conocimiento',
+        title: 'Conocimiento',
+        url: 'URL',
+        optionalTitle: 'Titulo (opcional)',
+        ingestUrl: 'Ingestar URL',
+        freeText: 'Texto libre',
+        freeTextPlaceholder: 'Pega aqui SOPs o descripcion del negocio.',
+        ingestText: 'Ingestar texto',
+        pdf: 'PDF',
+        ingestPdf: 'Ingestar PDF',
+        sources: 'Fuentes',
+        empty: 'No hay fuentes todavia.',
+        logFallback: 'Log',
+        reindex: 'Reindexar'
+      }
+    : {
+        urlError: 'Failed to ingest URL.',
+        textError: 'Failed to ingest text.',
+        pdfRequired: 'Select a PDF file.',
+        pdfError: 'Failed to ingest PDF.',
+        reindexError: 'Failed to reindex source.',
+        eyebrow: 'Knowledge base',
+        title: 'Knowledge',
+        url: 'URL',
+        optionalTitle: 'Title (optional)',
+        ingestUrl: 'Ingest URL',
+        freeText: 'Free text',
+        freeTextPlaceholder: 'Paste SOPs or business description here.',
+        ingestText: 'Ingest text',
+        pdf: 'PDF',
+        ingestPdf: 'Ingest PDF',
+        sources: 'Sources',
+        empty: 'No sources yet.',
+        logFallback: 'Log',
+        reindex: 'Reindex'
+      };
 
   const loadSources = useCallback(async () => {
     const response = await fetch(`/api/knowledge-sources?agentInstanceId=${agentInstanceId}`);
@@ -82,7 +128,7 @@ export function KnowledgeManager({ agentInstanceId }: KnowledgeManagerProps) {
 
       if (!response.ok) {
         const payload = await response.json();
-        setError(payload?.error ?? 'Failed to ingest URL.');
+        setError(payload?.error ?? uiCopy.urlError);
         return;
       }
 
@@ -110,7 +156,7 @@ export function KnowledgeManager({ agentInstanceId }: KnowledgeManagerProps) {
 
       if (!response.ok) {
         const payload = await response.json();
-        setError(payload?.error ?? 'Failed to ingest text.');
+        setError(payload?.error ?? uiCopy.textError);
         return;
       }
 
@@ -125,7 +171,7 @@ export function KnowledgeManager({ agentInstanceId }: KnowledgeManagerProps) {
     setError(null);
 
     if (!pdfFile) {
-      setError('Select a PDF file.');
+      setError(uiCopy.pdfRequired);
       return;
     }
 
@@ -144,7 +190,7 @@ export function KnowledgeManager({ agentInstanceId }: KnowledgeManagerProps) {
 
       if (!response.ok) {
         const payload = await response.json();
-        setError(payload?.error ?? 'Failed to ingest PDF.');
+        setError(payload?.error ?? uiCopy.pdfError);
         return;
       }
 
@@ -162,7 +208,7 @@ export function KnowledgeManager({ agentInstanceId }: KnowledgeManagerProps) {
       });
       if (!response.ok) {
         const payload = await response.json();
-        setError(payload?.error ?? 'Failed to reindex source.');
+        setError(payload?.error ?? uiCopy.reindexError);
         return;
       }
       await loadSources();
@@ -172,13 +218,13 @@ export function KnowledgeManager({ agentInstanceId }: KnowledgeManagerProps) {
   return (
     <Card className="interactive-panel">
       <CardHeader className="space-y-2">
-        <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500">Knowledge base</p>
-        <CardTitle>Conocimiento</CardTitle>
+        <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500">{uiCopy.eyebrow}</p>
+        <CardTitle>{uiCopy.title}</CardTitle>
       </CardHeader>
       <CardContent className="space-y-6">
         <form onSubmit={handleUrlSubmit} className="interactive-panel space-y-3 rounded-[24px] border border-black/8 bg-white/88 p-4">
           <div className="space-y-2">
-            <Label htmlFor="kbUrl">URL</Label>
+            <Label htmlFor="kbUrl">{uiCopy.url}</Label>
             <Input
               id="kbUrl"
               value={urlValue}
@@ -188,7 +234,7 @@ export function KnowledgeManager({ agentInstanceId }: KnowledgeManagerProps) {
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="kbUrlTitle">Titulo (opcional)</Label>
+            <Label htmlFor="kbUrlTitle">{uiCopy.optionalTitle}</Label>
             <Input
               id="kbUrlTitle"
               value={titleValue}
@@ -197,30 +243,30 @@ export function KnowledgeManager({ agentInstanceId }: KnowledgeManagerProps) {
             />
           </div>
           <Button type="submit" disabled={isPending}>
-            Ingestar URL
+            {uiCopy.ingestUrl}
           </Button>
         </form>
 
         <form onSubmit={handleTextSubmit} className="interactive-panel space-y-3 rounded-[24px] border border-black/8 bg-white/88 p-4">
           <div className="space-y-2">
-            <Label htmlFor="kbText">Texto libre</Label>
+            <Label htmlFor="kbText">{uiCopy.freeText}</Label>
             <textarea
               id="kbText"
               className={textareaClassName}
               value={textValue}
               onChange={(event) => setTextValue(event.target.value)}
-              placeholder="Pegue aqui SOPs o descripcion del negocio."
+              placeholder={uiCopy.freeTextPlaceholder}
               required
             />
           </div>
           <Button type="submit" disabled={isPending}>
-            Ingestar texto
+            {uiCopy.ingestText}
           </Button>
         </form>
 
         <form onSubmit={handlePdfSubmit} className="interactive-panel space-y-3 rounded-[24px] border border-black/8 bg-white/88 p-4">
           <div className="space-y-2">
-            <Label htmlFor="kbPdf">PDF</Label>
+            <Label htmlFor="kbPdf">{uiCopy.pdf}</Label>
             <Input
               id="kbPdf"
               type="file"
@@ -230,7 +276,7 @@ export function KnowledgeManager({ agentInstanceId }: KnowledgeManagerProps) {
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="kbPdfTitle">Titulo (opcional)</Label>
+            <Label htmlFor="kbPdfTitle">{uiCopy.optionalTitle}</Label>
             <Input
               id="kbPdfTitle"
               value={pdfTitle}
@@ -239,7 +285,7 @@ export function KnowledgeManager({ agentInstanceId }: KnowledgeManagerProps) {
             />
           </div>
           <Button type="submit" disabled={isPending}>
-            Ingestar PDF
+            {uiCopy.ingestPdf}
           </Button>
         </form>
 
@@ -248,10 +294,10 @@ export function KnowledgeManager({ agentInstanceId }: KnowledgeManagerProps) {
         ) : null}
 
         <div className="space-y-2">
-          <h3 className="text-sm font-medium text-slate-700 dark:text-slate-200">Fuentes</h3>
+          <h3 className="text-sm font-medium text-slate-700 dark:text-slate-200">{uiCopy.sources}</h3>
           {sources.length === 0 ? (
             <div className="interactive-panel rounded-[24px] border border-dashed border-black/10 bg-slate-50/80 px-5 py-6 text-sm text-slate-500">
-              No hay fuentes todavia.
+              {uiCopy.empty}
             </div>
           ) : (
             <div className="space-y-2">
@@ -276,7 +322,7 @@ export function KnowledgeManager({ agentInstanceId }: KnowledgeManagerProps) {
                           return (
                             <div key={`${source.id}-log-${index}`} className="space-y-1">
                               <p>
-                                {new Date(log.createdAt).toLocaleTimeString()} - {log.message ?? log.status ?? 'Log'}
+                                {new Date(log.createdAt).toLocaleTimeString()} - {log.message ?? log.status ?? uiCopy.logFallback}
                               </p>
                               {isLatest && progress !== null ? (
                                 <div className="h-2 w-full rounded bg-slate-200 dark:bg-slate-800">
@@ -298,7 +344,7 @@ export function KnowledgeManager({ agentInstanceId }: KnowledgeManagerProps) {
                     disabled={isPending}
                     onClick={() => handleReindex(source.id)}
                   >
-                    Reindexar
+                    {uiCopy.reindex}
                   </Button>
                 </div>
               ))}

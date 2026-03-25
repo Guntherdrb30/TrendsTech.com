@@ -14,6 +14,7 @@ type PageParams = {
 
 export default async function AgentsPage({ params }: { params: Promise<PageParams> }) {
   const { locale } = await params;
+  const isEs = locale.startsWith('es');
   const user = await requireAuth();
   const tenant = await resolveTenantFromUser(user);
 
@@ -26,8 +27,8 @@ export default async function AgentsPage({ params }: { params: Promise<PageParam
       <section className="space-y-6">
         <div className="interactive-panel premium-noise overflow-hidden rounded-[34px] border border-black/8 bg-[linear-gradient(180deg,#ffffff_0%,#f8fafc_100%)] px-6 py-7 shadow-[0_35px_100px_-72px_rgba(15,23,42,0.35)] sm:px-8">
           <div className="space-y-2">
-            <h1 className="text-3xl font-semibold tracking-[-0.04em] text-slate-950 sm:text-4xl">Agentes</h1>
-            <p className="text-sm text-slate-500 dark:text-slate-400">No tenant assigned.</p>
+            <h1 className="text-3xl font-semibold tracking-[-0.04em] text-slate-950 sm:text-4xl">{isEs ? 'Agentes' : 'Agents'}</h1>
+            <p className="text-sm text-slate-500 dark:text-slate-400">{isEs ? 'No hay tenant asignado.' : 'No tenant assigned.'}</p>
           </div>
         </div>
       </section>
@@ -46,7 +47,7 @@ export default async function AgentsPage({ params }: { params: Promise<PageParam
         <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
           <div className="space-y-3">
             <div className="inline-flex rounded-full border border-black/8 bg-white/90 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-500">
-              Agent inventory
+              {isEs ? 'Inventario de agentes' : 'Agent inventory'}
             </div>
             <div className="space-y-2">
               <h1 className="text-3xl font-semibold tracking-[-0.04em] text-slate-950 sm:text-4xl">Agentes</h1>
@@ -74,7 +75,7 @@ export default async function AgentsPage({ params }: { params: Promise<PageParam
 
       <Card className="interactive-panel">
         <CardHeader className="space-y-2">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500">Workspace list</p>
+            <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500">{isEs ? 'Lista del workspace' : 'Workspace list'}</p>
           <CardTitle>Agentes configurados</CardTitle>
         </CardHeader>
         <CardContent>
@@ -105,7 +106,7 @@ export default async function AgentsPage({ params }: { params: Promise<PageParam
                         className="interactive-chip inline-flex rounded-full border border-black/8 bg-white/90 px-3 py-1.5 text-sm font-semibold text-slate-900 transition hover:bg-slate-900 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900/15 focus-visible:ring-offset-2"
                         href={`/${locale}/dashboard/agents/${agent.id}`}
                       >
-                        Ver detalle
+                        {isEs ? 'Ver detalle' : 'View detail'}
                       </Link>
                     </TableCell>
                   </TableRow>

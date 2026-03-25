@@ -132,6 +132,21 @@ export default async function AgentDetailPage({ params }: { params: Promise<Page
     luna_code_orchestrator: undefined
   };
   const workflowId = workflowMap[agent.key] ?? process.env.CHATKIT_WORKFLOW_ID ?? null;
+  const uiCopy = locale.startsWith('es')
+    ? {
+        capability: 'Capacidad',
+        expectedOutcomes: 'Resultados esperados',
+        liveDemo: 'Demo en vivo',
+        sessionAware: 'Sesion contextual',
+        enterpriseFlow: 'Flujo empresarial'
+      }
+    : {
+        capability: 'Capability',
+        expectedOutcomes: 'Expected outcomes',
+        liveDemo: 'Live demo',
+        sessionAware: 'Session aware',
+        enterpriseFlow: 'Enterprise flow'
+      };
 
   if (isLunaCodeOrchestrator(agent.key)) {
     const plans = ['basic', 'pro', 'enterprise'] as const;
@@ -220,7 +235,7 @@ export default async function AgentDetailPage({ params }: { params: Promise<Page
                   >
                     <div className="flex items-center justify-between gap-3">
                       <div className="text-base font-semibold text-slate-900">
-                        Capability {String(index + 1).padStart(2, '0')}
+                        {uiCopy.capability} {String(index + 1).padStart(2, '0')}
                       </div>
                       <span className={`h-2.5 w-2.5 rounded-full ${index % 2 === 0 ? 'bg-emerald-500' : 'bg-[#8b5e34]'}`} />
                     </div>
@@ -368,7 +383,7 @@ export default async function AgentDetailPage({ params }: { params: Promise<Page
           <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">{d('idealTitle')}</div>
           <p className="text-sm leading-relaxed text-slate-300">{a(`${agent.key}.ideal`)}</p>
           <div className="rounded-[22px] border border-white/10 bg-white/10 px-4 py-4">
-            <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">Expected outcomes</div>
+            <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">{uiCopy.expectedOutcomes}</div>
             <ul className="mt-3 grid gap-2 text-sm text-slate-200">
               {agent.outcomeKeys.map((outcomeKey) => (
                 <li key={outcomeKey}>{a(`${agent.key}.outcomes.${outcomeKey}`)}</li>
@@ -395,9 +410,9 @@ export default async function AgentDetailPage({ params }: { params: Promise<Page
               <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">{d('chatTitle')}</div>
               <p className="mt-4 text-sm text-slate-300">{d('chatSubtitle')}</p>
               <div className="mt-4 flex flex-wrap gap-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-300">
-                <span className="rounded-full border border-white/12 bg-white/10 px-3 py-1">Live demo</span>
-                <span className="rounded-full border border-white/12 bg-white/10 px-3 py-1">Session aware</span>
-                <span className="rounded-full border border-white/12 bg-white/10 px-3 py-1">Enterprise flow</span>
+                <span className="rounded-full border border-white/12 bg-white/10 px-3 py-1">{uiCopy.liveDemo}</span>
+                <span className="rounded-full border border-white/12 bg-white/10 px-3 py-1">{uiCopy.sessionAware}</span>
+                <span className="rounded-full border border-white/12 bg-white/10 px-3 py-1">{uiCopy.enterpriseFlow}</span>
               </div>
             </div>
           </section>

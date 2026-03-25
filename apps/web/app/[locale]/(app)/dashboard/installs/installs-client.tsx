@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState, useTransition } from 'react';
+import { useLocale } from 'next-intl';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 
@@ -33,6 +34,8 @@ function parseDomains(input: string) {
 }
 
 export function InstallsClient({ installs, agentInstances, widgetScriptUrl }: InstallsClientProps) {
+  const locale = useLocale();
+  const isEs = locale.startsWith('es');
   const [rows, setRows] = useState<InstallItem[]>(installs);
   const [agentInstanceId, setAgentInstanceId] = useState(agentInstances[0]?.id ?? '');
   const [domainsInput, setDomainsInput] = useState('');
@@ -67,7 +70,7 @@ export function InstallsClient({ installs, agentInstances, widgetScriptUrl }: In
     setError(null);
 
     if (!agentInstanceId) {
-      setError('Selecciona un agente.');
+      setError(isEs ? 'Selecciona un agente.' : 'Select an agent.');
       return;
     }
 
@@ -83,7 +86,7 @@ export function InstallsClient({ installs, agentInstances, widgetScriptUrl }: In
 
       if (!response.ok) {
         const payload = await response.json();
-        setError(payload?.error ?? 'No se pudo crear el install.');
+        setError(payload?.error ?? (isEs ? 'No se pudo crear la instalacion.' : 'Could not create install.'));
         return;
       }
 
@@ -107,7 +110,7 @@ export function InstallsClient({ installs, agentInstances, widgetScriptUrl }: In
 
       if (!response.ok) {
         const payload = await response.json();
-        setError(payload?.error ?? 'No se pudo actualizar dominios.');
+        setError(payload?.error ?? (isEs ? 'No se pudieron actualizar los dominios.' : 'Could not update domains.'));
         return;
       }
 
@@ -120,7 +123,7 @@ export function InstallsClient({ installs, agentInstances, widgetScriptUrl }: In
     try {
       await navigator.clipboard.writeText(value);
     } catch {
-      setError('No se pudo copiar el script.');
+      setError(isEs ? 'No se pudo copiar el script.' : 'Could not copy the script.');
     }
   };
 
@@ -128,7 +131,7 @@ export function InstallsClient({ installs, agentInstances, widgetScriptUrl }: In
     <div className="space-y-6">
       <form onSubmit={handleCreate} className="interactive-panel space-y-4 rounded-[28px] border border-black/8 bg-[linear-gradient(180deg,#ffffff_0%,#f8fafc_100%)] p-5 shadow-[0_24px_70px_-54px_rgba(15,23,42,0.24)]">
         <div className="space-y-2">
-          <Label htmlFor="agentInstanceId">Agente</Label>
+          <Label htmlFor="agentInstanceId">{isEs ? 'Agente' : 'Agent'}</Label>
           <select
             id="agentInstanceId"
             className={selectClassName}
@@ -143,12 +146,12 @@ export function InstallsClient({ installs, agentInstances, widgetScriptUrl }: In
                 </option>
               ))
             ) : (
-              <option value="">No hay agentes disponibles</option>
+              <option value="">{isEs ? 'No hay agentes disponibles' : 'No agents available'}</option>
             )}
           </select>
         </div>
         <div className="space-y-2">
-          <Label htmlFor="allowedDomains">Dominios permitidos</Label>
+          <Label htmlFor="allowedDomains">{isEs ? 'Dominios permitidos' : 'Allowed domains'}</Label>
           <textarea
             id="allowedDomains"
             className={textareaClassName}
@@ -158,7 +161,7 @@ export function InstallsClient({ installs, agentInstances, widgetScriptUrl }: In
           />
         </div>
         <Button type="submit" disabled={pending || !hasAgents}>
-          Crear install
+          {isEs ? 'Crear instalacion' : 'Create install'}
         </Button>
       </form>
 
@@ -171,7 +174,7 @@ export function InstallsClient({ installs, agentInstances, widgetScriptUrl }: In
       <div className="space-y-4">
         {rows.length === 0 ? (
           <div className="interactive-panel rounded-[24px] border border-dashed border-black/10 bg-slate-50/80 px-5 py-6 text-sm text-slate-500">
-            No hay installs todavia. Crea el primero para generar el script y dominios permitidos.
+            {isEs ? 'No hay instalaciones todavia. Crea la primera para generar el script y los dominios permitidos.' : 'No installs yet. Create the first one to generate the script and allowed domains.'}
           </div>
         ) : (
           rows.map((install) => {
@@ -194,7 +197,7 @@ export function InstallsClient({ installs, agentInstances, widgetScriptUrl }: In
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor={`domains-${install.id}`}>Dominios</Label>
+                  <Label htmlFor={`domains-${install.id}`}>{isEs ? 'Dominios' : 'Domains'}</Label>
                   <textarea
                     id={`domains-${install.id}`}
                     className={textareaClassName}
@@ -207,10 +210,10 @@ export function InstallsClient({ installs, agentInstances, widgetScriptUrl }: In
 
                 <div className="flex flex-wrap gap-2">
                   <Button type="button" variant="outline" disabled={pending} onClick={() => handleSaveDomains(install)}>
-                    Guardar dominios
+                    {isEs ? 'Guardar dominios' : 'Save domains'}
                   </Button>
                   <Button type="button" variant="outline" onClick={() => handleCopy(install.publicKey)}>
-                    Copiar script
+                    {isEs ? 'Copiar script' : 'Copy script'}
                   </Button>
                 </div>
 

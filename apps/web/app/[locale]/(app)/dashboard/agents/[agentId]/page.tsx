@@ -34,6 +34,63 @@ function getMetaNumber(meta: unknown, key: string) {
 
 export default async function AgentDetailPage({ params }: { params: Promise<PageParams> }) {
   const { locale, agentId } = await params;
+  const isEs = locale.startsWith('es');
+  const uiCopy = isEs
+    ? {
+        pageTitle: 'Detalle del agente',
+        noTenant: 'No hay tenant asignado.',
+        notFound: 'Instancia de agente no encontrada.',
+        backToDashboard: 'Volver al dashboard',
+        workspace: 'Espacio del agente',
+        contextTitle: 'Agente base y contexto',
+        baseAgent: 'Agente base asignado',
+        language: 'Idioma',
+        tenant: 'Tenant',
+        activePlan: 'Plan activo',
+        none: 'Ninguno',
+        endCustomer: 'Cliente final',
+        na: 'N/D',
+        activeTools: 'Herramientas activas',
+        noTools: 'No hay herramientas configuradas.',
+        realAi: 'Probar con IA real',
+        recentConversations: 'Ultimas conversaciones',
+        noConversations: 'No hay conversaciones todavia.',
+        timestamp: 'Fecha',
+        message: 'Mensaje',
+        reply: 'Respuesta',
+        toolCalls: 'Llamadas de herramientas',
+        channels: 'Canales',
+        configureChannels: 'Configurar canales (WhatsApp)',
+        agentAccess: 'Accesos del agente'
+      }
+    : {
+        pageTitle: 'Agent detail',
+        noTenant: 'No tenant assigned.',
+        notFound: 'Agent instance not found.',
+        backToDashboard: 'Back to dashboard',
+        workspace: 'Agent workspace',
+        contextTitle: 'Base agent and context',
+        baseAgent: 'Assigned base agent',
+        language: 'Language',
+        tenant: 'Tenant',
+        activePlan: 'Active plan',
+        none: 'None',
+        endCustomer: 'End customer',
+        na: 'N/A',
+        activeTools: 'Active tools',
+        noTools: 'No tools configured.',
+        realAi: 'Test with real AI',
+        recentConversations: 'Recent conversations',
+        noConversations: 'No conversations yet.',
+        timestamp: 'Timestamp',
+        message: 'Message',
+        reply: 'Reply',
+        toolCalls: 'Tool calls',
+        channels: 'Channels',
+        configureChannels: 'Configure channels (WhatsApp)',
+        agentAccess: 'Agent access'
+      };
+
   const user = await requireAuth();
   const tenant = await resolveTenantFromUser(user);
 
@@ -42,8 +99,8 @@ export default async function AgentDetailPage({ params }: { params: Promise<Page
       <section className="space-y-6">
         <div className="interactive-panel premium-noise overflow-hidden rounded-[34px] border border-black/8 bg-[linear-gradient(180deg,#ffffff_0%,#f8fafc_100%)] px-6 py-7 shadow-[0_35px_100px_-72px_rgba(15,23,42,0.35)] sm:px-8">
           <div className="space-y-2">
-            <h1 className="text-3xl font-semibold tracking-[-0.04em] text-slate-950 sm:text-4xl">Agent detail</h1>
-            <p className="text-sm text-slate-500 dark:text-slate-400">No tenant assigned.</p>
+            <h1 className="text-3xl font-semibold tracking-[-0.04em] text-slate-950 sm:text-4xl">{uiCopy.pageTitle}</h1>
+            <p className="text-sm text-slate-500 dark:text-slate-400">{uiCopy.noTenant}</p>
           </div>
         </div>
       </section>
@@ -60,15 +117,15 @@ export default async function AgentDetailPage({ params }: { params: Promise<Page
       <section className="space-y-6">
         <div className="interactive-panel premium-noise overflow-hidden rounded-[34px] border border-black/8 bg-[linear-gradient(180deg,#ffffff_0%,#f8fafc_100%)] px-6 py-7 shadow-[0_35px_100px_-72px_rgba(15,23,42,0.35)] sm:px-8">
           <div className="space-y-3">
-            <h1 className="text-3xl font-semibold tracking-[-0.04em] text-slate-950 sm:text-4xl">Agent detail</h1>
-            <p className="text-sm text-slate-500 dark:text-slate-400">Agent instance not found.</p>
+            <h1 className="text-3xl font-semibold tracking-[-0.04em] text-slate-950 sm:text-4xl">{uiCopy.pageTitle}</h1>
+            <p className="text-sm text-slate-500 dark:text-slate-400">{uiCopy.notFound}</p>
           </div>
         </div>
         <Link
           className="interactive-chip inline-flex rounded-full border border-black/8 bg-white/90 px-4 py-2 text-sm font-semibold text-slate-900 transition hover:bg-slate-900 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900/15 focus-visible:ring-offset-2"
           href={`/${locale}/dashboard`}
         >
-          Back to dashboard
+          {uiCopy.backToDashboard}
         </Link>
       </section>
     );
@@ -118,10 +175,10 @@ export default async function AgentDetailPage({ params }: { params: Promise<Page
         <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
           <div className="space-y-3">
             <div className="inline-flex rounded-full border border-black/8 bg-white/90 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-500">
-              Agent workspace
+              {uiCopy.workspace}
             </div>
             <div className="space-y-2">
-              <h1 className="text-3xl font-semibold tracking-[-0.04em] text-slate-950 sm:text-4xl">Agent detail</h1>
+              <h1 className="text-3xl font-semibold tracking-[-0.04em] text-slate-950 sm:text-4xl">{uiCopy.pageTitle}</h1>
               <p className="text-sm text-slate-500 dark:text-slate-400">
                 {agentInstance.name} | {agentInstance.baseAgentKey} | {agentInstance.status}
               </p>
@@ -131,34 +188,34 @@ export default async function AgentDetailPage({ params }: { params: Promise<Page
             className="interactive-chip inline-flex rounded-full border border-black/8 bg-white/90 px-4 py-2 text-sm font-semibold text-slate-900 transition hover:bg-slate-900 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900/15 focus-visible:ring-offset-2"
             href={`/${locale}/dashboard`}
           >
-            Back to dashboard
+            {uiCopy.backToDashboard}
           </Link>
         </div>
       </div>
 
       <Card className="interactive-panel">
         <CardHeader>
-          <CardTitle>Base agent y contexto</CardTitle>
+          <CardTitle>{uiCopy.contextTitle}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-2 text-sm text-slate-600 dark:text-slate-300">
           <p>
-            Base agent asignado: <span className="font-medium">{agentInstance.baseAgentKey}</span>
+            {uiCopy.baseAgent}: <span className="font-medium">{agentInstance.baseAgentKey}</span>
           </p>
-          <p>Idioma: {agentInstance.languageDefault}</p>
-          <p>Tenant: {tenant.name}</p>
-          <p>Plan activo: {subscription?.plan?.key ?? 'None'}</p>
-          <p>End customer: {agentInstance.endCustomer?.name ?? 'N/A'}</p>
+          <p>{uiCopy.language}: {agentInstance.languageDefault}</p>
+          <p>{uiCopy.tenant}: {tenant.name}</p>
+          <p>{uiCopy.activePlan}: {subscription?.plan?.key ?? uiCopy.none}</p>
+          <p>{uiCopy.endCustomer}: {agentInstance.endCustomer?.name ?? uiCopy.na}</p>
         </CardContent>
       </Card>
 
       <div className="grid gap-6 lg:grid-cols-2">
         <Card className="interactive-panel">
           <CardHeader>
-            <CardTitle>Tools activas</CardTitle>
+            <CardTitle>{uiCopy.activeTools}</CardTitle>
           </CardHeader>
           <CardContent>
             {activeTools.length === 0 ? (
-              <p className="text-sm text-slate-500 dark:text-slate-400">No tools configured.</p>
+              <p className="text-sm text-slate-500 dark:text-slate-400">{uiCopy.noTools}</p>
             ) : (
               <ul className="space-y-1 text-sm text-slate-600 dark:text-slate-300">
                 {activeTools.map((tool) => (
@@ -171,7 +228,7 @@ export default async function AgentDetailPage({ params }: { params: Promise<Page
 
         <Card className="interactive-panel">
           <CardHeader>
-            <CardTitle>Probar con IA real</CardTitle>
+            <CardTitle>{uiCopy.realAi}</CardTitle>
           </CardHeader>
           <CardContent>
             <AgentRunner agentInstanceId={agentInstance.id} />
@@ -181,19 +238,19 @@ export default async function AgentDetailPage({ params }: { params: Promise<Page
 
       <Card className="interactive-panel">
         <CardHeader>
-          <CardTitle>Ultimas conversaciones</CardTitle>
+          <CardTitle>{uiCopy.recentConversations}</CardTitle>
         </CardHeader>
         <CardContent>
           {conversations.length === 0 ? (
-            <p className="text-sm text-slate-500 dark:text-slate-400">No conversations yet.</p>
+            <p className="text-sm text-slate-500 dark:text-slate-400">{uiCopy.noConversations}</p>
           ) : (
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Timestamp</TableHead>
-                  <TableHead>Mensaje</TableHead>
-                  <TableHead>Respuesta</TableHead>
-                  <TableHead>Tool calls</TableHead>
+                  <TableHead>{uiCopy.timestamp}</TableHead>
+                  <TableHead>{uiCopy.message}</TableHead>
+                  <TableHead>{uiCopy.reply}</TableHead>
+                  <TableHead>{uiCopy.toolCalls}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -221,21 +278,21 @@ export default async function AgentDetailPage({ params }: { params: Promise<Page
 
       <Card className="interactive-panel">
         <CardHeader>
-          <CardTitle>Canales</CardTitle>
+          <CardTitle>{uiCopy.channels}</CardTitle>
         </CardHeader>
         <CardContent>
           <Link
             className="interactive-chip inline-flex rounded-full border border-black/8 bg-white/90 px-4 py-2 text-sm font-semibold text-slate-900 transition hover:bg-slate-900 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900/15 focus-visible:ring-offset-2"
             href={`/${locale}/dashboard/agents/${agentInstance.id}/channels`}
           >
-            Configurar canales (WhatsApp)
+            {uiCopy.configureChannels}
           </Link>
         </CardContent>
       </Card>
 
       <Card className="interactive-panel">
         <CardHeader>
-          <CardTitle>Agent Access</CardTitle>
+          <CardTitle>{uiCopy.agentAccess}</CardTitle>
         </CardHeader>
         <CardContent>
           <AgentAccessManager
@@ -252,7 +309,7 @@ export default async function AgentDetailPage({ params }: { params: Promise<Page
         className="interactive-chip inline-flex rounded-full border border-black/8 bg-white/90 px-4 py-2 text-sm font-semibold text-slate-900 transition hover:bg-slate-900 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900/15 focus-visible:ring-offset-2"
         href={`/${locale}/dashboard`}
       >
-        Back to dashboard
+        {uiCopy.backToDashboard}
       </Link>
     </section>
   );

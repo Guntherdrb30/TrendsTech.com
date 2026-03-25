@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useTransition } from 'react';
+import { useLocale } from 'next-intl';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -19,6 +20,8 @@ export function ProfileForm({
   initialPhone,
   initialAvatarUrl
 }: ProfileFormProps) {
+  const locale = useLocale();
+  const isEs = locale.startsWith('es');
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
   const [saved, setSaved] = useState(false);
@@ -47,7 +50,7 @@ export function ProfileForm({
 
       const payload = (await response.json().catch(() => ({}))) as { error?: string };
       if (!response.ok) {
-        setError(payload.error ?? 'Failed to update profile.');
+        setError(payload.error ?? (isEs ? 'No se pudo actualizar el perfil.' : 'Failed to update profile.'));
         return;
       }
 
@@ -58,13 +61,13 @@ export function ProfileForm({
   return (
     <Card className="interactive-panel premium-noise">
       <CardHeader className="space-y-2">
-        <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500">Identity</p>
-        <CardTitle>Profile</CardTitle>
+          <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500">{isEs ? 'Identidad' : 'Identity'}</p>
+        <CardTitle>{isEs ? 'Perfil' : 'Profile'}</CardTitle>
       </CardHeader>
       <CardContent>
         <form onSubmit={onSubmit} className="space-y-5">
           <div className="space-y-2">
-            <Label htmlFor="name">Name</Label>
+            <Label htmlFor="name">{isEs ? 'Nombre' : 'Name'}</Label>
             <Input
               id="name"
               value={name}
@@ -73,11 +76,11 @@ export function ProfileForm({
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
+            <Label htmlFor="email">{isEs ? 'Correo' : 'Email'}</Label>
             <Input id="email" value={email} readOnly />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="phone">Phone</Label>
+            <Label htmlFor="phone">{isEs ? 'Telefono' : 'Phone'}</Label>
             <Input
               id="phone"
               value={phone}
@@ -86,7 +89,7 @@ export function ProfileForm({
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="avatarUrl">Avatar URL</Label>
+            <Label htmlFor="avatarUrl">{isEs ? 'URL del avatar' : 'Avatar URL'}</Label>
             <Input
               id="avatarUrl"
               value={avatarUrl}
@@ -101,11 +104,11 @@ export function ProfileForm({
           ) : null}
           {saved ? (
             <div className="rounded-[18px] border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
-              Saved.
+              {isEs ? 'Guardado.' : 'Saved.'}
             </div>
           ) : null}
           <Button type="submit" disabled={isPending}>
-            {isPending ? 'Saving...' : 'Save profile'}
+            {isPending ? (isEs ? 'Guardando...' : 'Saving...') : (isEs ? 'Guardar perfil' : 'Save profile')}
           </Button>
         </form>
       </CardContent>

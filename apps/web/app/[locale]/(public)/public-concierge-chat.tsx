@@ -180,12 +180,44 @@ export function PublicConciergeChat({ copy }: { copy: ConciergeCopy }) {
     [copy.chatSuggestions]
   );
   const sideSignals = useMemo(
-    () => [
-      { label: "Mode", value: "Enterprise intake" },
-      { label: "Security", value: "Session isolated" },
-      { label: "Output", value: "Lead capture ready" }
-    ],
-    []
+    () =>
+      copy.locale.startsWith("es")
+        ? [
+            { label: "Modo", value: "Intake empresarial" },
+            { label: "Seguridad", value: "Sesion aislada" },
+            { label: "Salida", value: "Captura de leads lista" }
+          ]
+        : [
+            { label: "Mode", value: "Enterprise intake" },
+            { label: "Security", value: "Session isolated" },
+            { label: "Output", value: "Lead capture ready" }
+          ],
+    [copy.locale]
+  );
+  const uiCopy = useMemo(
+    () =>
+      copy.locale.startsWith("es")
+        ? {
+            consoleTitle: "Consola AI Concierge",
+            promptRail: "Rail de prompts",
+            notice: "Aviso",
+            sessionReady: "Sesion lista",
+            sessionLoading: "Sesion cargando",
+            assistantBusy: "Asistente ocupado",
+            awaitingPrompt: "Esperando prompt",
+            leadCapture: "Captura de leads"
+          }
+        : {
+            consoleTitle: "AI Concierge Console",
+            promptRail: "Prompt rail",
+            notice: "Notice",
+            sessionReady: "Session ready",
+            sessionLoading: "Session loading",
+            assistantBusy: "Assistant busy",
+            awaitingPrompt: "Awaiting prompt",
+            leadCapture: "Lead capture"
+          },
+    [copy.locale]
   );
 
   const sendLeadCapture = useCallback(
@@ -315,7 +347,7 @@ export function PublicConciergeChat({ copy }: { copy: ConciergeCopy }) {
               <div className="text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-500">
                 {copy.intakeBadge}
               </div>
-              <div className="mt-1 text-sm font-semibold text-slate-900">AI Concierge Console</div>
+              <div className="mt-1 text-sm font-semibold text-slate-900">{uiCopy.consoleTitle}</div>
             </div>
           </div>
           <button
@@ -354,7 +386,7 @@ export function PublicConciergeChat({ copy }: { copy: ConciergeCopy }) {
 
               <div className="rounded-[24px] border border-black/8 bg-slate-950 px-4 py-4 text-white shadow-[0_24px_60px_-42px_rgba(15,23,42,0.42)]">
                 <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
-                  Prompt rail
+                  {uiCopy.promptRail}
                 </div>
                 <div className="mt-3 flex flex-wrap gap-2">
                   {copy.chatSuggestions.map((item) => (
@@ -370,7 +402,7 @@ export function PublicConciergeChat({ copy }: { copy: ConciergeCopy }) {
 
               <div className="rounded-[22px] border border-black/8 bg-white/86 px-4 py-4">
                 <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">
-                  Notice
+                  {uiCopy.notice}
                 </div>
                 <p className="mt-3 text-sm leading-relaxed text-slate-600">{copy.intakeNote}</p>
               </div>
@@ -382,14 +414,14 @@ export function PublicConciergeChat({ copy }: { copy: ConciergeCopy }) {
               <div className="flex flex-wrap items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500">
                 <span>{copy.chatSuggestionsTitle}</span>
                 <span className="rounded-full border border-black/8 bg-white px-3 py-1 text-slate-700">
-                  Session {isReady ? "ready" : "loading"}
+                  {isReady ? uiCopy.sessionReady : uiCopy.sessionLoading}
                 </span>
                 <span className="rounded-full border border-black/8 bg-white px-3 py-1 text-slate-700">
-                  {isResponding ? "Assistant busy" : "Awaiting prompt"}
+                  {isResponding ? uiCopy.assistantBusy : uiCopy.awaitingPrompt}
                 </span>
               </div>
               <div className="rounded-full border border-black/8 bg-slate-950 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-white">
-                Lead capture
+                {uiCopy.leadCapture}
               </div>
             </div>
 

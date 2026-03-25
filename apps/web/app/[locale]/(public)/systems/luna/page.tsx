@@ -33,6 +33,17 @@ export default async function LunaPage({
   const base = `/${locale}`;
   const t = await getTranslations("lunaPage");
   const a = await getTranslations("agents");
+  const uiCopy = locale.startsWith("es")
+    ? {
+        platformState: "Estado de plataforma",
+        enterpriseCore: "Nucleo empresarial",
+        platformBody: "Visibilidad comercial, administrativa, logistica y ejecutiva alineada dentro de un mismo sistema."
+      }
+    : {
+        platformState: "Platform state",
+        enterpriseCore: "Enterprise core",
+        platformBody: "Commercial, administrative, logistics, and executive visibility aligned in one system."
+      };
 
   const valueProps = [
     t("valueProps.v1"),
@@ -190,13 +201,13 @@ export default async function LunaPage({
               </div>
               <div className="rounded-[28px] border border-black/8 bg-slate-950 px-5 py-5 shadow-[0_28px_70px_-48px_rgba(15,23,42,0.5)]">
                 <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
-                  Platform state
+                  {uiCopy.platformState}
                 </div>
                 <div className="mt-3 text-3xl font-[var(--font-display)] font-semibold tracking-[-0.05em] text-white">
-                  Enterprise core
+                  {uiCopy.enterpriseCore}
                 </div>
                 <p className="mt-3 text-sm leading-relaxed text-slate-300">
-                  Commercial, administrative, logistics, and executive visibility aligned in one system.
+                  {uiCopy.platformBody}
                 </p>
               </div>
             </div>

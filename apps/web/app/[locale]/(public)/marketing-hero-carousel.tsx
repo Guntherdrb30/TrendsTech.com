@@ -18,18 +18,45 @@ type HeroMetric = {
   label: string;
 };
 
+function getCarouselCopy(locale: string) {
+  return locale.startsWith("es")
+    ? {
+        surfaceBadge: "Superficie empresarial",
+        operationalFraming: "Marco operativo",
+        operationalBody:
+          "Arquitectura visual sobria, foco en claridad, profundidad controlada y superficies que transmiten una plataforma de nivel corporativo.",
+        activeFrame: "Marco activo",
+        connector: "de",
+        executivePreview: "Vista ejecutiva",
+        productNarrative: "Narrativa del producto"
+      }
+    : {
+        surfaceBadge: "Enterprise product surface",
+        operationalFraming: "Operational framing",
+        operationalBody:
+          "A restrained visual architecture with clear hierarchy, controlled depth, and surfaces that signal a true enterprise platform.",
+        activeFrame: "Active frame",
+        connector: "of",
+        executivePreview: "Executive preview",
+        productNarrative: "Product narrative"
+      };
+}
+
 export function MarketingHeroCarousel({
   items,
   metrics,
+  locale,
   secondaryHref,
   secondaryCta
 }: {
   items: HeroCarouselItem[];
   metrics: HeroMetric[];
+  locale: string;
   secondaryHref: string;
   secondaryCta: string;
 }) {
   const [activeIndex, setActiveIndex] = useState(0);
+  const copy = getCarouselCopy(locale);
 
   useEffect(() => {
     if (items.length <= 1) {
@@ -74,7 +101,7 @@ export function MarketingHeroCarousel({
                 {activeItem.eyebrow}
               </div>
               <div className="inline-flex rounded-full border border-black/8 bg-white/72 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-500">
-                Enterprise product surface
+                {copy.surfaceBadge}
               </div>
             </div>
 
@@ -122,18 +149,18 @@ export function MarketingHeroCarousel({
           <div className="grid gap-3 sm:grid-cols-[1.15fr_0.85fr]">
             <div className="rounded-[28px] border border-black/8 bg-white/84 px-5 py-4 shadow-[0_24px_60px_-46px_rgba(15,23,42,0.3)]">
               <div className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500">
-                Operational framing
+                {copy.operationalFraming}
               </div>
               <p className="mt-3 max-w-2xl text-sm leading-relaxed text-slate-600">
-                Arquitectura visual sobria, foco en claridad, profundidad controlada y superficies que transmiten una plataforma de nivel corporativo.
+                {copy.operationalBody}
               </p>
             </div>
             <div className="rounded-[28px] border border-black/8 bg-slate-950 px-5 py-4 shadow-[0_28px_70px_-46px_rgba(15,23,42,0.52)]">
               <div className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-400">
-                Active frame
+                {copy.activeFrame}
               </div>
               <div className="mt-3 text-lg font-semibold tracking-[-0.03em] text-white">
-                {`0${activeIndex + 1} of 0${items.length}`}
+                {`0${activeIndex + 1} ${copy.connector} 0${items.length}`}
               </div>
             </div>
           </div>
@@ -147,7 +174,7 @@ export function MarketingHeroCarousel({
               <div className="flex items-center justify-between gap-3 border-b border-black/6 pb-4">
                 <div className="space-y-1">
                   <div className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500">
-                    Executive preview
+                    {copy.executivePreview}
                   </div>
                   <div className="text-sm font-semibold text-slate-900">{activeItem.eyebrow}</div>
                 </div>
@@ -177,7 +204,7 @@ export function MarketingHeroCarousel({
               <div className="mt-4 grid gap-4 lg:grid-cols-[1fr_auto]">
                 <div className="rounded-[28px] border border-black/8 bg-white/76 px-5 py-5 shadow-[0_24px_60px_-45px_rgba(15,23,42,0.24)]">
                   <div className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500">
-                    Product narrative
+                    {copy.productNarrative}
                   </div>
                   <div className="mt-3 text-xl font-[var(--font-display)] font-semibold tracking-[-0.03em] text-slate-950">
                     {activeItem.title}

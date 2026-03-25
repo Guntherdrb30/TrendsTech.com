@@ -27,6 +27,8 @@ const PHONE_ALLOWED = /^[0-9+()\-\s]+$/;
 
 type RegisterCopy = {
   title: string;
+  helperTitle: string;
+  helperBody: string;
   labels: {
     name: string;
     company: string;
@@ -75,6 +77,8 @@ function getRegisterCopy(locale: string): RegisterCopy {
         submit: 'Crear cuenta',
         submitting: 'Creando cuenta...'
       },
+      helperTitle: 'Alta de cuenta',
+      helperBody: 'Registro inicial para entorno operativo, demos y administracion de agentes.',
       hints: {
         phoneExample: 'Ejemplo: +58 412 123 4567',
         phonePlaceholder: '+58 412 123 4567'
@@ -111,6 +115,8 @@ function getRegisterCopy(locale: string): RegisterCopy {
       submit: 'Create account',
       submitting: 'Creating account...'
     },
+    helperTitle: 'Account setup',
+    helperBody: 'Initial setup for the operating workspace, demos, and agent administration.',
     hints: {
       phoneExample: 'Example: +58 412 123 4567',
       phonePlaceholder: '+58 412 123 4567'
@@ -283,11 +289,11 @@ export function RegisterForm({ locale, redirectTo }: RegisterFormProps) {
     <Card className="interactive-panel premium-noise w-full max-w-[540px] overflow-hidden">
       <CardHeader className="space-y-3">
         <div className="inline-flex w-fit rounded-full border border-black/8 bg-white/88 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">
-          Account setup
+          {copy.helperTitle}
         </div>
         <CardTitle className="text-2xl tracking-[-0.03em]">{copy.title}</CardTitle>
         <p className="text-sm leading-relaxed text-slate-500">
-          Alta inicial para entorno operativo, demos y administracion de agentes.
+          {copy.helperBody}
         </p>
       </CardHeader>
       <CardContent>

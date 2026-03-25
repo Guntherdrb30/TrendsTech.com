@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useMemo, useState, useTransition } from "react";
+import { useLocale } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -43,6 +44,8 @@ type AgentAccessManagerProps = {
 };
 
 export function AgentAccessManager({ agentInstanceId, agentName, agentAccesses }: AgentAccessManagerProps) {
+  const locale = useLocale();
+  const isEs = locale.startsWith("es");
   const [rows, setRows] = useState<AccessRow[]>(() => agentAccesses.map(mapAccessToRow));
   const [nameInput, setNameInput] = useState("");
   const [domainsInput, setDomainsInput] = useState("");
@@ -52,19 +55,65 @@ export function AgentAccessManager({ agentInstanceId, agentName, agentAccesses }
   const textareaClassName =
     "interactive-field min-h-[96px] w-full rounded-[22px] border border-slate-200 bg-white/96 p-4 text-sm text-slate-900 shadow-[0_14px_35px_-28px_rgba(15,23,42,0.35)] outline-none transition focus:border-slate-300 focus:ring-2 focus:ring-slate-200";
 
+  const uiCopy = isEs
+    ? {
+        summaryEmpty: "No hay accesos configurados.",
+        summaryTotal: "Total accesos: {count}",
+        nameRequired: "Escribe un nombre para el acceso.",
+        maxTokensPositive: "Max tokens debe ser un numero positivo.",
+        createError: "No se pudo crear el acceso.",
+        nameEmpty: "El nombre no puede quedar vacio.",
+        maxTokensValid: "Max tokens debe ser un numero valido.",
+        updateError: "No se pudo actualizar el acceso.",
+        title: "Accesos para {agentName}",
+        name: "Nombre",
+        descriptiveName: "Nombre descriptivo",
+        maxTokens: "Max tokens/mes",
+        optional: "Opcional",
+        allowedDomains: "Dominios permitidos",
+        createAccess: "Crear acceso",
+        emptyState: "No hay accesos configurados. Crea el primero para controlar dominios, estado y consumo.",
+        accessId: "ID de acceso",
+        active: "Activo",
+        domains: "Dominios",
+        save: "Guardar"
+      }
+    : {
+        summaryEmpty: "No access rules configured.",
+        summaryTotal: "Total accesses: {count}",
+        nameRequired: "Enter a name for the access rule.",
+        maxTokensPositive: "Max tokens must be a positive number.",
+        createError: "Unable to create the access rule.",
+        nameEmpty: "Name cannot be empty.",
+        maxTokensValid: "Max tokens must be a valid number.",
+        updateError: "Unable to update the access rule.",
+        title: "Access rules for {agentName}",
+        name: "Name",
+        descriptiveName: "Descriptive name",
+        maxTokens: "Max tokens/month",
+        optional: "Optional",
+        allowedDomains: "Allowed domains",
+        createAccess: "Create access",
+        emptyState: "No access rules configured. Create the first one to control domains, status, and consumption.",
+        accessId: "accessId",
+        active: "Active",
+        domains: "Domains",
+        save: "Save"
+      };
+
   const summary = useMemo(() => {
     if (rows.length === 0) {
-      return "No hay accesos configurados.";
+      return uiCopy.summaryEmpty;
     }
-    return `Total accesos: ${rows.length}`;
-  }, [rows.length]);
+    return uiCopy.summaryTotal.replace("{count}", String(rows.length));
+  }, [rows.length, uiCopy.summaryEmpty, uiCopy.summaryTotal]);
 
   const handleCreate = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setError(null);
     const trimmedName = nameInput.trim();
     if (!trimmedName) {
-      setError("Escribe un nombre para el acceso.");
+      setError(uiCopy.nameRequired);
       return;
     }
     const allowedDomains = parseDomains(domainsInput);
@@ -77,7 +126,7 @@ export function AgentAccessManager({ agentInstanceId, agentName, agentAccesses }
     if (maxTokensInput.trim()) {
       const maxTokens = Number(maxTokensInput);
       if (!Number.isFinite(maxTokens) || maxTokens < 0) {
-        setError("Max tokens debe ser un número positivo.");
+        setError(uiCopy.maxTokensPositive);
         return;
       }
       payload.maxTokensPerMonth = Math.floor(maxTokens);
@@ -91,7 +140,7 @@ export function AgentAccessManager({ agentInstanceId, agentName, agentAccesses }
       });
       if (!response.ok) {
         const body = await response.json().catch(() => null);
-        setError(body?.error ?? "No se pudo crear el acceso.");
+        setError(body?.error ?? uiCopy.createError);
         return;
       }
       const body = await response.json();
@@ -106,7 +155,7 @@ export function AgentAccessManager({ agentInstanceId, agentName, agentAccesses }
     setError(null);
     const trimmedName = row.name.trim();
     if (!trimmedName) {
-      setError("El nombre no puede quedar vacío.");
+      setError(uiCopy.nameEmpty);
       return;
     }
     const allowedDomains = parseDomains(row.allowedDomainsText);
@@ -118,7 +167,7 @@ export function AgentAccessManager({ agentInstanceId, agentName, agentAccesses }
     if (row.maxTokensInput.trim()) {
       const maxTokens = Number(row.maxTokensInput);
       if (!Number.isFinite(maxTokens) || maxTokens < 0) {
-        setError("Max tokens debe ser un número válido.");
+        setError(uiCopy.maxTokensValid);
         return;
       }
       payload.maxTokensPerMonth = Math.floor(maxTokens);
@@ -127,14 +176,14 @@ export function AgentAccessManager({ agentInstanceId, agentName, agentAccesses }
     }
 
     startTransition(async () => {
-      const response = await fetch("/api/agent-access", {
+      const response = await fetch(`/api/agent-access/${row.id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload)
       });
       if (!response.ok) {
         const body = await response.json().catch(() => null);
-        setError(body?.error ?? "No se pudo actualizar el acceso.");
+        setError(body?.error ?? uiCopy.updateError);
         return;
       }
       const body = await response.json();
@@ -149,7 +198,7 @@ export function AgentAccessManager({ agentInstanceId, agentName, agentAccesses }
   return (
     <div className="space-y-6">
       <div className="space-y-2">
-        <h2 className="text-xl font-semibold">Accesos para {agentName}</h2>
+        <h2 className="text-xl font-semibold">{uiCopy.title.replace("{agentName}", agentName)}</h2>
         <p className="text-sm text-slate-500 dark:text-slate-400">{summary}</p>
       </div>
       <form
@@ -158,28 +207,28 @@ export function AgentAccessManager({ agentInstanceId, agentName, agentAccesses }
       >
         <div className="grid gap-4 md:grid-cols-2">
           <div className="space-y-2">
-            <Label htmlFor="access-name">Nombre</Label>
+            <Label htmlFor="access-name">{uiCopy.name}</Label>
             <Input
               id="access-name"
               value={nameInput}
               onChange={(event) => setNameInput(event.target.value)}
-              placeholder="Nombre descriptivo"
+              placeholder={uiCopy.descriptiveName}
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="access-max-tokens">Max tokens/mes</Label>
+            <Label htmlFor="access-max-tokens">{uiCopy.maxTokens}</Label>
             <Input
               id="access-max-tokens"
               type="number"
               min={0}
               value={maxTokensInput}
               onChange={(event) => setMaxTokensInput(event.target.value)}
-              placeholder="Opcional"
+              placeholder={uiCopy.optional}
             />
           </div>
         </div>
         <div className="space-y-2">
-          <Label htmlFor="access-domains">Dominios permitidos</Label>
+          <Label htmlFor="access-domains">{uiCopy.allowedDomains}</Label>
           <textarea
             id="access-domains"
             className={textareaClassName}
@@ -189,7 +238,7 @@ export function AgentAccessManager({ agentInstanceId, agentName, agentAccesses }
           />
         </div>
         <Button type="submit" disabled={isPending}>
-          Crear acceso
+          {uiCopy.createAccess}
         </Button>
         {error ? (
           <div className="rounded-[18px] border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
@@ -199,7 +248,7 @@ export function AgentAccessManager({ agentInstanceId, agentName, agentAccesses }
       </form>
       {rows.length === 0 ? (
         <div className="interactive-panel rounded-[24px] border border-dashed border-black/10 bg-slate-50/80 px-5 py-6 text-sm text-slate-500">
-          No hay accesos configurados. Crea el primero para controlar dominios, estado y consumo.
+          {uiCopy.emptyState}
         </div>
       ) : null}
       {rows.map((row) => {
@@ -211,7 +260,7 @@ export function AgentAccessManager({ agentInstanceId, agentName, agentAccesses }
           >
             <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-slate-500 dark:text-slate-400">
               <span>
-                accessId: <span className="font-mono">{row.id}</span>
+                {uiCopy.accessId}: <span className="font-mono">{row.id}</span>
               </span>
               <Label className="flex items-center gap-2 text-sm" htmlFor={`${baseId}-active`}>
                 <input
@@ -221,12 +270,12 @@ export function AgentAccessManager({ agentInstanceId, agentName, agentAccesses }
                   onChange={(event) => updateField(row.id, "isActive", event.target.checked)}
                   className="h-4 w-4 rounded border-slate-300 text-slate-900 focus:ring-slate-300"
                 />
-                Activo
+                {uiCopy.active}
               </Label>
             </div>
             <div className="grid gap-3 md:grid-cols-2">
               <div className="space-y-2">
-                <Label htmlFor={`${baseId}-name`}>Nombre</Label>
+                <Label htmlFor={`${baseId}-name`}>{uiCopy.name}</Label>
                 <Input
                   id={`${baseId}-name`}
                   value={row.name}
@@ -234,7 +283,7 @@ export function AgentAccessManager({ agentInstanceId, agentName, agentAccesses }
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor={`${baseId}-tokens`}>Max tokens/mes</Label>
+                <Label htmlFor={`${baseId}-tokens`}>{uiCopy.maxTokens}</Label>
                 <Input
                   id={`${baseId}-tokens`}
                   type="number"
@@ -245,7 +294,7 @@ export function AgentAccessManager({ agentInstanceId, agentName, agentAccesses }
               </div>
             </div>
             <div className="space-y-2">
-              <Label htmlFor={`${baseId}-domains`}>Dominios</Label>
+              <Label htmlFor={`${baseId}-domains`}>{uiCopy.domains}</Label>
               <textarea
                 id={`${baseId}-domains`}
                 className={textareaClassName}
@@ -255,7 +304,7 @@ export function AgentAccessManager({ agentInstanceId, agentName, agentAccesses }
             </div>
             <div className="flex justify-end">
               <Button type="button" variant="outline" disabled={isPending} onClick={() => handleSave(row)}>
-                Guardar
+                {uiCopy.save}
               </Button>
             </div>
           </div>

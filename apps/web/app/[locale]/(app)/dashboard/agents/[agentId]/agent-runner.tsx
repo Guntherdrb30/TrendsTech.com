@@ -1,6 +1,7 @@
 'use client';
 
 import { useMemo, useState, useTransition } from 'react';
+import { useLocale } from 'next-intl';
 import { Button } from '@/components/ui/button';
 
 type AgentRunnerProps = {
@@ -15,11 +16,30 @@ function createSessionId() {
 }
 
 export function AgentRunner({ agentInstanceId }: AgentRunnerProps) {
+  const locale = useLocale();
+  const isEs = locale.startsWith('es');
   const sessionId = useMemo(createSessionId, []);
   const [message, setMessage] = useState('');
   const [reply, setReply] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
+  const uiCopy = isEs
+    ? {
+        noResponse: 'No hubo respuesta del orquestador.',
+        title: 'Probar con IA real',
+        placeholder: 'Escribe un mensaje de prueba...',
+        response: 'Respuesta',
+        sending: 'Enviando...',
+        send: 'Enviar'
+      }
+    : {
+        noResponse: 'No response from the orchestrator.',
+        title: 'Test with real AI',
+        placeholder: 'Write a test message...',
+        response: 'Reply',
+        sending: 'Sending...',
+        send: 'Send'
+      };
 
   const submitMessage = (event: React.FormEvent) => {
     event.preventDefault();
@@ -40,7 +60,7 @@ export function AgentRunner({ agentInstanceId }: AgentRunnerProps) {
 
       const data = await response.json();
       if (!response.ok) {
-        setError(data?.error ?? 'No response from orchestrator.');
+        setError(data?.error ?? uiCopy.noResponse);
         return;
       }
 
@@ -56,14 +76,14 @@ export function AgentRunner({ agentInstanceId }: AgentRunnerProps) {
     >
       <div className="space-y-2">
         <label className="text-sm font-medium text-slate-700 dark:text-slate-200" htmlFor="agentMessage">
-          Probar con IA real
+          {uiCopy.title}
         </label>
         <textarea
           id="agentMessage"
           className="interactive-field min-h-[120px] w-full rounded-[22px] border border-slate-200 bg-white/96 p-4 text-sm text-slate-900 shadow-[0_14px_35px_-28px_rgba(15,23,42,0.35)] outline-none transition focus:border-slate-300 focus:ring-2 focus:ring-slate-200 dark:border-slate-700 dark:bg-slate-900"
           value={message}
           onChange={(event) => setMessage(event.target.value)}
-          placeholder="Escribe un mensaje de prueba..."
+          placeholder={uiCopy.placeholder}
           required
         />
       </div>
@@ -72,12 +92,12 @@ export function AgentRunner({ agentInstanceId }: AgentRunnerProps) {
       ) : null}
       {reply ? (
         <div className="interactive-panel rounded-[22px] border border-slate-200 bg-slate-50 p-4 text-sm dark:border-slate-700 dark:bg-slate-950">
-          <p className="text-xs font-semibold uppercase text-slate-500 dark:text-slate-400">Respuesta</p>
+          <p className="text-xs font-semibold uppercase text-slate-500 dark:text-slate-400">{uiCopy.response}</p>
           <p className="mt-2 whitespace-pre-wrap">{reply}</p>
         </div>
       ) : null}
       <Button type="submit" disabled={isPending || message.trim().length === 0}>
-        {isPending ? 'Enviando...' : 'Enviar'}
+        {isPending ? uiCopy.sending : uiCopy.send}
       </Button>
     </form>
   );

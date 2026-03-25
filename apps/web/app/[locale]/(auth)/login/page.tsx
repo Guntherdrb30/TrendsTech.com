@@ -7,14 +7,24 @@ function getLoginPageCopy(locale: string) {
       title: 'Iniciar sesion',
       subtitle: 'Solo credenciales (dev).',
       linkLabel: 'Crear cuenta',
-      forgotLabel: 'Olvidaste tu contrasena?'
+      forgotLabel: 'Olvidaste tu contrasena?',
+      eyebrow: 'Acceso empresarial',
+      workspaceTitle: 'Acceso operativo',
+      workspaceBody: 'Entra a tus agentes, dashboard y control operativo con una superficie limpia y enfocada.',
+      securityTitle: 'Sesion verificada',
+      securityBody: 'Autenticacion alineada con el entorno administrativo y el acceso a demos privadas.'
     };
   }
   return {
     title: 'Login',
     subtitle: 'Credentials only (dev).',
     linkLabel: 'Create an account',
-    forgotLabel: 'Forgot your password?'
+    forgotLabel: 'Forgot your password?',
+    eyebrow: 'Enterprise access',
+    workspaceTitle: 'Operational access',
+    workspaceBody: 'Enter your agents, dashboard, and operating controls through a clean focused surface.',
+    securityTitle: 'Verified session',
+    securityBody: 'Authentication aligned with the admin environment and private demo access.'
   };
 }
 
@@ -37,7 +47,7 @@ export default async function LoginPage({
         <div className="relative space-y-8">
           <div className="space-y-4">
             <div className="inline-flex rounded-full border border-black/8 bg-white/88 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-500 shadow-[0_18px_40px_-34px_rgba(15,23,42,0.2)]">
-              Enterprise access
+              {copy.eyebrow}
             </div>
             <div className="space-y-3">
               <h1 className="text-3xl font-semibold tracking-[-0.04em] text-slate-950 sm:text-4xl lg:text-5xl">
@@ -50,16 +60,16 @@ export default async function LoginPage({
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="interactive-panel rounded-[24px] border border-black/8 bg-white/88 px-5 py-5 shadow-[0_22px_55px_-44px_rgba(15,23,42,0.24)]">
               <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">Workspace</div>
-              <div className="mt-3 text-lg font-semibold tracking-[-0.03em] text-slate-950">Operational access</div>
+              <div className="mt-3 text-lg font-semibold tracking-[-0.03em] text-slate-950">{copy.workspaceTitle}</div>
               <p className="mt-2 text-sm leading-relaxed text-slate-600">
-                Entra a tus agentes, dashboard y control operativo con una superficie limpia y enfocada.
+                {copy.workspaceBody}
               </p>
             </div>
             <div className="interactive-panel rounded-[24px] border border-black/8 bg-slate-950 px-5 py-5 shadow-[0_24px_60px_-44px_rgba(15,23,42,0.45)]">
-              <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">Security state</div>
-              <div className="mt-3 text-lg font-semibold tracking-[-0.03em] text-white">Verified session</div>
+              <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">{copy.eyebrow}</div>
+              <div className="mt-3 text-lg font-semibold tracking-[-0.03em] text-white">{copy.securityTitle}</div>
               <p className="mt-2 text-sm leading-relaxed text-slate-300">
-                Autenticacion alineada con el entorno administrativo y el acceso a demos privadas.
+                {copy.securityBody}
               </p>
             </div>
           </div>

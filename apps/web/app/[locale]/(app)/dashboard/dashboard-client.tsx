@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
+import { useLocale } from 'next-intl';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -19,6 +20,8 @@ interface DashboardClientProps {
 }
 
 export function DashboardClient({ tenantMode, endCustomers, profilePhone }: DashboardClientProps) {
+  const locale = useLocale();
+  const isEs = locale.startsWith('es');
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [endCustomerError, setEndCustomerError] = useState<string | null>(null);
@@ -55,7 +58,7 @@ export function DashboardClient({ tenantMode, endCustomers, profilePhone }: Dash
 
       if (!response.ok) {
         const result = await response.json();
-        setEndCustomerError(result?.error ?? 'Failed to create end customer.');
+        setEndCustomerError(result?.error ?? (isEs ? 'No se pudo crear el cliente final.' : 'Failed to create end customer.'));
         return;
       }
 
@@ -87,7 +90,7 @@ export function DashboardClient({ tenantMode, endCustomers, profilePhone }: Dash
 
       if (!response.ok) {
         const result = await response.json();
-        setAgentError(result?.error ?? 'Failed to create agent instance.');
+        setAgentError(result?.error ?? (isEs ? 'No se pudo crear la instancia del agente.' : 'Failed to create agent instance.'));
         return;
       }
 
@@ -105,9 +108,9 @@ export function DashboardClient({ tenantMode, endCustomers, profilePhone }: Dash
         <Card className="interactive-panel premium-noise">
           <CardHeader className="space-y-2">
             <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500">
-              Reseller workspace
+              {isEs ? 'Workspace reseller' : 'Reseller workspace'}
             </p>
-            <CardTitle className="text-2xl">Create End Customer</CardTitle>
+            <CardTitle className="text-2xl">{isEs ? 'Crear cliente final' : 'Create end customer'}</CardTitle>
             <p className="text-sm text-slate-500">
               Registra nuevos clientes finales con una captura limpia y lista para operacion.
             </p>
@@ -115,7 +118,7 @@ export function DashboardClient({ tenantMode, endCustomers, profilePhone }: Dash
           <CardContent>
             <form onSubmit={submitEndCustomer} className="space-y-5">
               <div className="space-y-2">
-                <Label htmlFor="endCustomerName">Name</Label>
+                <Label htmlFor="endCustomerName">{isEs ? 'Nombre' : 'Name'}</Label>
                 <Input
                   id="endCustomerName"
                   value={endCustomerName}
@@ -124,7 +127,7 @@ export function DashboardClient({ tenantMode, endCustomers, profilePhone }: Dash
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="endCustomerEmail">Email</Label>
+                <Label htmlFor="endCustomerEmail">{isEs ? 'Correo' : 'Email'}</Label>
                 <Input
                   id="endCustomerEmail"
                   type="email"
@@ -133,7 +136,7 @@ export function DashboardClient({ tenantMode, endCustomers, profilePhone }: Dash
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="endCustomerPhone">Phone</Label>
+                <Label htmlFor="endCustomerPhone">{isEs ? 'Telefono' : 'Phone'}</Label>
                 <Input
                   id="endCustomerPhone"
                   value={endCustomerPhone}
@@ -142,7 +145,7 @@ export function DashboardClient({ tenantMode, endCustomers, profilePhone }: Dash
               </div>
               {endCustomerError ? <p className="text-sm text-red-500">{endCustomerError}</p> : null}
               <Button type="submit" disabled={isPending} className="w-full sm:w-auto">
-                Create end customer
+                {isEs ? 'Crear cliente final' : 'Create end customer'}
               </Button>
             </form>
           </CardContent>
@@ -152,7 +155,7 @@ export function DashboardClient({ tenantMode, endCustomers, profilePhone }: Dash
       <Card className="interactive-panel premium-noise">
         <CardHeader className="space-y-2">
           <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500">
-            Agent studio
+            {isEs ? 'Estudio de agentes' : 'Agent studio'}
           </p>
           <CardTitle className="text-2xl">Configurar agente</CardTitle>
           <p className="text-sm text-slate-500">
@@ -210,9 +213,9 @@ export function DashboardClient({ tenantMode, endCustomers, profilePhone }: Dash
                   value={status}
                   onChange={(event) => setStatus(event.target.value as 'DRAFT' | 'ACTIVE' | 'PAUSED')}
                 >
-                  <option value="DRAFT">Draft</option>
-                  <option value="ACTIVE">Active</option>
-                  <option value="PAUSED">Paused</option>
+                  <option value="DRAFT">{isEs ? 'Borrador' : 'Draft'}</option>
+                  <option value="ACTIVE">{isEs ? 'Activo' : 'Active'}</option>
+                  <option value="PAUSED">{isEs ? 'Pausado' : 'Paused'}</option>
                 </select>
               </div>
             </div>
@@ -225,7 +228,7 @@ export function DashboardClient({ tenantMode, endCustomers, profilePhone }: Dash
                   value={endCustomerId}
                   onChange={(event) => setEndCustomerId(event.target.value)}
                 >
-                  <option value="">Sin cliente final</option>
+                  <option value="">{isEs ? 'Sin cliente final' : 'No end customer'}</option>
                   {endCustomers.map((customer) => (
                     <option key={customer.id} value={customer.id}>
                       {customer.name}
@@ -243,7 +246,7 @@ export function DashboardClient({ tenantMode, endCustomers, profilePhone }: Dash
                     onChange={(event) => setUseProfilePhone(event.target.checked)}
                     className="h-4 w-4 rounded border-slate-300 text-slate-900 focus:ring-slate-300"
                   />
-                  Usar telefono del perfil ({profilePhone})
+                  {isEs ? 'Usar telefono del perfil' : 'Use profile phone'} ({profilePhone})
                 </label>
               </div>
             ) : null}
@@ -254,13 +257,13 @@ export function DashboardClient({ tenantMode, endCustomers, profilePhone }: Dash
                   id="agentPhone"
                   value={agentPhone}
                   onChange={(event) => setAgentPhone(event.target.value)}
-                  placeholder="Opcional"
+                  placeholder={isEs ? 'Opcional' : 'Optional'}
                 />
               </div>
             ) : null}
             {agentError ? <p className="text-sm text-red-500">{agentError}</p> : null}
             <Button type="submit" disabled={isPending} className="w-full sm:w-auto">
-              Guardar configuracion
+              {isEs ? 'Guardar configuracion' : 'Save configuration'}
             </Button>
           </form>
         </CardContent>

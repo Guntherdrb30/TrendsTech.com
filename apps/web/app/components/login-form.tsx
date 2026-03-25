@@ -15,6 +15,8 @@ interface LoginFormProps {
 
 type LoginCopy = {
   title: string;
+  helperTitle: string;
+  helperBody: string;
   labels: {
     email: string;
     password: string;
@@ -46,6 +48,8 @@ function getLoginCopy(locale: string): LoginCopy {
         submit: 'Iniciar sesion',
         submitting: 'Ingresando...'
       },
+      helperTitle: 'Acceso seguro',
+      helperBody: 'Credenciales y acceso directo al entorno administrativo.',
       errors: {
         emailRequired: 'El correo es obligatorio',
         emailInvalid: 'Ingresa un correo valido',
@@ -66,6 +70,8 @@ function getLoginCopy(locale: string): LoginCopy {
       submit: 'Sign in',
       submitting: 'Signing in...'
     },
+    helperTitle: 'Secure login',
+    helperBody: 'Credentials and direct access to the administrative environment.',
     errors: {
       emailRequired: 'Email is required',
       emailInvalid: 'Enter a valid email',
@@ -147,11 +153,11 @@ export function LoginForm({ locale, redirectTo }: LoginFormProps) {
     <Card className="interactive-panel premium-noise w-full max-w-[540px] overflow-hidden">
       <CardHeader className="space-y-3">
         <div className="inline-flex w-fit rounded-full border border-black/8 bg-white/88 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">
-          Secure login
+          {copy.helperTitle}
         </div>
         <CardTitle className="text-2xl tracking-[-0.03em]">{copy.title}</CardTitle>
         <p className="text-sm leading-relaxed text-slate-500">
-          Credenciales y acceso directo al entorno administrativo.
+          {copy.helperBody}
         </p>
       </CardHeader>
       <CardContent>

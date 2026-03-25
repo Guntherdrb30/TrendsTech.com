@@ -109,6 +109,7 @@ async function updateUserRole(formData: FormData) {
 
 export default async function UsersPage({ params }: { params: Promise<PageParams> }) {
   const { locale } = await params;
+  const isEs = locale.startsWith('es');
   await requireRole('TENANT_ADMIN');
   const tenantId = await requireTenantId();
   const selectClassName =
@@ -125,17 +126,17 @@ export default async function UsersPage({ params }: { params: Promise<PageParams
         <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
           <div className="space-y-3">
             <div className="inline-flex rounded-full border border-black/8 bg-white/90 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-500">
-              Team administration
+              {isEs ? 'Administracion del equipo' : 'Team administration'}
             </div>
             <div className="space-y-2">
-              <h1 className="text-3xl font-semibold tracking-[-0.04em] text-slate-950 sm:text-4xl">Users</h1>
+              <h1 className="text-3xl font-semibold tracking-[-0.04em] text-slate-950 sm:text-4xl">{isEs ? 'Usuarios' : 'Users'}</h1>
               <p className="max-w-2xl text-sm leading-relaxed text-slate-500">
-                Manage team access, operational roles, and workspace permissions for this tenant.
+                {isEs ? 'Gestiona accesos del equipo, roles operativos y permisos del workspace para este tenant.' : 'Manage team access, operational roles, and workspace permissions for this tenant.'}
               </p>
             </div>
           </div>
           <div className="interactive-panel rounded-[24px] border border-black/8 bg-white/92 px-5 py-4 shadow-[0_18px_45px_-36px_rgba(15,23,42,0.24)]">
-            <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">Workspace users</div>
+            <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">{isEs ? 'Usuarios del workspace' : 'Workspace users'}</div>
             <div className="mt-2 text-2xl font-semibold tracking-[-0.03em] text-slate-950">{users.length}</div>
           </div>
         </div>
@@ -143,43 +144,43 @@ export default async function UsersPage({ params }: { params: Promise<PageParams
 
       <Card className="interactive-panel">
         <CardHeader className="space-y-2">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500">Provisioning</p>
-          <CardTitle>Create user</CardTitle>
+          <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500">{isEs ? 'Provisioning' : 'Provisioning'}</p>
+          <CardTitle>{isEs ? 'Crear usuario' : 'Create user'}</CardTitle>
         </CardHeader>
         <CardContent>
           <form action={createUser} className="grid gap-4 md:grid-cols-2">
             <input type="hidden" name="locale" value={locale} />
             <div className="space-y-2">
-              <Label htmlFor="name">Name</Label>
+              <Label htmlFor="name">{isEs ? 'Nombre' : 'Name'}</Label>
               <Input id="name" name="name" required />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email">{isEs ? 'Correo' : 'Email'}</Label>
               <Input id="email" name="email" type="email" required />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
+              <Label htmlFor="password">{isEs ? 'Contrasena' : 'Password'}</Label>
               <Input id="password" name="password" type="password" required />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="phone">Phone</Label>
+              <Label htmlFor="phone">{isEs ? 'Telefono' : 'Phone'}</Label>
               <Input id="phone" name="phone" />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="role">Role</Label>
+              <Label htmlFor="role">{isEs ? 'Rol' : 'Role'}</Label>
               <select
                 id="role"
                 name="role"
                 defaultValue="TENANT_VIEWER"
                 className={selectClassName}
               >
-                <option value="TENANT_ADMIN">Tenant admin</option>
-                <option value="TENANT_OPERATOR">Tenant operator</option>
-                <option value="TENANT_VIEWER">Tenant viewer</option>
+                <option value="TENANT_ADMIN">{isEs ? 'Admin tenant' : 'Tenant admin'}</option>
+                <option value="TENANT_OPERATOR">{isEs ? 'Operador tenant' : 'Tenant operator'}</option>
+                <option value="TENANT_VIEWER">{isEs ? 'Visualizador tenant' : 'Tenant viewer'}</option>
               </select>
             </div>
             <div className="md:col-span-2">
-              <Button type="submit">Create user</Button>
+              <Button type="submit">{isEs ? 'Crear usuario' : 'Create user'}</Button>
             </div>
           </form>
         </CardContent>
@@ -187,13 +188,13 @@ export default async function UsersPage({ params }: { params: Promise<PageParams
 
       <Card className="interactive-panel">
         <CardHeader className="space-y-2">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500">Directory</p>
-          <CardTitle>Existing users</CardTitle>
+          <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500">{isEs ? 'Directorio' : 'Directory'}</p>
+          <CardTitle>{isEs ? 'Usuarios existentes' : 'Existing users'}</CardTitle>
         </CardHeader>
         <CardContent>
           {users.length === 0 ? (
             <div className="interactive-panel rounded-[24px] border border-dashed border-black/10 bg-slate-50/80 px-5 py-6 text-sm text-slate-500">
-              No users yet. Create the first account to start assigning roles.
+              {isEs ? 'Aun no hay usuarios. Crea la primera cuenta para empezar a asignar roles.' : 'No users yet. Create the first account to start assigning roles.'}
             </div>
           ) : (
             <Table>
@@ -220,9 +221,9 @@ export default async function UsersPage({ params }: { params: Promise<PageParams
                           defaultValue={user.role}
                           className="interactive-field rounded-xl border border-slate-200 bg-white/96 px-3 py-2 text-xs text-slate-900 outline-none transition focus:border-slate-300 focus:ring-2 focus:ring-slate-200"
                         >
-                          <option value="TENANT_ADMIN">Tenant admin</option>
-                          <option value="TENANT_OPERATOR">Tenant operator</option>
-                          <option value="TENANT_VIEWER">Tenant viewer</option>
+                          <option value="TENANT_ADMIN">{isEs ? 'Admin tenant' : 'Tenant admin'}</option>
+                          <option value="TENANT_OPERATOR">{isEs ? 'Operador tenant' : 'Tenant operator'}</option>
+                          <option value="TENANT_VIEWER">{isEs ? 'Visualizador tenant' : 'Tenant viewer'}</option>
                         </select>
                         <Button type="submit" size="sm" variant="outline">
                           Save

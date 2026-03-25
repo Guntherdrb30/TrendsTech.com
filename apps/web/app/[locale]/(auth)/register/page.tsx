@@ -6,13 +6,23 @@ function getRegisterPageCopy(locale: string) {
     return {
       title: 'Crear cuenta',
       subtitle: 'Registra para acceder a demos y administrar tus agentes.',
-      linkLabel: 'Ya tienes cuenta? Iniciar sesion'
+      linkLabel: 'Ya tienes cuenta? Iniciar sesion',
+      eyebrow: 'Onboarding de tenant',
+      readinessTitle: 'Configuracion empresarial',
+      readinessBody: 'Crea tu acceso y deja la base lista para agentes, dashboard y configuracion operativa.',
+      launchTitle: 'Lanzamiento empresarial',
+      launchBody: 'El registro conecta el acceso de usuario con el entorno premium y sus siguientes flujos.'
     };
   }
   return {
     title: 'Create account',
     subtitle: 'Register to access demos and manage your agents.',
-    linkLabel: 'Already have an account? Sign in'
+    linkLabel: 'Already have an account? Sign in',
+    eyebrow: 'Tenant onboarding',
+    readinessTitle: 'Company setup',
+    readinessBody: 'Create your access and leave the base ready for agents, dashboard, and operating setup.',
+    launchTitle: 'Enterprise launch',
+    launchBody: 'Registration connects user access with the premium environment and its next flows.'
   };
 }
 
@@ -35,7 +45,7 @@ export default async function RegisterPage({
         <div className="relative space-y-8">
           <div className="space-y-4">
             <div className="inline-flex rounded-full border border-black/8 bg-white/88 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-500 shadow-[0_18px_40px_-34px_rgba(15,23,42,0.2)]">
-              Tenant onboarding
+              {copy.eyebrow}
             </div>
             <div className="space-y-3">
               <h1 className="text-3xl font-semibold tracking-[-0.04em] text-slate-950 sm:text-4xl lg:text-5xl">
@@ -48,16 +58,16 @@ export default async function RegisterPage({
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="interactive-panel rounded-[24px] border border-black/8 bg-white/88 px-5 py-5 shadow-[0_22px_55px_-44px_rgba(15,23,42,0.24)]">
               <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">Readiness</div>
-              <div className="mt-3 text-lg font-semibold tracking-[-0.03em] text-slate-950">Company setup</div>
+              <div className="mt-3 text-lg font-semibold tracking-[-0.03em] text-slate-950">{copy.readinessTitle}</div>
               <p className="mt-2 text-sm leading-relaxed text-slate-600">
-                Crea tu acceso y deja la base lista para agentes, dashboard y configuracion operativa.
+                {copy.readinessBody}
               </p>
             </div>
             <div className="interactive-panel rounded-[24px] border border-black/8 bg-slate-950 px-5 py-5 shadow-[0_24px_60px_-44px_rgba(15,23,42,0.45)]">
-              <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">Platform mode</div>
-              <div className="mt-3 text-lg font-semibold tracking-[-0.03em] text-white">Enterprise launch</div>
+              <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">{copy.eyebrow}</div>
+              <div className="mt-3 text-lg font-semibold tracking-[-0.03em] text-white">{copy.launchTitle}</div>
               <p className="mt-2 text-sm leading-relaxed text-slate-300">
-                El registro conecta el acceso de usuario con el entorno premium y sus siguientes flujos.
+                {copy.launchBody}
               </p>
             </div>
           </div>

@@ -12,6 +12,7 @@ export const dynamic = 'force-dynamic';
 
 export default async function DashboardPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
+  const isEs = locale.startsWith('es');
   const user = await requireAuth();
   const tenant = await resolveTenantFromUser(user);
   const profile = await prisma.user.findUnique({
@@ -27,7 +28,7 @@ export default async function DashboardPage({ params }: { params: Promise<{ loca
     return (
       <section className="space-y-4">
         <h1 className="text-2xl font-semibold">Dashboard</h1>
-        <p className="text-sm text-slate-500 dark:text-slate-400">No tenant assigned.</p>
+        <p className="text-sm text-slate-500 dark:text-slate-400">{isEs ? 'No hay tenant asignado.' : 'No tenant assigned.'}</p>
       </section>
     );
   }
@@ -70,21 +71,21 @@ export default async function DashboardPage({ params }: { params: Promise<{ loca
         <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
           <div className="space-y-3">
             <div className="inline-flex rounded-full border border-black/8 bg-white/90 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-500">
-              Tenant control center
+              {isEs ? 'Centro de control del tenant' : 'Tenant control center'}
             </div>
             <div className="space-y-2">
               <h1 className="text-3xl font-semibold tracking-[-0.04em] text-slate-950 sm:text-4xl">
-                Tenant dashboard
+                {isEs ? 'Panel del tenant' : 'Tenant dashboard'}
               </h1>
               <p className="text-sm text-slate-500 dark:text-slate-400">
-                {tenant.name} | {tenant.mode} | role: {user.role}
+                {tenant.name} | {tenant.mode} | {isEs ? 'rol' : 'role'}: {user.role}
               </p>
             </div>
           </div>
           <div className="grid gap-3 sm:grid-cols-3">
             <div className="interactive-panel rounded-[24px] border border-black/8 bg-white/92 px-5 py-4 shadow-[0_20px_55px_-45px_rgba(15,23,42,0.3)]">
               <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">
-                Balance
+                {isEs ? 'Saldo' : 'Balance'}
               </div>
               <div className="mt-2 text-2xl font-semibold tracking-[-0.03em] text-slate-950">
                 {tokenBalanceLabel}
@@ -92,7 +93,7 @@ export default async function DashboardPage({ params }: { params: Promise<{ loca
             </div>
             <div className="interactive-panel rounded-[24px] border border-black/8 bg-white/92 px-5 py-4 shadow-[0_20px_55px_-45px_rgba(15,23,42,0.3)]">
               <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">
-                Active agents
+                {isEs ? 'Agentes activos' : 'Active agents'}
               </div>
               <div className="mt-2 text-2xl font-semibold tracking-[-0.03em] text-slate-950">
                 {activeAgentCount}
@@ -100,7 +101,7 @@ export default async function DashboardPage({ params }: { params: Promise<{ loca
             </div>
             <div className="interactive-panel rounded-[24px] border border-black/8 bg-white/92 px-5 py-4 shadow-[0_20px_55px_-45px_rgba(15,23,42,0.3)]">
               <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">
-                End customers
+                {isEs ? 'Clientes finales' : 'End customers'}
               </div>
               <div className="mt-2 text-2xl font-semibold tracking-[-0.03em] text-slate-950">
                 {endCustomers.length}
@@ -120,7 +121,7 @@ export default async function DashboardPage({ params }: { params: Promise<{ loca
         <Card className="interactive-panel overflow-hidden">
           <CardHeader className="space-y-2">
             <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500">
-              Operations ledger
+              {isEs ? 'Libro operativo' : 'Operations ledger'}
             </p>
             <CardTitle className="text-2xl">Agentes configurados</CardTitle>
             <p className="text-sm text-slate-500">
@@ -150,7 +151,7 @@ export default async function DashboardPage({ params }: { params: Promise<{ loca
                       <TableCell>{agent.endCustomer?.name ?? '-'}</TableCell>
                       <TableCell>
                         <Link className={linkClass} href={`/${locale}/dashboard/agents/${agent.id}`}>
-                          View detail
+                          {isEs ? 'Ver detalle' : 'View detail'}
                         </Link>
                       </TableCell>
                     </TableRow>
@@ -165,7 +166,7 @@ export default async function DashboardPage({ params }: { params: Promise<{ loca
           <Card className="interactive-panel">
             <CardHeader className="space-y-2">
               <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500">
-                Finance
+                {isEs ? 'Finanzas' : 'Finance'}
               </p>
               <CardTitle className="text-2xl">Tokens disponibles</CardTitle>
             </CardHeader>
@@ -180,7 +181,7 @@ export default async function DashboardPage({ params }: { params: Promise<{ loca
           <Card className="interactive-panel bg-slate-950 text-white">
             <CardHeader className="space-y-2 border-white/10">
               <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-400">
-                Advanced development
+                {isEs ? 'Desarrollo avanzado' : 'Advanced development'}
               </p>
               <CardTitle className="text-2xl text-white">Luna Code Orchestrator</CardTitle>
             </CardHeader>
@@ -200,27 +201,27 @@ export default async function DashboardPage({ params }: { params: Promise<{ loca
           <Card className="interactive-panel">
             <CardHeader className="space-y-2">
               <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500">
-                Admin shortcuts
+                {isEs ? 'Accesos administrativos' : 'Admin shortcuts'}
               </p>
               <CardTitle className="text-2xl">Gestion rapida</CardTitle>
             </CardHeader>
             <CardContent className="grid gap-4">
               <div className="interactive-panel rounded-[24px] border border-black/8 bg-slate-50/90 px-4 py-4">
-                <div className="text-sm font-semibold text-slate-900">Widget installs</div>
+                <div className="text-sm font-semibold text-slate-900">{isEs ? 'Instalaciones del widget' : 'Widget installs'}</div>
                 <Link className={`${linkClass} mt-2 inline-flex`} href={`/${locale}/dashboard/installs`}>
-                  Manage installs and domains
+                  {isEs ? 'Gestionar instalaciones y dominios' : 'Manage installs and domains'}
                 </Link>
               </div>
               <div className="interactive-panel rounded-[24px] border border-black/8 bg-slate-50/90 px-4 py-4">
-                <div className="text-sm font-semibold text-slate-900">Widget access</div>
+                <div className="text-sm font-semibold text-slate-900">{isEs ? 'Acceso del widget' : 'Widget access'}</div>
                 <Link className={`${linkClass} mt-2 inline-flex`} href={`/${locale}/dashboard/access`}>
-                  Manage embedded agent access
+                  {isEs ? 'Gestionar acceso embebido del agente' : 'Manage embedded agent access'}
                 </Link>
               </div>
               <div className="interactive-panel rounded-[24px] border border-black/8 bg-slate-50/90 px-4 py-4">
-                <div className="text-sm font-semibold text-slate-900">User management</div>
+                <div className="text-sm font-semibold text-slate-900">{isEs ? 'Gestion de usuarios' : 'User management'}</div>
                 <Link className={`${linkClass} mt-2 inline-flex`} href={`/${locale}/dashboard/users`}>
-                  Manage team access
+                  {isEs ? 'Gestionar acceso del equipo' : 'Manage team access'}
                 </Link>
               </div>
             </CardContent>

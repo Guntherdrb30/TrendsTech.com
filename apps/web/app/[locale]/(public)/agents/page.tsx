@@ -42,6 +42,27 @@ export default async function AgentsPage({ params }: { params: Promise<{ locale:
     { step: '02', title: t('flowStep2Title'), body: t('flowStep2Body') },
     { step: '03', title: t('flowStep3Title'), body: t('flowStep3Body') }
   ];
+  const uiCopy = locale.startsWith('es')
+    ? {
+        demoAccess: 'Acceso demo',
+        verifiedOnly: 'Solo verificados',
+        features: 'Funciones',
+        demo: 'Demo',
+        controlledAccess: 'Acceso controlado',
+        operationalNotes: 'Notas operativas',
+        ready: 'Listo',
+        sequence: 'Secuencia'
+      }
+    : {
+        demoAccess: 'Demo access',
+        verifiedOnly: 'Verified only',
+        features: 'Features',
+        demo: 'Demo',
+        controlledAccess: 'Controlled access',
+        operationalNotes: 'Operational notes',
+        ready: 'Ready',
+        sequence: 'Sequence'
+      };
 
   return (
     <div className={`${display.variable} ${body.variable} space-y-14 font-[var(--font-body)]`}>
@@ -91,10 +112,10 @@ export default async function AgentsPage({ params }: { params: Promise<{ locale:
               </div>
               <div className="rounded-[28px] border border-black/8 bg-slate-950 px-5 py-5 shadow-[0_28px_70px_-48px_rgba(15,23,42,0.5)]">
                 <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
-                  Demo access
+                  {uiCopy.demoAccess}
                 </div>
                 <div className="mt-3 text-3xl font-[var(--font-display)] font-semibold tracking-[-0.05em] text-white">
-                  Verified only
+                  {uiCopy.verifiedOnly}
                 </div>
                 <p className="mt-3 text-sm leading-relaxed text-slate-300">{t('demoRulesInline')}</p>
               </div>
@@ -136,7 +157,7 @@ export default async function AgentsPage({ params }: { params: Promise<{ locale:
                     <div className="grid gap-3 sm:grid-cols-2">
                       <div className="interactive-panel rounded-[22px] border border-black/8 bg-white/86 px-4 py-4">
                         <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">
-                          Features
+                          {uiCopy.features}
                         </div>
                         <div className="mt-2 text-2xl font-[var(--font-display)] font-semibold tracking-[-0.04em] text-slate-950">
                           {String(agent.featureKeys.length).padStart(2, '0')}
@@ -144,10 +165,10 @@ export default async function AgentsPage({ params }: { params: Promise<{ locale:
                       </div>
                       <div className="interactive-panel rounded-[22px] border border-black/8 bg-white/86 px-4 py-4">
                         <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">
-                          Demo
+                          {uiCopy.demo}
                         </div>
                         <div className="mt-2 text-sm font-semibold text-slate-900">
-                          Controlled access
+                          {uiCopy.controlledAccess}
                         </div>
                       </div>
                     </div>
@@ -174,10 +195,10 @@ export default async function AgentsPage({ params }: { params: Promise<{ locale:
                 <div className="interactive-panel rounded-[26px] border border-black/8 bg-white/84 px-5 py-5">
                   <div className="mb-3 flex items-center justify-between gap-3">
                     <div className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500">
-                      Operational notes
+                      {uiCopy.operationalNotes}
                     </div>
                     <div className="rounded-full border border-black/8 bg-slate-950 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-white">
-                      Ready
+                      {uiCopy.ready}
                     </div>
                   </div>
                   <ul className="grid gap-3 text-sm text-slate-600 sm:grid-cols-2">
@@ -229,7 +250,7 @@ export default async function AgentsPage({ params }: { params: Promise<{ locale:
                 <div className="flex items-center justify-between gap-3">
                   <div className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">{step.step}</div>
                   <div className="rounded-full border border-black/8 bg-white/84 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">
-                    Sequence
+                    {uiCopy.sequence}
                   </div>
                 </div>
                 <div className="mt-4 text-base font-semibold text-slate-900">{step.title}</div>

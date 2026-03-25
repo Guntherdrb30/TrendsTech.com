@@ -20,6 +20,21 @@ export default async function SystemsPage({ params }: { params: Promise<{ locale
   const base = `/${locale}`;
   const t = await getTranslations('systemsPage');
   const a = await getTranslations('agents');
+  const uiCopy = locale.startsWith('es')
+    ? {
+        operationalObjective: 'Objetivo operativo',
+        systemModule: 'Modulo del sistema',
+        systemModuleBody: 'Comercio, operaciones, reportes y ejecucion por rol en un entorno alineado.',
+        deliveryMode: 'Modo de entrega',
+        deliveryModeBody: 'Despliegue operativo premium con logica de producto, disciplina de interfaz y trazabilidad.'
+      }
+    : {
+        operationalObjective: 'Operational objective',
+        systemModule: 'System module',
+        systemModuleBody: 'Commerce, operations, reporting, and role-based execution in one aligned environment.',
+        deliveryMode: 'Delivery mode',
+        deliveryModeBody: 'Premium operational rollout with product logic, interface discipline, and traceability.'
+      };
 
   const focusAreas = [t('focus.f1'), t('focus.f2'), t('focus.f3'), t('focus.f4')];
   const lunaHighlights = [t('lunaHighlights.h1'), t('lunaHighlights.h2'), t('lunaHighlights.h3'), t('lunaHighlights.h4')];
@@ -71,7 +86,7 @@ export default async function SystemsPage({ params }: { params: Promise<{ locale
                 </ul>
               </div>
               <div className="rounded-[28px] border border-black/8 bg-slate-950 px-5 py-5 shadow-[0_28px_70px_-48px_rgba(15,23,42,0.5)]">
-                <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">Operational objective</div>
+                <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">{uiCopy.operationalObjective}</div>
                 <p className="mt-3 text-sm leading-relaxed text-slate-300">{t('focusNote')}</p>
               </div>
             </div>
@@ -131,13 +146,13 @@ export default async function SystemsPage({ params }: { params: Promise<{ locale
                 <div className="absolute inset-x-5 top-0 h-px bg-[linear-gradient(90deg,transparent_0%,rgba(255,255,255,0.94)_50%,transparent_100%)]" aria-hidden="true" />
                 <div className="grid h-full gap-4">
                   <div className="rounded-[24px] border border-white/60 bg-white/72 px-4 py-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.9)]">
-                    <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">System module</div>
+                    <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">{uiCopy.systemModule}</div>
                     <div className="mt-2 text-2xl font-[var(--font-display)] font-semibold tracking-[-0.04em] text-slate-950">01</div>
-                    <p className="mt-2 text-sm text-slate-600">Commerce, operations, reporting, and role-based execution in one aligned environment.</p>
+                    <p className="mt-2 text-sm text-slate-600">{uiCopy.systemModuleBody}</p>
                   </div>
                   <div className="rounded-[24px] border border-black/8 bg-slate-950 px-4 py-4 shadow-[0_24px_60px_-40px_rgba(15,23,42,0.45)]">
-                    <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">Delivery mode</div>
-                    <p className="mt-3 text-sm leading-relaxed text-slate-300">Premium operational rollout with product logic, interface discipline, and traceability.</p>
+                    <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">{uiCopy.deliveryMode}</div>
+                    <p className="mt-3 text-sm leading-relaxed text-slate-300">{uiCopy.deliveryModeBody}</p>
                   </div>
                 </div>
               </div>
