@@ -6,6 +6,7 @@ import { PublicConciergeChat } from "./public-concierge-chat";
 import { MarketingHeroCarousel } from "./marketing-hero-carousel";
 import { AGENT_PRODUCTS } from "./agents/agent-products";
 import { formatNewsDate, getPublishedNewsPosts } from "@/lib/news";
+import { getResolvedPageImageSlots } from "@/lib/page-images";
 import { getPublicSiteAssets } from "@/lib/site-assets";
 import { SiteAssetSection } from "@trends172tech/db";
 
@@ -20,14 +21,6 @@ const body = IBM_Plex_Sans({
   weight: ["300", "400", "500", "600"],
   variable: "--font-body"
 });
-
-const LUNA_HERO_VISUALS = [
-  "/marketing/luna/luna-hero-dark.png",
-  "/marketing/luna/luna-hero-light.png",
-  "/marketing/home/luna-operations-core.svg",
-  "/marketing/home/luna-role-panels.svg",
-  "/marketing/home/luna-executive-intelligence.svg"
-];
 
 export default async function HomePage({ params }: { params: Promise<{ locale: string }> }) {
   const home = await getTranslations("home");
@@ -93,9 +86,10 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         brief: "Brief"
       };
   const publishedNews = await getPublishedNewsPosts(locale, 3);
-  const [heroAssets, showcaseAssets] = await Promise.all([
+  const [heroAssets, showcaseAssets, homePageImages] = await Promise.all([
     getPublicSiteAssets(SiteAssetSection.HOME_HERO, locale),
-    getPublicSiteAssets(SiteAssetSection.HOME_SHOWCASE, locale)
+    getPublicSiteAssets(SiteAssetSection.HOME_SHOWCASE, locale),
+    getResolvedPageImageSlots("home", locale)
   ]);
 
   const metrics = [
@@ -160,7 +154,8 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
       : fallbackCarouselItems
     ).map((item, index) => ({
       ...item,
-      image: LUNA_HERO_VISUALS[index] ?? item.image
+      image:
+        homePageImages[`hero_${String(index + 1).padStart(2, "0")}`]?.imageUrl ?? item.image
     }));
 
   const intakeCopy = {
@@ -229,7 +224,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
   ];
 
   const showcaseCards =
-    showcaseAssets.length > 0
+    (showcaseAssets.length > 0
       ? showcaseAssets.map((asset) => ({
           label: asset.badge ?? asset.eyebrow ?? home("subheroSection.eyebrow"),
           title: asset.title,
@@ -239,7 +234,12 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
           cta: asset.ctaLabel ?? home("ctaPrimary"),
           highlights: asset.highlights
         }))
-      : fallbackShowcaseCards;
+      : fallbackShowcaseCards
+    ).map((item, index) => ({
+      ...item,
+      image:
+        homePageImages[`showcase_${String(index + 1).padStart(2, "0")}`]?.imageUrl ?? item.image
+    }));
 
   const premiumPoints = [
     home("capabilities.c1Title"),

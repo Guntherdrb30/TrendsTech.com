@@ -3,6 +3,7 @@ import Image from "next/image";
 import { getTranslations } from "next-intl/server";
 import { IBM_Plex_Sans, Space_Grotesk } from "next/font/google";
 import { Button } from "@/components/ui/button";
+import { getResolvedPageImageSlots } from "@/lib/page-images";
 import { AGENT_PRODUCTS } from "../../agents/agent-products";
 
 const WHATSAPP_BUY_NUMBER = "584122640371";
@@ -24,9 +25,6 @@ const body = IBM_Plex_Sans({
   variable: "--font-body"
 });
 
-const LUNA_DARK_VISUAL = "/marketing/luna/luna-hero-dark.png";
-const LUNA_LIGHT_VISUAL = "/marketing/luna/luna-hero-light.png";
-
 export default async function LunaPage({
   params
 }: {
@@ -36,6 +34,7 @@ export default async function LunaPage({
   const base = `/${locale}`;
   const t = await getTranslations("lunaPage");
   const a = await getTranslations("agents");
+  const pageImages = await getResolvedPageImageSlots("systems-luna", locale);
   const uiCopy = locale.startsWith("es")
     ? {
         platformState: "Estado de plataforma",
@@ -95,7 +94,8 @@ export default async function LunaPage({
 
   const galleryItems = [
     {
-      image: LUNA_DARK_VISUAL,
+      image: pageImages.gallery_01?.imageUrl ?? "/marketing/luna/luna-hero-dark.png",
+      alt: pageImages.gallery_01?.alt,
       title: locale.startsWith("es") ? "Vista comercial principal" : "Primary commercial view",
       body:
         locale.startsWith("es")
@@ -103,7 +103,8 @@ export default async function LunaPage({
           : "Hero composition for sales, inventory, and operations with a true enterprise platform visual language."
     },
     {
-      image: LUNA_LIGHT_VISUAL,
+      image: pageImages.gallery_02?.imageUrl ?? "/marketing/luna/luna-hero-light.png",
+      alt: pageImages.gallery_02?.alt,
       title: locale.startsWith("es") ? "Vista premium del sistema" : "Premium system view",
       body:
         locale.startsWith("es")
@@ -111,42 +112,50 @@ export default async function LunaPage({
           : "Clear dashboard view across collections, inventory, dispatches, and installable mobile use."
     },
     {
-      image: "/cases/carpihogar/carpihogar-pwa-home.svg",
+      image: pageImages.gallery_03?.imageUrl ?? "/cases/carpihogar/carpihogar-pwa-home.svg",
+      alt: pageImages.gallery_03?.alt,
       title: t("gallery.g1Title"),
       body: t("gallery.g1Body")
     },
     {
-      image: "/cases/carpihogar/carpihogar-catalog-grid.svg",
+      image: pageImages.gallery_04?.imageUrl ?? "/cases/carpihogar/carpihogar-catalog-grid.svg",
+      alt: pageImages.gallery_04?.alt,
       title: t("gallery.g2Title"),
       body: t("gallery.g2Body")
     },
     {
-      image: "/cases/carpihogar/carpihogar-product-detail.svg",
+      image: pageImages.gallery_05?.imageUrl ?? "/cases/carpihogar/carpihogar-product-detail.svg",
+      alt: pageImages.gallery_05?.alt,
       title: t("gallery.g3Title"),
       body: t("gallery.g3Body")
     },
     {
-      image: "/cases/carpihogar/carpihogar-news.svg",
+      image: pageImages.gallery_06?.imageUrl ?? "/cases/carpihogar/carpihogar-news.svg",
+      alt: pageImages.gallery_06?.alt,
       title: t("gallery.g4Title"),
       body: t("gallery.g4Body")
     },
     {
-      image: "/cases/carpihogar/carpihogar-admin-dashboard.svg",
+      image: pageImages.gallery_07?.imageUrl ?? "/cases/carpihogar/carpihogar-admin-dashboard.svg",
+      alt: pageImages.gallery_07?.alt,
       title: t("gallery.g5Title"),
       body: t("gallery.g5Body")
     },
     {
-      image: "/cases/carpihogar/carpihogar-sales-form.svg",
+      image: pageImages.gallery_08?.imageUrl ?? "/cases/carpihogar/carpihogar-sales-form.svg",
+      alt: pageImages.gallery_08?.alt,
       title: t("gallery.g6Title"),
       body: t("gallery.g6Body")
     },
     {
-      image: "/cases/carpihogar/carpihogar-ai-modules.svg",
+      image: pageImages.gallery_09?.imageUrl ?? "/cases/carpihogar/carpihogar-ai-modules.svg",
+      alt: pageImages.gallery_09?.alt,
       title: t("gallery.g7Title"),
       body: t("gallery.g7Body")
     },
     {
-      image: "/cases/carpihogar/carpihogar-exec-reports.svg",
+      image: pageImages.gallery_10?.imageUrl ?? "/cases/carpihogar/carpihogar-exec-reports.svg",
+      alt: pageImages.gallery_10?.alt,
       title: t("gallery.g8Title"),
       body: t("gallery.g8Body")
     }
@@ -220,8 +229,8 @@ export default async function LunaPage({
                 </div>
                 <div className="relative aspect-[16/10] overflow-hidden rounded-[22px] border border-black/8 bg-slate-100 shadow-[0_30px_80px_-58px_rgba(15,23,42,0.28)]">
                   <Image
-                    src={LUNA_LIGHT_VISUAL}
-                    alt={uiCopy.heroAlt}
+                    src={pageImages.hero_primary?.imageUrl ?? "/marketing/luna/luna-hero-light.png"}
+                    alt={pageImages.hero_primary?.alt ?? uiCopy.heroAlt}
                     fill
                     priority
                     className="object-cover"
@@ -379,7 +388,7 @@ export default async function LunaPage({
                 <div className="relative aspect-[4/3] overflow-hidden bg-slate-100">
                   <Image
                     src={item.image}
-                    alt={item.title}
+                    alt={item.alt ?? item.title}
                     fill
                     className="object-cover transition duration-500 group-hover:scale-[1.02]"
                     sizes="(min-width: 768px) 50vw, 100vw"

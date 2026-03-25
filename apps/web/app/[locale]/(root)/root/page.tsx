@@ -496,7 +496,7 @@ export default async function RootPage({ params }: { params: Promise<{ locale: s
               Luna Orchestrator
             </Link>
             <Link
-              href={`/${locale}/dashboard/site-media`}
+              href={`/${locale}/root/site-media`}
               className="hover:text-slate-900 dark:hover:text-white"
             >
               Media del sitio
@@ -1036,7 +1036,7 @@ export default async function RootPage({ params }: { params: Promise<{ locale: s
                   nuevo centro de media.
                 </p>
                 <Button asChild>
-                  <Link href={`/${locale}/dashboard/site-media`}>Abrir media del sitio</Link>
+                  <Link href={`/${locale}/root/site-media`}>Abrir media del sitio</Link>
                 </Button>
               </CardContent>
             </Card>
