@@ -181,8 +181,9 @@ export function SiteHeaderClient({ base, isAuthenticated, labels, agentOptions }
           ) : null}
         </div>
 
-        <div className="premium-spotlight hidden items-center justify-between gap-5 rounded-[34px] border border-black/8 bg-white/78 px-5 py-3 shadow-[0_24px_70px_-48px_rgba(15,23,42,0.36)] backdrop-blur-2xl lg:flex">
-          <div className="flex min-w-0 items-center gap-4">
+        <div className="premium-spotlight hidden flex-col gap-3 rounded-[34px] border border-black/8 bg-white/78 px-5 py-3 shadow-[0_24px_70px_-48px_rgba(15,23,42,0.36)] backdrop-blur-2xl lg:flex">
+          <div className="flex min-w-0 flex-wrap items-center justify-between gap-3">
+            <div className="flex min-w-0 items-center gap-4 2xl:flex-1">
             <Link
               href={base}
               className="interactive-chip flex items-center gap-3 rounded-full border border-black/8 bg-white/88 px-3.5 py-2 text-sm font-semibold text-slate-900 shadow-[0_16px_32px_-24px_rgba(15,23,42,0.28)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-300 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:text-white dark:focus-visible:ring-slate-600 dark:focus-visible:ring-offset-slate-950"
@@ -197,7 +198,7 @@ export function SiteHeaderClient({ base, isAuthenticated, labels, agentOptions }
               />
               <span className="whitespace-nowrap">Trends172 Tech</span>
             </Link>
-            <nav className="flex items-center gap-2 text-sm whitespace-nowrap rounded-full border border-black/6 bg-white/86 p-1.5 text-slate-700 shadow-[inset_0_1px_0_rgba(255,255,255,0.9),0_18px_40px_-30px_rgba(15,23,42,0.28)] backdrop-blur dark:border-slate-800 dark:bg-slate-950/70 dark:text-slate-200">
+            <nav className="flex min-w-0 items-center gap-2 overflow-x-auto text-sm whitespace-nowrap rounded-full border border-black/6 bg-white/86 p-1.5 text-slate-700 shadow-[inset_0_1px_0_rgba(255,255,255,0.9),0_18px_40px_-30px_rgba(15,23,42,0.28)] backdrop-blur dark:border-slate-800 dark:bg-slate-950/70 dark:text-slate-200">
               <Link href={base} className="interactive-chip rounded-full px-3 py-2 transition hover:bg-slate-100 hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-200 dark:hover:bg-slate-900/70">
                 {labels.home}
               </Link>
@@ -223,33 +224,34 @@ export function SiteHeaderClient({ base, isAuthenticated, labels, agentOptions }
             placeholder={labels.searchPlaceholder}
             label={labels.searchLabel}
             options={agentOptions}
-            className="min-w-[260px] max-w-xl flex-1"
+            className="order-3 w-full basis-full 2xl:order-2 2xl:basis-auto 2xl:min-w-[320px] 2xl:max-w-xl 2xl:flex-1"
           />
-          <div className="flex items-center gap-3 text-sm whitespace-nowrap text-slate-700 dark:text-slate-200">
-            {isAuthenticated ? (
-              <>
-                <Link href={`${base}/dashboard`} className="interactive-chip rounded-full border border-black/8 bg-white/84 px-4 py-2 font-semibold text-slate-900 shadow-[0_16px_35px_-28px_rgba(15,23,42,0.3)] transition hover:-translate-y-0.5 hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-300 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:border-slate-800 dark:bg-slate-950/70 dark:focus-visible:ring-slate-600 dark:focus-visible:ring-offset-slate-950">
-                  {labels.dashboard}
-                </Link>
-                <button type="button" onClick={handleSignOut} className="interactive-chip rounded-full px-3 py-2 text-slate-600 transition hover:bg-slate-100 hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-200 dark:hover:bg-slate-900/70 dark:hover:text-white dark:focus-visible:ring-slate-700/40">
-                  {labels.logout}
-                </button>
-              </>
-            ) : (
-              <>
-                <Link href={loginHref} className="interactive-chip rounded-full px-3 py-2 transition hover:bg-slate-100 hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-200 dark:hover:bg-slate-900/70">
-                  {labels.login}
-                </Link>
-                <Link
-                  href={registerHref}
-                  className="interactive-chip inline-flex items-center justify-center rounded-full bg-slate-950 px-4 py-2 font-semibold text-white shadow-[0_18px_40px_-24px_rgba(15,23,42,0.45)] transition hover:-translate-y-0.5 hover:bg-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-300 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:bg-slate-100 dark:text-slate-950 dark:hover:bg-white dark:focus-visible:ring-slate-600 dark:focus-visible:ring-offset-slate-950"
-                >
-                  {labels.register}
-                </Link>
-              </>
-            )}
-            <LocaleSwitcher />
-            <ThemeToggle />
+          <div className="order-2 flex shrink-0 items-center gap-3 text-sm whitespace-nowrap text-slate-700 2xl:order-3 dark:text-slate-200">
+              {isAuthenticated ? (
+                <>
+                  <Link href={`${base}/dashboard`} className="interactive-chip rounded-full border border-black/8 bg-white/84 px-4 py-2 font-semibold text-slate-900 shadow-[0_16px_35px_-28px_rgba(15,23,42,0.3)] transition hover:-translate-y-0.5 hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-300 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:border-slate-800 dark:bg-slate-950/70 dark:focus-visible:ring-slate-600 dark:focus-visible:ring-offset-slate-950">
+                    {labels.dashboard}
+                  </Link>
+                  <button type="button" onClick={handleSignOut} className="interactive-chip rounded-full px-3 py-2 text-slate-600 transition hover:bg-slate-100 hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-200 dark:hover:bg-slate-900/70 dark:hover:text-white dark:focus-visible:ring-slate-700/40">
+                    {labels.logout}
+                  </button>
+                </>
+              ) : (
+                <>
+                  <Link href={loginHref} className="interactive-chip rounded-full px-3 py-2 transition hover:bg-slate-100 hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-200 dark:hover:bg-slate-900/70">
+                    {labels.login}
+                  </Link>
+                  <Link
+                    href={registerHref}
+                    className="interactive-chip inline-flex items-center justify-center rounded-full bg-slate-950 px-4 py-2 font-semibold text-white shadow-[0_18px_40px_-24px_rgba(15,23,42,0.45)] transition hover:-translate-y-0.5 hover:bg-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-300 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:bg-slate-100 dark:text-slate-950 dark:hover:bg-white dark:focus-visible:ring-slate-600 dark:focus-visible:ring-offset-slate-950"
+                  >
+                    {labels.register}
+                  </Link>
+                </>
+              )}
+              <LocaleSwitcher />
+              <ThemeToggle />
+          </div>
           </div>
         </div>
       </div>
