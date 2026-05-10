@@ -1,7 +1,9 @@
 import { getTranslations } from 'next-intl/server';
 import { AdminDataTable, TableCell, TableRow } from '@/components/admin/admin-data-table';
+import { AdminField, AdminFormCard, AdminTextInput } from '@/components/admin/admin-form';
 import { MetricCard } from '@/components/admin/metric-card';
 import { StatusBadge } from '@/components/admin/status-badge';
+import { createAdminClient } from '@/lib/admin-ai/actions';
 import { getAdminClients } from '@/lib/admin-ai/data';
 import { getLocalizedValue } from '@/lib/admin-ai/mock-data';
 
@@ -27,6 +29,34 @@ export default async function AdminClientsPage({ params }: { params: Promise<{ l
         <MetricCard label={t('metrics.mrr')} value={money(totalMrr)} accent="emerald" />
         <MetricCard label={t('metrics.openBalance')} value={money(openBalance)} accent="amber" />
       </div>
+      <AdminFormCard
+        title={t('forms.client.title')}
+        description={t('forms.client.description')}
+        action={createAdminClient}
+        submitLabel={t('forms.client.submit')}
+      >
+        <input type="hidden" name="locale" value={locale} />
+        <div className="grid gap-4 md:grid-cols-3">
+          <AdminField id="name" label={t('forms.fields.company')}>
+            <AdminTextInput id="name" name="name" placeholder="Trends172 Tech" required />
+          </AdminField>
+          <AdminField id="contactName" label={t('forms.fields.contactName')}>
+            <AdminTextInput id="contactName" name="contactName" placeholder="Gunther Del Rosario" />
+          </AdminField>
+          <AdminField id="email" label={t('forms.fields.email')}>
+            <AdminTextInput id="email" name="email" type="email" placeholder="cliente@empresa.com" />
+          </AdminField>
+          <AdminField id="phone" label={t('forms.fields.phone')}>
+            <AdminTextInput id="phone" name="phone" placeholder="+58..." />
+          </AdminField>
+          <AdminField id="country" label={t('forms.fields.country')}>
+            <AdminTextInput id="country" name="country" placeholder="Venezuela" />
+          </AdminField>
+          <AdminField id="industry" label={t('forms.fields.industry')}>
+            <AdminTextInput id="industry" name="industry" placeholder="Retail, servicios, ecommerce" />
+          </AdminField>
+        </div>
+      </AdminFormCard>
       <AdminDataTable
         title={t('clients.table')}
         columns={[t('fields.client'), t('fields.contact'), t('fields.industry'), t('fields.projects'), t('fields.mrr'), t('fields.health')]}

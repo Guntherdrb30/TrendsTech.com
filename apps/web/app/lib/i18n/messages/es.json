@@ -806,6 +806,65 @@
     "actions": {
       "open": "Abrir"
     },
+    "forms": {
+      "client": {
+        "title": "Registrar cliente",
+        "description": "Crea una cuenta comercial para asociar propuestas, proyectos, pagos y mantenimiento.",
+        "submit": "Crear cliente"
+      },
+      "project": {
+        "title": "Crear proyecto vendido",
+        "description": "Abre una administracion independiente por cliente con datos comerciales, tecnicos y financieros.",
+        "submit": "Crear proyecto"
+      },
+      "proposal": {
+        "title": "Registrar propuesta",
+        "description": "Carga una oferta comercial para controlar pipeline, monto, vigencia y probabilidad de cierre.",
+        "submit": "Crear propuesta"
+      },
+      "license": {
+        "title": "Registrar licencia",
+        "description": "Controla herramientas, costos mensuales y fechas de renovacion por proyecto.",
+        "submit": "Crear licencia"
+      },
+      "subscription": {
+        "title": "Registrar mensualidad",
+        "description": "Registra ingresos recurrentes ligados a proyectos vendidos o mantenimiento.",
+        "submit": "Crear mensualidad"
+      },
+      "aiAgent": {
+        "title": "Crear agente IA interno",
+        "description": "Agrega agentes internos para delivery, soporte, finanzas, ventas o seguimiento operativo.",
+        "submit": "Crear agente"
+      },
+      "fields": {
+        "company": "Empresa",
+        "contactName": "Nombre de contacto",
+        "email": "Correo",
+        "phone": "Telefono",
+        "country": "Pais",
+        "industry": "Industria",
+        "paymentMethod": "Forma de pago",
+        "soldAt": "Fecha de venta",
+        "systemName": "Sistema",
+        "vercelProject": "Proyecto Vercel",
+        "database": "Base de datos",
+        "stack": "Stack",
+        "description": "Descripcion",
+        "sentAt": "Fecha de envio",
+        "summary": "Resumen",
+        "subscription": "Mensualidad",
+        "monthlyAmount": "Monto mensual",
+        "nextBillingAt": "Proximo cobro",
+        "agentRole": "Funcion del agente"
+      },
+      "placeholders": {
+        "selectClient": "Selecciona un cliente",
+        "selectProject": "Selecciona un proyecto",
+        "projectDescription": "Alcance, entregables principales y objetivo operativo del proyecto.",
+        "proposalSummary": "Resumen comercial, alcance, condiciones o siguiente paso."
+      }
+    },
     "metrics": {
       "monthSales": "Ventas del mes",
       "budgetsSent": "Presupuestos enviados",
@@ -909,6 +968,17 @@
         "EXPIRING_SOON": "Por vencer",
         "EXPIRED": "Vencida",
         "CANCELLED": "Cancelada"
+      },
+      "subscription": {
+        "ACTIVE": "Activa",
+        "PAUSED": "Pausada",
+        "CANCELLED": "Cancelada",
+        "EXPIRED": "Vencida"
+      },
+      "agent": {
+        "ACTIVE": "Activo",
+        "TRAINING": "Entrenando",
+        "INACTIVE": "Inactivo"
       },
       "priority": {
         "LOW": "Baja",

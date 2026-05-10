@@ -1,8 +1,10 @@
 import { getTranslations } from 'next-intl/server';
 import { AiAgentCard } from '@/components/admin/ai-agent-card';
 import { AdminDataTable, TableCell, TableRow } from '@/components/admin/admin-data-table';
+import { AdminField, AdminFormCard, AdminSelect, AdminTextInput } from '@/components/admin/admin-form';
 import { MetricCard } from '@/components/admin/metric-card';
 import { StatusBadge, getProjectStatusTone } from '@/components/admin/status-badge';
+import { createAdminAiAgent } from '@/lib/admin-ai/actions';
 import { getAdminAgentTasks, getAdminAiAgents, getAdminProjects } from '@/lib/admin-ai/data';
 import { getLocalizedValue } from '@/lib/admin-ai/mock-data';
 
@@ -43,6 +45,35 @@ export default async function AdminAiAgentsPage({ params }: { params: Promise<{ 
           />
         ))}
       </div>
+      <AdminFormCard
+        title={t('forms.aiAgent.title')}
+        description={t('forms.aiAgent.description')}
+        action={createAdminAiAgent}
+        submitLabel={t('forms.aiAgent.submit')}
+      >
+        <input type="hidden" name="locale" value={locale} />
+        <div className="grid gap-4 md:grid-cols-5">
+          <AdminField id="name" label={t('fields.agent')}>
+            <AdminTextInput id="name" name="name" placeholder="LUNA Finance Agent" required />
+          </AdminField>
+          <AdminField id="role" label={t('forms.fields.agentRole')}>
+            <AdminTextInput id="role" name="role" placeholder="Finanzas, seguimiento, soporte" />
+          </AdminField>
+          <AdminField id="status" label={t('fields.status')}>
+            <AdminSelect id="status" name="status" defaultValue="ACTIVE">
+              <option value="ACTIVE">{t('status.agent.ACTIVE')}</option>
+              <option value="TRAINING">{t('status.agent.TRAINING')}</option>
+              <option value="INACTIVE">{t('status.agent.INACTIVE')}</option>
+            </AdminSelect>
+          </AdminField>
+          <AdminField id="monthlyCost" label={t('fields.monthlyCost')}>
+            <AdminTextInput id="monthlyCost" name="monthlyCost" type="number" min="0" step="0.01" defaultValue="0" />
+          </AdminField>
+          <AdminField id="successRate" label={t('fields.successRate')}>
+            <AdminTextInput id="successRate" name="successRate" type="number" min="0" max="100" defaultValue="85" />
+          </AdminField>
+        </div>
+      </AdminFormCard>
       <AdminDataTable
         title={t('aiAgents.tasks')}
         columns={[t('fields.task'), t('fields.agent'), t('fields.project'), t('fields.status'), t('fields.priority')]}

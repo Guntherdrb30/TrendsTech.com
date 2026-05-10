@@ -806,6 +806,65 @@
     "actions": {
       "open": "Open"
     },
+    "forms": {
+      "client": {
+        "title": "Register client",
+        "description": "Create a commercial account to connect proposals, projects, payments, and maintenance.",
+        "submit": "Create client"
+      },
+      "project": {
+        "title": "Create sold project",
+        "description": "Open an independent administration space per client with commercial, technical, and financial data.",
+        "submit": "Create project"
+      },
+      "proposal": {
+        "title": "Register proposal",
+        "description": "Capture a commercial offer to control pipeline, amount, validity, and close probability.",
+        "submit": "Create proposal"
+      },
+      "license": {
+        "title": "Register license",
+        "description": "Track tools, monthly costs, and renewal dates per project.",
+        "submit": "Create license"
+      },
+      "subscription": {
+        "title": "Register subscription",
+        "description": "Register recurring revenue tied to sold projects or maintenance.",
+        "submit": "Create subscription"
+      },
+      "aiAgent": {
+        "title": "Create internal AI agent",
+        "description": "Add internal agents for delivery, support, finance, sales, or operational follow-up.",
+        "submit": "Create agent"
+      },
+      "fields": {
+        "company": "Company",
+        "contactName": "Contact name",
+        "email": "Email",
+        "phone": "Phone",
+        "country": "Country",
+        "industry": "Industry",
+        "paymentMethod": "Payment method",
+        "soldAt": "Sold date",
+        "systemName": "System",
+        "vercelProject": "Vercel project",
+        "database": "Database",
+        "stack": "Stack",
+        "description": "Description",
+        "sentAt": "Sent date",
+        "summary": "Summary",
+        "subscription": "Subscription",
+        "monthlyAmount": "Monthly amount",
+        "nextBillingAt": "Next billing",
+        "agentRole": "Agent role"
+      },
+      "placeholders": {
+        "selectClient": "Select a client",
+        "selectProject": "Select a project",
+        "projectDescription": "Scope, main deliverables, and operational goal for the project.",
+        "proposalSummary": "Commercial summary, scope, conditions, or next step."
+      }
+    },
     "metrics": {
       "monthSales": "Monthly sales",
       "budgetsSent": "Budgets sent",
@@ -909,6 +968,17 @@
         "EXPIRING_SOON": "Expiring soon",
         "EXPIRED": "Expired",
         "CANCELLED": "Cancelled"
+      },
+      "subscription": {
+        "ACTIVE": "Active",
+        "PAUSED": "Paused",
+        "CANCELLED": "Cancelled",
+        "EXPIRED": "Expired"
+      },
+      "agent": {
+        "ACTIVE": "Active",
+        "TRAINING": "Training",
+        "INACTIVE": "Inactive"
       },
       "priority": {
         "LOW": "Low",
