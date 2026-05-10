@@ -801,7 +801,10 @@
     },
     "projectDetail": {
       "overview": "Overview",
-      "finances": "Finances"
+      "finances": "Finances",
+      "tasks": "Tasks",
+      "deliverables": "Deliverables",
+      "integrations": "Integrations"
     },
     "actions": {
       "open": "Open"
@@ -930,7 +933,9 @@
       "validUntil": "Valid until",
       "agent": "Agent",
       "assignedTasks": "Tasks",
-      "successRate": "Success"
+      "successRate": "Success",
+      "integration": "Integration",
+      "type": "Type"
     },
     "tables": {
       "activeProjects": "Priority projects"
@@ -985,6 +990,16 @@
         "MEDIUM": "Medium",
         "HIGH": "High",
         "URGENT": "Urgent"
+      },
+      "deliverable": {
+        "PENDING": "Pending",
+        "DELIVERED": "Delivered",
+        "APPROVED": "Approved"
+      },
+      "integration": {
+        "CONNECTED": "Connected",
+        "PENDING": "Pending",
+        "ISSUE": "Issue"
       }
     }
   }

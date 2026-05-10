@@ -801,7 +801,10 @@
     },
     "projectDetail": {
       "overview": "Resumen",
-      "finances": "Finanzas"
+      "finances": "Finanzas",
+      "tasks": "Tareas",
+      "deliverables": "Entregables",
+      "integrations": "Integraciones"
     },
     "actions": {
       "open": "Abrir"
@@ -930,7 +933,9 @@
       "validUntil": "Valida hasta",
       "agent": "Agente",
       "assignedTasks": "Tareas",
-      "successRate": "Exito"
+      "successRate": "Exito",
+      "integration": "Integracion",
+      "type": "Tipo"
     },
     "tables": {
       "activeProjects": "Proyectos prioritarios"
@@ -985,6 +990,16 @@
         "MEDIUM": "Media",
         "HIGH": "Alta",
         "URGENT": "Urgente"
+      },
+      "deliverable": {
+        "PENDING": "Pendiente",
+        "DELIVERED": "Entregado",
+        "APPROVED": "Aprobado"
+      },
+      "integration": {
+        "CONNECTED": "Conectado",
+        "PENDING": "Pendiente",
+        "ISSUE": "Incidente"
       }
     }
   }

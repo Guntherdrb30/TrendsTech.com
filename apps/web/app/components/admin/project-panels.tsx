@@ -164,7 +164,93 @@ export function ProjectLicensesTable({ project, labels }: ProjectPanelProps) {
   );
 }
 
-export function ProjectTabs({ locale, projectId, active, labels }: { locale: string; projectId: string; active: 'overview' | 'finances'; labels: Record<string, string> }) {
+function getTaskStatusTone(status: string): 'neutral' | 'success' | 'warning' | 'danger' | 'info' {
+  if (status === 'DONE') {
+    return 'success';
+  }
+  if (status === 'IN_PROGRESS' || status === 'REVIEW') {
+    return 'info';
+  }
+  if (status === 'BLOCKED') {
+    return 'danger';
+  }
+  return 'warning';
+}
+
+export function ProjectTasksTable({ project, locale, labels }: ProjectPanelProps) {
+  return (
+    <AdminDataTable
+      title={labels.tasks}
+      columns={[labels.task, labels.status, labels.priority, labels.assignee, labels.dueDate]}
+      rows={project.tasks}
+      emptyLabel={labels.empty}
+      renderRow={(task) => (
+        <TableRow key={task.id}>
+          <TableCell>{getLocalizedValue(task.title, locale)}</TableCell>
+          <TableCell>
+            <StatusBadge label={labels[`taskStatus.${task.status}`] ?? task.status} tone={getTaskStatusTone(task.status)} />
+          </TableCell>
+          <TableCell>{labels[`priority.${task.priority}`] ?? task.priority}</TableCell>
+          <TableCell>{task.assignee}</TableCell>
+          <TableCell>{task.dueDate}</TableCell>
+        </TableRow>
+      )}
+    />
+  );
+}
+
+export function ProjectDeliverablesTable({ project, locale, labels }: ProjectPanelProps) {
+  return (
+    <AdminDataTable
+      title={labels.deliverables}
+      columns={[labels.deliverable, labels.status, labels.dueDate]}
+      rows={project.deliverables}
+      emptyLabel={labels.empty}
+      renderRow={(deliverable) => (
+        <TableRow key={deliverable.id}>
+          <TableCell>{getLocalizedValue(deliverable.title, locale)}</TableCell>
+          <TableCell>{labels[`status.deliverable.${deliverable.status}`] ?? deliverable.status}</TableCell>
+          <TableCell>{deliverable.dueDate}</TableCell>
+        </TableRow>
+      )}
+    />
+  );
+}
+
+function getIntegrationStatusTone(status: string): 'neutral' | 'success' | 'warning' | 'danger' | 'info' {
+  if (status === 'CONNECTED') {
+    return 'success';
+  }
+  if (status === 'PENDING') {
+    return 'warning';
+  }
+  if (status === 'ISSUE') {
+    return 'danger';
+  }
+  return 'neutral';
+}
+
+export function ProjectIntegrationsTable({ project, labels }: ProjectPanelProps) {
+  return (
+    <AdminDataTable
+      title={labels.integrations}
+      columns={[labels.integration, labels.type, labels.status]}
+      rows={project.integrations}
+      emptyLabel={labels.empty}
+      renderRow={(integration) => (
+        <TableRow key={integration.id}>
+          <TableCell>{integration.name}</TableCell>
+          <TableCell>{integration.type}</TableCell>
+          <TableCell>
+            <StatusBadge label={labels[`status.integration.${integration.status}`] ?? integration.status} tone={getIntegrationStatusTone(integration.status)} />
+          </TableCell>
+        </TableRow>
+      )}
+    />
+  );
+}
+
+export function ProjectTabs({ locale, projectId, active, labels }: { locale: string; projectId: string; active: 'overview' | 'finances' | 'tasks' | 'deliverables' | 'integrations'; labels: Record<string, string> }) {
   const base = `/${locale}/admin/projects/${projectId}`;
   return (
     <div className="mb-5 flex flex-wrap gap-2">
@@ -179,6 +265,24 @@ export function ProjectTabs({ locale, projectId, active, labels }: { locale: str
         className={`rounded-lg border px-4 py-2 text-sm font-semibold ${active === 'finances' ? 'border-slate-950 bg-slate-950 text-white dark:border-white dark:bg-white dark:text-slate-950' : 'border-black/10 text-slate-700 dark:border-slate-800 dark:text-slate-200'}`}
       >
         {labels.finances}
+      </Link>
+      <Link
+        href={`${base}/tasks`}
+        className={`rounded-lg border px-4 py-2 text-sm font-semibold ${active === 'tasks' ? 'border-slate-950 bg-slate-950 text-white dark:border-white dark:bg-white dark:text-slate-950' : 'border-black/10 text-slate-700 dark:border-slate-800 dark:text-slate-200'}`}
+      >
+        {labels.tasks}
+      </Link>
+      <Link
+        href={`${base}/deliverables`}
+        className={`rounded-lg border px-4 py-2 text-sm font-semibold ${active === 'deliverables' ? 'border-slate-950 bg-slate-950 text-white dark:border-white dark:bg-white dark:text-slate-950' : 'border-black/10 text-slate-700 dark:border-slate-800 dark:text-slate-200'}`}
+      >
+        {labels.deliverables}
+      </Link>
+      <Link
+        href={`${base}/integrations`}
+        className={`rounded-lg border px-4 py-2 text-sm font-semibold ${active === 'integrations' ? 'border-slate-950 bg-slate-950 text-white dark:border-white dark:bg-white dark:text-slate-950' : 'border-black/10 text-slate-700 dark:border-slate-800 dark:text-slate-200'}`}
+      >
+        {labels.integrations}
       </Link>
     </div>
   );
