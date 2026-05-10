@@ -1,0 +1,43 @@
+export const adminAiPrismaModels = [
+  'Client',
+  'Lead',
+  'Sale',
+  'Budget',
+  'Proposal',
+  'Contract',
+  'Project',
+  'ProjectSystem',
+  'ProjectFinance',
+  'ProjectCost',
+  'ProjectRevenue',
+  'ProjectLicense',
+  'ProjectSubscription',
+  'ProjectMaintenance',
+  'ProjectIntegration',
+  'Task',
+  'Sprint',
+  'Deliverable',
+  'Invoice',
+  'Payment',
+  'AiAgent',
+  'AgentTask',
+  'ActivityLog',
+  'Attachment',
+  'Note'
+] as const;
+
+export const adminAiPrismaEnums = [
+  'LeadStatus',
+  'BudgetStatus',
+  'ProposalStatus',
+  'ContractStatus',
+  'SaleStatus',
+  'ProjectStatus',
+  'TaskStatus',
+  'InvoiceStatus',
+  'PaymentStatus',
+  'SubscriptionStatus',
+  'LicenseStatus',
+  'AgentStatus',
+  'Priority'
+] as const;

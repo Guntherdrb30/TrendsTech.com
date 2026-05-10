@@ -742,5 +742,180 @@
         "workspaceCta": "Entrar al workspace"
       }
     }
+  },
+  "admin": {
+    "empty": "Sin registros para mostrar.",
+    "shell": {
+      "title": "Admin AI Dashboard",
+      "subtitle": "Centro interno de Trends172Tech para ventas, proyectos, finanzas, licencias, mantenimiento y agentes IA.",
+      "navigation": "Administracion",
+      "dashboard": "Dashboard",
+      "clients": "Clientes",
+      "projects": "Proyectos",
+      "proposals": "Propuestas",
+      "licenses": "Licencias",
+      "aiAgents": "Agentes IA",
+      "backToSite": "Volver al sitio"
+    },
+    "dashboard": {
+      "title": "Resumen ejecutivo",
+      "subtitle": "Vista de control para ventas, proyectos activos, cobros, renovaciones y alertas operativas."
+    },
+    "clients": {
+      "title": "Clientes",
+      "subtitle": "Cuentas comerciales, salud operativa, mensualidades y balance pendiente.",
+      "table": "Cartera de clientes"
+    },
+    "projects": {
+      "title": "Proyectos vendidos",
+      "subtitle": "Administracion independiente por cliente, sistema, finanzas, tareas, licencias e integraciones.",
+      "table": "Portafolio activo"
+    },
+    "proposals": {
+      "title": "Propuestas",
+      "subtitle": "Pipeline comercial, probabilidad de cierre y estado de ofertas enviadas.",
+      "table": "Propuestas comerciales"
+    },
+    "licenses": {
+      "title": "Licencias y mensualidades",
+      "subtitle": "Control de costos de herramientas, renovaciones, mensualidades recurrentes y servicios activos.",
+      "table": "Licencias por proyecto"
+    },
+    "aiAgents": {
+      "title": "Agentes IA internos",
+      "subtitle": "Agentes asignados a ventas, delivery, finanzas, soporte y seguimiento operativo.",
+      "tasks": "Tareas asignadas a agentes"
+    },
+    "activity": {
+      "title": "Actividad reciente"
+    },
+    "tasks": {
+      "title": "Tareas"
+    },
+    "deliverables": {
+      "title": "Entregables"
+    },
+    "finances": {
+      "costBreakdown": "Desglose de costos",
+      "collectionStatus": "Estado de cobro"
+    },
+    "projectDetail": {
+      "overview": "Resumen",
+      "finances": "Finanzas"
+    },
+    "actions": {
+      "open": "Abrir"
+    },
+    "metrics": {
+      "monthSales": "Ventas del mes",
+      "budgetsSent": "Presupuestos enviados",
+      "acceptedProposals": "Propuestas aceptadas",
+      "activeProjects": "Proyectos activos",
+      "activeSubscriptions": "Mensualidades activas",
+      "mrr": "Ingreso recurrente mensual",
+      "pendingInvoices": "Facturas pendientes",
+      "overduePayments": "Pagos vencidos",
+      "expiringLicenses": "Licencias por vencer",
+      "overdueTasks": "Tareas atrasadas",
+      "maintenanceProjects": "Proyectos en mantenimiento",
+      "estimatedProfit": "Ganancia estimada mensual",
+      "clients": "Clientes",
+      "openBalance": "Balance pendiente",
+      "projects": "Proyectos",
+      "soldTotal": "Total vendido",
+      "proposals": "Propuestas",
+      "pipeline": "Pipeline",
+      "licenses": "Licencias",
+      "licenseCosts": "Costos de licencias",
+      "subscriptions": "Mensualidades",
+      "aiAgents": "Agentes IA",
+      "activeAgents": "Agentes activos",
+      "agentCosts": "Costo mensual IA"
+    },
+    "fields": {
+      "project": "Proyecto",
+      "client": "Cliente",
+      "clients": "Clientes",
+      "contact": "Contacto",
+      "industry": "Industria",
+      "projects": "Proyectos",
+      "status": "Estado",
+      "mrr": "MRR",
+      "health": "Salud",
+      "manager": "Responsable",
+      "actions": "Acciones",
+      "repository": "Repositorio",
+      "domain": "Dominio",
+      "soldAmount": "Monto vendido",
+      "monthlyRevenue": "Ingreso mensual",
+      "monthlyCosts": "Costos mensuales",
+      "monthlyProfit": "Ganancia mensual",
+      "task": "Tarea",
+      "priority": "Prioridad",
+      "assignee": "Asignado",
+      "deliverable": "Entregable",
+      "dueDate": "Vence",
+      "initialBudget": "Presupuesto inicial",
+      "recurringMonthly": "Mensualidad",
+      "estimatedProfit": "Ganancia estimada",
+      "operationalCosts": "Costos operativos",
+      "licenseCosts": "Costos de licencias",
+      "totalCosts": "Costos totales",
+      "license": "Licencia",
+      "provider": "Proveedor",
+      "monthlyCost": "Costo mensual",
+      "renewsAt": "Renueva",
+      "proposal": "Propuesta",
+      "amount": "Monto",
+      "probability": "Probabilidad",
+      "validUntil": "Valida hasta",
+      "agent": "Agente",
+      "assignedTasks": "Tareas",
+      "successRate": "Exito"
+    },
+    "tables": {
+      "activeProjects": "Proyectos prioritarios"
+    },
+    "status": {
+      "health": {
+        "GOOD": "Sano",
+        "WATCH": "Vigilar",
+        "RISK": "Riesgo"
+      },
+      "project": {
+        "PLANNING": "Planificacion",
+        "ACTIVE": "Activo",
+        "PAUSED": "Pausado",
+        "MAINTENANCE": "Mantenimiento",
+        "COMPLETED": "Completado",
+        "CANCELLED": "Cancelado"
+      },
+      "task": {
+        "TODO": "Pendiente",
+        "IN_PROGRESS": "En progreso",
+        "REVIEW": "Revision",
+        "DONE": "Listo",
+        "BLOCKED": "Bloqueado"
+      },
+      "proposal": {
+        "DRAFT": "Borrador",
+        "SENT": "Enviada",
+        "ACCEPTED": "Aceptada",
+        "REJECTED": "Rechazada",
+        "EXPIRED": "Vencida"
+      },
+      "license": {
+        "ACTIVE": "Activa",
+        "EXPIRING_SOON": "Por vencer",
+        "EXPIRED": "Vencida",
+        "CANCELLED": "Cancelada"
+      },
+      "priority": {
+        "LOW": "Baja",
+        "MEDIUM": "Media",
+        "HIGH": "Alta",
+        "URGENT": "Urgente"
+      }
+    }
   }
 }

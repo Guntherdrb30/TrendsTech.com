@@ -742,5 +742,180 @@
         "workspaceCta": "Open the workspace"
       }
     }
+  },
+  "admin": {
+    "empty": "No records to show.",
+    "shell": {
+      "title": "Admin AI Dashboard",
+      "subtitle": "Trends172Tech internal center for sales, projects, finance, licenses, maintenance, and AI agents.",
+      "navigation": "Administration",
+      "dashboard": "Dashboard",
+      "clients": "Clients",
+      "projects": "Projects",
+      "proposals": "Proposals",
+      "licenses": "Licenses",
+      "aiAgents": "AI Agents",
+      "backToSite": "Back to site"
+    },
+    "dashboard": {
+      "title": "Executive overview",
+      "subtitle": "Control view for sales, active projects, collections, renewals, and operational alerts."
+    },
+    "clients": {
+      "title": "Clients",
+      "subtitle": "Commercial accounts, operational health, monthly retainers, and open balance.",
+      "table": "Client portfolio"
+    },
+    "projects": {
+      "title": "Sold projects",
+      "subtitle": "Independent administration by client, system, finances, tasks, licenses, and integrations.",
+      "table": "Active portfolio"
+    },
+    "proposals": {
+      "title": "Proposals",
+      "subtitle": "Commercial pipeline, close probability, and status of sent offers.",
+      "table": "Commercial proposals"
+    },
+    "licenses": {
+      "title": "Licenses and subscriptions",
+      "subtitle": "Control tool costs, renewals, recurring retainers, and active services.",
+      "table": "Licenses by project"
+    },
+    "aiAgents": {
+      "title": "Internal AI agents",
+      "subtitle": "Agents assigned to sales, delivery, finance, support, and operational follow-up.",
+      "tasks": "Tasks assigned to agents"
+    },
+    "activity": {
+      "title": "Recent activity"
+    },
+    "tasks": {
+      "title": "Tasks"
+    },
+    "deliverables": {
+      "title": "Deliverables"
+    },
+    "finances": {
+      "costBreakdown": "Cost breakdown",
+      "collectionStatus": "Collection status"
+    },
+    "projectDetail": {
+      "overview": "Overview",
+      "finances": "Finances"
+    },
+    "actions": {
+      "open": "Open"
+    },
+    "metrics": {
+      "monthSales": "Monthly sales",
+      "budgetsSent": "Budgets sent",
+      "acceptedProposals": "Accepted proposals",
+      "activeProjects": "Active projects",
+      "activeSubscriptions": "Active subscriptions",
+      "mrr": "Monthly recurring revenue",
+      "pendingInvoices": "Pending invoices",
+      "overduePayments": "Overdue payments",
+      "expiringLicenses": "Expiring licenses",
+      "overdueTasks": "Overdue tasks",
+      "maintenanceProjects": "Maintenance projects",
+      "estimatedProfit": "Estimated monthly profit",
+      "clients": "Clients",
+      "openBalance": "Open balance",
+      "projects": "Projects",
+      "soldTotal": "Sold total",
+      "proposals": "Proposals",
+      "pipeline": "Pipeline",
+      "licenses": "Licenses",
+      "licenseCosts": "License costs",
+      "subscriptions": "Subscriptions",
+      "aiAgents": "AI agents",
+      "activeAgents": "Active agents",
+      "agentCosts": "Monthly AI cost"
+    },
+    "fields": {
+      "project": "Project",
+      "client": "Client",
+      "clients": "Clients",
+      "contact": "Contact",
+      "industry": "Industry",
+      "projects": "Projects",
+      "status": "Status",
+      "mrr": "MRR",
+      "health": "Health",
+      "manager": "Manager",
+      "actions": "Actions",
+      "repository": "Repository",
+      "domain": "Domain",
+      "soldAmount": "Sold amount",
+      "monthlyRevenue": "Monthly revenue",
+      "monthlyCosts": "Monthly costs",
+      "monthlyProfit": "Monthly profit",
+      "task": "Task",
+      "priority": "Priority",
+      "assignee": "Assignee",
+      "deliverable": "Deliverable",
+      "dueDate": "Due date",
+      "initialBudget": "Initial budget",
+      "recurringMonthly": "Monthly retainer",
+      "estimatedProfit": "Estimated profit",
+      "operationalCosts": "Operational costs",
+      "licenseCosts": "License costs",
+      "totalCosts": "Total costs",
+      "license": "License",
+      "provider": "Provider",
+      "monthlyCost": "Monthly cost",
+      "renewsAt": "Renews at",
+      "proposal": "Proposal",
+      "amount": "Amount",
+      "probability": "Probability",
+      "validUntil": "Valid until",
+      "agent": "Agent",
+      "assignedTasks": "Tasks",
+      "successRate": "Success"
+    },
+    "tables": {
+      "activeProjects": "Priority projects"
+    },
+    "status": {
+      "health": {
+        "GOOD": "Good",
+        "WATCH": "Watch",
+        "RISK": "Risk"
+      },
+      "project": {
+        "PLANNING": "Planning",
+        "ACTIVE": "Active",
+        "PAUSED": "Paused",
+        "MAINTENANCE": "Maintenance",
+        "COMPLETED": "Completed",
+        "CANCELLED": "Cancelled"
+      },
+      "task": {
+        "TODO": "To do",
+        "IN_PROGRESS": "In progress",
+        "REVIEW": "Review",
+        "DONE": "Done",
+        "BLOCKED": "Blocked"
+      },
+      "proposal": {
+        "DRAFT": "Draft",
+        "SENT": "Sent",
+        "ACCEPTED": "Accepted",
+        "REJECTED": "Rejected",
+        "EXPIRED": "Expired"
+      },
+      "license": {
+        "ACTIVE": "Active",
+        "EXPIRING_SOON": "Expiring soon",
+        "EXPIRED": "Expired",
+        "CANCELLED": "Cancelled"
+      },
+      "priority": {
+        "LOW": "Low",
+        "MEDIUM": "Medium",
+        "HIGH": "High",
+        "URGENT": "Urgent"
+      }
+    }
   }
 }
