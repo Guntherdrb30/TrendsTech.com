@@ -2,7 +2,8 @@ import { getTranslations } from 'next-intl/server';
 import { AdminDataTable, TableCell, TableRow } from '@/components/admin/admin-data-table';
 import { MetricCard } from '@/components/admin/metric-card';
 import { StatusBadge } from '@/components/admin/status-badge';
-import { adminClients, getLocalizedValue } from '@/lib/admin-ai/mock-data';
+import { getAdminClients } from '@/lib/admin-ai/data';
+import { getLocalizedValue } from '@/lib/admin-ai/mock-data';
 
 function money(value: number) {
   return `$${value.toLocaleString('en-US')}`;
@@ -11,8 +12,9 @@ function money(value: number) {
 export default async function AdminClientsPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   const t = await getTranslations('admin');
-  const totalMrr = adminClients.reduce((sum, client) => sum + client.mrr, 0);
-  const openBalance = adminClients.reduce((sum, client) => sum + client.openBalance, 0);
+  const clients = await getAdminClients();
+  const totalMrr = clients.reduce((sum, client) => sum + client.mrr, 0);
+  const openBalance = clients.reduce((sum, client) => sum + client.openBalance, 0);
 
   return (
     <div className="space-y-6">
@@ -21,14 +23,14 @@ export default async function AdminClientsPage({ params }: { params: Promise<{ l
         <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">{t('clients.subtitle')}</p>
       </div>
       <div className="grid gap-4 md:grid-cols-3">
-        <MetricCard label={t('metrics.clients')} value={String(adminClients.length)} />
+        <MetricCard label={t('metrics.clients')} value={String(clients.length)} />
         <MetricCard label={t('metrics.mrr')} value={money(totalMrr)} accent="emerald" />
         <MetricCard label={t('metrics.openBalance')} value={money(openBalance)} accent="amber" />
       </div>
       <AdminDataTable
         title={t('clients.table')}
         columns={[t('fields.client'), t('fields.contact'), t('fields.industry'), t('fields.projects'), t('fields.mrr'), t('fields.health')]}
-        rows={adminClients}
+        rows={clients}
         emptyLabel={t('empty')}
         renderRow={(client) => (
           <TableRow key={client.id}>

@@ -2,7 +2,7 @@ import { getTranslations } from 'next-intl/server';
 import { AdminDataTable, TableCell, TableRow } from '@/components/admin/admin-data-table';
 import { MetricCard } from '@/components/admin/metric-card';
 import { StatusBadge, getFinanceStatusTone } from '@/components/admin/status-badge';
-import { adminProjects, getProjectLicenses, getProjectSubscriptions } from '@/lib/admin-ai/mock-data';
+import { getAdminLicenses, getAdminProjects, getAdminSubscriptions } from '@/lib/admin-ai/data';
 
 function money(value: number) {
   return `$${value.toLocaleString('en-US')}`;
@@ -10,8 +10,12 @@ function money(value: number) {
 
 export default async function AdminLicensesPage() {
   const t = await getTranslations('admin');
-  const licenses = getProjectLicenses();
-  const subscriptions = getProjectSubscriptions();
+  const [licenses, subscriptions, projects] = await Promise.all([
+    getAdminLicenses(),
+    getAdminSubscriptions(),
+    getAdminProjects()
+  ]);
+  const projectMap = new Map(projects.map((project) => [project.id, project]));
   const licenseCost = licenses.reduce((sum, license) => sum + license.monthlyCost, 0);
   const subscriptionRevenue = subscriptions.reduce((sum, subscription) => sum + subscription.monthlyAmount, 0);
 
@@ -35,7 +39,7 @@ export default async function AdminLicensesPage() {
         renderRow={(license) => (
           <TableRow key={license.id}>
             <TableCell className="font-semibold text-slate-950 dark:text-white">{license.name}</TableCell>
-            <TableCell>{adminProjects.find((project) => project.id === license.projectId)?.name ?? '-'}</TableCell>
+            <TableCell>{projectMap.get(license.projectId)?.name ?? '-'}</TableCell>
             <TableCell>{license.provider}</TableCell>
             <TableCell>
               <StatusBadge label={t(`status.license.${license.status}`)} tone={getFinanceStatusTone(license.status)} />

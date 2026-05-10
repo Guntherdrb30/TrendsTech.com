@@ -3,7 +3,7 @@ import { getTranslations } from 'next-intl/server';
 import { AdminDataTable, TableCell, TableRow } from '@/components/admin/admin-data-table';
 import { MetricCard } from '@/components/admin/metric-card';
 import { StatusBadge, getProjectStatusTone } from '@/components/admin/status-badge';
-import { adminProjects, getClientById } from '@/lib/admin-ai/mock-data';
+import { getAdminClients, getAdminProjects } from '@/lib/admin-ai/data';
 
 function money(value: number) {
   return `$${value.toLocaleString('en-US')}`;
@@ -12,9 +12,11 @@ function money(value: number) {
 export default async function AdminProjectsPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   const t = await getTranslations('admin');
-  const sold = adminProjects.reduce((sum, project) => sum + project.finance.soldAmount, 0);
-  const mrr = adminProjects.reduce((sum, project) => sum + project.finance.recurringMonthly, 0);
-  const profit = adminProjects.reduce((sum, project) => sum + project.finance.estimatedMonthlyProfit, 0);
+  const [projects, clients] = await Promise.all([getAdminProjects(), getAdminClients()]);
+  const clientMap = new Map(clients.map((client) => [client.id, client]));
+  const sold = projects.reduce((sum, project) => sum + project.finance.soldAmount, 0);
+  const mrr = projects.reduce((sum, project) => sum + project.finance.recurringMonthly, 0);
+  const profit = projects.reduce((sum, project) => sum + project.finance.estimatedMonthlyProfit, 0);
 
   return (
     <div className="space-y-6">
@@ -23,7 +25,7 @@ export default async function AdminProjectsPage({ params }: { params: Promise<{ 
         <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">{t('projects.subtitle')}</p>
       </div>
       <div className="grid gap-4 md:grid-cols-4">
-        <MetricCard label={t('metrics.projects')} value={String(adminProjects.length)} />
+        <MetricCard label={t('metrics.projects')} value={String(projects.length)} />
         <MetricCard label={t('metrics.soldTotal')} value={money(sold)} accent="emerald" />
         <MetricCard label={t('metrics.mrr')} value={money(mrr)} accent="cyan" />
         <MetricCard label={t('metrics.estimatedProfit')} value={money(profit)} accent="slate" />
@@ -31,12 +33,12 @@ export default async function AdminProjectsPage({ params }: { params: Promise<{ 
       <AdminDataTable
         title={t('projects.table')}
         columns={[t('fields.project'), t('fields.client'), t('fields.status'), t('fields.manager'), t('fields.mrr'), t('fields.actions')]}
-        rows={adminProjects}
+        rows={projects}
         emptyLabel={t('empty')}
         renderRow={(project) => (
           <TableRow key={project.id}>
             <TableCell className="font-semibold text-slate-950 dark:text-white">{project.name}</TableCell>
-            <TableCell>{getClientById(project.clientId)?.name ?? '-'}</TableCell>
+            <TableCell>{clientMap.get(project.clientId)?.name ?? '-'}</TableCell>
             <TableCell>
               <StatusBadge label={t(`status.project.${project.status}`)} tone={getProjectStatusTone(project.status)} />
             </TableCell>

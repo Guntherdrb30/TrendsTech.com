@@ -3,8 +3,8 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
   directUrl = env("DIRECT_URL")
 }
 
@@ -192,87 +192,187 @@ enum SiteAssetSection {
   HOME_SHOWCASE
 }
 
-model Tenant {
-  id             String           @id @default(cuid())
-  name           String
-  slug           String           @unique
-  mode           TenantMode       @default(SINGLE)
-  status         TenantStatus     @default(ACTIVE)
-  createdAt      DateTime         @default(now())
-  updatedAt      DateTime         @updatedAt
+enum AdminLeadStatus {
+  NEW
+  CONTACTED
+  QUALIFIED
+  PROPOSAL_SENT
+  WON
+  LOST
+}
 
-  users          User[]
-  endCustomers   EndCustomer[]
-  agentInstances AgentInstance[]
-  agentAccesses  AgentAccess[]
+enum AdminBudgetStatus {
+  DRAFT
+  SENT
+  APPROVED
+  REJECTED
+  EXPIRED
+}
+
+enum AdminProposalStatus {
+  DRAFT
+  SENT
+  ACCEPTED
+  REJECTED
+  EXPIRED
+}
+
+enum AdminContractStatus {
+  DRAFT
+  SENT
+  SIGNED
+  CANCELLED
+  EXPIRED
+}
+
+enum AdminSaleStatus {
+  PENDING
+  WON
+  LOST
+  REFUNDED
+}
+
+enum AdminProjectStatus {
+  PLANNING
+  ACTIVE
+  PAUSED
+  MAINTENANCE
+  COMPLETED
+  CANCELLED
+}
+
+enum AdminTaskStatus {
+  TODO
+  IN_PROGRESS
+  REVIEW
+  DONE
+  BLOCKED
+}
+
+enum AdminInvoiceStatus {
+  DRAFT
+  SENT
+  PAID
+  PARTIALLY_PAID
+  OVERDUE
+  CANCELLED
+}
+
+enum AdminPaymentStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  REFUNDED
+}
+
+enum AdminSubscriptionStatus {
+  ACTIVE
+  PAUSED
+  CANCELLED
+  EXPIRED
+}
+
+enum AdminLicenseStatus {
+  ACTIVE
+  EXPIRING_SOON
+  EXPIRED
+  CANCELLED
+}
+
+enum AdminAiAgentStatus {
+  ACTIVE
+  INACTIVE
+  TRAINING
+}
+
+enum AdminPriority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+model Tenant {
+  id        String       @id @default(cuid())
+  name      String
+  slug      String       @unique
+  mode      TenantMode   @default(SINGLE)
+  status    TenantStatus @default(ACTIVE)
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+
+  users            User[]
+  endCustomers     EndCustomer[]
+  agentInstances   AgentInstance[]
+  agentAccesses    AgentAccess[]
   whatsappChannels WhatsAppChannel[]
-  knowledge      KnowledgeSource[]
-  installs       Install[]
-  subscriptions  Subscription[]
-  manualPayments ManualPayment[]
-  auditLogs      AuditLog[]
-  knowledgeChunks KnowledgeChunk[]
-  tokenWallet    TokenWallet?
-  tokenUsageLogs TokenUsageLog[]
-  agentSessions  AgentSession[]
-  accessLogs     AccessLog[]
-  devProjects    DevProject[]
-  devTasks       DevTask[]
-  remoteSessions RemoteSession[]
-  devRunners     DevRunner[]
-  devUsageMetrics DevUsageMetric[]
+  knowledge        KnowledgeSource[]
+  installs         Install[]
+  subscriptions    Subscription[]
+  manualPayments   ManualPayment[]
+  auditLogs        AuditLog[]
+  knowledgeChunks  KnowledgeChunk[]
+  tokenWallet      TokenWallet?
+  tokenUsageLogs   TokenUsageLog[]
+  agentSessions    AgentSession[]
+  accessLogs       AccessLog[]
+  devProjects      DevProject[]
+  devTasks         DevTask[]
+  remoteSessions   RemoteSession[]
+  devRunners       DevRunner[]
+  devUsageMetrics  DevUsageMetric[]
 }
 
 model User {
-  id                 String          @id @default(cuid())
-  tenantId           String?
-  email              String          @unique
-  name               String?
-  phone              String?
-  avatarUrl          String?
-  role               UserRole        @default(TENANT_VIEWER)
-  passwordHash       String?
-  createdAt          DateTime        @default(now())
-  updatedAt          DateTime        @updatedAt
+  id           String   @id @default(cuid())
+  tenantId     String?
+  email        String   @unique
+  name         String?
+  phone        String?
+  avatarUrl    String?
+  role         UserRole @default(TENANT_VIEWER)
+  passwordHash String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
-  tenant             Tenant?         @relation(fields: [tenantId], references: [id])
-  reviewedPayments   ManualPayment[] @relation("ManualPaymentReviewedBy")
-  auditLogs          AuditLog[]      @relation("AuditLogActor")
-  updatedSettings    GlobalSettings[]
-  updatedSiteAssets  SiteAsset[]      @relation("SiteAssetUpdatedBy")
-  passwordResets     PasswordResetToken[]
-  newsPosts          NewsPost[]       @relation("NewsPostAuthor")
-  devProjects        DevProject[]     @relation("DevProjectCreatedBy")
-  devTasks           DevTask[]        @relation("DevTaskCreatedBy")
-  devAiProviders     DevAIProvider[]
-  remoteSessions     RemoteSession[]
-  createdDevRunners  DevRunner[]      @relation("DevRunnerCreatedBy")
+  tenant            Tenant?              @relation(fields: [tenantId], references: [id])
+  reviewedPayments  ManualPayment[]      @relation("ManualPaymentReviewedBy")
+  auditLogs         AuditLog[]           @relation("AuditLogActor")
+  updatedSettings   GlobalSettings[]
+  updatedSiteAssets SiteAsset[]          @relation("SiteAssetUpdatedBy")
+  passwordResets    PasswordResetToken[]
+  newsPosts         NewsPost[]           @relation("NewsPostAuthor")
+  devProjects       DevProject[]         @relation("DevProjectCreatedBy")
+  devTasks          DevTask[]            @relation("DevTaskCreatedBy")
+  devAiProviders    DevAIProvider[]
+  remoteSessions    RemoteSession[]
+  createdDevRunners DevRunner[]          @relation("DevRunnerCreatedBy")
 
   @@index([tenantId])
 }
 
 model PasswordResetToken {
-  id        String   @id @default(cuid())
+  id        String    @id @default(cuid())
   userId    String
-  tokenHash String   @unique
+  tokenHash String    @unique
   expiresAt DateTime
   usedAt    DateTime?
-  createdAt DateTime @default(now())
+  createdAt DateTime  @default(now())
 
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@index([expiresAt])
 }
 
 model EndCustomer {
-  id             String          @id @default(cuid())
-  tenantId       String
-  name           String
-  email          String?
-  phone          String?
-  createdAt      DateTime        @default(now())
-  updatedAt      DateTime        @updatedAt
+  id        String   @id @default(cuid())
+  tenantId  String
+  name      String
+  email     String?
+  phone     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   tenant         Tenant          @relation(fields: [tenantId], references: [id])
   agentInstances AgentInstance[]
@@ -281,20 +381,20 @@ model EndCustomer {
 }
 
 model AgentInstance {
-  id              String           @id @default(cuid())
+  id              String      @id @default(cuid())
   tenantId        String
   endCustomerId   String?
   name            String
   baseAgentKey    String
-  languageDefault Language         @default(ES)
-  status          AgentStatus      @default(DRAFT)
+  languageDefault Language    @default(ES)
+  status          AgentStatus @default(DRAFT)
   featuresJson    Json?
   brandingJson    Json?
-  createdAt       DateTime         @default(now())
-  updatedAt       DateTime         @updatedAt
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
 
-  tenant          Tenant           @relation(fields: [tenantId], references: [id])
-  endCustomer     EndCustomer?     @relation(fields: [endCustomerId], references: [id])
+  tenant          Tenant            @relation(fields: [tenantId], references: [id])
+  endCustomer     EndCustomer?      @relation(fields: [endCustomerId], references: [id])
   whatsappChannel WhatsAppChannel?
   knowledge       KnowledgeSource[]
   installs        Install[]
@@ -310,40 +410,40 @@ model AgentInstance {
 }
 
 model KnowledgeSource {
-  id              String               @id @default(cuid())
+  id              String                @id @default(cuid())
   tenantId        String
   agentInstanceId String
   type            KnowledgeSourceType
   title           String?
   url             String?
   fileKey         String?
-  rawText         String?              @db.Text
+  rawText         String?               @db.Text
   status          KnowledgeSourceStatus @default(PENDING)
-  createdAt       DateTime             @default(now())
-  updatedAt       DateTime             @updatedAt
+  createdAt       DateTime              @default(now())
+  updatedAt       DateTime              @updatedAt
 
-  tenant          Tenant               @relation(fields: [tenantId], references: [id])
-  agentInstance   AgentInstance        @relation(fields: [agentInstanceId], references: [id])
-  chunks          KnowledgeChunk[]
+  tenant        Tenant           @relation(fields: [tenantId], references: [id])
+  agentInstance AgentInstance    @relation(fields: [agentInstanceId], references: [id])
+  chunks        KnowledgeChunk[]
 
   @@index([tenantId])
   @@index([agentInstanceId])
 }
 
 model KnowledgeChunk {
-  id              String   @id @default(cuid())
+  id              String                @id @default(cuid())
   tenantId        String
   agentInstanceId String
   sourceId        String
-  content         String   @db.Text
+  content         String                @db.Text
   embedding       Unsupported("vector")
   tokenCount      Int
   metaJson        Json?
-  createdAt       DateTime @default(now())
+  createdAt       DateTime              @default(now())
 
-  tenant          Tenant          @relation(fields: [tenantId], references: [id])
-  agentInstance   AgentInstance   @relation(fields: [agentInstanceId], references: [id])
-  source          KnowledgeSource @relation(fields: [sourceId], references: [id], onDelete: Cascade)
+  tenant        Tenant          @relation(fields: [tenantId], references: [id])
+  agentInstance AgentInstance   @relation(fields: [agentInstanceId], references: [id])
+  source        KnowledgeSource @relation(fields: [sourceId], references: [id], onDelete: Cascade)
 
   @@index([tenantId])
   @@index([agentInstanceId])
@@ -360,63 +460,63 @@ model Install {
   createdAt       DateTime      @default(now())
   updatedAt       DateTime      @updatedAt
 
-  tenant          Tenant        @relation(fields: [tenantId], references: [id])
-  agentInstance   AgentInstance @relation(fields: [agentInstanceId], references: [id])
+  tenant        Tenant        @relation(fields: [tenantId], references: [id])
+  agentInstance AgentInstance @relation(fields: [agentInstanceId], references: [id])
 
   @@index([tenantId])
   @@index([agentInstanceId])
 }
 
 model Plan {
-  id               String        @id @default(cuid())
-  key              String        @unique
-  name_es          String
-  name_en          String
-  priceUsdMonthly  Decimal       @db.Decimal(12, 2)
-  limitsJson       Json?
-  isActive         Boolean       @default(true)
-  createdAt        DateTime      @default(now())
-  updatedAt        DateTime      @updatedAt
+  id              String   @id @default(cuid())
+  key             String   @unique
+  name_es         String
+  name_en         String
+  priceUsdMonthly Decimal  @db.Decimal(12, 2)
+  limitsJson      Json?
+  isActive        Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 
-  subscriptions    Subscription[]
+  subscriptions Subscription[]
 }
 
 model Subscription {
-  id         String             @id @default(cuid())
-  tenantId   String
-  planId     String
-  status     SubscriptionStatus @default(ACTIVE)
-  startedAt  DateTime           @default(now())
-  endsAt     DateTime?
-  createdAt  DateTime           @default(now())
-  updatedAt  DateTime           @updatedAt
+  id        String             @id @default(cuid())
+  tenantId  String
+  planId    String
+  status    SubscriptionStatus @default(ACTIVE)
+  startedAt DateTime           @default(now())
+  endsAt    DateTime?
+  createdAt DateTime           @default(now())
+  updatedAt DateTime           @updatedAt
 
-  tenant     Tenant             @relation(fields: [tenantId], references: [id])
-  plan       Plan               @relation(fields: [planId], references: [id])
-  payments   ManualPayment[]
+  tenant   Tenant          @relation(fields: [tenantId], references: [id])
+  plan     Plan            @relation(fields: [planId], references: [id])
+  payments ManualPayment[]
 
   @@index([tenantId])
   @@index([planId])
 }
 
 model ManualPayment {
-  id               String               @id @default(cuid())
+  id               String                @id @default(cuid())
   tenantId         String
   subscriptionId   String?
-  amountPaid       Decimal              @db.Decimal(12, 2)
+  amountPaid       Decimal               @db.Decimal(12, 2)
   currencyPaid     ManualPaymentCurrency
-  exchangeRateUsed Decimal?             @db.Decimal(12, 4)
+  exchangeRateUsed Decimal?              @db.Decimal(12, 4)
   reference        String
   proofUrl         String?
-  status           ManualPaymentStatus  @default(PENDING)
+  status           ManualPaymentStatus   @default(PENDING)
   reviewedByUserId String?
   reviewedAt       DateTime?
-  createdAt        DateTime             @default(now())
-  updatedAt        DateTime             @updatedAt
+  createdAt        DateTime              @default(now())
+  updatedAt        DateTime              @updatedAt
 
-  tenant           Tenant               @relation(fields: [tenantId], references: [id])
-  subscription     Subscription?        @relation(fields: [subscriptionId], references: [id])
-  reviewedBy       User?                @relation("ManualPaymentReviewedBy", fields: [reviewedByUserId], references: [id])
+  tenant       Tenant        @relation(fields: [tenantId], references: [id])
+  subscription Subscription? @relation(fields: [subscriptionId], references: [id])
+  reviewedBy   User?         @relation("ManualPaymentReviewedBy", fields: [reviewedByUserId], references: [id])
 
   @@index([tenantId])
   @@index([subscriptionId])
@@ -438,7 +538,7 @@ model GlobalSettings {
   updatedByUserId           String?
   updatedAt                 DateTime     @updatedAt
 
-  updatedBy                 User?        @relation(fields: [updatedByUserId], references: [id])
+  updatedBy User? @relation(fields: [updatedByUserId], references: [id])
 
   @@index([updatedByUserId])
 }
@@ -453,8 +553,8 @@ model AuditLog {
   metaJson    Json?
   createdAt   DateTime @default(now())
 
-  actor       User     @relation("AuditLogActor", fields: [actorUserId], references: [id])
-  tenant      Tenant?  @relation(fields: [tenantId], references: [id])
+  actor  User    @relation("AuditLogActor", fields: [actorUserId], references: [id])
+  tenant Tenant? @relation(fields: [tenantId], references: [id])
 
   @@index([actorUserId])
   @@index([tenantId])
@@ -471,8 +571,8 @@ model WhatsAppChannel {
   createdAt       DateTime              @default(now())
   updatedAt       DateTime              @updatedAt
 
-  tenant          Tenant                @relation(fields: [tenantId], references: [id])
-  agentInstance   AgentInstance         @relation(fields: [agentInstanceId], references: [id])
+  tenant        Tenant        @relation(fields: [tenantId], references: [id])
+  agentInstance AgentInstance @relation(fields: [agentInstanceId], references: [id])
 
   @@index([tenantId])
 }
@@ -482,11 +582,11 @@ model TokenWallet {
   balance   Int      @default(0)
   updatedAt DateTime @updatedAt
 
-  tenant    Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
 }
 
 model TokenUsageLog {
-  id              String        @id @default(cuid())
+  id              String    @id @default(cuid())
   tenantId        String
   agentInstanceId String
   sessionId       String
@@ -496,10 +596,10 @@ model TokenUsageLog {
   costUsdMicros   Int?
   billedAt        DateTime?
   model           String?
-  createdAt       DateTime      @default(now())
+  createdAt       DateTime  @default(now())
 
-  tenant          Tenant        @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  agentInstance   AgentInstance @relation(fields: [agentInstanceId], references: [id], onDelete: Cascade)
+  tenant        Tenant        @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  agentInstance AgentInstance @relation(fields: [agentInstanceId], references: [id], onDelete: Cascade)
 
   @@index([tenantId])
   @@index([agentInstanceId])
@@ -507,40 +607,40 @@ model TokenUsageLog {
 }
 
 model AgentSession {
-  id              String        @id @default(cuid())
+  id              String   @id @default(cuid())
   tenantId        String
   agentInstanceId String
   sessionId       String
   channel         String?
   endUserJson     Json?
-  isDemo          Boolean       @default(false)
-  createdAt       DateTime      @default(now())
-  lastSeenAt      DateTime      @updatedAt
+  isDemo          Boolean  @default(false)
+  createdAt       DateTime @default(now())
+  lastSeenAt      DateTime @updatedAt
 
-  tenant          Tenant        @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  agentInstance   AgentInstance @relation(fields: [agentInstanceId], references: [id], onDelete: Cascade)
+  tenant        Tenant        @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  agentInstance AgentInstance @relation(fields: [agentInstanceId], references: [id], onDelete: Cascade)
 
+  @@unique([tenantId, sessionId])
   @@index([tenantId])
   @@index([agentInstanceId])
   @@index([sessionId])
-  @@unique([tenantId, sessionId])
 }
 
 model AgentAccess {
-  id                String        @id @default(cuid())
+  id                String   @id @default(cuid())
   tenantId          String
   agentId           String
   name              String
-  allowedDomains    String[]      @default([])
-  channel           String        @default("embedded_web")
+  allowedDomains    String[] @default([])
+  channel           String   @default("embedded_web")
   maxTokensPerMonth Int?
-  isActive          Boolean       @default(true)
-  createdAt         DateTime      @default(now())
-  updatedAt         DateTime      @updatedAt
+  isActive          Boolean  @default(true)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
 
-  tenant            Tenant        @relation(fields: [tenantId], references: [id])
-  agentInstance     AgentInstance @relation(fields: [agentId], references: [id])
-  accessLogs        AccessLog[]
+  tenant        Tenant        @relation(fields: [tenantId], references: [id])
+  agentInstance AgentInstance @relation(fields: [agentId], references: [id])
+  accessLogs    AccessLog[]
 
   @@index([tenantId])
   @@index([agentId])
@@ -549,7 +649,7 @@ model AgentAccess {
 }
 
 model AccessLog {
-  id              String        @id @default(cuid())
+  id              String   @id @default(cuid())
   tenantId        String
   agentInstanceId String
   agentAccessId   String
@@ -559,11 +659,11 @@ model AccessLog {
   status          String
   reason          String?
   metaJson        Json?
-  createdAt       DateTime      @default(now())
+  createdAt       DateTime @default(now())
 
-  tenant          Tenant        @relation(fields: [tenantId], references: [id])
-  agentInstance   AgentInstance @relation(fields: [agentInstanceId], references: [id])
-  agentAccess     AgentAccess   @relation(fields: [agentAccessId], references: [id])
+  tenant        Tenant        @relation(fields: [tenantId], references: [id])
+  agentInstance AgentInstance @relation(fields: [agentInstanceId], references: [id])
+  agentAccess   AgentAccess   @relation(fields: [agentAccessId], references: [id])
 
   @@index([tenantId])
   @@index([agentInstanceId])
@@ -571,21 +671,21 @@ model AccessLog {
 }
 
 model NewsPost {
-  id            String         @id @default(cuid())
-  slug          String         @unique
-  title         String
-  summary       String         @db.Text
-  body          String         @db.Text
-  category      String
-  language      Language       @default(ES)
-  status        NewsPostStatus @default(DRAFT)
-  featured      Boolean        @default(false)
-  publishedAt   DateTime?
-  authorUserId  String?
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
+  id           String         @id @default(cuid())
+  slug         String         @unique
+  title        String
+  summary      String         @db.Text
+  body         String         @db.Text
+  category     String
+  language     Language       @default(ES)
+  status       NewsPostStatus @default(DRAFT)
+  featured     Boolean        @default(false)
+  publishedAt  DateTime?
+  authorUserId String?
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
 
-  author        User?          @relation("NewsPostAuthor", fields: [authorUserId], references: [id])
+  author User? @relation("NewsPostAuthor", fields: [authorUserId], references: [id])
 
   @@index([status, language, publishedAt])
   @@index([featured, status, publishedAt])
@@ -611,10 +711,517 @@ model SiteAsset {
   createdAt       DateTime         @default(now())
   updatedAt       DateTime         @updatedAt
 
-  updatedBy       User?            @relation("SiteAssetUpdatedBy", fields: [updatedByUserId], references: [id])
+  updatedBy User? @relation("SiteAssetUpdatedBy", fields: [updatedByUserId], references: [id])
 
   @@index([section, language, isActive, sortOrder])
   @@index([updatedByUserId])
+}
+
+model AdminClient {
+  id          String   @id @default(cuid())
+  name        String
+  contactName String?
+  email       String?
+  phone       String?
+  country     String?
+  industry    String?
+  health      String   @default("GOOD")
+  notes       String?  @db.Text
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  leads        AdminLead[]
+  sales        AdminSale[]
+  budgets      AdminBudget[]
+  proposals    AdminProposal[]
+  contracts    AdminContract[]
+  projects     AdminProject[]
+  invoices     AdminInvoice[]
+  payments     AdminPayment[]
+  activityLogs AdminActivityLog[]
+
+  @@index([name])
+  @@index([email])
+  @@index([createdAt])
+}
+
+model AdminLead {
+  id             String          @id @default(cuid())
+  clientId       String?
+  clientName     String
+  source         String?
+  status         AdminLeadStatus @default(NEW)
+  estimatedValue Decimal         @default(0) @db.Decimal(12, 2)
+  nextStep       String?         @db.Text
+  owner          String?
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+
+  client AdminClient? @relation(fields: [clientId], references: [id], onDelete: SetNull)
+
+  @@index([clientId])
+  @@index([status])
+  @@index([createdAt])
+}
+
+model AdminSale {
+  id            String          @id @default(cuid())
+  clientId      String
+  proposalId    String?
+  projectId     String?
+  title         String
+  status        AdminSaleStatus @default(PENDING)
+  amount        Decimal         @db.Decimal(12, 2)
+  paymentMethod String?
+  wonAt         DateTime?
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+
+  client   AdminClient    @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  proposal AdminProposal? @relation(fields: [proposalId], references: [id], onDelete: SetNull)
+  project  AdminProject?  @relation(fields: [projectId], references: [id], onDelete: SetNull)
+
+  @@index([clientId])
+  @@index([proposalId])
+  @@index([projectId])
+  @@index([status])
+}
+
+model AdminBudget {
+  id         String            @id @default(cuid())
+  clientId   String
+  proposalId String?
+  title      String
+  status     AdminBudgetStatus @default(DRAFT)
+  amount     Decimal           @db.Decimal(12, 2)
+  sentAt     DateTime?
+  expiresAt  DateTime?
+  createdAt  DateTime          @default(now())
+  updatedAt  DateTime          @updatedAt
+
+  client   AdminClient    @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  proposal AdminProposal? @relation(fields: [proposalId], references: [id], onDelete: SetNull)
+
+  @@index([clientId])
+  @@index([proposalId])
+  @@index([status])
+}
+
+model AdminProposal {
+  id          String              @id @default(cuid())
+  clientId    String
+  title       String
+  summary     String?             @db.Text
+  status      AdminProposalStatus @default(DRAFT)
+  amount      Decimal             @db.Decimal(12, 2)
+  probability Int                 @default(0)
+  sentAt      DateTime?
+  validUntil  DateTime?
+  acceptedAt  DateTime?
+  createdAt   DateTime            @default(now())
+  updatedAt   DateTime            @updatedAt
+
+  client    AdminClient     @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  budgets   AdminBudget[]
+  contracts AdminContract[]
+  sales     AdminSale[]
+  projects  AdminProject[]
+
+  @@index([clientId])
+  @@index([status])
+  @@index([validUntil])
+}
+
+model AdminContract {
+  id          String              @id @default(cuid())
+  clientId    String
+  proposalId  String?
+  title       String
+  status      AdminContractStatus @default(DRAFT)
+  contractUrl String?
+  signedAt    DateTime?
+  expiresAt   DateTime?
+  createdAt   DateTime            @default(now())
+  updatedAt   DateTime            @updatedAt
+
+  client   AdminClient    @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  proposal AdminProposal? @relation(fields: [proposalId], references: [id], onDelete: SetNull)
+  projects AdminProject[]
+
+  @@index([clientId])
+  @@index([proposalId])
+  @@index([status])
+}
+
+model AdminProject {
+  id              String             @id @default(cuid())
+  clientId        String
+  proposalId      String?
+  contractId      String?
+  name            String
+  description     String?            @db.Text
+  status          AdminProjectStatus @default(PLANNING)
+  priority        AdminPriority      @default(MEDIUM)
+  soldAmount      Decimal            @default(0) @db.Decimal(12, 2)
+  paymentMethod   String?
+  monthlyRetainer Decimal            @default(0) @db.Decimal(12, 2)
+  manager         String?
+  soldAt          DateTime?
+  createdAt       DateTime           @default(now())
+  updatedAt       DateTime           @updatedAt
+
+  client        AdminClient                @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  proposal      AdminProposal?             @relation(fields: [proposalId], references: [id], onDelete: SetNull)
+  contract      AdminContract?             @relation(fields: [contractId], references: [id], onDelete: SetNull)
+  system        AdminProjectSystem?
+  finance       AdminProjectFinance?
+  costs         AdminProjectCost[]
+  revenues      AdminProjectRevenue[]
+  licenses      AdminProjectLicense[]
+  subscriptions AdminProjectSubscription[]
+  maintenances  AdminProjectMaintenance[]
+  integrations  AdminProjectIntegration[]
+  tasks         AdminTask[]
+  sprints       AdminSprint[]
+  deliverables  AdminDeliverable[]
+  invoices      AdminInvoice[]
+  payments      AdminPayment[]
+  agentTasks    AdminAgentTask[]
+  notes         AdminNote[]
+  attachments   AdminAttachment[]
+  activityLogs  AdminActivityLog[]
+  sales         AdminSale[]
+
+  @@index([clientId])
+  @@index([proposalId])
+  @@index([contractId])
+  @@index([status])
+  @@index([priority])
+}
+
+model AdminProjectSystem {
+  id            String   @id @default(cuid())
+  projectId     String   @unique
+  name          String
+  stackJson     Json?
+  repositoryUrl String?
+  vercelProject String?
+  domain        String?
+  databaseName  String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  project AdminProject @relation(fields: [projectId], references: [id], onDelete: Cascade)
+}
+
+model AdminProjectFinance {
+  id                      String   @id @default(cuid())
+  projectId               String   @unique
+  initialBudget           Decimal  @default(0) @db.Decimal(12, 2)
+  soldAmount              Decimal  @default(0) @db.Decimal(12, 2)
+  recurringMonthly        Decimal  @default(0) @db.Decimal(12, 2)
+  operationalCostsMonthly Decimal  @default(0) @db.Decimal(12, 2)
+  licenseCostsMonthly     Decimal  @default(0) @db.Decimal(12, 2)
+  estimatedMonthlyProfit  Decimal  @default(0) @db.Decimal(12, 2)
+  createdAt               DateTime @default(now())
+  updatedAt               DateTime @updatedAt
+
+  project AdminProject @relation(fields: [projectId], references: [id], onDelete: Cascade)
+}
+
+model AdminProjectCost {
+  id          String    @id @default(cuid())
+  projectId   String
+  title       String
+  category    String?
+  amount      Decimal   @db.Decimal(12, 2)
+  incurredAt  DateTime?
+  isRecurring Boolean   @default(false)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  project AdminProject @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([projectId])
+  @@index([category])
+}
+
+model AdminProjectRevenue {
+  id          String    @id @default(cuid())
+  projectId   String
+  title       String
+  amount      Decimal   @db.Decimal(12, 2)
+  receivedAt  DateTime?
+  isRecurring Boolean   @default(false)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  project AdminProject @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([projectId])
+  @@index([receivedAt])
+}
+
+model AdminProjectLicense {
+  id          String             @id @default(cuid())
+  projectId   String
+  name        String
+  provider    String?
+  status      AdminLicenseStatus @default(ACTIVE)
+  monthlyCost Decimal            @default(0) @db.Decimal(12, 2)
+  renewsAt    DateTime?
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @updatedAt
+
+  project AdminProject @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([projectId])
+  @@index([status])
+  @@index([renewsAt])
+}
+
+model AdminProjectSubscription {
+  id            String                  @id @default(cuid())
+  projectId     String
+  name          String
+  status        AdminSubscriptionStatus @default(ACTIVE)
+  monthlyAmount Decimal                 @default(0) @db.Decimal(12, 2)
+  nextBillingAt DateTime?
+  createdAt     DateTime                @default(now())
+  updatedAt     DateTime                @updatedAt
+
+  project AdminProject @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([projectId])
+  @@index([status])
+  @@index([nextBillingAt])
+}
+
+model AdminProjectMaintenance {
+  id          String    @id @default(cuid())
+  projectId   String
+  title       String
+  description String?   @db.Text
+  status      String    @default("OPEN")
+  startsAt    DateTime?
+  endsAt      DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  project AdminProject @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([projectId])
+  @@index([status])
+}
+
+model AdminProjectIntegration {
+  id         String   @id @default(cuid())
+  projectId  String
+  name       String
+  type       String?
+  status     String   @default("PENDING")
+  configJson Json?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  project AdminProject @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([projectId])
+  @@index([status])
+}
+
+model AdminSprint {
+  id        String    @id @default(cuid())
+  projectId String
+  name      String
+  status    String    @default("PLANNED")
+  startsAt  DateTime?
+  endsAt    DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  project      AdminProject       @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  tasks        AdminTask[]
+  deliverables AdminDeliverable[]
+
+  @@index([projectId])
+  @@index([status])
+}
+
+model AdminTask {
+  id          String          @id @default(cuid())
+  projectId   String
+  sprintId    String?
+  title       String
+  description String?         @db.Text
+  status      AdminTaskStatus @default(TODO)
+  priority    AdminPriority   @default(MEDIUM)
+  assignee    String?
+  dueDate     DateTime?
+  completedAt DateTime?
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+
+  project    AdminProject     @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  sprint     AdminSprint?     @relation(fields: [sprintId], references: [id], onDelete: SetNull)
+  agentTasks AdminAgentTask[]
+
+  @@index([projectId])
+  @@index([sprintId])
+  @@index([status])
+  @@index([priority])
+  @@index([dueDate])
+}
+
+model AdminDeliverable {
+  id          String    @id @default(cuid())
+  projectId   String
+  sprintId    String?
+  title       String
+  description String?   @db.Text
+  status      String    @default("PENDING")
+  dueDate     DateTime?
+  deliveredAt DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  project AdminProject @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  sprint  AdminSprint? @relation(fields: [sprintId], references: [id], onDelete: SetNull)
+
+  @@index([projectId])
+  @@index([sprintId])
+  @@index([status])
+}
+
+model AdminInvoice {
+  id        String             @id @default(cuid())
+  clientId  String
+  projectId String?
+  number    String             @unique
+  status    AdminInvoiceStatus @default(DRAFT)
+  amount    Decimal            @db.Decimal(12, 2)
+  dueDate   DateTime?
+  issuedAt  DateTime?
+  createdAt DateTime           @default(now())
+  updatedAt DateTime           @updatedAt
+
+  client   AdminClient    @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  project  AdminProject?  @relation(fields: [projectId], references: [id], onDelete: SetNull)
+  payments AdminPayment[]
+
+  @@index([clientId])
+  @@index([projectId])
+  @@index([status])
+  @@index([dueDate])
+}
+
+model AdminPayment {
+  id        String             @id @default(cuid())
+  clientId  String
+  projectId String?
+  invoiceId String?
+  status    AdminPaymentStatus @default(PENDING)
+  amount    Decimal            @db.Decimal(12, 2)
+  paidAt    DateTime?
+  reference String?
+  createdAt DateTime           @default(now())
+  updatedAt DateTime           @updatedAt
+
+  client  AdminClient   @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  project AdminProject? @relation(fields: [projectId], references: [id], onDelete: SetNull)
+  invoice AdminInvoice? @relation(fields: [invoiceId], references: [id], onDelete: SetNull)
+
+  @@index([clientId])
+  @@index([projectId])
+  @@index([invoiceId])
+  @@index([status])
+}
+
+model AdminAiAgent {
+  id          String             @id @default(cuid())
+  name        String
+  role        String?
+  status      AdminAiAgentStatus @default(ACTIVE)
+  monthlyCost Decimal            @default(0) @db.Decimal(12, 2)
+  successRate Int                @default(0)
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @updatedAt
+
+  tasks AdminAgentTask[]
+
+  @@index([status])
+}
+
+model AdminAgentTask {
+  id        String          @id @default(cuid())
+  agentId   String
+  projectId String
+  taskId    String?
+  title     String
+  status    AdminTaskStatus @default(TODO)
+  priority  AdminPriority   @default(MEDIUM)
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt
+
+  agent   AdminAiAgent @relation(fields: [agentId], references: [id], onDelete: Cascade)
+  project AdminProject @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  task    AdminTask?   @relation(fields: [taskId], references: [id], onDelete: SetNull)
+
+  @@index([agentId])
+  @@index([projectId])
+  @@index([taskId])
+  @@index([status])
+}
+
+model AdminActivityLog {
+  id        String   @id @default(cuid())
+  clientId  String?
+  projectId String?
+  actor     String
+  action    String
+  entity    String
+  entityId  String?
+  metaJson  Json?
+  createdAt DateTime @default(now())
+
+  client  AdminClient?  @relation(fields: [clientId], references: [id], onDelete: SetNull)
+  project AdminProject? @relation(fields: [projectId], references: [id], onDelete: SetNull)
+
+  @@index([clientId])
+  @@index([projectId])
+  @@index([entity, entityId])
+  @@index([createdAt])
+}
+
+model AdminAttachment {
+  id         String   @id @default(cuid())
+  projectId  String?
+  entityType String
+  entityId   String?
+  title      String
+  url        String
+  mimeType   String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  project AdminProject? @relation(fields: [projectId], references: [id], onDelete: SetNull)
+
+  @@index([projectId])
+  @@index([entityType, entityId])
+}
+
+model AdminNote {
+  id        String   @id @default(cuid())
+  projectId String
+  author    String?
+  body      String   @db.Text
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  project AdminProject @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([projectId])
+  @@index([createdAt])
 }
 
 model DevProject {
@@ -631,9 +1238,9 @@ model DevProject {
   createdAt       DateTime         @default(now())
   updatedAt       DateTime         @updatedAt
 
-  tenant          Tenant           @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  createdBy       User             @relation("DevProjectCreatedBy", fields: [createdByUserId], references: [id])
-  tasks           DevTask[]
+  tenant    Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  createdBy User      @relation("DevProjectCreatedBy", fields: [createdByUserId], references: [id])
+  tasks     DevTask[]
 
   @@unique([tenantId, slug])
   @@index([tenantId, isActive])
@@ -641,31 +1248,31 @@ model DevProject {
 }
 
 model DevTask {
-  id              String           @id @default(cuid())
+  id              String             @id @default(cuid())
   tenantId        String
   projectId       String
   createdByUserId String
   title           String
-  description     String?          @db.Text
-  status          DevTaskStatus    @default(PENDING)
-  priority        DevTaskPriority  @default(MEDIUM)
+  description     String?            @db.Text
+  status          DevTaskStatus      @default(PENDING)
+  priority        DevTaskPriority    @default(MEDIUM)
   branch          String?
-  executionMode   DevExecutionMode @default(LOCAL)
+  executionMode   DevExecutionMode   @default(LOCAL)
   aiProvider      DevAIProviderType?
-  prompt          String?          @db.Text
-  resultSummary   String?          @db.Text
+  prompt          String?            @db.Text
+  resultSummary   String?            @db.Text
   startedAt       DateTime?
   completedAt     DateTime?
-  createdAt       DateTime         @default(now())
-  updatedAt       DateTime         @updatedAt
+  createdAt       DateTime           @default(now())
+  updatedAt       DateTime           @updatedAt
 
-  tenant          Tenant           @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  project         DevProject       @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  createdBy       User             @relation("DevTaskCreatedBy", fields: [createdByUserId], references: [id])
-  logs            DevTaskLog[]
-  files           DevTaskFile[]
-  queue           DevExecutionQueue?
-  runnerEvents    DevRunnerEvent[]
+  tenant       Tenant             @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  project      DevProject         @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  createdBy    User               @relation("DevTaskCreatedBy", fields: [createdByUserId], references: [id])
+  logs         DevTaskLog[]
+  files        DevTaskFile[]
+  queue        DevExecutionQueue?
+  runnerEvents DevRunnerEvent[]
 
   @@index([tenantId, status, createdAt])
   @@index([projectId, createdAt])
@@ -673,27 +1280,27 @@ model DevTask {
 }
 
 model DevTaskLog {
-  id         String          @id @default(cuid())
-  taskId      String
-  level      DevTaskLogLevel @default(INFO)
-  message    String          @db.Text
-  metadata   Json?
-  createdAt  DateTime        @default(now())
+  id        String          @id @default(cuid())
+  taskId    String
+  level     DevTaskLogLevel @default(INFO)
+  message   String          @db.Text
+  metadata  Json?
+  createdAt DateTime        @default(now())
 
-  task       DevTask         @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  task DevTask @relation(fields: [taskId], references: [id], onDelete: Cascade)
 
   @@index([taskId, createdAt])
 }
 
 model DevTaskFile {
-  id          String                @id @default(cuid())
-  taskId       String
-  filePath    String
-  changeType  DevTaskFileChangeType
-  summary     String?               @db.Text
-  createdAt   DateTime              @default(now())
+  id         String                @id @default(cuid())
+  taskId     String
+  filePath   String
+  changeType DevTaskFileChangeType
+  summary    String?               @db.Text
+  createdAt  DateTime              @default(now())
 
-  task        DevTask               @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  task DevTask @relation(fields: [taskId], references: [id], onDelete: Cascade)
 
   @@index([taskId, createdAt])
 }
@@ -703,78 +1310,78 @@ model DevAIProvider {
   userId          String
   provider        DevAIProviderType
   label           String
-  apiKeyEncrypted String           @db.Text
+  apiKeyEncrypted String            @db.Text
   baseUrl         String?
-  isActive        Boolean          @default(true)
-  isDefault       Boolean          @default(false)
-  createdAt       DateTime         @default(now())
-  updatedAt       DateTime         @updatedAt
+  isActive        Boolean           @default(true)
+  isDefault       Boolean           @default(false)
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
 
-  user            User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId, isActive])
   @@index([userId, isDefault])
 }
 
 model RemoteSession {
-  id          String              @id @default(cuid())
-  tenantId    String
-  userId      String
-  tokenHash   String              @unique
-  status      RemoteSessionStatus @default(ACTIVE)
-  lastSeenAt  DateTime?
-  expiresAt   DateTime
-  createdAt   DateTime            @default(now())
-  updatedAt   DateTime            @updatedAt
+  id         String              @id @default(cuid())
+  tenantId   String
+  userId     String
+  tokenHash  String              @unique
+  status     RemoteSessionStatus @default(ACTIVE)
+  lastSeenAt DateTime?
+  expiresAt  DateTime
+  createdAt  DateTime            @default(now())
+  updatedAt  DateTime            @updatedAt
 
-  tenant      Tenant              @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  user        User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([tenantId, status, expiresAt])
   @@index([userId, status])
 }
 
 model DevExecutionQueue {
-  id          String         @id @default(cuid())
-  taskId       String         @unique
-  status      DevQueueStatus @default(PENDING)
-  runnerId    String?
-  runtime     DevExecutionRuntime @default(DRY_RUN)
-  attemptCount Int           @default(0)
-  lastError   String?        @db.Text
-  payloadJson Json?
-  startedAt   DateTime?
-  finishedAt  DateTime?
-  createdAt   DateTime       @default(now())
-  updatedAt   DateTime       @updatedAt
+  id           String              @id @default(cuid())
+  taskId       String              @unique
+  status       DevQueueStatus      @default(PENDING)
+  runnerId     String?
+  runtime      DevExecutionRuntime @default(DRY_RUN)
+  attemptCount Int                 @default(0)
+  lastError    String?             @db.Text
+  payloadJson  Json?
+  startedAt    DateTime?
+  finishedAt   DateTime?
+  createdAt    DateTime            @default(now())
+  updatedAt    DateTime            @updatedAt
 
-  task        DevTask        @relation(fields: [taskId], references: [id], onDelete: Cascade)
-  runner      DevRunner?     @relation(fields: [runnerId], references: [id], onDelete: SetNull)
+  task   DevTask    @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  runner DevRunner? @relation(fields: [runnerId], references: [id], onDelete: SetNull)
 
   @@index([status, createdAt])
   @@index([runnerId, status])
 }
 
 model DevRunner {
-  id                 String            @id @default(cuid())
-  tenantId           String
-  createdByUserId    String
-  name               String
-  slug               String
-  mode               DevRunnerMode     @default(LOCAL)
-  status             DevRunnerStatus   @default(OFFLINE)
-  host               String?
-  machineLabel       String?
-  authTokenHash      String
-  lastHeartbeatAt    DateTime?
-  capabilitiesJson   Json?
-  createdAt          DateTime          @default(now())
-  updatedAt          DateTime          @updatedAt
+  id               String          @id @default(cuid())
+  tenantId         String
+  createdByUserId  String
+  name             String
+  slug             String
+  mode             DevRunnerMode   @default(LOCAL)
+  status           DevRunnerStatus @default(OFFLINE)
+  host             String?
+  machineLabel     String?
+  authTokenHash    String
+  lastHeartbeatAt  DateTime?
+  capabilitiesJson Json?
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
 
-  tenant             Tenant            @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  createdBy          User              @relation("DevRunnerCreatedBy", fields: [createdByUserId], references: [id])
-  queueItems         DevExecutionQueue[]
-  events             DevRunnerEvent[]
+  tenant     Tenant              @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  createdBy  User                @relation("DevRunnerCreatedBy", fields: [createdByUserId], references: [id])
+  queueItems DevExecutionQueue[]
+  events     DevRunnerEvent[]
 
   @@unique([tenantId, slug])
   @@index([tenantId, status])
@@ -783,15 +1390,15 @@ model DevRunner {
 
 model DevRunnerEvent {
   id          String             @id @default(cuid())
-  runnerId     String
+  runnerId    String
   taskId      String?
   type        DevRunnerEventType
   message     String             @db.Text
   payloadJson Json?
   createdAt   DateTime           @default(now())
 
-  runner      DevRunner          @relation(fields: [runnerId], references: [id], onDelete: Cascade)
-  task        DevTask?           @relation(fields: [taskId], references: [id], onDelete: SetNull)
+  runner DevRunner @relation(fields: [runnerId], references: [id], onDelete: Cascade)
+  task   DevTask?  @relation(fields: [taskId], references: [id], onDelete: SetNull)
 
   @@index([runnerId, createdAt])
   @@index([taskId, createdAt])
@@ -807,7 +1414,7 @@ model DevUsageMetric {
   createdAt   DateTime           @default(now())
   updatedAt   DateTime           @updatedAt
 
-  tenant      Tenant             @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
 
   @@unique([tenantId, metricType, periodMonth, periodYear])
   @@index([tenantId, periodYear, periodMonth])

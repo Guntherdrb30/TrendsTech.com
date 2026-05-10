@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation';
 import { getTranslations } from 'next-intl/server';
 import { ProjectOverview, ProjectTabs } from '@/components/admin/project-panels';
-import { getProjectById } from '@/lib/admin-ai/mock-data';
+import { getAdminProjectById } from '@/lib/admin-ai/data';
 
 function buildProjectLabels(t: Awaited<ReturnType<typeof getTranslations>>) {
   return {
@@ -36,7 +36,7 @@ export default async function AdminProjectDetailPage({
   params: Promise<{ locale: string; id: string }>;
 }) {
   const { locale, id } = await params;
-  const project = getProjectById(id);
+  const project = await getAdminProjectById(id);
   if (!project) {
     notFound();
   }
