@@ -1002,5 +1002,20 @@
         "ISSUE": "Incidente"
       }
     }
+  },
+  "admin": {
+    "email": {
+      "title": "Vista Previa de Plantillas de Email",
+      "description": "Previsualiza y prueba plantillas de email. Usa datos mock para ver cómo se verán los emails.",
+      "templates": "Plantillas",
+      "test": "Enviar Prueba",
+      "testTitle": "Envío de Email de Prueba",
+      "testDescription": "Envía emails de prueba usando datos mock. Asegúrate de que tu servicio de email esté configurado.",
+      "recipientEmail": "Email del Destinatario",
+      "template": "Plantilla",
+      "locale": "Idioma",
+      "sendTestEmail": "Enviar Email de Prueba",
+      "previewTemplate": "Previsualizar Plantilla"
+    }
   }
 }

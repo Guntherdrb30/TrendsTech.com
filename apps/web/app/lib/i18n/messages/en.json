@@ -1002,5 +1002,20 @@
         "ISSUE": "Issue"
       }
     }
+  },
+  "admin": {
+    "email": {
+      "title": "Email Templates Preview",
+      "description": "Preview and test email templates. Use mock data to see how emails will look.",
+      "templates": "Templates",
+      "test": "Test Send",
+      "testTitle": "Test Email Send",
+      "testDescription": "Send test emails using mock data. Make sure your email service is configured.",
+      "recipientEmail": "Recipient Email",
+      "template": "Template",
+      "locale": "Locale",
+      "sendTestEmail": "Send Test Email",
+      "previewTemplate": "Preview Template"
+    }
   }
 }
