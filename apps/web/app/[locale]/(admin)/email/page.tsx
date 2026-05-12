@@ -187,10 +187,11 @@ export default async function EmailAdminPage({
   params,
   searchParams
 }: {
-  params: { locale: string };
-  searchParams: { status?: string; message?: string };
+  params: Promise<{ locale: string }>;
+  searchParams: Promise<{ status?: string; message?: string }>;
 }) {
-  const { locale } = params;
+  const { locale } = await params;
+  await searchParams; // Ensure searchParams is awaited
   const t = await getTranslations('admin.email');
 
   return (
