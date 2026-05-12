@@ -1,4 +1,4 @@
-﻿import { resend, EMAIL_CONFIG, isEmailConfigured } from './resend';
+﻿import { EMAIL_CONFIG, isEmailConfigured, sendResendEmail } from './resend';
 import type { CreateEmailOptions } from 'resend';
 import { EmailTemplate, EmailTemplateData, SendEmailOptions, EmailResult } from './types';
 import { render } from '@react-email/render';
@@ -25,7 +25,7 @@ export async function sendEmail(options: SendEmailOptions): Promise<EmailResult>
       return { ok: false, error: 'Either html, text, or template must be provided.' };
     }
 
-    const result = await resend.emails.send({
+    const result = await sendResendEmail({
       from: EMAIL_CONFIG.from,
       to: Array.isArray(to) ? to : [to],
       subject,

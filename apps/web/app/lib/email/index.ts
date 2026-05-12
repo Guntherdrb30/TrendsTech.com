@@ -1,6 +1,6 @@
 // Core email functionality
 export { sendEmail } from './send';
-export { resend, EMAIL_CONFIG, isEmailConfigured } from './resend';
+export { sendResendEmail, EMAIL_CONFIG, isEmailConfigured } from './resend';
 
 // Legacy password reset (for backward compatibility)
 export { sendPasswordResetEmail } from './reset';
