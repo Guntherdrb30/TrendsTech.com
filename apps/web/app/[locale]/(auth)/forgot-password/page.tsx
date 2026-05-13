@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ForgotPasswordForm } from "@/components/forgot-password-form";
+import { isEmailConfigured } from '@/lib/email/resend';
 
 function getForgotCopy(locale: string) {
   if (locale.startsWith("es")) {
@@ -23,7 +24,7 @@ export default async function ForgotPasswordPage({
 }) {
   const { locale } = await params;
   const copy = getForgotCopy(locale);
-  const emailConfigured = Boolean(process.env.RESEND_API_KEY && process.env.EMAIL_FROM);
+  const emailConfigured = isEmailConfigured();
 
   return (
     <section className="space-y-6">

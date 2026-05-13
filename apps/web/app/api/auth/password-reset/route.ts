@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { prisma } from '@trends172tech/db';
 import crypto from 'crypto';
 import { sendPasswordResetEmail } from '@/lib/email/reset';
+import { isEmailConfigured } from '@/lib/email/resend';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -30,7 +31,7 @@ function getTokenSecret() {
 }
 
 function isEmailResetConfigured() {
-  return Boolean(process.env.RESEND_API_KEY && process.env.EMAIL_FROM);
+  return isEmailConfigured();
 }
 
 export async function POST(request: Request) {
