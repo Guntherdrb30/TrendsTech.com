@@ -403,6 +403,7 @@ model AgentInstance {
   agentSessions   AgentSession[]
   accesses        AgentAccess[]
   accessLogs      AccessLog[]
+  skills          AgentSkill[]
 
   @@index([tenantId])
   @@index([endCustomerId])
@@ -1419,4 +1420,43 @@ model DevUsageMetric {
   @@unique([tenantId, metricType, periodMonth, periodYear])
   @@index([tenantId, periodYear, periodMonth])
   @@index([metricType, periodYear, periodMonth])
+}
+
+model Skill {
+  id            String   @id @default(cuid())
+  key           String   @unique
+  name          String
+  nameEn        String
+  industry      String
+  industryEn    String
+  icon          String
+  description   String
+  descriptionEn String
+  promptJson    Json
+  mapJson       Json
+  questionsJson Json
+  priceMonthly  Float    @default(15)
+  isActive      Boolean  @default(true)
+  isFeatured    Boolean  @default(false)
+  sortOrder     Int      @default(0)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  agentSkills AgentSkill[]
+}
+
+model AgentSkill {
+  id              String   @id @default(cuid())
+  agentInstanceId String
+  skillId         String
+  isEnabled       Boolean  @default(true)
+  configJson      Json?
+  createdAt       DateTime @default(now())
+
+  agentInstance AgentInstance @relation(fields: [agentInstanceId], references: [id], onDelete: Cascade)
+  skill         Skill         @relation(fields: [skillId], references: [id])
+
+  @@unique([agentInstanceId, skillId])
+  @@index([agentInstanceId])
+  @@index([skillId])
 }

@@ -32,6 +32,13 @@ type SystemContext = {
     score: number;
     meta: Record<string, unknown>;
   }>;
+  skills: Array<{
+    key: string;
+    name: string;
+    prompt: unknown;
+    map: unknown;
+    questions: unknown;
+  }>;
 };
 
 type ConversationContext = {
@@ -62,7 +69,14 @@ async function loadTenantData(tenantId: string) {
 async function loadAgentData(agentInstanceId: string, tenantId: string) {
   const agentInstance = await prisma.agentInstance.findFirst({
     where: { id: agentInstanceId, tenantId },
-    include: { endCustomer: true }
+    include: {
+      endCustomer: true,
+      // Cargar skills activas con su definición completa para el contexto del orquestador
+      skills: {
+        where: { isEnabled: true },
+        include: { skill: true },
+      },
+    },
   });
   if (!agentInstance) {
     throw new Error('Agent instance not found');
@@ -72,7 +86,11 @@ async function loadAgentData(agentInstanceId: string, tenantId: string) {
 
 function buildSystemContext(
   tenant: Tenant,
-  agentInstance: AgentInstance,
+  agentInstance: AgentInstance & {
+    skills: Array<{
+      skill: { key: string; name: string; promptJson: unknown; mapJson: unknown; questionsJson: unknown };
+    }>;
+  },
   knowledge: Array<{ content: string; score: number; metaJson: Record<string, unknown> | null }>,
   channel?: string
 ): SystemContext {
@@ -91,7 +109,15 @@ function buildSystemContext(
       content: item.content,
       score: item.score,
       meta: item.metaJson ?? {}
-    }))
+    })),
+    // Skills activas del agente — el orquestador las usa para especializar sus respuestas
+    skills: agentInstance.skills.map(({ skill }) => ({
+      key: skill.key,
+      name: skill.name,
+      prompt: skill.promptJson,
+      map: skill.mapJson,
+      questions: skill.questionsJson,
+    })),
   };
 }
 

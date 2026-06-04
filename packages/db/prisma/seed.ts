@@ -1,4 +1,5 @@
 import { randomBytes } from 'crypto';
+import { seedSkills } from './seeds/skills';
 import {
   Prisma,
   PrismaClient,
@@ -658,6 +659,7 @@ async function main() {
   });
 
   await seedAdminData();
+  await seedSkills(prisma);
 
   console.log('Seed complete.');
   console.log(`ROOT_EMAIL=${rootEmail}`);
