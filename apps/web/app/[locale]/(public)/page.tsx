@@ -99,7 +99,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
                   🌙 {isEs ? "Ver Luna ERP" : "See Luna ERP"}
                 </Link>
                 <Link
-                  href={`${base}/dashboard/agents/create`}
+                  href={`${base}/crear-agente`}
                   className="inline-flex items-center gap-2 rounded-full border border-[#00bfa5] bg-white px-5 py-2.5 text-sm font-semibold text-[#00897b] transition hover:-translate-y-0.5 hover:bg-[#f0fdf9]"
                 >
                   🤖 {isEs ? "Crear mi agente" : "Create my agent"}
@@ -255,7 +255,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
                 </ul>
                 <div className="mt-6">
                   <Link
-                    href={`${base}/dashboard/agents/create`}
+                    href={`${base}/crear-agente`}
                     className="inline-flex items-center justify-center rounded-full bg-[#00bfa5] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[#00897b]"
                   >
                     {isEs ? "Crear mi agente con skills" : "Create my agent with skills"}
@@ -332,7 +332,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
                   🌙 {home("ctaPrimary")}
                 </Link>
                 <Link
-                  href={`${base}/dashboard/agents/create`}
+                  href={`${base}/crear-agente`}
                   className="inline-flex items-center gap-2 rounded-full border border-white/18 bg-white/8 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-white/14"
                 >
                   🤖 {home("ctaSecondary")}
