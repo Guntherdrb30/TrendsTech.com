@@ -88,172 +88,200 @@ export function SiteHeaderClient({ base, isAuthenticated, labels, agentOptions }
     void signOut({ callbackUrl: base });
   };
 
+  const navLinks = [
+    { href: base, label: labels.home },
+    { href: `${base}/agents`, label: labels.agents },
+    { href: `${base}/systems`, label: labels.systems },
+    { href: `${base}/projects`, label: labels.projects },
+    { href: `${base}/news`, label: labels.news },
+    { href: `${base}/pricing`, label: labels.pricing },
+  ];
+
   return (
-    <header className="sticky top-0 z-50 border-b border-black/6 bg-[linear-gradient(180deg,rgba(255,255,255,0.94)_0%,rgba(255,255,255,0.88)_100%)] shadow-[0_18px_60px_-42px_rgba(15,23,42,0.34)] backdrop-blur-2xl dark:border-slate-800 dark:bg-slate-950/88">
-      <div
-        className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-[radial-gradient(circle_at_top,_rgba(255,255,255,0.95),_transparent_70%)]"
-        aria-hidden="true"
-      />
-      <div className="relative w-full px-4 py-3 sm:px-6 lg:px-10 xl:px-14 2xl:px-16">
-        <div className="premium-spotlight flex flex-col gap-3 rounded-[28px] border border-black/8 bg-white/76 px-4 py-3 shadow-[0_22px_55px_-38px_rgba(15,23,42,0.34)] backdrop-blur-xl lg:hidden">
-          <div className="flex items-center justify-between gap-3">
-            <Link
-              href={base}
-              className="interactive-chip flex items-center gap-3 rounded-full border border-black/8 bg-white/86 px-3 py-2 text-sm font-semibold text-slate-900 shadow-[0_14px_30px_-24px_rgba(15,23,42,0.28)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-300 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:text-white dark:focus-visible:ring-slate-600 dark:focus-visible:ring-offset-slate-950"
-            >
-              <Image
-                src="/branding/ttech-logo.svg"
-                alt="Trends172 Tech"
-                width={36}
-                height={36}
-                className="h-10 w-10"
-                priority
-              />
-              <span className="hidden sm:inline">Trends172 Tech</span>
-            </Link>
+    <header className="sticky top-0 z-50 border-b border-black/6 bg-white/90 shadow-[0_1px_0_rgba(15,23,42,0.06)] backdrop-blur-2xl dark:border-slate-800 dark:bg-slate-950/90">
+      <div className="mx-auto w-full max-w-[1760px] px-4 sm:px-6 lg:px-8 xl:px-10">
+
+        {/* ── Mobile header ── */}
+        <div className="flex items-center justify-between gap-3 py-3 lg:hidden">
+          <Link
+            href={base}
+            className="flex items-center gap-2.5 text-sm font-semibold text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-300 dark:text-white"
+          >
+            <Image
+              src="/branding/ttech-logo.svg"
+              alt="Trends172 Tech"
+              width={32}
+              height={32}
+              className="h-8 w-8"
+              priority
+            />
+            <span className="hidden sm:inline">Trends172 Tech</span>
+          </Link>
+
+          <div className="flex items-center gap-2">
+            <AgentSearch
+              base={base}
+              placeholder={labels.searchPlaceholder}
+              label={labels.searchLabel}
+              options={agentOptions}
+              className="w-40 sm:w-56"
+            />
             <button
               type="button"
               onClick={() => setMenuOpen((prev) => !prev)}
-              className="interactive-chip inline-flex h-11 w-11 items-center justify-center rounded-full border border-black/8 bg-white/88 text-slate-700 shadow-[0_16px_35px_-28px_rgba(15,23,42,0.3)] transition hover:bg-slate-100 hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-300 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:border-slate-800 dark:bg-slate-900/80 dark:text-slate-300 dark:hover:text-white dark:focus-visible:ring-slate-600 dark:focus-visible:ring-offset-slate-950"
+              className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-black/8 bg-white text-slate-700 shadow-sm transition hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-300 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300"
               aria-expanded={menuOpen}
               aria-label={menuOpen ? labels.menuClose : labels.menuOpen}
             >
               <MenuIcon open={menuOpen} />
             </button>
           </div>
-
-          <AgentSearch
-            base={base}
-            placeholder={labels.searchPlaceholder}
-            label={labels.searchLabel}
-            options={agentOptions}
-            className="w-full"
-          />
-
-          {menuOpen ? (
-            <div className="premium-spotlight space-y-4 rounded-[28px] border border-black/8 bg-white/94 px-4 py-4 text-sm text-slate-700 shadow-[0_32px_90px_-58px_rgba(15,23,42,0.42)] backdrop-blur dark:border-slate-800 dark:bg-slate-950/80 dark:text-slate-200">
-              <nav className="flex flex-col gap-2">
-                <Link href={base} onClick={() => setMenuOpen(false)} className="interactive-chip rounded-2xl px-3 py-2 transition hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-200">
-                  {labels.home}
-                </Link>
-                <Link href={`${base}/agents`} onClick={() => setMenuOpen(false)} className="interactive-chip rounded-2xl px-3 py-2 transition hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-200">
-                  {labels.agents}
-                </Link>
-                <Link href={`${base}/systems`} onClick={() => setMenuOpen(false)} className="interactive-chip rounded-2xl px-3 py-2 transition hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-200">
-                  {labels.systems}
-                </Link>
-                <Link href={`${base}/projects`} onClick={() => setMenuOpen(false)} className="interactive-chip rounded-2xl px-3 py-2 transition hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-200">
-                  {labels.projects}
-                </Link>
-                <Link href={`${base}/news`} onClick={() => setMenuOpen(false)} className="interactive-chip rounded-2xl px-3 py-2 transition hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-200">
-                  {labels.news}
-                </Link>
-                <Link href={`${base}/pricing`} onClick={() => setMenuOpen(false)} className="interactive-chip rounded-2xl px-3 py-2 transition hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-200">
-                  {labels.pricing}
-                </Link>
-              </nav>
-              <div className="flex flex-wrap items-center gap-3 text-xs">
-                {isAuthenticated ? (
-                  <>
-                    <Link href={`${base}/dashboard`} onClick={() => setMenuOpen(false)} className="interactive-chip rounded-full border border-black/8 px-3 py-2 font-semibold text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-200">
-                      {labels.dashboard}
-                    </Link>
-                    <button type="button" onClick={handleSignOut} className="interactive-chip rounded-full border border-black/8 px-3 py-2 text-left font-semibold text-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-200">
-                      {labels.logout}
-                    </button>
-                  </>
-                ) : (
-                  <>
-                    <Link href={loginHref} onClick={() => setMenuOpen(false)} className="interactive-chip rounded-full border border-black/8 px-3 py-2 font-semibold text-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-200">
-                      {labels.login}
-                    </Link>
-                    <Link href={registerHref} onClick={() => setMenuOpen(false)} className="interactive-chip rounded-full bg-slate-950 px-3 py-2 font-semibold text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-300">
-                      {labels.register}
-                    </Link>
-                  </>
-                )}
-              </div>
-              <div className="flex flex-wrap items-center gap-3">
-                <LocaleSwitcher />
-                <ThemeToggle />
-              </div>
-            </div>
-          ) : null}
         </div>
 
-        <div className="premium-spotlight hidden flex-col gap-3 rounded-[34px] border border-black/8 bg-white/78 px-5 py-3 shadow-[0_24px_70px_-48px_rgba(15,23,42,0.36)] backdrop-blur-2xl lg:flex">
-          <div className="flex min-w-0 flex-wrap items-center justify-between gap-3">
-            <div className="flex min-w-0 items-center gap-4 2xl:flex-1">
-            <Link
-              href={base}
-              className="interactive-chip flex items-center gap-3 rounded-full border border-black/8 bg-white/88 px-3.5 py-2 text-sm font-semibold text-slate-900 shadow-[0_16px_32px_-24px_rgba(15,23,42,0.28)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-300 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:text-white dark:focus-visible:ring-slate-600 dark:focus-visible:ring-offset-slate-950"
-            >
-              <Image
-                src="/branding/ttech-logo.svg"
-                alt="Trends172 Tech"
-                width={36}
-                height={36}
-                className="h-10 w-10"
-                priority
-              />
-              <span className="whitespace-nowrap">Trends172 Tech</span>
-            </Link>
-            <nav className="flex min-w-0 items-center gap-2 overflow-x-auto text-sm whitespace-nowrap rounded-full border border-black/6 bg-white/86 p-1.5 text-slate-700 shadow-[inset_0_1px_0_rgba(255,255,255,0.9),0_18px_40px_-30px_rgba(15,23,42,0.28)] backdrop-blur dark:border-slate-800 dark:bg-slate-950/70 dark:text-slate-200">
-              <Link href={base} className="interactive-chip rounded-full px-3 py-2 transition hover:bg-slate-100 hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-200 dark:hover:bg-slate-900/70">
-                {labels.home}
-              </Link>
-              <Link href={`${base}/agents`} className="interactive-chip rounded-full px-3 py-2 transition hover:bg-slate-100 hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-200 dark:hover:bg-slate-900/70">
-                {labels.agents}
-              </Link>
-              <Link href={`${base}/systems`} className="interactive-chip rounded-full px-3 py-2 transition hover:bg-slate-100 hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-200 dark:hover:bg-slate-900/70">
-                {labels.systems}
-              </Link>
-              <Link href={`${base}/projects`} className="interactive-chip rounded-full px-3 py-2 transition hover:bg-slate-100 hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-200 dark:hover:bg-slate-900/70">
-                {labels.projects}
-              </Link>
-              <Link href={`${base}/news`} className="interactive-chip rounded-full px-3 py-2 transition hover:bg-slate-100 hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-200 dark:hover:bg-slate-900/70">
-                {labels.news}
-              </Link>
-              <Link href={`${base}/pricing`} className="interactive-chip rounded-full px-3 py-2 transition hover:bg-slate-100 hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-200 dark:hover:bg-slate-900/70">
-                {labels.pricing}
-              </Link>
+        {/* Mobile menu drawer */}
+        {menuOpen ? (
+          <div className="border-t border-black/6 py-4 lg:hidden dark:border-slate-800">
+            <nav className="flex flex-col gap-0.5 text-sm text-slate-700 dark:text-slate-200">
+              {navLinks.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  onClick={() => setMenuOpen(false)}
+                  className="rounded-xl px-3 py-2.5 font-medium transition hover:bg-slate-50 hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-200 dark:hover:bg-slate-900/70"
+                >
+                  {link.label}
+                </Link>
+              ))}
             </nav>
-          </div>
-          <AgentSearch
-            base={base}
-            placeholder={labels.searchPlaceholder}
-            label={labels.searchLabel}
-            options={agentOptions}
-            className="order-3 w-full basis-full 2xl:order-2 2xl:basis-auto 2xl:min-w-[320px] 2xl:max-w-xl 2xl:flex-1"
-          />
-          <div className="order-2 flex shrink-0 items-center gap-3 text-sm whitespace-nowrap text-slate-700 2xl:order-3 dark:text-slate-200">
+            <div className="mt-4 flex flex-wrap items-center gap-2 border-t border-black/6 pt-4 dark:border-slate-800">
               {isAuthenticated ? (
                 <>
-                  <Link href={`${base}/dashboard`} className="interactive-chip rounded-full border border-black/8 bg-white/84 px-4 py-2 font-semibold text-slate-900 shadow-[0_16px_35px_-28px_rgba(15,23,42,0.3)] transition hover:-translate-y-0.5 hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-300 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:border-slate-800 dark:bg-slate-950/70 dark:focus-visible:ring-slate-600 dark:focus-visible:ring-offset-slate-950">
+                  <Link
+                    href={`${base}/dashboard`}
+                    onClick={() => setMenuOpen(false)}
+                    className="rounded-full border border-black/8 bg-white px-4 py-2 text-sm font-semibold text-slate-900 shadow-sm dark:border-slate-700 dark:bg-slate-900 dark:text-white"
+                  >
                     {labels.dashboard}
                   </Link>
-                  <button type="button" onClick={handleSignOut} className="interactive-chip rounded-full px-3 py-2 text-slate-600 transition hover:bg-slate-100 hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-200 dark:hover:bg-slate-900/70 dark:hover:text-white dark:focus-visible:ring-slate-700/40">
+                  <button
+                    type="button"
+                    onClick={handleSignOut}
+                    className="rounded-full px-4 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-100 dark:text-slate-400"
+                  >
                     {labels.logout}
                   </button>
                 </>
               ) : (
                 <>
-                  <Link href={loginHref} className="interactive-chip rounded-full px-3 py-2 transition hover:bg-slate-100 hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-200 dark:hover:bg-slate-900/70">
+                  <Link
+                    href={loginHref}
+                    onClick={() => setMenuOpen(false)}
+                    className="rounded-full px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-100 dark:text-slate-300"
+                  >
                     {labels.login}
                   </Link>
                   <Link
                     href={registerHref}
-                    className="interactive-chip inline-flex items-center justify-center rounded-full bg-slate-950 px-4 py-2 font-semibold text-white shadow-[0_18px_40px_-24px_rgba(15,23,42,0.45)] transition hover:-translate-y-0.5 hover:bg-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-300 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:bg-slate-100 dark:text-slate-950 dark:hover:bg-white dark:focus-visible:ring-slate-600 dark:focus-visible:ring-offset-slate-950"
+                    onClick={() => setMenuOpen(false)}
+                    className="rounded-full bg-slate-950 px-4 py-2 text-sm font-semibold text-white transition hover:bg-slate-800 dark:bg-white dark:text-slate-950"
                   >
                     {labels.register}
                   </Link>
                 </>
               )}
-              <LocaleSwitcher />
-              <ThemeToggle />
+              <div className="ml-auto flex items-center gap-2">
+                <LocaleSwitcher />
+                <ThemeToggle />
+              </div>
+            </div>
           </div>
+        ) : null}
+
+        {/* ── Desktop header — single row ── */}
+        <div className="hidden items-center gap-6 py-3 lg:flex">
+
+          {/* Logo */}
+          <Link
+            href={base}
+            className="flex shrink-0 items-center gap-2.5 text-sm font-semibold text-slate-900 transition hover:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-300 dark:text-white"
+          >
+            <Image
+              src="/branding/ttech-logo.svg"
+              alt="Trends172 Tech"
+              width={32}
+              height={32}
+              className="h-9 w-9"
+              priority
+            />
+            <span className="whitespace-nowrap xl:inline">Trends172 Tech</span>
+          </Link>
+
+          {/* Divider */}
+          <div className="h-5 w-px shrink-0 bg-black/10 dark:bg-white/10" aria-hidden="true" />
+
+          {/* Nav links */}
+          <nav className="flex min-w-0 flex-1 items-center gap-0.5 text-sm text-slate-600 dark:text-slate-300">
+            {navLinks.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className="whitespace-nowrap rounded-full px-3.5 py-2 font-medium transition hover:bg-slate-100 hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-200 dark:hover:bg-slate-800/70 dark:hover:text-white"
+              >
+                {link.label}
+              </Link>
+            ))}
+          </nav>
+
+          {/* Right section */}
+          <div className="flex shrink-0 items-center gap-2">
+            <AgentSearch
+              base={base}
+              placeholder={labels.searchPlaceholder}
+              label={labels.searchLabel}
+              options={agentOptions}
+              className="w-52 xl:w-64"
+            />
+
+            <div className="mx-1 h-5 w-px bg-black/10 dark:bg-white/10" aria-hidden="true" />
+
+            {isAuthenticated ? (
+              <>
+                <Link
+                  href={`${base}/dashboard`}
+                  className="whitespace-nowrap rounded-full border border-black/8 bg-white px-4 py-2 text-sm font-semibold text-slate-900 shadow-sm transition hover:-translate-y-px hover:shadow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-300 dark:border-slate-700 dark:bg-slate-900 dark:text-white"
+                >
+                  {labels.dashboard}
+                </Link>
+                <button
+                  type="button"
+                  onClick={handleSignOut}
+                  className="whitespace-nowrap rounded-full px-3.5 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-100 hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-200 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white"
+                >
+                  {labels.logout}
+                </button>
+              </>
+            ) : (
+              <>
+                <Link
+                  href={loginHref}
+                  className="whitespace-nowrap rounded-full px-3.5 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-100 hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-200 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white"
+                >
+                  {labels.login}
+                </Link>
+                <Link
+                  href={registerHref}
+                  className="whitespace-nowrap rounded-full bg-slate-950 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:-translate-y-px hover:bg-slate-800 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-300 dark:bg-white dark:text-slate-950 dark:hover:bg-slate-100"
+                >
+                  {labels.register}
+                </Link>
+              </>
+            )}
+
+            <LocaleSwitcher />
+            <ThemeToggle />
           </div>
         </div>
+
       </div>
     </header>
   );

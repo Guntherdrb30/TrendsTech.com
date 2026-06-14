@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import { RegisterForm } from '@/components/register-form';
 
 const FROM_AGENT_FUNNEL = 'crear-agente';
@@ -7,76 +8,115 @@ function isFromAgentFunnel(redirectTo?: string) {
   return !!redirectTo && redirectTo.includes(FROM_AGENT_FUNNEL);
 }
 
-function getRegisterPageCopy(locale: string, agentFunnel: boolean) {
-  if (locale.startsWith('es')) {
-    if (agentFunnel) {
-      return {
-        eyebrow: 'Tu agente te está esperando',
-        title: 'Crea tu cuenta para activarlo',
-        subtitle: 'Tu agente ya está configurado con las skills que elegiste. Solo necesitas una cuenta para desplegarlo.',
-        linkLabel: '¿Ya tienes cuenta? Iniciar sesión',
-        card1Label: 'Tu agente',
-        card1Title: 'Listo para activarse',
-        card1Body: 'La configuración de tu agente quedó guardada. En cuanto crees tu cuenta lo activamos automáticamente.',
-        card2Title: 'Créditos para operar',
-        card2Body: 'Necesitas créditos en tu billetera para que el agente responda a tus usuarios 24/7 en tu sitio web.',
-        step1: '① Crea tu cuenta ahora',
-        step2: '② El agente se activa solo',
-        step3: '③ Recarga créditos y obtén el snippet',
-      };
-    }
-    return {
-      eyebrow: 'Onboarding de tenant',
-      title: 'Crear cuenta',
-      subtitle: 'Regístrate para acceder a demos y administrar tus agentes.',
-      linkLabel: '¿Ya tienes cuenta? Iniciar sesión',
-      card1Label: 'Readiness',
-      card1Title: 'Configuración empresarial',
-      card1Body: 'Crea tu acceso y deja la base lista para agentes, dashboard y configuración operativa.',
-      card2Title: 'Lanzamiento empresarial',
-      card2Body: 'El registro conecta el acceso de usuario con el entorno premium y sus siguientes flujos.',
-      step1: null,
-      step2: null,
-      step3: null,
-    };
-  }
+type PageCopy = {
+  eyebrow: string;
+  headline: string;
+  subline: string;
+  step1Label: string;
+  step1Sub: string;
+  step2Label: string;
+  step2Sub: string;
+  step3Label: string;
+  step3Sub: string;
+  statusLine: string;
+  loginLink: string;
+  card1Icon: string;
+  card1Title: string;
+  card1Body: string;
+  card2Icon: string;
+  card2Title: string;
+  card2Body: string;
+};
+
+function getCopy(locale: string, agentFunnel: boolean): PageCopy {
+  const isEs = locale.startsWith('es');
 
   if (agentFunnel) {
-    return {
-      eyebrow: 'Your agent is waiting',
-      title: 'Create your account to activate it',
-      subtitle: 'Your agent is already configured with the skills you chose. You just need an account to deploy it.',
-      linkLabel: 'Already have an account? Sign in',
-      card1Label: 'Your agent',
-      card1Title: 'Ready to activate',
-      card1Body: 'Your agent configuration was saved. As soon as you create your account we activate it automatically.',
-      card2Title: 'Credits to operate',
-      card2Body: 'You need credits in your wallet for the agent to respond to your users 24/7 on your website.',
-      step1: '① Create your account now',
-      step2: '② Agent activates automatically',
-      step3: '③ Recharge credits and get the snippet',
-    };
+    return isEs
+      ? {
+          eyebrow: 'Paso 1 de 3',
+          headline: 'Tu agente\nte está\nesperando.',
+          subline: 'Configuración guardada. Solo necesitas una cuenta para que tu agente esté en vivo.',
+          step1Label: 'Crea tu cuenta',
+          step1Sub: 'Estás aquí ahora',
+          step2Label: 'Agente se activa',
+          step2Sub: 'Automáticamente al registrarte',
+          step3Label: 'Obtén el snippet',
+          step3Sub: 'Recarga créditos y despliega',
+          statusLine: 'Configuración guardada · Activación pendiente',
+          loginLink: '¿Ya tienes cuenta? Inicia sesión →',
+          card1Icon: '🤖',
+          card1Title: '',
+          card1Body: '',
+          card2Icon: '',
+          card2Title: '',
+          card2Body: '',
+        }
+      : {
+          eyebrow: 'Step 1 of 3',
+          headline: 'Your agent\nis waiting\nfor you.',
+          subline: 'Configuration saved. You just need an account to get your agent live.',
+          step1Label: 'Create your account',
+          step1Sub: "You're here now",
+          step2Label: 'Agent activates',
+          step2Sub: 'Automatically after signup',
+          step3Label: 'Get the snippet',
+          step3Sub: 'Recharge credits and deploy',
+          statusLine: 'Configuration saved · Activation pending',
+          loginLink: 'Already have an account? Sign in →',
+          card1Icon: '🤖',
+          card1Title: '',
+          card1Body: '',
+          card2Icon: '',
+          card2Title: '',
+          card2Body: '',
+        };
   }
 
-  return {
-    eyebrow: 'Tenant onboarding',
-    title: 'Create account',
-    subtitle: 'Register to access demos and manage your agents.',
-    linkLabel: 'Already have an account? Sign in',
-    card1Label: 'Readiness',
-    card1Title: 'Company setup',
-    card1Body: 'Create your access and leave the base ready for agents, dashboard, and operating setup.',
-    card2Title: 'Enterprise launch',
-    card2Body: 'Registration connects user access with the premium environment and its next flows.',
-    step1: null,
-    step2: null,
-    step3: null,
-  };
+  return isEs
+    ? {
+        eyebrow: 'Trends172Tech',
+        headline: 'Bienvenido\na la plataforma.',
+        subline: 'Accede a agentes IA personalizados y al sistema Luna ERP para transformar tu empresa.',
+        step1Label: '',
+        step1Sub: '',
+        step2Label: '',
+        step2Sub: '',
+        step3Label: '',
+        step3Sub: '',
+        statusLine: '',
+        loginLink: '¿Ya tienes cuenta? Inicia sesión →',
+        card1Icon: '🤖',
+        card1Title: 'Agentes IA',
+        card1Body: 'Despliega asistentes con skills en tu sitio web y automatiza la atención al cliente.',
+        card2Icon: '🌙',
+        card2Title: 'Luna ERP',
+        card2Body: 'Sistema integral para gestionar tu empresa con inteligencia operativa.',
+      }
+    : {
+        eyebrow: 'Trends172Tech',
+        headline: 'Welcome\nto the platform.',
+        subline: 'Access custom AI agents and the Luna ERP system to transform your business.',
+        step1Label: '',
+        step1Sub: '',
+        step2Label: '',
+        step2Sub: '',
+        step3Label: '',
+        step3Sub: '',
+        statusLine: '',
+        loginLink: 'Already have an account? Sign in →',
+        card1Icon: '🤖',
+        card1Title: 'AI Agents',
+        card1Body: 'Deploy skill-based assistants on your website and automate customer support.',
+        card2Icon: '🌙',
+        card2Title: 'Luna ERP',
+        card2Body: 'A comprehensive system to manage your business with operational intelligence.',
+      };
 }
 
 export default async function RegisterPage({
   params,
-  searchParams
+  searchParams,
 }: {
   params: Promise<{ locale: string }>;
   searchParams: Promise<{ redirectTo?: string }>;
@@ -84,108 +124,148 @@ export default async function RegisterPage({
   const { locale } = await params;
   const { redirectTo } = await searchParams;
   const agentFunnel = isFromAgentFunnel(redirectTo);
-  const copy = getRegisterPageCopy(locale, agentFunnel);
+  const copy = getCopy(locale, agentFunnel);
   const query = redirectTo ? `?redirectTo=${encodeURIComponent(redirectTo)}` : '';
 
   return (
-    <section className="grid gap-6 xl:grid-cols-[0.92fr_0.68fr]">
+    <section className="grid min-h-[640px] gap-3 xl:grid-cols-[1fr_480px]">
+
+      {/* ── Left panel ── */}
       <div
-        className={`interactive-panel premium-spotlight relative overflow-hidden rounded-[36px] border p-7 shadow-[0_38px_110px_-74px_rgba(15,23,42,0.32)] sm:p-8 lg:p-10 ${
-          agentFunnel
-            ? 'border-[#00bfa5]/25 bg-[linear-gradient(180deg,#f0fdf9_0%,#ffffff_100%)]'
-            : 'border-black/8 bg-[linear-gradient(180deg,#ffffff_0%,#f7fafc_100%)]'
-        }`}
+        className="relative flex flex-col overflow-hidden rounded-[28px] p-8 lg:p-12"
+        style={{ background: 'linear-gradient(145deg, #05080f 0%, #0a0f1a 60%, #071118 100%)' }}
       >
-        <div className="premium-grid absolute inset-0 opacity-45" aria-hidden="true" />
-        <div className="relative space-y-8">
-          <div className="space-y-4">
-            <div
-              className={`inline-flex rounded-full border px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.22em] shadow-[0_18px_40px_-34px_rgba(15,23,42,0.2)] ${
-                agentFunnel
-                  ? 'border-[#00bfa5]/30 bg-[#00bfa5]/10 text-[#00897b]'
-                  : 'border-black/8 bg-white/88 text-slate-500'
-              }`}
-            >
-              {agentFunnel && <span className="mr-2">🤖</span>}
+        {/* Dot-grid background */}
+        <div
+          className="pointer-events-none absolute inset-0 opacity-[0.04]"
+          style={{
+            backgroundImage: 'radial-gradient(circle at 1px 1px, #ffffff 1px, transparent 0)',
+            backgroundSize: '28px 28px',
+          }}
+          aria-hidden="true"
+        />
+
+        {/* Teal glow */}
+        <div
+          className="pointer-events-none absolute -top-24 left-1/3 h-72 w-72 -translate-x-1/2 rounded-full opacity-20 blur-3xl"
+          style={{ background: 'radial-gradient(circle, #00bfa5 0%, transparent 70%)' }}
+          aria-hidden="true"
+        />
+
+        <div className="relative flex flex-1 flex-col">
+          {/* Logo + eyebrow */}
+          <div className="flex items-center gap-3">
+            <Image
+              src="/branding/ttech-logo.svg"
+              alt="Trends172 Tech"
+              width={32}
+              height={32}
+              className="h-8 w-8 opacity-90"
+            />
+            <span className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#00bfa5]">
               {copy.eyebrow}
-            </div>
-            <div className="space-y-3">
-              <h1 className="text-3xl font-semibold tracking-[-0.04em] text-slate-950 sm:text-4xl lg:text-5xl">
-                {copy.title}
-              </h1>
-              <p className="max-w-2xl text-base leading-relaxed text-slate-600">{copy.subtitle}</p>
-            </div>
+            </span>
           </div>
 
-          {/* Agent funnel: 3-step flow */}
-          {agentFunnel && copy.step1 ? (
-            <div className="space-y-3">
-              {[copy.step1, copy.step2, copy.step3].map((step) => (
-                <div
-                  key={step}
-                  className="flex items-center gap-3 rounded-[20px] border border-[#00bfa5]/20 bg-white px-4 py-3 text-sm font-semibold text-slate-800"
-                >
-                  <span className="text-[#00bfa5]">✓</span>
-                  {step}
+          {/* Headline */}
+          <h1
+            className="mt-10 text-4xl font-bold leading-[1.05] tracking-[-0.04em] text-white lg:text-5xl xl:text-[3.25rem]"
+            style={{ whiteSpace: 'pre-line' }}
+          >
+            {copy.headline}
+          </h1>
+
+          <p className="mt-4 max-w-sm text-sm leading-relaxed text-slate-400">
+            {copy.subline}
+          </p>
+
+          {/* Agent funnel: status + step pipeline */}
+          {agentFunnel ? (
+            <div className="mt-10 flex flex-col gap-4">
+              {/* Live status */}
+              <div className="flex items-center gap-2.5">
+                <div className="relative flex h-3 w-3 items-center justify-center">
+                  <div className="absolute h-3 w-3 animate-ping rounded-full bg-[#00bfa5] opacity-60" />
+                  <div className="h-1.5 w-1.5 rounded-full bg-[#00bfa5]" />
                 </div>
-              ))}
-              <div className="grid gap-3 sm:grid-cols-2 pt-2">
-                <div className="interactive-panel rounded-[24px] border border-[#00bfa5]/20 bg-white px-5 py-5 shadow-[0_22px_55px_-44px_rgba(0,191,165,0.2)]">
-                  <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#00897b]">
-                    {copy.card1Label}
+                <span className="text-xs text-slate-400">{copy.statusLine}</span>
+              </div>
+
+              {/* Step pipeline */}
+              <div className="overflow-hidden rounded-[20px] border border-white/8">
+                <div className="flex items-center gap-4 border-b border-white/6 bg-[#00bfa5]/10 px-5 py-4">
+                  <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#00bfa5] text-[11px] font-bold text-white shadow-[0_0_14px_rgba(0,191,165,0.5)]">
+                    1
                   </div>
-                  <div className="mt-3 text-lg font-semibold tracking-[-0.03em] text-slate-950">
-                    {copy.card1Title}
+                  <div className="min-w-0 flex-1">
+                    <div className="text-sm font-semibold text-white">{copy.step1Label}</div>
+                    <div className="text-xs text-[#00bfa5]/80">{copy.step1Sub}</div>
                   </div>
-                  <p className="mt-2 text-sm leading-relaxed text-slate-600">{copy.card1Body}</p>
+                  <svg className="h-4 w-4 text-[#00bfa5]" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" aria-hidden="true">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                  </svg>
                 </div>
-                <div className="interactive-panel rounded-[24px] border border-black/8 bg-slate-950 px-5 py-5 shadow-[0_24px_60px_-44px_rgba(15,23,42,0.45)]">
-                  <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#00bfa5]">
-                    ⚡ créditos
+
+                <div className="flex items-center gap-4 border-b border-white/6 px-5 py-4">
+                  <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-white/12 text-[11px] font-bold text-slate-500">
+                    2
                   </div>
-                  <div className="mt-3 text-lg font-semibold tracking-[-0.03em] text-white">
-                    {copy.card2Title}
+                  <div className="min-w-0 flex-1">
+                    <div className="text-sm font-medium text-slate-400">{copy.step2Label}</div>
+                    <div className="text-xs text-slate-600">{copy.step2Sub}</div>
                   </div>
-                  <p className="mt-2 text-sm leading-relaxed text-slate-300">{copy.card2Body}</p>
+                </div>
+
+                <div className="flex items-center gap-4 px-5 py-4">
+                  <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-white/12 text-[11px] font-bold text-slate-500">
+                    3
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <div className="text-sm font-medium text-slate-400">{copy.step3Label}</div>
+                    <div className="text-xs text-slate-600">{copy.step3Sub}</div>
+                  </div>
                 </div>
               </div>
             </div>
           ) : (
-            /* Generic register: original 2 cards */
-            <div className="grid gap-4 sm:grid-cols-2">
-              <div className="interactive-panel rounded-[24px] border border-black/8 bg-white/88 px-5 py-5 shadow-[0_22px_55px_-44px_rgba(15,23,42,0.24)]">
-                <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">
-                  {copy.card1Label}
-                </div>
-                <div className="mt-3 text-lg font-semibold tracking-[-0.03em] text-slate-950">
-                  {copy.card1Title}
-                </div>
-                <p className="mt-2 text-sm leading-relaxed text-slate-600">{copy.card1Body}</p>
+            /* Generic mode: product cards */
+            <div className="mt-10 grid gap-3 sm:grid-cols-2">
+              <div className="rounded-[20px] border border-white/8 bg-white/[0.04] p-5">
+                <div className="text-2xl">{copy.card1Icon}</div>
+                <div className="mt-3 text-sm font-semibold text-white">{copy.card1Title}</div>
+                <p className="mt-1.5 text-xs leading-relaxed text-slate-400">{copy.card1Body}</p>
               </div>
-              <div className="interactive-panel rounded-[24px] border border-black/8 bg-slate-950 px-5 py-5 shadow-[0_24px_60px_-44px_rgba(15,23,42,0.45)]">
-                <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
-                  {copy.eyebrow}
-                </div>
-                <div className="mt-3 text-lg font-semibold tracking-[-0.03em] text-white">
-                  {copy.card2Title}
-                </div>
-                <p className="mt-2 text-sm leading-relaxed text-slate-300">{copy.card2Body}</p>
+              <div className="rounded-[20px] border border-white/8 bg-white/[0.04] p-5">
+                <div className="text-2xl">{copy.card2Icon}</div>
+                <div className="mt-3 text-sm font-semibold text-white">{copy.card2Title}</div>
+                <p className="mt-1.5 text-xs leading-relaxed text-slate-400">{copy.card2Body}</p>
+              </div>
+              <div className="col-span-full flex items-center gap-2.5 rounded-full border border-white/8 bg-white/[0.04] px-4 py-2.5">
+                <div className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#00bfa5]" />
+                <span className="text-xs text-slate-400">
+                  {locale.startsWith('es') ? 'Sistema activo · Soporte 24/7' : 'System live · 24/7 support'}
+                </span>
               </div>
             </div>
           )}
 
-          <Link
-            className="interactive-chip inline-flex items-center justify-center rounded-full border border-black/8 bg-white/88 px-5 py-3 text-sm font-semibold text-slate-900 transition hover:bg-slate-900 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900/15 focus-visible:ring-offset-2"
-            href={`/${locale}/login${query}`}
-          >
-            {copy.linkLabel}
-          </Link>
+          {/* Login link — bottom */}
+          <div className="mt-auto pt-10">
+            <Link
+              href={`/${locale}/login${query}`}
+              className="text-sm text-slate-500 transition hover:text-slate-300"
+            >
+              {copy.loginLink}
+            </Link>
+          </div>
         </div>
       </div>
 
-      <div className="flex min-w-0 items-start justify-center xl:justify-end">
+      {/* ── Right panel: form ── */}
+      <div className="flex min-w-0 items-center justify-center py-6 xl:py-0">
         <RegisterForm locale={locale} redirectTo={redirectTo} />
       </div>
+
     </section>
   );
 }
