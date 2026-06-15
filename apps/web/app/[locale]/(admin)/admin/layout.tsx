@@ -29,6 +29,7 @@ export default async function AdminLayout({
         proposals: t('proposals'),
         licenses: t('licenses'),
         aiAgents: t('aiAgents'),
+        payments: t('payments'),
         backToSite: t('backToSite')
       }}
     >

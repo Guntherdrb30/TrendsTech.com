@@ -9,6 +9,10 @@ const numberFromInput = (schema: z.ZodNumber) =>
 
 const payloadSchema = z.object({
   amountUsd: numberFromInput(z.number().positive()),
+  amountPaid: numberFromInput(z.number().positive()),
+  currencyPaid: z.enum(['USD', 'VES']).default('USD'),
+  paymentMethod: z.enum(['ZELLE', 'BINANCE', 'PAGO_MOVIL']).default('ZELLE'),
+  exchangeRateUsed: numberFromInput(z.number().positive()).optional(),
   reference: z.string().min(3).max(120),
   proofUrl: z.string().url().max(400).optional()
 });
@@ -17,7 +21,6 @@ function handleError(error: unknown) {
   if (error instanceof AuthError) {
     return NextResponse.json({ error: error.message }, { status: error.status });
   }
-
   return NextResponse.json({ error: 'Unexpected error' }, { status: 500 });
 }
 
@@ -31,14 +34,17 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Validation failed', details: parsed.error.flatten() }, { status: 400 });
     }
 
+    const d = parsed.data;
     const payment = await prisma.manualPayment.create({
       data: {
         tenantId,
-        amountPaid: new Prisma.Decimal(parsed.data.amountUsd),
-        currencyPaid: 'USD',
-        exchangeRateUsed: null,
-        reference: parsed.data.reference.trim(),
-        proofUrl: parsed.data.proofUrl?.trim() || null,
+        amountPaid: new Prisma.Decimal(d.amountPaid),
+        amountUsd: new Prisma.Decimal(d.amountUsd),
+        currencyPaid: d.currencyPaid,
+        paymentMethod: d.paymentMethod,
+        exchangeRateUsed: d.exchangeRateUsed ? new Prisma.Decimal(d.exchangeRateUsed) : null,
+        reference: d.reference.trim(),
+        proofUrl: d.proofUrl?.trim() || null,
         status: 'PENDING'
       }
     });

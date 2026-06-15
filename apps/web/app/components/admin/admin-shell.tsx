@@ -17,12 +17,14 @@ type AdminShellProps = {
     proposals: string;
     licenses: string;
     aiAgents: string;
+    payments: string;
     backToSite: string;
   };
 };
 
 const navItems = [
   { key: 'dashboard', href: '/admin' },
+  { key: 'payments', href: '/admin/payments' },
   { key: 'clients', href: '/admin/clients' },
   { key: 'projects', href: '/admin/projects' },
   { key: 'proposals', href: '/admin/proposals' },
