@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useTransition, useCallback } from 'react';
+import { signIn } from 'next-auth/react';
 import { IntakeChatWizard } from './intake-chat';
 import type { IntakeResult } from './intake-chat';
 import type { PublicSkillGroup, PublicSkillItem } from './actions';
@@ -44,6 +45,12 @@ export function PublicAgentWizard({ skillGroups, locale }: Props) {
     websiteUrl: string | null;
   } | null>(null);
   const [targetChannel, setTargetChannel] = useState<'web' | 'whatsapp' | 'both' | null>(null);
+  const [recommendedSkillIds, setRecommendedSkillIds] = useState<Set<string>>(new Set());
+  const [authShowLogin, setAuthShowLogin] = useState(false);
+  const [authEmail, setAuthEmail] = useState('');
+  const [authPassword, setAuthPassword] = useState('');
+  const [authError, setAuthError] = useState('');
+  const [authLoading, setAuthLoading] = useState(false);
   const [, startTransition] = useTransition();
 
   const allSkills = skillGroups.flatMap((g) => g.skills);
@@ -71,6 +78,7 @@ export function PublicAgentWizard({ skillGroups, locale }: Props) {
         .map((s) => s.id);
       setSelectedIds(new Set(matchedIds));
 
+      setRecommendedSkillIds(new Set(matchedIds));
       setKnowledgeData({
         textContent: result.knowledgeTextContent || null,
         websiteUrl: result.websiteUrl,
@@ -103,6 +111,24 @@ export function PublicAgentWizard({ skillGroups, locale }: Props) {
     });
   }, [buildWizardData, locale]);
 
+  const handleLogin = useCallback(async () => {
+    if (authLoading) return;
+    setAuthLoading(true);
+    setAuthError('');
+    saveToStorage(buildWizardData());
+    const res = await signIn('credentials', {
+      email: authEmail.trim(),
+      password: authPassword,
+      redirect: false,
+    });
+    if (res?.error) {
+      setAuthError(isEs ? 'Correo o contraseña incorrectos.' : 'Incorrect email or password.');
+      setAuthLoading(false);
+    } else {
+      window.location.href = `/${locale}/crear-agente?restore=1`;
+    }
+  }, [authEmail, authPassword, authLoading, buildWizardData, isEs, locale]);
+
   const copy = isEs
     ? {
         stepLabels: ['Información', 'Skills', 'Resumen', 'Activar'],
@@ -117,6 +143,8 @@ export function PublicAgentWizard({ skillGroups, locale }: Props) {
         step2Title: 'Elige las habilidades de tu agente',
         step2Sub: 'Cada skill especializa al agente en un área de tu negocio.',
         step2RecoNote: 'Las skills marcadas en teal fueron recomendadas según tu descripción.',
+        step2RecommendedLabel: '✦ Recomendadas para tu agente',
+        step2AdditionalLabel: 'Escoge herramientas adicionales para tu agente',
         noSkills: 'Selecciona al menos una skill para continuar.',
         step3Title: 'Resumen de tu agente',
         agentName: 'Nombre',
@@ -133,7 +161,13 @@ export function PublicAgentWizard({ skillGroups, locale }: Props) {
         step4Point2: 'Necesitas créditos en tu billetera para que el agente responda a tus usuarios.',
         step4Point3: 'Después del registro indexaremos el conocimiento de tu empresa automáticamente.',
         createAccount: 'Crear cuenta y activar agente →',
-        loginInstead: '¿Ya tienes cuenta? Inicia sesión',
+        loginInstead: 'Ya tengo cuenta — Iniciar sesión',
+        loginTitle: 'Inicia sesión para activar tu agente',
+        loginEmailLabel: 'Correo electrónico',
+        loginPassLabel: 'Contraseña',
+        loginSubmit: 'Iniciar sesión y activar →',
+        loginLoading: 'Iniciando sesión...',
+        loginBackLabel: '← Volver a opciones',
         featured: 'Destacado',
       }
     : {
@@ -149,6 +183,8 @@ export function PublicAgentWizard({ skillGroups, locale }: Props) {
         step2Title: 'Choose your agent skills',
         step2Sub: 'Each skill specializes the agent in a specific area of your business.',
         step2RecoNote: 'Teal-highlighted skills were recommended based on your description.',
+        step2RecommendedLabel: '✦ Recommended for your agent',
+        step2AdditionalLabel: 'Choose additional tools for your agent',
         noSkills: 'Select at least one skill to continue.',
         step3Title: 'Your agent summary',
         agentName: 'Name',
@@ -165,7 +201,13 @@ export function PublicAgentWizard({ skillGroups, locale }: Props) {
         step4Point2: 'You need credits in your wallet for the agent to respond to your users.',
         step4Point3: 'After registration we will automatically index your company knowledge.',
         createAccount: 'Create account and activate agent →',
-        loginInstead: 'Already have an account? Sign in',
+        loginInstead: 'I already have an account — Sign in',
+        loginTitle: 'Sign in to activate your agent',
+        loginEmailLabel: 'Email address',
+        loginPassLabel: 'Password',
+        loginSubmit: 'Sign in and activate →',
+        loginLoading: 'Signing in...',
+        loginBackLabel: '← Back to options',
         featured: 'Featured',
       };
 
@@ -280,31 +322,73 @@ export function PublicAgentWizard({ skillGroups, locale }: Props) {
             <div className="mb-6">
               <h2 className="text-2xl font-semibold tracking-[-0.03em] text-slate-900">{copy.step2Title}</h2>
               <p className="mt-1 text-sm text-slate-500">{copy.step2Sub}</p>
-              {selectedIds.size > 0 && (
-                <p className="mt-1 text-xs text-[#00897b]">{copy.step2RecoNote}</p>
-              )}
             </div>
-            <div className="space-y-6 max-h-[60vh] overflow-y-auto pr-1">
-              {skillGroups.map((group) => (
-                <div key={group.industry}>
-                  <div className="mb-3 text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-400">
-                    {isEs ? group.industry : group.industryEn}
+            <div className="space-y-8 max-h-[62vh] overflow-y-auto pr-1">
+
+              {/* Recommended skills */}
+              {recommendedSkillIds.size > 0 && (
+                <div>
+                  <div className="mb-3 flex items-center gap-3">
+                    <span className="text-[10px] font-bold uppercase tracking-[0.24em] text-[#00897b]">
+                      {copy.step2RecommendedLabel}
+                    </span>
+                    <div className="h-px flex-1 bg-[#00bfa5]/25" />
                   </div>
-                  <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                    {group.skills.map((skill) => (
-                      <SkillCard
-                        key={skill.id}
-                        skill={skill}
-                        selected={selectedIds.has(skill.id)}
-                        onToggle={toggleSkill}
-                        isEs={isEs}
-                        featuredLabel={copy.featured}
-                      />
-                    ))}
+                  <div className="rounded-[20px] border border-[#00bfa5]/25 bg-[#f0fdf9]/60 p-4">
+                    <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                      {allSkills
+                        .filter((s) => recommendedSkillIds.has(s.id))
+                        .map((skill) => (
+                          <SkillCard
+                            key={skill.id}
+                            skill={skill}
+                            selected={selectedIds.has(skill.id)}
+                            onToggle={toggleSkill}
+                            isEs={isEs}
+                            featuredLabel={copy.featured}
+                          />
+                        ))}
+                    </div>
                   </div>
                 </div>
-              ))}
+              )}
+
+              {/* Additional skills */}
+              <div>
+                <div className="mb-4 flex items-center gap-3">
+                  <span className="text-[10px] font-bold uppercase tracking-[0.24em] text-slate-400">
+                    {copy.step2AdditionalLabel}
+                  </span>
+                  <div className="h-px flex-1 bg-slate-200" />
+                </div>
+                <div className="space-y-5">
+                  {skillGroups.map((group) => {
+                    const extras = group.skills.filter((s) => !recommendedSkillIds.has(s.id));
+                    if (extras.length === 0) return null;
+                    return (
+                      <div key={group.industry}>
+                        <div className="mb-3 text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-400">
+                          {isEs ? group.industry : group.industryEn}
+                        </div>
+                        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                          {extras.map((skill) => (
+                            <SkillCard
+                              key={skill.id}
+                              skill={skill}
+                              selected={selectedIds.has(skill.id)}
+                              onToggle={toggleSkill}
+                              isEs={isEs}
+                              featuredLabel={copy.featured}
+                            />
+                          ))}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
             </div>
+
             <div className="mt-8 flex items-center justify-between gap-4">
               <button type="button" onClick={() => setStep(1)} className="text-sm font-semibold text-slate-500 hover:text-slate-900 transition">
                 {copy.back}
@@ -410,31 +494,17 @@ export function PublicAgentWizard({ skillGroups, locale }: Props) {
         {/* ── STEP 4: Auth wall ── */}
         {step === 4 && (
           <div className="p-7 sm:p-8">
-            <div className="mx-auto max-w-xl text-center">
-              <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-[linear-gradient(135deg,#00bfa5,#00897b)] text-3xl shadow-[0_14px_35px_-16px_rgba(0,191,165,0.5)]">
-                🚀
-              </div>
-              <h2 className="text-2xl font-semibold tracking-[-0.03em] text-slate-900">{copy.step4Title}</h2>
-              <p className="mt-2 text-sm leading-relaxed text-slate-500">{copy.step4Sub}</p>
+            <div className="mx-auto max-w-xl">
 
-              <div className="mt-6 space-y-3 text-left">
-                {[copy.step4Point1, copy.step4Point2, copy.step4Point3].map((pt, i) => (
-                  <div key={i} className="flex items-start gap-3 rounded-2xl border border-black/8 bg-slate-50 px-4 py-3">
-                    <span className="mt-0.5 text-[#00bfa5]">✓</span>
-                    <span className="text-sm text-slate-700">{pt}</span>
-                  </div>
-                ))}
-              </div>
-
-              {/* agent mini-summary */}
-              <div className="mt-6 rounded-2xl border border-[#00bfa5]/25 bg-[#f0fdf9] px-4 py-4 text-left">
-                <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#00897b]">
+              {/* Agent mini-summary — siempre visible */}
+              <div className="mb-6 rounded-2xl border border-[#00bfa5]/25 bg-[#f0fdf9] px-4 py-4">
+                <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#00897b]">
                   {isEs ? 'Tu agente configurado' : 'Your configured agent'}
                 </div>
                 <div className="mt-2 text-base font-semibold text-slate-900">{name}</div>
                 <div className="mt-2 flex flex-wrap gap-1.5">
                   {selectedSkills.map((s) => (
-                    <span key={s.id} className="rounded-full bg-white border border-[#00bfa5]/30 px-2.5 py-0.5 text-xs font-medium text-[#00897b]">
+                    <span key={s.id} className="rounded-full border border-[#00bfa5]/30 bg-white px-2.5 py-0.5 text-xs font-medium text-[#00897b]">
                       {s.icon} {isEs ? s.name : s.nameEn}
                     </span>
                   ))}
@@ -442,28 +512,95 @@ export function PublicAgentWizard({ skillGroups, locale }: Props) {
                 <div className="mt-3 text-right text-sm font-bold text-slate-900">${total}/mes</div>
               </div>
 
-              <div className="mt-6 space-y-3">
-                <button
-                  type="button"
-                  onClick={goToAuth}
-                  className="w-full rounded-full bg-slate-950 px-6 py-3 text-sm font-semibold text-white shadow-[0_14px_35px_-16px_rgba(15,23,42,0.4)] transition hover:bg-slate-800"
-                >
-                  {copy.createAccount}
-                </button>
-                <a
-                  href={`/${locale}/login?redirectTo=${encodeURIComponent(`/${locale}/crear-agente?restore=1`)}`}
-                  className="block text-sm font-semibold text-slate-500 hover:text-slate-900 transition"
-                  onClick={() => saveToStorage(buildWizardData())}
-                >
-                  {copy.loginInstead}
-                </a>
-              </div>
-            </div>
+              {!authShowLogin ? (
+                /* Pantalla de opciones */
+                <>
+                  <div className="mb-1 flex items-center justify-center">
+                    <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[linear-gradient(135deg,#00bfa5,#00897b)] text-2xl shadow-[0_12px_30px_-14px_rgba(0,191,165,0.5)]">
+                      🚀
+                    </div>
+                  </div>
+                  <h2 className="mt-4 text-center text-xl font-semibold tracking-[-0.03em] text-slate-900">{copy.step4Title}</h2>
+                  <p className="mt-2 text-center text-sm leading-relaxed text-slate-500">{copy.step4Sub}</p>
 
-            <div className="mt-6 flex justify-start">
-              <button type="button" onClick={() => setStep(3)} className="text-sm font-semibold text-slate-400 hover:text-slate-700 transition">
-                {copy.back}
-              </button>
+                  <div className="mt-5 space-y-2.5 text-left">
+                    {[copy.step4Point1, copy.step4Point2, copy.step4Point3].map((pt, i) => (
+                      <div key={i} className="flex items-start gap-3 rounded-2xl border border-black/8 bg-slate-50 px-4 py-3">
+                        <span className="mt-0.5 text-[#00bfa5]">✓</span>
+                        <span className="text-sm text-slate-700">{pt}</span>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="mt-6 space-y-3">
+                    <button
+                      type="button"
+                      onClick={goToAuth}
+                      className="w-full rounded-full bg-slate-950 px-6 py-3 text-sm font-semibold text-white shadow-[0_14px_35px_-16px_rgba(15,23,42,0.4)] transition hover:bg-slate-800"
+                    >
+                      {copy.createAccount}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => { saveToStorage(buildWizardData()); setAuthShowLogin(true); }}
+                      className="w-full rounded-full border border-slate-200 bg-white px-6 py-3 text-sm font-semibold text-slate-700 transition hover:border-slate-400 hover:text-slate-900"
+                    >
+                      {copy.loginInstead}
+                    </button>
+                  </div>
+                </>
+              ) : (
+                /* Formulario de login inline */
+                <>
+                  <h2 className="mb-5 text-xl font-semibold tracking-[-0.03em] text-slate-900">{copy.loginTitle}</h2>
+                  <div className="space-y-4">
+                    <div className="space-y-1.5">
+                      <label className="block text-sm font-semibold text-slate-700">{copy.loginEmailLabel}</label>
+                      <input
+                        type="email"
+                        value={authEmail}
+                        onChange={(e) => setAuthEmail(e.target.value)}
+                        placeholder="tu@correo.com"
+                        autoFocus
+                        className="w-full rounded-2xl border border-black/10 bg-slate-50 px-4 py-3 text-sm outline-none placeholder:text-slate-400 focus:border-[#00bfa5] focus:bg-white focus:ring-2 focus:ring-[#00bfa5]/20"
+                      />
+                    </div>
+                    <div className="space-y-1.5">
+                      <label className="block text-sm font-semibold text-slate-700">{copy.loginPassLabel}</label>
+                      <input
+                        type="password"
+                        value={authPassword}
+                        onChange={(e) => setAuthPassword(e.target.value)}
+                        placeholder="••••••••"
+                        onKeyDown={(e) => { if (e.key === 'Enter') { void handleLogin(); } }}
+                        className="w-full rounded-2xl border border-black/10 bg-slate-50 px-4 py-3 text-sm outline-none placeholder:text-slate-400 focus:border-[#00bfa5] focus:bg-white focus:ring-2 focus:ring-[#00bfa5]/20"
+                      />
+                    </div>
+                    {authError && <p className="text-sm font-medium text-red-600">{authError}</p>}
+                    <button
+                      type="button"
+                      disabled={authLoading || !authEmail.trim() || !authPassword}
+                      onClick={() => { void handleLogin(); }}
+                      className="w-full rounded-full bg-[#00bfa5] px-6 py-3 text-sm font-semibold text-white transition hover:bg-[#00897b] disabled:cursor-not-allowed disabled:opacity-40"
+                    >
+                      {authLoading ? copy.loginLoading : copy.loginSubmit}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => { setAuthShowLogin(false); setAuthError(''); }}
+                      className="block w-full text-center text-sm text-slate-400 transition hover:text-slate-700"
+                    >
+                      {copy.loginBackLabel}
+                    </button>
+                  </div>
+                </>
+              )}
+
+              <div className="mt-6 flex justify-start">
+                <button type="button" onClick={() => { setStep(3); setAuthShowLogin(false); setAuthError(''); }} className="text-sm font-semibold text-slate-400 hover:text-slate-700 transition">
+                  {copy.back}
+                </button>
+              </div>
             </div>
           </div>
         )}
