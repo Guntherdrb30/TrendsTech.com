@@ -1,58 +1,58 @@
-# WhatsApp WABA Integration — Design Spec
+# Integración WhatsApp WABA — Especificación de Diseño
 
-**Date:** 2026-06-14  
-**Status:** Approved  
-**Scope:** Enable clients to connect their own WhatsApp Business API (WABA) numbers to their agents, with persistent conversation memory and image/document processing.
-
----
-
-## 1. Overview
-
-Clients who create an agent via the `/crear-agente` wizard can connect their own Meta WABA phone number so their end-users can chat with the agent directly on WhatsApp. The agent remembers conversation context per user (OpenAI thread per user phone number) and can process images sent by end-users using GPT-4o vision.
+**Fecha:** 2026-06-14  
+**Estado:** Aprobado  
+**Alcance:** Permitir que los clientes conecten sus propios números de WhatsApp Business API (WABA) a sus agentes, con memoria persistente de conversación y procesamiento de imágenes y documentos.
 
 ---
 
-## 2. Architecture
+## 1. Resumen
 
-**Pattern:** Global webhook + internal routing + OpenAI threads per user
+Los clientes que crean un agente desde el wizard `/crear-agente` podrán conectar su propio número WABA de Meta para que sus usuarios finales conversen con el agente directamente por WhatsApp. El agente recuerda el contexto de la conversación por usuario (un hilo de OpenAI por número de teléfono) y puede procesar imágenes enviadas por el usuario final usando GPT-4o visión.
+
+---
+
+## 2. Arquitectura
+
+**Patrón:** Webhook global + enrutamiento interno + hilos de OpenAI por usuario
 
 ```
-End User → WhatsApp → Meta Cloud API → POST /api/webhooks/whatsapp
-  → lookup WhatsAppChannel by phoneNumberId
-  → get or create WhatsAppThread (channelId, userPhone) → OpenAI threadId
-  → [if image] download from Meta CDN → upload to OpenAI
-  → add message to thread → run assistant
-  → send text response via Meta sendMessage API
-  → End User receives reply
+Usuario final → WhatsApp → Meta Cloud API → POST /api/webhooks/whatsapp
+  → busca WhatsAppChannel por phoneNumberId
+  → obtiene o crea WhatsAppThread (channelId, teléfono del usuario) → openaiThreadId
+  → [si hay imagen] descarga de CDN de Meta → sube a OpenAI
+  → agrega mensaje al hilo → ejecuta asistente
+  → envía respuesta de texto via API de Meta
+  → Usuario final recibe la respuesta
 ```
 
-Meta sends all webhook events to a single URL registered per Meta App. The system routes by `entry[0].changes[0].value.metadata.phone_number_id`.
+Meta envía todos los eventos del webhook a una sola URL registrada por Meta App. El sistema enruta por `entry[0].changes[0].value.metadata.phone_number_id`.
 
 ---
 
-## 3. Database Schema
+## 3. Cambios en la Base de Datos
 
-### WhatsAppChannel (extend existing model)
+### WhatsAppChannel (ampliar modelo existente)
 
-Add the following fields to the existing `WhatsAppChannel` model:
+Agregar los siguientes campos al modelo `WhatsAppChannel` existente:
 
-| Field | Type | Description |
+| Campo | Tipo | Descripción |
 |-------|------|-------------|
-| `phoneNumberId` | String unique | Meta internal phone number ID (from Business Manager) |
-| `displayName` | String? | Display name of the phone number |
-| `accessTokenEnc` | String | AES-encrypted permanent system user access token |
-| `businessAccountId` | String | Meta WABA Business Account ID |
+| `phoneNumberId` | String único | ID interno del número de Meta (del Business Manager) |
+| `displayName` | String? | Nombre visible del número |
+| `accessTokenEnc` | String | Token permanente de sistema cifrado con AES-256-GCM |
+| `businessAccountId` | String | ID de la cuenta de negocio WABA en Meta |
 
-The existing `webhookSecret` field is repurposed as the HMAC-SHA256 signing secret (per-channel, set by Meta).
+El campo existente `webhookSecret` se usa como el secreto HMAC-SHA256 de firma (por canal, lo provee Meta).
 
-### WhatsAppThread (new model)
+### WhatsAppThread (modelo nuevo)
 
 ```prisma
 model WhatsAppThread {
   id             String          @id @default(cuid())
   channelId      String
-  userPhone      String          // End-user's WhatsApp phone number (E.164)
-  openaiThreadId String          // OpenAI beta thread ID
+  userPhone      String          // Teléfono del usuario final (formato E.164)
+  openaiThreadId String          // ID del hilo de OpenAI beta
   messageCount   Int             @default(0)
   lastMessageAt  DateTime        @default(now())
   createdAt      DateTime        @default(now())
@@ -67,93 +67,93 @@ model WhatsAppThread {
 
 ---
 
-## 4. Backend Components
+## 4. Componentes del Backend
 
-### 4.1 Prisma Migration
-- Add `phoneNumberId`, `displayName`, `accessTokenEnc`, `businessAccountId` to `WhatsAppChannel`
-- Add `threads` relation to `WhatsAppChannel`
-- Add `WhatsAppThread` model
-- Run `prisma migrate dev`
+### 4.1 Migración de Base de Datos
+- Agregar `phoneNumberId`, `displayName`, `accessTokenEnc`, `businessAccountId` a `WhatsAppChannel`
+- Agregar relación `threads` en `WhatsAppChannel`
+- Crear modelo `WhatsAppThread`
+- Ejecutar `prisma migrate dev`
 
-### 4.2 Webhook Endpoint — `apps/web/app/api/webhooks/whatsapp/route.ts`
+### 4.2 Endpoint del Webhook — `apps/web/app/api/webhooks/whatsapp/route.ts`
 
-**GET** — Meta verification handshake:
-- Reads `hub.mode`, `hub.verify_token`, `hub.challenge` from query params
-- Validates `hub.verify_token === process.env.WHATSAPP_VERIFY_TOKEN`
-- Returns `hub.challenge` as plain text with 200
+**GET** — Verificación inicial de Meta:
+- Lee `hub.mode`, `hub.verify_token`, `hub.challenge` de los parámetros de query
+- Valida que `hub.verify_token === process.env.WHATSAPP_VERIFY_TOKEN`
+- Devuelve `hub.challenge` como texto plano con status 200
 
-**POST** — Receive messages:
-1. Read raw body as text (needed for HMAC validation — do NOT parse as JSON yet)
-2. Extract `phoneNumberId` from raw body via `JSON.parse(rawBody).entry[0].changes[0].value.metadata.phone_number_id`
-3. Fetch `WhatsAppChannel` by `phoneNumberId` to get `webhookSecret`
-4. Validate HMAC-SHA256 signature: `X-Hub-Signature-256` header vs `hmac(webhookSecret, rawBody)` — return 403 on mismatch
-5. Now parse full message from `entry[0].changes[0].value.messages[0]`
-4. Ignore non-message events (status updates, etc.)
-5. Send immediate 200 OK to Meta (must respond within 20s)
-6. Process asynchronously:
-   - Get or create `WhatsAppThread` for (channelId, from)
-   - Decrypt `accessTokenEnc` to get raw token
-   - If image/document: download from Meta CDN, upload to OpenAI files API
-   - Add message to OpenAI thread (text + optional file attachment)
-   - Run OpenAI assistant (agentInstance's baseAgentKey config)
-   - Get response text
-   - Call `sendTextMessage` to send reply via Meta API
-   - Update `WhatsAppThread.lastMessageAt` and `messageCount`
+**POST** — Recibir mensajes:
+1. Leer el body como texto crudo (necesario para validar HMAC — NO parsear como JSON todavía)
+2. Extraer `phoneNumberId` del body crudo con `JSON.parse(rawBody).entry[0].changes[0].value.metadata.phone_number_id`
+3. Buscar el `WhatsAppChannel` por `phoneNumberId` para obtener el `webhookSecret`
+4. Validar firma HMAC-SHA256: header `X-Hub-Signature-256` vs `hmac(webhookSecret, rawBody)` — retornar 403 si no coincide
+5. Parsear el mensaje completo de `entry[0].changes[0].value.messages[0]`
+6. Ignorar eventos que no son mensajes (actualizaciones de estado, etc.)
+7. Enviar 200 OK inmediatamente a Meta (debe responder en menos de 20 segundos)
+8. Procesar de forma asíncrona usando `unstable_after` de Next.js 15:
+   - Obtener o crear `WhatsAppThread` para (channelId, teléfono del remitente)
+   - Descifrar `accessTokenEnc` para obtener el token real
+   - Si es imagen o documento: descargar del CDN de Meta, subir a la API de archivos de OpenAI
+   - Agregar mensaje al hilo de OpenAI (texto + adjunto opcional)
+   - Ejecutar el asistente del agente
+   - Obtener el texto de respuesta
+   - Llamar a `sendTextMessage` para enviar la respuesta via API de Meta
+   - Actualizar `WhatsAppThread.lastMessageAt` y `messageCount`
 
-**Note on async processing:** Next.js serverless functions terminate when the response is sent, which would kill async work. Use Next.js `unstable_after` (available in Next.js 15) to schedule work that continues after the response:
+**Nota sobre procesamiento asíncrono:** Las funciones serverless de Next.js se terminan al enviar la respuesta, lo que mataría el trabajo asíncrono. Se usa `unstable_after` de Next.js 15 para programar trabajo que continúa después de la respuesta:
 ```typescript
 import { unstable_after as after } from 'next/server';
-// Inside POST handler:
-after(async () => { await processWhatsAppMessage(...) });
+// Dentro del handler POST:
+after(async () => { await procesarMensajeWhatsApp(...) });
 return new Response('OK', { status: 200 });
 ```
-This keeps the function alive for the background work without holding the response.
+Esto mantiene la función viva para el trabajo en segundo plano sin retener la respuesta.
 
-### 4.3 Meta API Client — `apps/web/lib/meta-api.ts`
+### 4.3 Cliente API de Meta — `apps/web/lib/meta-api.ts`
 
 ```typescript
-// Send a text message
+// Enviar un mensaje de texto
 sendTextMessage(phoneNumberId: string, accessToken: string, to: string, text: string): Promise<void>
 
-// Get media download URL from media ID
+// Obtener URL de descarga de medios por ID
 getMediaUrl(mediaId: string, accessToken: string): Promise<string>
 
-// Download media binary from URL
+// Descargar binario de medios desde la URL
 downloadMedia(url: string, accessToken: string): Promise<Buffer>
 
-// Mark message as read (optional UX improvement)
+// Marcar mensaje como leído (mejora de UX opcional)
 markAsRead(phoneNumberId: string, accessToken: string, messageId: string): Promise<void>
 ```
 
-All functions call `https://graph.facebook.com/v20.0/...` with the channel's access token as Bearer.
+Todas las funciones llaman a `https://graph.facebook.com/v20.0/...` con el token del canal como Bearer.
 
-### 4.4 WhatsApp Agent Runner — `apps/web/lib/whatsapp-agent-runner.ts`
+### 4.4 Runner del Agente para WhatsApp — `apps/web/lib/whatsapp-agent-runner.ts`
 
 ```typescript
 runWhatsAppMessage(input: {
   agentInstance: AgentInstance & { skills: AgentSkill[] }
   thread: WhatsAppThread
   messageText: string | null
-  mediaBuffer: Buffer | null    // null if text-only
+  mediaBuffer: Buffer | null    // null si es solo texto
   mediaType: string | null      // 'image/jpeg', 'application/pdf', etc.
-}): Promise<string>             // returns agent response text
+}): Promise<string>             // devuelve el texto de respuesta del agente
 ```
 
-Internally:
-1. If `mediaBuffer`: upload to OpenAI Files API, create `image_url` or file content block
-2. Add user message to `thread.openaiThreadId` via `openai.beta.threads.messages.create`
-3. Create run: `openai.beta.threads.runs.createAndPoll` with the agent's assistant ID (or inline instructions from skills)
-4. Extract text from run's messages
-5. Return final assistant message text
+Internamente:
+1. Si hay `mediaBuffer`: sube a la API de Archivos de OpenAI, crea bloque de contenido de imagen o archivo
+2. Agrega el mensaje del usuario al hilo via `openai.beta.threads.messages.create`
+3. Crea una ejecución: `openai.beta.threads.runs.createAndPoll` con el ID del asistente del agente
+4. Extrae el texto del mensaje final del asistente
+5. Devuelve el texto de respuesta
 
-### 4.5 Token Encryption — `apps/web/lib/crypto.ts` (extend existing or new)
+### 4.5 Cifrado de Tokens — `apps/web/lib/crypto.ts`
 
 ```typescript
-encryptToken(plaintext: string): string   // AES-256-GCM, returns base64
-decryptToken(ciphertext: string): string  // reverse
+encryptToken(plaintext: string): string   // AES-256-GCM, devuelve base64
+decryptToken(ciphertext: string): string  // inverso
 ```
 
-Uses `process.env.WHATSAPP_TOKEN_ENCRYPTION_KEY` (32-byte hex string).
+Usa `process.env.WHATSAPP_TOKEN_ENCRYPTION_KEY` (cadena hexadecimal de 32 bytes).
 
 ### 4.6 Server Actions — `apps/web/app/[locale]/(dashboard)/agents/[id]/channels/actions.ts`
 
@@ -163,120 +163,117 @@ createWhatsAppChannel(input: {
   phoneNumberId: string
   phoneNumber: string
   displayName: string
-  accessToken: string       // plain — will be encrypted before saving
+  accessToken: string       // plano — se cifra antes de guardar
   businessAccountId: string
   webhookSecret: string
 }): Promise<{ channelId: string }>
 
 deleteWhatsAppChannel(channelId: string): Promise<void>
 
-getAgentChannels(agentInstanceId: string): Promise<ChannelSummary[]>
+getAgentChannels(agentInstanceId: string): Promise<ResumenCanal[]>
 
 sendTestMessage(channelId: string): Promise<{ ok: boolean; error?: string }>
 ```
 
 ---
 
-## 5. Frontend Components
+## 5. Componentes del Frontend
 
-### 5.1 RestoreHandler Update (`restore-handler.tsx`)
+### 5.1 Actualización de RestoreHandler (`restore-handler.tsx`)
 
-In the `done` state (agent created with credits), add below the snippet:
+En el estado `done` (agente creado con créditos), agregar debajo del snippet:
 
 ```
-[Divider]
+[Separador]
 "¿Quieres recibir mensajes por WhatsApp?"
 [Botón] → Conectar WhatsApp Business → /[locale]/dashboard/agents/[agentId]/channels/connect-whatsapp
 ```
 
-The `no_credits` state also shows the WhatsApp option but grayed with tooltip "Necesitas créditos activos".
+El estado `no_credits` también muestra la opción de WhatsApp pero en gris con tooltip "Necesitas créditos activos".
 
-### 5.2 WABA Connect Wizard — `/dashboard/agents/[id]/channels/connect-whatsapp`
+### 5.2 Wizard de Configuración WABA — `/dashboard/agents/[id]/channels/connect-whatsapp`
 
-3-step client-side wizard (`'use client'`):
+Wizard de 3 pasos del lado del cliente (`'use client'`):
 
-**Step 1 — Instrucciones:**
-- Explains what the user needs from Meta Business Manager
-- Numbered guide:
-  1. Go to business.facebook.com
-  2. WhatsApp Manager → Phone Numbers
-  3. Create a System User with `whatsapp_business_messaging` permission
-  4. Generate a permanent token (never expires)
-  5. Copy: Phone Number ID, Permanent Token, Business Account ID
-- "Ya tengo mis credenciales →" button to Step 2
+**Paso 1 — Instrucciones:**
+- Explica qué necesita el usuario de Meta Business Manager
+- Guía numerada:
+  1. Ir a business.facebook.com
+  2. WhatsApp Manager → Números de teléfono
+  3. Crear un Usuario del Sistema con permiso `whatsapp_business_messaging`
+  4. Generar un token permanente (sin vencimiento)
+  5. Copiar: ID del número de teléfono, Token permanente, ID de la cuenta de negocio
+- URL del webhook a copiar en Meta: `https://trends172tech.com/api/webhooks/whatsapp`
+- Botón "Ya tengo mis credenciales →" para ir al Paso 2
 
-**Step 2 — Credenciales:**
-Form fields:
-- Phone Number ID (from Meta, numeric string)
-- Phone Number (display, e.g. +58412...)
-- Display Name
-- Access Token (permanent system user token)
-- Business Account ID
-- Webhook Secret (shown as auto-generated, user can override — this is the App Secret from Meta)
+**Paso 2 — Credenciales:**
+Campos del formulario:
+- ID del número de teléfono (de Meta, cadena numérica)
+- Número de teléfono (visible, ej. +58412...)
+- Nombre visible
+- Token de acceso (token permanente del usuario del sistema)
+- ID de la cuenta de negocio
+- Secreto del webhook (se muestra auto-generado, el usuario puede reemplazarlo — es el App Secret de Meta)
 
-On submit: calls `createWhatsAppChannel` server action → saves channel with encrypted token → advances to Step 3.
+Al enviar: llama a la server action `createWhatsAppChannel` → guarda canal con token cifrado → avanza al Paso 3.
 
-**Step 3 — Verificación:**
-- Calls `sendTestMessage(channelId)` server action
-- Shows spinner while waiting
-- Success: "✅ Mensaje de prueba enviado. Revisa tu WhatsApp y confirma."
-- [Confirmar] button → marks channel `ACTIVE` → shows "Canal conectado" 
-- [No lo recibí] → troubleshooting tips (check token permissions, verify webhook URL)
+**Paso 3 — Verificación:**
+- Llama a `sendTestMessage(channelId)` server action
+- Muestra spinner mientras espera
+- Éxito: "✅ Mensaje de prueba enviado. Revisa tu WhatsApp y confirma."
+- Botón [Confirmar] → marca el canal como `ACTIVE` → muestra "Canal conectado"
+- Botón [No lo recibí] → consejos de resolución de problemas (verificar permisos del token, verificar URL del webhook)
 
-**Webhook URL shown to user:** `https://trends172tech.com/api/webhooks/whatsapp`
+### 5.3 Panel de Canales del Agente — Pestaña Canales en `/dashboard/agents/[id]`
 
-### 5.3 Dashboard Agent Detail — Canales Tab
-
-Route: `/dashboard/agents/[id]` — add `canales` tab
-
-Renders `AgentChannelsPanel` ('use client'):
-- Lists channels from `getAgentChannels(agentId)`
-- Each row: icon + phone number + status badge + Edit / Delete buttons
-- "Añadir canal" button → /channels/connect-whatsapp
-- Edit: opens inline form to update displayName or replace token
-- Delete: confirm dialog → `deleteWhatsAppChannel`
+Renderiza `AgentChannelsPanel` (`'use client'`):
+- Lista canales de `getAgentChannels(agentId)`
+- Cada fila: ícono + número de teléfono + badge de estado + botones Editar / Eliminar
+- Botón "Añadir canal" → /channels/connect-whatsapp
+- Editar: formulario inline para actualizar nombre visible o reemplazar token
+- Eliminar: diálogo de confirmación → `deleteWhatsAppChannel`
 
 ---
 
-## 6. Environment Variables
+## 6. Variables de Entorno
 
-| Variable | Description |
+| Variable | Descripción |
 |----------|-------------|
-| `WHATSAPP_VERIFY_TOKEN` | Global verify token registered in Meta App webhook config |
-| `WHATSAPP_TOKEN_ENCRYPTION_KEY` | 32-byte hex key for AES-256-GCM encryption of access tokens |
+| `WHATSAPP_VERIFY_TOKEN` | Token de verificación global registrado en la configuración del webhook de la Meta App |
+| `WHATSAPP_TOKEN_ENCRYPTION_KEY` | Clave hexadecimal de 32 bytes para cifrado AES-256-GCM de los tokens de acceso |
 
 ---
 
-## 7. Meta App Setup (one-time, done by Trends172Tech)
+## 7. Configuración de la Meta App (única vez, la hace Trends172Tech)
 
-1. Create a Meta Developer App at developers.facebook.com
-2. Add "WhatsApp" product to the app
-3. Register webhook URL: `https://trends172tech.com/api/webhooks/whatsapp`
-4. Set Verify Token = `WHATSAPP_VERIFY_TOKEN` env value
-5. Subscribe to `messages` webhook field
-6. Each client adds their WABA phone number to the Trends172Tech app (or uses their own app — this is configurable)
-
----
-
-## 8. Message Type Support (MVP)
-
-| Type | Handling |
-|------|----------|
-| `text` | Pass directly to OpenAI thread |
-| `image` | Download from Meta CDN, upload to OpenAI, add as vision content |
-| `document` (PDF) | Download, upload to OpenAI files, add as file attachment |
-| `audio` | Respond: "Solo puedo responder mensajes de texto e imágenes por ahora." |
-| `video` | Same as audio — not supported in MVP |
-| `sticker` | Ignore silently |
-| `location` | Respond with text version of coordinates |
+1. Crear una Meta Developer App en developers.facebook.com
+2. Agregar el producto "WhatsApp" a la app
+3. Registrar URL del webhook: `https://trends172tech.com/api/webhooks/whatsapp`
+4. Establecer Verify Token = valor de la variable `WHATSAPP_VERIFY_TOKEN`
+5. Suscribirse al campo de webhook `messages`
+6. Cada cliente agrega su número WABA a la app de Trends172Tech
 
 ---
 
-## 9. Out of Scope (MVP)
+## 8. Tipos de Mensaje Soportados (MVP)
 
-- Sending images or media back to users (text-only responses)
-- Message templates / HSM (outbound campaigns)
-- Multi-agent routing within one number
-- Instagram DM or Messenger channels (future)
-- BullMQ queuing (add if throughput demands it)
-- Read receipts beyond basic marking
+| Tipo | Manejo |
+|------|--------|
+| `text` | Se pasa directamente al hilo de OpenAI |
+| `image` | Se descarga del CDN de Meta, se sube a OpenAI, se agrega como contenido de visión |
+| `document` (PDF) | Se descarga, se sube a archivos de OpenAI, se agrega como adjunto |
+| `audio` | Respuesta: "Solo puedo responder mensajes de texto e imágenes por ahora." |
+| `video` | Igual que audio — no soportado en el MVP |
+| `sticker` | Se ignora silenciosamente |
+| `location` | Se responde con la versión en texto de las coordenadas |
+
+---
+
+## 9. Fuera del Alcance (MVP)
+
+- Enviar imágenes o medios de vuelta al usuario (solo respuestas de texto)
+- Plantillas de mensajes / HSM (campañas salientes)
+- Enrutamiento multi-agente en un mismo número
+- Canal de Instagram DM o Messenger (futuro)
+- Cola con BullMQ (agregar si el volumen lo requiere)
+- Confirmaciones de lectura más allá del marcado básico
