@@ -33,7 +33,7 @@ export default async function SpendingPage({ params }: { params: Promise<{ local
       select: {
         id: true,
         name: true,
-        agentSkills: { select: { skill: { select: { name: true, nameEn: true, icon: true } } } },
+        skills: { select: { skill: { select: { name: true, nameEn: true, icon: true } } } },
       },
     }),
   ]);
@@ -70,7 +70,7 @@ export default async function SpendingPage({ params }: { params: Promise<{ local
 
   const maxDayMicros = Math.max(...dailyEntries.map(([, v]) => v), 1);
 
-  const totalSkills = agents.reduce((s, a) => s + a.agentSkills.length, 0);
+  const totalSkills = agents.reduce((s, a) => s + a.skills.length, 0);
   const creditPoolMicros = totalSkills * 10 * USD_MICROS_PER_DOLLAR;
 
   const c = isEs
