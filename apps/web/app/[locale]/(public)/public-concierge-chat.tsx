@@ -22,6 +22,7 @@ const THREAD_ACTIVITY_KEY = "publicConciergeThreadLastActive";
 const THREAD_ARCHIVE_KEY = "publicConciergeThreadArchive";
 const THREAD_TTL_MS = 24 * 60 * 60 * 1000;
 const LEAD_TOOL_NAMES = new Set(["lead_capture", "capture_lead", "notify_lead"]);
+const PRODUCT_TOOL_NAME = "recommend_product";
 
 const WHATSAPP_NUMBER = "584245262306";
 
@@ -141,6 +142,10 @@ export function PublicConciergeChat({ copy }: { copy: ConciergeCopy }) {
   const [isReady, setIsReady] = useState(false);
   const [hasMessages, setHasMessages] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
+  const [productRec, setProductRec] = useState<{
+    product: 'agent' | 'luna';
+    channel?: 'web' | 'whatsapp' | 'both';
+  } | null>(null);
   const getClientSecret = useMemo(() => createClientSecretFetcher(), []);
   const chatLocale = useMemo(() => normalizeLocale(copy.locale), [copy.locale]);
 
@@ -262,6 +267,14 @@ export function PublicConciergeChat({ copy }: { copy: ConciergeCopy }) {
       persistLastActive(Date.now());
     },
     onClientTool: async ({ name, params }) => {
+      if (name === PRODUCT_TOOL_NAME) {
+        const p = (params && typeof params === "object" ? params : {}) as Record<string, unknown>;
+        setProductRec({
+          product: p.product === "luna" ? "luna" : "agent",
+          channel: (p.channel as "web" | "whatsapp" | "both" | undefined) ?? undefined,
+        });
+        return { ok: true };
+      }
       if (!LEAD_TOOL_NAMES.has(name)) return { ok: false, error: "Unsupported tool." };
       const safeParams = params && typeof params === "object" ? params : {};
       try {
@@ -272,6 +285,14 @@ export function PublicConciergeChat({ copy }: { copy: ConciergeCopy }) {
       }
     },
     onEffect: async ({ name, data }) => {
+      if (name === PRODUCT_TOOL_NAME) {
+        const p = (data && typeof data === "object" ? data : {}) as Record<string, unknown>;
+        setProductRec({
+          product: p.product === "luna" ? "luna" : "agent",
+          channel: (p.channel as "web" | "whatsapp" | "both" | undefined) ?? undefined,
+        });
+        return;
+      }
       if (!LEAD_TOOL_NAMES.has(name)) return;
       const safeParams = data && typeof data === "object" ? data : {};
       try {
@@ -458,6 +479,61 @@ export function PublicConciergeChat({ copy }: { copy: ConciergeCopy }) {
           <div className="h-[58vh] min-h-[380px] overflow-hidden rounded-[28px] border border-black/8 bg-white shadow-[0_28px_80px_-60px_rgba(15,23,42,0.28)] sm:h-[62vh] sm:min-h-[480px]">
             <ChatKit control={chatkit.control} className="block h-full w-full" />
           </div>
+
+          {/* product recommendation CTA — appears when agent calls recommend_product */}
+          {productRec && (
+            <div className="mt-3 overflow-hidden rounded-[24px] border border-[#00bfa5]/30 bg-[linear-gradient(135deg,rgba(0,191,165,0.06)_0%,rgba(0,137,123,0.04)_100%)] p-4 shadow-[0_8px_24px_-12px_rgba(0,191,165,0.22)]">
+              {productRec.product === "luna" ? (
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  <div>
+                    <div className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#00897b]">
+                      {isEs ? "¡Tu solución ideal!" : "Your ideal solution!"}
+                    </div>
+                    <div className="mt-0.5 text-sm font-semibold text-slate-900">
+                      {isEs ? "Luna ERP — Control total de tu empresa" : "Luna ERP — Total business control"}
+                    </div>
+                  </div>
+                  <Link
+                    href={lunaHref}
+                    className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-slate-950 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.16em] text-white transition hover:bg-slate-800"
+                  >
+                    🌙 {uiCopy.lunaCta}
+                  </Link>
+                </div>
+              ) : (
+                <div className="space-y-2.5">
+                  <div>
+                    <div className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#00897b]">
+                      {isEs ? "¡Perfecto! ¿Dónde quieres tu agente?" : "Great! Where do you want your agent?"}
+                    </div>
+                    <div className="mt-0.5 text-[12px] text-slate-500">
+                      {isEs
+                        ? "Elige la plataforma y empieza a configurarlo ahora."
+                        : "Choose the platform and start configuring it now."}
+                    </div>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {(!productRec.channel || productRec.channel === "web" || productRec.channel === "both") && (
+                      <Link
+                        href={agentCreatorHref}
+                        className="inline-flex items-center gap-1.5 rounded-full bg-[#00bfa5] px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.16em] text-white transition hover:bg-[#00897b]"
+                      >
+                        🌐 {isEs ? "En mi web" : "On my website"}
+                      </Link>
+                    )}
+                    {(!productRec.channel || productRec.channel === "whatsapp" || productRec.channel === "both") && (
+                      <Link
+                        href={agentCreatorHref}
+                        className="inline-flex items-center gap-1.5 rounded-full border border-[#00bfa5] bg-white px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.16em] text-[#00897b] transition hover:bg-[#00bfa5] hover:text-white"
+                      >
+                        💬 {isEs ? "En WhatsApp" : "On WhatsApp"}
+                      </Link>
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </div>
