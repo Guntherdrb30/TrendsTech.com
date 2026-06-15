@@ -46,8 +46,8 @@ export default async function CrearAgentePage({
           </h1>
           <p className="mx-auto mt-3 max-w-xl text-base leading-relaxed text-slate-600">
             {isEs
-              ? 'Configura tu agente, elige las habilidades que necesita tu empresa y despliégalo en tu sitio web en minutos.'
-              : 'Configure your agent, choose the skills your business needs and deploy it on your website in minutes.'}
+              ? 'Cuéntanos sobre tu empresa y en minutos tendrás un agente de IA configurado, con conocimiento de tu negocio y listo para atender a tus clientes.'
+              : 'Tell us about your company and in minutes you will have an AI agent configured with knowledge of your business and ready to serve your customers.'}
           </p>
 
           {!isRestore && (

@@ -1,6 +1,8 @@
 'use client';
 
 import { useState, useTransition, useCallback } from 'react';
+import { IntakeChatWizard } from './intake-chat';
+import type { IntakeResult } from './intake-chat';
 import type { PublicSkillGroup, PublicSkillItem } from './actions';
 
 const STORAGE_KEY = 'pendingAgentConfig';
@@ -10,6 +12,11 @@ export type WizardData = {
   description: string;
   language: 'ES' | 'EN';
   skillIds: string[];
+  knowledge?: {
+    textContent: string | null;
+    websiteUrl: string | null;
+  };
+  targetChannel?: 'web' | 'whatsapp' | 'both';
 };
 
 function saveToStorage(data: WizardData) {
@@ -26,11 +33,17 @@ const BASE_PRICE = 29;
 
 export function PublicAgentWizard({ skillGroups, locale }: Props) {
   const isEs = locale.startsWith('es');
+  const [phase, setPhase] = useState<'intake' | 'steps'>('intake');
   const [step, setStep] = useState<1 | 2 | 3 | 4>(1);
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [language, setLanguage] = useState<'ES' | 'EN'>(isEs ? 'ES' : 'EN');
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [knowledgeData, setKnowledgeData] = useState<{
+    textContent: string | null;
+    websiteUrl: string | null;
+  } | null>(null);
+  const [targetChannel, setTargetChannel] = useState<'web' | 'whatsapp' | 'both' | null>(null);
   const [, startTransition] = useTransition();
 
   const allSkills = skillGroups.flatMap((g) => g.skills);
@@ -47,24 +60,53 @@ export function PublicAgentWizard({ skillGroups, locale }: Props) {
     });
   }, []);
 
+  const handleIntakeComplete = useCallback(
+    (result: IntakeResult) => {
+      setName(result.suggestedAgentName);
+      setDescription(result.companyDescription);
+
+      // Pre-select recommended skills by matching keys
+      const matchedIds = allSkills
+        .filter((s) => result.recommendedSkillKeys.includes(s.key))
+        .map((s) => s.id);
+      setSelectedIds(new Set(matchedIds));
+
+      setKnowledgeData({
+        textContent: result.knowledgeTextContent || null,
+        websiteUrl: result.websiteUrl,
+      });
+      setTargetChannel(result.targetChannel);
+
+      setPhase('steps');
+      setStep(1);
+    },
+    [allSkills]
+  );
+
+  const buildWizardData = useCallback(
+    (): WizardData => ({
+      name: name.trim(),
+      description: description.trim(),
+      language,
+      skillIds: Array.from(selectedIds),
+      knowledge: knowledgeData ?? undefined,
+      targetChannel: targetChannel ?? undefined,
+    }),
+    [name, description, language, selectedIds, knowledgeData, targetChannel]
+  );
+
   const goToAuth = useCallback(() => {
     startTransition(() => {
-      const data: WizardData = {
-        name: name.trim(),
-        description: description.trim(),
-        language,
-        skillIds: Array.from(selectedIds),
-      };
-      saveToStorage(data);
+      saveToStorage(buildWizardData());
       const redirectTo = encodeURIComponent(`/${locale}/crear-agente?restore=1`);
       window.location.href = `/${locale}/register?redirectTo=${redirectTo}`;
     });
-  }, [name, description, language, selectedIds, locale]);
+  }, [buildWizardData, locale]);
 
   const copy = isEs
     ? {
         stepLabels: ['Información', 'Skills', 'Resumen', 'Activar'],
-        step1Title: 'Información del agente',
+        step1Title: 'Confirma el nombre de tu agente',
         namePlaceholder: 'Ej: Agente de Ventas — Carpihogar',
         nameLabel: 'Nombre del agente *',
         descLabel: 'Descripción de tu negocio',
@@ -74,6 +116,7 @@ export function PublicAgentWizard({ skillGroups, locale }: Props) {
         back: '← Volver',
         step2Title: 'Elige las habilidades de tu agente',
         step2Sub: 'Cada skill especializa al agente en un área de tu negocio.',
+        step2RecoNote: 'Las skills marcadas en teal fueron recomendadas según tu descripción.',
         noSkills: 'Selecciona al menos una skill para continuar.',
         step3Title: 'Resumen de tu agente',
         agentName: 'Nombre',
@@ -88,14 +131,14 @@ export function PublicAgentWizard({ skillGroups, locale }: Props) {
         step4Sub: 'Crea tu cuenta para desplegar tu agente en nuestros servidores. Necesitas créditos para mantenerlo activo.',
         step4Point1: 'Tu agente queda configurado con las skills que elegiste.',
         step4Point2: 'Necesitas créditos en tu billetera para que el agente responda a tus usuarios.',
-        step4Point3: 'Después del registro te mostraremos el código de instalación.',
+        step4Point3: 'Después del registro indexaremos el conocimiento de tu empresa automáticamente.',
         createAccount: 'Crear cuenta y activar agente →',
         loginInstead: '¿Ya tienes cuenta? Inicia sesión',
         featured: 'Destacado',
       }
     : {
         stepLabels: ['Info', 'Skills', 'Summary', 'Activate'],
-        step1Title: 'Agent information',
+        step1Title: 'Confirm your agent name',
         namePlaceholder: 'E.g.: Sales Agent — My Store',
         nameLabel: 'Agent name *',
         descLabel: 'Business description',
@@ -105,6 +148,7 @@ export function PublicAgentWizard({ skillGroups, locale }: Props) {
         back: '← Back',
         step2Title: 'Choose your agent skills',
         step2Sub: 'Each skill specializes the agent in a specific area of your business.',
+        step2RecoNote: 'Teal-highlighted skills were recommended based on your description.',
         noSkills: 'Select at least one skill to continue.',
         step3Title: 'Your agent summary',
         agentName: 'Name',
@@ -119,11 +163,15 @@ export function PublicAgentWizard({ skillGroups, locale }: Props) {
         step4Sub: 'Create your account to deploy your agent on our servers. You need credits to keep it active.',
         step4Point1: 'Your agent will be set up with the skills you chose.',
         step4Point2: 'You need credits in your wallet for the agent to respond to your users.',
-        step4Point3: 'After registration we will show you the installation code.',
+        step4Point3: 'After registration we will automatically index your company knowledge.',
         createAccount: 'Create account and activate agent →',
         loginInstead: 'Already have an account? Sign in',
         featured: 'Featured',
       };
+
+  if (phase === 'intake') {
+    return <IntakeChatWizard locale={locale} onIntakeComplete={handleIntakeComplete} />;
+  }
 
   return (
     <div className="mx-auto max-w-4xl">
@@ -232,6 +280,9 @@ export function PublicAgentWizard({ skillGroups, locale }: Props) {
             <div className="mb-6">
               <h2 className="text-2xl font-semibold tracking-[-0.03em] text-slate-900">{copy.step2Title}</h2>
               <p className="mt-1 text-sm text-slate-500">{copy.step2Sub}</p>
+              {selectedIds.size > 0 && (
+                <p className="mt-1 text-xs text-[#00897b]">{copy.step2RecoNote}</p>
+              )}
             </div>
             <div className="space-y-6 max-h-[60vh] overflow-y-auto pr-1">
               {skillGroups.map((group) => (
@@ -282,6 +333,19 @@ export function PublicAgentWizard({ skillGroups, locale }: Props) {
                 <InfoRow label={copy.agentName} value={name} />
                 {description && <InfoRow label={copy.agentDesc} value={description} />}
                 <InfoRow label={copy.agentLang} value={language === 'ES' ? '🇻🇪 Español' : '🇺🇸 English'} />
+                {knowledgeData && (knowledgeData.textContent || knowledgeData.websiteUrl) && (
+                  <div className="rounded-2xl border border-[#00bfa5]/25 bg-[#f0fdf9] px-4 py-3">
+                    <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#00897b] mb-1">
+                      🧠 {isEs ? 'Conocimiento incluido' : 'Knowledge included'}
+                    </div>
+                    {knowledgeData.websiteUrl && (
+                      <div className="text-xs text-[#047857]">🌐 {knowledgeData.websiteUrl}</div>
+                    )}
+                    {knowledgeData.textContent && (
+                      <div className="text-xs text-[#047857]">✍️ {isEs ? 'Descripción del negocio' : 'Business description'}</div>
+                    )}
+                  </div>
+                )}
                 <div>
                   <div className="mb-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
                     {copy.agentSkills}
@@ -389,10 +453,7 @@ export function PublicAgentWizard({ skillGroups, locale }: Props) {
                 <a
                   href={`/${locale}/login?redirectTo=${encodeURIComponent(`/${locale}/crear-agente?restore=1`)}`}
                   className="block text-sm font-semibold text-slate-500 hover:text-slate-900 transition"
-                  onClick={() => {
-                    const data: WizardData = { name: name.trim(), description: description.trim(), language, skillIds: Array.from(selectedIds) };
-                    saveToStorage(data);
-                  }}
+                  onClick={() => saveToStorage(buildWizardData())}
                 >
                   {copy.loginInstead}
                 </a>

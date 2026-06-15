@@ -3,6 +3,7 @@
 import { randomUUID } from 'crypto';
 import { prisma } from '@trends172tech/db';
 import { requireTenant } from '@/lib/auth/guards';
+import { enqueueKnowledgeJob } from '@/lib/kb/queue';
 
 export type PublicSkillItem = {
   id: string;
@@ -29,6 +30,11 @@ export type CreateAgentSessionInput = {
   description: string;
   language: 'ES' | 'EN';
   skillIds: string[];
+  knowledge?: {
+    textContent: string | null;
+    websiteUrl: string | null;
+  };
+  targetChannel?: 'web' | 'whatsapp' | 'both';
 };
 
 export type CreateAgentSessionResult = {
@@ -133,4 +139,76 @@ export async function createAgentFromSession(
     selectedSkills: skills,
     hasCredits,
   };
+}
+
+export async function createKnowledgeFromSession(input: {
+  agentInstanceId: string;
+  textContent: string | null;
+  websiteUrl: string | null;
+}): Promise<{ sourceIds: string[] }> {
+  const user = await requireTenant();
+  const tenantId = user.tenantId!;
+
+  const agent = await prisma.agentInstance.findFirst({
+    where: { id: input.agentInstanceId, tenantId },
+    select: { id: true },
+  });
+  if (!agent) throw new Error('Agent not found');
+
+  const sourceIds: string[] = [];
+
+  if (input.websiteUrl) {
+    const source = await prisma.knowledgeSource.create({
+      data: {
+        tenantId,
+        agentInstanceId: input.agentInstanceId,
+        type: 'URL',
+        url: input.websiteUrl,
+        title: input.websiteUrl,
+        status: 'PENDING',
+      },
+    });
+    await enqueueKnowledgeJob({ sourceId: source.id, tenantId, actorUserId: user.id });
+    sourceIds.push(source.id);
+  }
+
+  if (input.textContent) {
+    const source = await prisma.knowledgeSource.create({
+      data: {
+        tenantId,
+        agentInstanceId: input.agentInstanceId,
+        type: 'TEXT',
+        rawText: input.textContent,
+        title: 'Descripción del negocio',
+        status: 'PENDING',
+      },
+    });
+    await enqueueKnowledgeJob({ sourceId: source.id, tenantId, actorUserId: user.id });
+    sourceIds.push(source.id);
+  }
+
+  return { sourceIds };
+}
+
+export type KbSourceStatus = {
+  id: string;
+  status: 'PENDING' | 'PROCESSING' | 'READY' | 'FAILED';
+};
+
+export async function getKnowledgeSourceStatuses(
+  sourceIds: string[]
+): Promise<KbSourceStatus[]> {
+  if (sourceIds.length === 0) return [];
+  const user = await requireTenant();
+  const tenantId = user.tenantId!;
+
+  const sources = await prisma.knowledgeSource.findMany({
+    where: { id: { in: sourceIds }, tenantId },
+    select: { id: true, status: true },
+  });
+
+  return sources.map((s) => ({
+    id: s.id,
+    status: s.status as KbSourceStatus['status'],
+  }));
 }
