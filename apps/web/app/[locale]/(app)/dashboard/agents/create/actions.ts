@@ -4,6 +4,9 @@ import { randomUUID } from 'crypto';
 import { prisma } from '@trends172tech/db';
 import { requireTenant } from '@/lib/auth/guards';
 
+const SKILL_CREDIT_USD = 10;
+const USD_MICROS = 1_000_000;
+
 // Tipos exportados para uso en los componentes cliente
 export type SkillItem = {
   id: string;
@@ -56,7 +59,6 @@ export async function getAvailableSkills(): Promise<SkillGroup[]> {
     },
   });
 
-  // Agrupar por industria manteniendo el orden de aparición
   const map = new Map<string, SkillGroup>();
   for (const skill of skills) {
     if (!map.has(skill.industry)) {
@@ -72,37 +74,29 @@ export async function getAvailableSkills(): Promise<SkillGroup[]> {
   return Array.from(map.values());
 }
 
-// Calcula precio total: $29 base + priceMonthly de cada skill seleccionada
+// Crédito inicial: $10 por skill
 export async function calculateAgentPrice(skillIds: string[]): Promise<{
   base: number;
   skillsTotal: number;
   total: number;
 }> {
-  const BASE = 29;
-  if (skillIds.length === 0) {
-    return { base: BASE, skillsTotal: 0, total: BASE };
-  }
-  const skills = await prisma.skill.findMany({
-    where: { id: { in: skillIds }, isActive: true },
-    select: { priceMonthly: true },
-  });
-  const skillsTotal = skills.reduce((sum, s) => sum + s.priceMonthly, 0);
-  return { base: BASE, skillsTotal, total: BASE + skillsTotal };
+  const total = skillIds.length * SKILL_CREDIT_USD;
+  return { base: 0, skillsTotal: total, total };
 }
 
-// Crea AgentInstance con sus skills, AgentAccess e Install en una transacción atómica
+// Crea AgentInstance con sus skills, AgentAccess e Install y carga créditos iniciales
 export async function createAgentWithSkills(input: CreateAgentInput): Promise<CreateAgentResult> {
   const user = await requireTenant();
   const tenantId = user.tenantId!;
 
-  // Verificar que las skills existen y están activas
   const skills = await prisma.skill.findMany({
     where: { id: { in: input.skillIds }, isActive: true },
     select: { id: true, key: true, name: true, nameEn: true },
   });
 
+  const creditsToAdd = skills.length * SKILL_CREDIT_USD * USD_MICROS;
+
   const { agentInstance, install } = await prisma.$transaction(async (tx) => {
-    // 1. Crear la instancia del agente
     const agentInstance = await tx.agentInstance.create({
       data: {
         tenantId,
@@ -114,7 +108,6 @@ export async function createAgentWithSkills(input: CreateAgentInput): Promise<Cr
       },
     });
 
-    // 2. Crear las relaciones AgentSkill para cada skill seleccionada
     if (skills.length > 0) {
       await tx.agentSkill.createMany({
         data: skills.map((s) => ({
@@ -125,7 +118,6 @@ export async function createAgentWithSkills(input: CreateAgentInput): Promise<Cr
       });
     }
 
-    // 3. Crear AgentAccess inicial con canal web embebido (dominios abiertos)
     await tx.agentAccess.create({
       data: {
         tenantId,
@@ -137,7 +129,6 @@ export async function createAgentWithSkills(input: CreateAgentInput): Promise<Cr
       },
     });
 
-    // 4. Crear Install con publicKey único — este token es el que usa el widget
     const install = await tx.install.create({
       data: {
         tenantId,
@@ -147,6 +138,15 @@ export async function createAgentWithSkills(input: CreateAgentInput): Promise<Cr
         status: 'ACTIVE',
       },
     });
+
+    // Acreditar $10 por cada skill al wallet del tenant
+    if (creditsToAdd > 0) {
+      await tx.tokenWallet.upsert({
+        where: { tenantId },
+        create: { tenantId, balance: creditsToAdd },
+        update: { balance: { increment: creditsToAdd } },
+      });
+    }
 
     return { agentInstance, install };
   });

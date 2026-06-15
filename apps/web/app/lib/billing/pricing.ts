@@ -13,7 +13,7 @@ const DEFAULT_PRICING: TokenPricing = {
   inputUsdPer1M: 0.4,
   outputUsdPer1M: 1.6,
   cachedInputUsdPer1M: 0.1,
-  markupPercent: 30
+  markupPercent: 50
 };
 
 function toNumber(value: Prisma.Decimal | number | null | undefined, fallback: number) {

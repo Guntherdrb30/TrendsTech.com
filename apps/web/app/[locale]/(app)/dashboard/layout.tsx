@@ -110,6 +110,9 @@ export default async function DashboardLayout({
             <Link href={`/${locale}/dashboard/installs`} className={navItemClass}>
               {isEs ? 'Instalaciones' : 'Installs'}
             </Link>
+            <Link href={`/${locale}/dashboard/spending`} className={navItemClass}>
+              {isEs ? 'Control de Gastos' : 'Spending'}
+            </Link>
           </nav>
         </div>
 

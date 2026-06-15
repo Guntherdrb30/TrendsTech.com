@@ -193,7 +193,10 @@ export async function runOrchestrator(
     const wallet = await ensureTokenWallet(tenantId);
 
     if (wallet.balance <= 0) {
-      return { reply: 'Saldo insuficiente. Recarga tu saldo para continuar.' };
+      return {
+        reply:
+          '⚠️ Créditos agotados. Para continuar usando este agente, recarga tu saldo en el panel de Control de Gastos. Visita /es/spending o contacta a soporte.'
+      };
     }
 
     const baseAgentDefinition = getBaseAgentDefinition(agentInstance.baseAgentKey);
