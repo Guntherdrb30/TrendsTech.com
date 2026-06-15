@@ -4,7 +4,6 @@ import { getTranslations } from "next-intl/server";
 import { IBM_Plex_Sans, Space_Grotesk } from "next/font/google";
 import { Button } from "@/components/ui/button";
 import { getResolvedPageImageSlots } from "@/lib/page-images";
-import { AGENT_PRODUCTS } from "../../agents/agent-products";
 
 const WHATSAPP_BUY_NUMBER = "584122640371";
 
@@ -33,7 +32,6 @@ export default async function LunaPage({
   const isEs = locale.startsWith("es");
   const base = `/${locale}`;
   const t = await getTranslations("lunaPage");
-  const a = await getTranslations("agents");
   const pageImages = await getResolvedPageImageSlots("systems-luna", locale);
 
   const uiCopy = isEs
@@ -380,13 +378,13 @@ export default async function LunaPage({
               {t("back")}
             </Link>
 
-            <div className="interactive-panel inline-flex rounded-[28px] border border-black/8 bg-white/92 p-3 shadow-[0_22px_55px_-35px_rgba(15,23,42,0.28)] backdrop-blur">
+            <div className="inline-flex">
               <Image
                 src="/branding/luna-logo.svg"
                 alt="LUNA by trends172tech"
                 width={320}
-                height={90}
-                className="h-auto w-[220px] sm:w-[280px]"
+                height={80}
+                className="h-auto w-[200px] sm:w-[260px]"
                 priority
               />
             </div>
@@ -685,27 +683,194 @@ export default async function LunaPage({
         </div>
       </section>
 
-      {/* ── AGENTES IA ── */}
+      {/* ── ARSENAL DE IA ── */}
       <section className="w-full px-6 sm:px-8 lg:px-12 xl:px-16 2xl:px-20">
-        <div className="interactive-panel mx-auto rounded-[36px] border border-black/8 bg-[linear-gradient(180deg,#f8fafc_0%,#ffffff_100%)] px-6 py-10 shadow-[0_34px_100px_-68px_rgba(15,23,42,0.26)] sm:px-8 lg:px-10">
-          <div className="space-y-3">
-            <h2 className="text-3xl font-[var(--font-display)] font-semibold text-slate-900">{t("agentsTitle")}</h2>
-            <p className="max-w-3xl text-base text-slate-600">{t("agentsBody")}</p>
-          </div>
-          <div className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-            {AGENT_PRODUCTS.map((agent, index) => (
-              <Link
-                key={agent.key}
-                href={`${base}/agents/${agent.key}`}
-                className="interactive-panel premium-spotlight rounded-[26px] border border-black/8 bg-white/92 px-5 py-5 text-sm shadow-[0_24px_64px_-52px_rgba(15,23,42,0.3)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900/15 focus-visible:ring-offset-2"
-              >
-                <div className="flex items-center justify-between gap-3">
-                  <div className="text-lg font-semibold text-slate-900">{a(`${agent.key}.name`)}</div>
-                  <span className={`h-2.5 w-2.5 rounded-full ${index % 2 === 0 ? "bg-[#00bfa5]" : "bg-[#00897b]"}`} />
+        <div className="mx-auto max-w-[1760px]">
+          <div className="rounded-[36px] border border-black/8 bg-slate-950 px-6 py-10 shadow-[0_34px_100px_-68px_rgba(15,23,42,0.5)] sm:px-8 lg:px-10">
+            <div className="space-y-3">
+              <div className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#00bfa5]">
+                {isEs ? "INTELIGENCIA ARTIFICIAL INTEGRADA" : "BUILT-IN ARTIFICIAL INTELLIGENCE"}
+              </div>
+              <h2 className="text-3xl font-[var(--font-display)] font-semibold tracking-[-0.04em] text-white">
+                {isEs ? "El arsenal de IA que trabaja por tu empresa" : "The AI arsenal working for your business"}
+              </h2>
+              <p className="max-w-3xl text-base leading-relaxed text-slate-300">
+                {isEs
+                  ? "LUNA no es solo un ERP. Cada plan incluye agentes de inteligencia artificial que automatizan tareas, generan reportes y atienden a tus clientes sin intervención humana."
+                  : "LUNA is not just an ERP. Every plan includes AI agents that automate tasks, generate reports, and serve your customers without human intervention."}
+              </p>
+            </div>
+            <div className="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+              {(isEs
+                ? [
+                    { icon: "📊", title: "Reportes ejecutivos con IA", body: "Análisis automático de ventas, inventario y finanzas. El sistema genera resúmenes diarios y detecta anomalías antes de que sean problemas." },
+                    { icon: "🛒", title: "Recomendador inteligente", body: "Sugiere productos a tus clientes en tiempo real basado en su historial de compras, stock disponible y márgenes de ganancia." },
+                    { icon: "💬", title: "Soporte conversacional", body: "Agente de chat integrado en tu tienda online y WhatsApp que responde preguntas, confirma pedidos y escala a humanos cuando es necesario." },
+                    { icon: "📖", title: "Manuales generados por IA", body: "LUNA crea automáticamente guías de uso, procedimientos internos y documentación de procesos adaptada a cómo opera tu empresa." },
+                    { icon: "📣", title: "Marketing IA con Meta Ads", body: "Genera campañas publicitarias optimizadas para Facebook e Instagram sincronizadas con tu catálogo de productos en tiempo real. (Plan Enterprise)" },
+                    { icon: "🔔", title: "Alertas y predicciones", body: "El sistema aprende de tus patrones de venta y te avisa cuando un producto está por agotarse, cuando hay picos de demanda o caídas inusuales." }
+                  ]
+                : [
+                    { icon: "📊", title: "AI executive reports", body: "Automatic analysis of sales, inventory, and finances. The system generates daily summaries and detects anomalies before they become problems." },
+                    { icon: "🛒", title: "Smart recommender", body: "Suggests products to your customers in real time based on their purchase history, available stock, and profit margins." },
+                    { icon: "💬", title: "Conversational support", body: "Chat agent integrated in your online store and WhatsApp that answers questions, confirms orders, and escalates to humans when needed." },
+                    { icon: "📖", title: "AI-generated manuals", body: "LUNA automatically creates usage guides, internal procedures, and process documentation tailored to how your business operates." },
+                    { icon: "📣", title: "AI Marketing with Meta Ads", body: "Generates optimized ad campaigns for Facebook and Instagram synchronized with your product catalog in real time. (Enterprise plan)" },
+                    { icon: "🔔", title: "Alerts and predictions", body: "The system learns from your sales patterns and warns you when a product is about to run out, when there are demand spikes, or unusual drops." }
+                  ]
+              ).map((item) => (
+                <div
+                  key={item.title}
+                  className="rounded-[26px] border border-white/10 bg-white/6 px-5 py-5 backdrop-blur"
+                >
+                  <div className="mb-3 text-2xl">{item.icon}</div>
+                  <div className="mb-2 text-base font-semibold text-white">{item.title}</div>
+                  <p className="text-sm leading-relaxed text-slate-300">{item.body}</p>
                 </div>
-                <p className="mt-3 text-slate-600">{a(`${agent.key}.tagline`)}</p>
-              </Link>
-            ))}
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── EN LA NUBE ── */}
+      <section className="w-full px-6 sm:px-8 lg:px-12 xl:px-16 2xl:px-20">
+        <div className="mx-auto max-w-[1760px]">
+          <div className="grid gap-6 lg:grid-cols-2">
+            <div className="rounded-[34px] border border-black/8 bg-white/92 p-8 shadow-[0_30px_90px_-62px_rgba(15,23,42,0.3)]">
+              <div className="mb-2 text-[11px] font-semibold uppercase tracking-[0.22em] text-[#00897b]">
+                {isEs ? "100% EN LA NUBE" : "100% CLOUD"}
+              </div>
+              <h2 className="mb-4 text-2xl font-[var(--font-display)] font-semibold tracking-[-0.04em] text-slate-950">
+                {isEs ? "Tu negocio disponible desde cualquier lugar, siempre" : "Your business available from anywhere, always"}
+              </h2>
+              <div className="space-y-3">
+                {(isEs
+                  ? [
+                      { label: "Acceso 24/7", body: "Entra desde el teléfono, tablet o computadora. No depende de un servidor local que puede fallar." },
+                      { label: "Backups automáticos", body: "Tus datos se respaldan en la nube continuamente. Nunca pierdas información por un daño de hardware." },
+                      { label: "Actualizaciones sin reinstalar", body: "Cada mejora llega automáticamente. No necesitas técnicos ni interrumpir tu operación para actualizar." },
+                      { label: "Multi-dispositivo y PWA", body: "Instala LUNA como app en tu celular. Los repartidores, cajeros y gerentes tienen su propia vista optimizada." }
+                    ]
+                  : [
+                      { label: "24/7 access", body: "Log in from phone, tablet, or computer. No dependency on a local server that can fail." },
+                      { label: "Automatic backups", body: "Your data is continuously backed up in the cloud. Never lose information due to hardware damage." },
+                      { label: "Updates without reinstalling", body: "Every improvement arrives automatically. No technicians or operational interruptions needed." },
+                      { label: "Multi-device and PWA", body: "Install LUNA as an app on your phone. Delivery drivers, cashiers, and managers have their own optimized view." }
+                    ]
+                ).map((item) => (
+                  <div key={item.label} className="flex items-start gap-3 rounded-[16px] border border-black/6 bg-slate-50 px-4 py-3">
+                    <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-[#00bfa5]" />
+                    <div>
+                      <span className="text-sm font-semibold text-slate-900">{item.label}: </span>
+                      <span className="text-sm text-slate-600">{item.body}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* ── ADAPTADO PARA VENEZUELA ── */}
+            <div className="rounded-[34px] border border-[#00bfa5]/20 bg-[linear-gradient(135deg,#0F172A_0%,#0d2a26_100%)] p-8 text-white shadow-[0_34px_100px_-64px_rgba(0,191,165,0.25)]">
+              <div className="mb-2 text-[11px] font-semibold uppercase tracking-[0.22em] text-[#00bfa5]">
+                {isEs ? "HECHO PARA VENEZUELA" : "BUILT FOR VENEZUELA"}
+              </div>
+              <h2 className="mb-4 text-2xl font-[var(--font-display)] font-semibold tracking-[-0.04em]">
+                {isEs ? "El único ERP que entiende cómo funciona el mercado local" : "The only ERP that understands how the local market works"}
+              </h2>
+              <div className="space-y-3">
+                {(isEs
+                  ? [
+                      { label: "Precios en Bs. y USD", body: "Maneja productos con precios en bolívares y dólares simultáneamente. Actualiza automáticamente con la tasa BCV." },
+                      { label: "Facturación fiscal SENIAT", body: "Genera facturas que cumplen los requisitos fiscales venezolanos. Preparado para el sistema de facturación electrónica." },
+                      { label: "Pago Móvil integrado", body: "Tus clientes pagan con Pago Móvil, Zelle o efectivo directamente desde la tienda o en caja." },
+                      { label: "WhatsApp como canal principal", body: "Venezuela vive en WhatsApp. LUNA integra WhatsApp Business para pedidos, confirmaciones y soporte al cliente." },
+                      { label: "Soporte local en tu zona horaria", body: "El equipo de Trends172 Tech está en Venezuela. Te atendemos en tu horario, en español, sin tickets internacionales." }
+                    ]
+                  : [
+                      { label: "Prices in Bs. and USD", body: "Manage products with prices in bolivars and dollars simultaneously. Automatically updates with the BCV rate." },
+                      { label: "SENIAT fiscal invoicing", body: "Generates invoices that comply with Venezuelan tax requirements. Ready for the electronic invoicing system." },
+                      { label: "Pago Móvil integrated", body: "Your customers pay with Pago Móvil, Zelle, or cash directly from the store or at the register." },
+                      { label: "WhatsApp as primary channel", body: "Venezuela lives on WhatsApp. LUNA integrates WhatsApp Business for orders, confirmations, and customer support." },
+                      { label: "Local support in your timezone", body: "The Trends172 Tech team is in Venezuela. We serve you on your schedule, in Spanish, no international tickets." }
+                    ]
+                ).map((item) => (
+                  <div key={item.label} className="flex items-start gap-3 rounded-[16px] border border-white/10 bg-white/6 px-4 py-3">
+                    <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-[#00bfa5]" />
+                    <div>
+                      <span className="text-sm font-semibold text-white">{item.label}: </span>
+                      <span className="text-sm text-slate-300">{item.body}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── DESARROLLO PROPIO ── */}
+      <section className="w-full px-6 sm:px-8 lg:px-12 xl:px-16 2xl:px-20">
+        <div className="mx-auto max-w-[1760px]">
+          <div className="relative overflow-hidden rounded-[36px] border border-black/8 bg-[linear-gradient(180deg,#f8fafc_0%,#ffffff_100%)] px-8 py-10 shadow-[0_34px_100px_-68px_rgba(15,23,42,0.26)]">
+            <div className="absolute -right-24 -top-24 h-64 w-64 rounded-full bg-[radial-gradient(circle_at_center,rgba(0,191,165,0.08),transparent_70%)] blur-3xl" />
+            <div className="relative grid gap-8 lg:grid-cols-[1fr_1.4fr]">
+              <div className="space-y-4">
+                <div className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#00897b]">
+                  {isEs ? "DESARROLLO PROPIO" : "PROPRIETARY DEVELOPMENT"}
+                </div>
+                <h2 className="text-3xl font-[var(--font-display)] font-semibold tracking-[-0.04em] text-slate-950">
+                  {isEs
+                    ? "Una plataforma que crece contigo y se adapta a tu empresa"
+                    : "A platform that grows with you and adapts to your business"}
+                </h2>
+                <p className="text-base leading-relaxed text-slate-600">
+                  {isEs
+                    ? "LUNA es un desarrollo 100% propio de Trends172 Tech. Eso significa que no dependemos de terceros para agregar funciones, corregir errores o adaptar el sistema a las necesidades específicas de cada empresa."
+                    : "LUNA is 100% built in-house by Trends172 Tech. That means we don't depend on third parties to add features, fix bugs, or adapt the system to each company's specific needs."}
+                </p>
+                <Link
+                  href={buildWhatsAppLink(isEs ? "Quiero saber más sobre módulos personalizados de LUNA" : "I want to know more about LUNA custom modules")}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center gap-2 rounded-[14px] bg-slate-950 px-5 py-3 text-sm font-semibold text-white transition hover:bg-slate-800"
+                >
+                  {isEs ? "Hablar sobre módulos a medida" : "Talk about custom modules"}
+                  <svg className="h-4 w-4" fill="none" viewBox="0 0 16 16">
+                    <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </Link>
+              </div>
+              <div className="grid gap-4 sm:grid-cols-2">
+                {(isEs
+                  ? [
+                      { num: "01", title: "Módulos a la medida", body: "Si tu empresa tiene un proceso único, lo convertimos en un módulo dentro de LUNA. Desde control de producción hasta flujos de aprobación personalizados." },
+                      { num: "02", title: "Sin dependencia de terceros", body: "No esperamos que otro proveedor apruebe cambios. Actualizamos, ajustamos y mejoramos según las necesidades de nuestros clientes." },
+                      { num: "03", title: "Crece sin reiniciar", body: "Puedes empezar con Ventas e Inventario y añadir Logística, Contabilidad o Nómina más adelante sin migrar a otro sistema." },
+                      { num: "04", title: "API abierta para integraciones", body: "Conecta LUNA con plataformas externas: pasarelas de pago, sistemas fiscales, marketplaces o cualquier herramienta que ya uses. (Enterprise)" }
+                    ]
+                  : [
+                      { num: "01", title: "Custom modules", body: "If your business has a unique process, we turn it into a module inside LUNA. From production control to custom approval workflows." },
+                      { num: "02", title: "No third-party dependency", body: "We don't wait for another vendor to approve changes. We update, adjust, and improve based on our clients' needs." },
+                      { num: "03", title: "Grows without restarting", body: "Start with Sales and Inventory, then add Logistics, Accounting, or Payroll later without migrating to another system." },
+                      { num: "04", title: "Open API for integrations", body: "Connect LUNA to external platforms: payment gateways, tax systems, marketplaces, or any tool you already use. (Enterprise)" }
+                    ]
+                ).map((item) => (
+                  <div
+                    key={item.num}
+                    className="rounded-[22px] border border-black/8 bg-white px-5 py-5 shadow-[0_8px_32px_-12px_rgba(15,23,42,0.12)]"
+                  >
+                    <div className="mb-3 flex items-center gap-3">
+                      <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[#f0fdf9] text-[11px] font-bold text-[#00897b]">
+                        {item.num}
+                      </span>
+                      <span className="text-sm font-semibold text-slate-900">{item.title}</span>
+                    </div>
+                    <p className="text-sm leading-relaxed text-slate-600">{item.body}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </section>

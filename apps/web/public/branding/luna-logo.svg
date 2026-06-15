@@ -1,22 +1,9 @@
-<svg width="640" height="180" viewBox="0 0 640 180" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <rect width="640" height="180" rx="32" fill="#FFF7ED"/>
-  <circle cx="96" cy="90" r="52" fill="url(#moonGlow)"/>
-  <circle cx="112" cy="84" r="44" fill="#FFF7ED"/>
-  <path d="M69 95C79.5 117 103.5 128 127 121.5C118 132 103.5 139 87.5 139C58.5 139 35 115.5 35 86.5C35 61 53.5 40 78 35C58 49.5 56 68 69 95Z" fill="#F59E0B"/>
-  <circle cx="133" cy="54" r="4" fill="#FB7185"/>
-  <circle cx="54" cy="54" r="5" fill="#FDBA74"/>
-  <circle cx="141" cy="121" r="3" fill="#E879F9"/>
-  <path d="M191 62H218.5V118H276V140H191V62Z" fill="#0F172A"/>
-  <path d="M292 77H317.5V140H292V77ZM304.75 48C313.448 48 320.5 55.052 320.5 63.75C320.5 72.448 313.448 79.5 304.75 79.5C296.052 79.5 289 72.448 289 63.75C289 55.052 296.052 48 304.75 48Z" fill="#0F172A"/>
-  <path d="M337 77H362V87.5C370.019 79.421 379.257 75 392.5 75C419.091 75 435 91.988 435 120.5V140H409.5V122.5C409.5 106.279 402.88 98.5 389.5 98.5C375.768 98.5 362.5 107.615 362.5 124V140H337V77Z" fill="#0F172A"/>
-  <path d="M451 77H476V87.5C483.859 79.683 493.933 75 506.5 75C533.629 75 549 92.328 549 120.5V140H523.5V122.5C523.5 106.621 517.407 98.5 503.5 98.5C489.592 98.5 476.5 107.795 476.5 124V140H451V77Z" fill="#0F172A"/>
-  <path d="M605 77V87.5C597.118 79.693 587.721 75 575.5 75C550.248 75 531 94.818 531 119.5C531 144.182 550.248 164 575.5 164C587.721 164 597.118 159.307 605 151.5V160.5C605 173.479 597.416 180 582.5 180C570.53 180 560.479 176.258 552.5 168.5L538.5 185C549.788 196.25 565.716 202 584 202C620.49 202 630.5 183.503 630.5 159V77H605ZM580.5 141.5C566.252 141.5 555 132.149 555 119.5C555 106.851 566.252 97.5 580.5 97.5C594.748 97.5 606 106.851 606 119.5C606 132.149 594.748 141.5 580.5 141.5Z" fill="#0F172A"/>
-  <rect x="191" y="28" width="170" height="20" rx="10" fill="#FB7185" fill-opacity="0.12"/>
-  <text x="205" y="42" fill="#BE123C" font-family="Arial, sans-serif" font-size="18" font-weight="700" letter-spacing="0.12em">BY TRENDS172TECH</text>
-  <defs>
-    <radialGradient id="moonGlow" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(82 76) rotate(49.9697) scale(72.111)">
-      <stop stop-color="#FCD34D"/>
-      <stop offset="1" stop-color="#FB923C"/>
-    </radialGradient>
-  </defs>
+<svg width="480" height="120" viewBox="0 0 480 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- background panel -->
+  <rect width="480" height="120" rx="20" fill="#0F172A"/>
+  <!-- teal accent bar -->
+  <rect x="24" y="16" width="4" height="88" rx="2" fill="#00BFA5"/>
+  <!-- LUNA wordmark -->
+  <text x="44" y="44" font-family="'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="700" letter-spacing="0.22em" fill="#00BFA5" text-anchor="start">BY TRENDS172TECH</text>
+  <text x="44" y="95" font-family="'Helvetica Neue', Arial, sans-serif" font-size="58" font-weight="900" letter-spacing="-0.04em" fill="#FFFFFF" text-anchor="start">LUNA</text>
 </svg>
