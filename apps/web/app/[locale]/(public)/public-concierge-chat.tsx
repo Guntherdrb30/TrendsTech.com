@@ -201,7 +201,7 @@ export function PublicConciergeChat({ copy }: { copy: ConciergeCopy }) {
   );
 
   const lunaHref = `/${copy.locale}/systems/luna`;
-  const agentCreatorHref = `/${copy.locale}/dashboard/agents/create`;
+  const agentCreatorHref = `/${copy.locale}/crear-agente`;
 
   const handleDownload = useCallback(async () => {
     const threadId = threadIdRef.current;
