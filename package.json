@@ -6,7 +6,7 @@
     "packages/*"
   ],
   "scripts": {
-    "postinstall": "npm --workspace packages/db run generate && npm --workspace packages/db run migrate:deploy",
+    "postinstall": "npm --workspace packages/db run generate && node -e \"if(process.env.VERCEL!=='1'){require('child_process').execSync('npm --workspace packages/db run migrate:deploy',{stdio:'inherit'})}else{console.log('Skipping migrate:deploy on Vercel (run db:migrate manually)')}\"",
     "dev": "npm --workspace apps/web run dev",
     "build": "npm --workspace apps/web run build",
     "start": "npm --workspace apps/web run start",
