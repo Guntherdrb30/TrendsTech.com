@@ -875,6 +875,149 @@ export default async function LunaPage({
         </div>
       </section>
 
+      {/* ── LUNA EN ACCIÓN ── */}
+      <section className="w-full px-6 sm:px-8 lg:px-12 xl:px-16 2xl:px-20">
+        <div className="mx-auto max-w-[1760px] space-y-8">
+          <div className="space-y-2">
+            <div className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#00897b]">
+              {isEs ? "SISTEMA REAL EN PRODUCCIÓN" : "REAL SYSTEM IN PRODUCTION"}
+            </div>
+            <h2 className="text-3xl font-[var(--font-display)] font-semibold tracking-[-0.04em] text-slate-950">
+              {isEs ? "Así se ve LUNA por dentro" : "This is what LUNA looks like inside"}
+            </h2>
+            <p className="max-w-2xl text-base text-slate-600">
+              {isEs
+                ? "Capturas reales de una instalación activa de LUNA. Cada vista está diseñada para que tu equipo opere con claridad y velocidad."
+                : "Real screenshots from an active LUNA installation. Every view is designed for your team to operate with clarity and speed."}
+            </p>
+          </div>
+
+          {/* Panel admin — full width featured */}
+          <div className="relative overflow-hidden rounded-[28px] border border-black/8 bg-slate-100 shadow-[0_30px_90px_-62px_rgba(15,23,42,0.28)]">
+            <div className="absolute left-4 top-4 z-10 inline-flex items-center gap-2 rounded-full border border-white/30 bg-slate-950/75 px-3 py-1.5 text-[11px] font-semibold text-white backdrop-blur">
+              <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
+              {isEs ? "Panel Admin · Vista ejecutiva" : "Admin Panel · Executive view"}
+            </div>
+            <Image
+              src="/screenshots/luna/luna-admin-dashboard.png"
+              alt={isEs ? "Panel de administración LUNA con métricas en tiempo real" : "LUNA admin dashboard with real-time metrics"}
+              width={1536}
+              height={864}
+              className="w-full object-cover"
+              sizes="(min-width: 1280px) 82vw, 100vw"
+            />
+          </div>
+
+          {/* 3-column: tienda, asistente, agentes */}
+          <div className="grid gap-4 md:grid-cols-3">
+            {(isEs
+              ? [
+                  {
+                    src: "/screenshots/luna/luna-tienda-ia.png",
+                    label: "Tienda · Modo IA",
+                    desc: "Búsqueda por texto, imagen o QR. Ofertas del día y recomendaciones personalizadas activadas."
+                  },
+                  {
+                    src: "/screenshots/luna/luna-asistente-ia.png",
+                    label: "Asistente IA de ventas",
+                    desc: "Recomienda productos, confirma pedidos y atiende por chat en tiempo real directamente en la tienda."
+                  },
+                  {
+                    src: "/screenshots/luna/luna-agentes-ia.png",
+                    label: "Centro de Agentes IA",
+                    desc: "Catálogos, reportes ejecutivos, marketing digital, inventario y soporte: todos automatizados."
+                  }
+                ]
+              : [
+                  {
+                    src: "/screenshots/luna/luna-tienda-ia.png",
+                    label: "Store · AI Mode",
+                    desc: "Search by text, image, or QR. Daily offers and personalized recommendations activated."
+                  },
+                  {
+                    src: "/screenshots/luna/luna-asistente-ia.png",
+                    label: "AI Sales Assistant",
+                    desc: "Recommends products, confirms orders, and handles chat in real time directly in the store."
+                  },
+                  {
+                    src: "/screenshots/luna/luna-agentes-ia.png",
+                    label: "AI Agents Center",
+                    desc: "Catalogs, executive reports, digital marketing, inventory, and support: all automated."
+                  }
+                ]
+            ).map((item) => (
+              <div
+                key={item.label}
+                className="group overflow-hidden rounded-[24px] border border-black/8 bg-white shadow-[0_24px_64px_-52px_rgba(15,23,42,0.28)]"
+              >
+                <div className="relative aspect-video overflow-hidden bg-slate-100">
+                  <Image
+                    src={item.src}
+                    alt={item.label}
+                    fill
+                    className="object-cover object-top transition duration-500 group-hover:scale-[1.02]"
+                    sizes="(min-width: 768px) 30vw, 100vw"
+                  />
+                </div>
+                <div className="px-4 py-4">
+                  <div className="text-sm font-semibold text-slate-900">{item.label}</div>
+                  <p className="mt-1 text-xs leading-relaxed text-slate-500">{item.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* 2-column: inventario IA + nueva venta */}
+          <div className="grid gap-4 md:grid-cols-2">
+            {(isEs
+              ? [
+                  {
+                    src: "/screenshots/luna/luna-agente-inventario.png",
+                    label: "Agente IA de Inventario",
+                    desc: "Consultas en lenguaje natural: stock crítico, rentabilidad, qué liquidar y reportes para gerencia, al instante."
+                  },
+                  {
+                    src: "/screenshots/luna/luna-nueva-venta.png",
+                    label: "Nueva Venta · POS / Tienda",
+                    desc: "Registro completo: cliente, vendedor, dirección de envío, modo de precio (P1/P2/P3) y tipo de documento fiscal."
+                  }
+                ]
+              : [
+                  {
+                    src: "/screenshots/luna/luna-agente-inventario.png",
+                    label: "Inventory AI Agent",
+                    desc: "Natural language queries: critical stock, profitability, what to liquidate, and management reports — instantly."
+                  },
+                  {
+                    src: "/screenshots/luna/luna-nueva-venta.png",
+                    label: "New Sale · POS / Store",
+                    desc: "Full sale entry: customer, seller, shipping address, pricing mode (P1/P2/P3), and fiscal document type."
+                  }
+                ]
+            ).map((item) => (
+              <div
+                key={item.label}
+                className="group overflow-hidden rounded-[24px] border border-black/8 bg-white shadow-[0_24px_64px_-52px_rgba(15,23,42,0.28)]"
+              >
+                <div className="relative aspect-video overflow-hidden bg-slate-100">
+                  <Image
+                    src={item.src}
+                    alt={item.label}
+                    fill
+                    className="object-cover object-top transition duration-500 group-hover:scale-[1.02]"
+                    sizes="(min-width: 768px) 48vw, 100vw"
+                  />
+                </div>
+                <div className="px-4 py-4">
+                  <div className="text-sm font-semibold text-slate-900">{item.label}</div>
+                  <p className="mt-1 text-xs leading-relaxed text-slate-500">{item.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* ── CASO REAL ── */}
       <section className="w-full px-6 sm:px-8 lg:px-12 xl:px-16 2xl:px-20">
         <div className="interactive-panel mx-auto rounded-[36px] border border-black/8 bg-white/92 px-6 py-10 shadow-[0_34px_100px_-68px_rgba(15,23,42,0.26)] sm:px-8 lg:px-10">
