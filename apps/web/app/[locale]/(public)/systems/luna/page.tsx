@@ -340,7 +340,7 @@ export default async function LunaPage({
             </div>
           </div>
 
-          {/* Right: dashboard screenshot in browser frame */}
+          {/* Right: screenshots panel */}
           <div className="interactive-panel premium-metal relative overflow-hidden rounded-[36px] border border-black/8 bg-white/78 p-4 shadow-[0_40px_110px_-74px_rgba(15,23,42,0.42)]">
             <div className="absolute inset-x-8 top-0 h-px bg-[linear-gradient(90deg,transparent_0%,rgba(255,255,255,0.96)_50%,transparent_100%)]" aria-hidden="true" />
             {/* Browser chrome */}
@@ -351,27 +351,64 @@ export default async function LunaPage({
                 <span className="h-3 w-3 rounded-full bg-green-400/70" />
               </div>
               <div className="mx-3 flex-1 rounded-md bg-white/80 px-3 py-1 text-[11px] text-slate-400">
-                app.dekomundo.com
+                dekomundo.com
               </div>
               <div className="inline-flex items-center gap-1.5 rounded-full bg-[#00bfa5]/10 px-2 py-1 text-[10px] font-semibold text-[#00897b]">
                 <span className="h-1.5 w-1.5 rounded-full bg-[#00bfa5]" />
                 LUNA
               </div>
             </div>
-            <div className="relative overflow-hidden rounded-[24px] border border-black/8 bg-slate-100">
+
+            {/* Imagen principal: storefront DekoMundo */}
+            <div className="relative overflow-hidden rounded-[22px] border border-black/8 bg-slate-100">
               <Image
-                src={pageImages.hero_primary?.imageUrl ?? "/screenshots/luna/luna-admin-dashboard.png"}
-                alt={pageImages.hero_primary?.alt ?? (isEs ? "Panel de administración LUNA — DekoMundo" : "LUNA admin dashboard — DekoMundo")}
+                src={pageImages.hero_primary?.imageUrl ?? "/screenshots/luna/luna-dekomundo-storefront.png"}
+                alt={pageImages.hero_primary?.alt ?? (isEs ? "Tienda DekoMundo — powered by LUNA" : "DekoMundo store — powered by LUNA")}
                 width={1200}
-                height={720}
+                height={680}
                 priority
-                className="w-full object-cover"
+                className="w-full object-cover object-top"
                 sizes="(min-width: 1280px) 44vw, (min-width: 768px) 50vw, 100vw"
               />
+              <div className="absolute left-3 top-3 inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-slate-950/70 px-2.5 py-1 text-[10px] font-semibold text-white backdrop-blur">
+                <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
+                {isEs ? "Tienda en vivo" : "Live store"}
+              </div>
             </div>
+
+            {/* Thumbnails: admin dashboard + catálogo IA */}
+            <div className="mt-3 grid grid-cols-2 gap-3">
+              <div className="group relative overflow-hidden rounded-[16px] border border-black/8 bg-slate-100">
+                <Image
+                  src="/screenshots/luna/luna-admin-dashboard.png"
+                  alt={isEs ? "Panel admin LUNA" : "LUNA admin panel"}
+                  width={600}
+                  height={360}
+                  className="w-full object-cover object-top transition duration-300 group-hover:scale-[1.03]"
+                  sizes="(min-width: 1280px) 22vw, 50vw"
+                />
+                <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-slate-950/80 to-transparent px-3 py-2">
+                  <p className="text-[10px] font-semibold text-white">{isEs ? "Panel ejecutivo" : "Executive panel"}</p>
+                </div>
+              </div>
+              <div className="group relative overflow-hidden rounded-[16px] border border-black/8 bg-slate-100">
+                <Image
+                  src="/screenshots/luna/luna-dekomundo-catalogo.png"
+                  alt={isEs ? "Catálogo inteligente LUNA" : "LUNA intelligent catalog"}
+                  width={600}
+                  height={360}
+                  className="w-full object-cover object-top transition duration-300 group-hover:scale-[1.03]"
+                  sizes="(min-width: 1280px) 22vw, 50vw"
+                />
+                <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-slate-950/80 to-transparent px-3 py-2">
+                  <p className="text-[10px] font-semibold text-white">{isEs ? "Catálogo con IA" : "AI catalog"}</p>
+                </div>
+              </div>
+            </div>
+
             <div className="mt-3 flex items-center justify-between px-1">
               <p className="text-[11px] text-slate-400">
-                {isEs ? "Vista real · DekoMundo en producción" : "Real view · DekoMundo in production"}
+                {isEs ? "Capturas reales · DekoMundo en producción" : "Real screenshots · DekoMundo in production"}
               </p>
               <div className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-[10px] font-semibold text-emerald-700">
                 <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
