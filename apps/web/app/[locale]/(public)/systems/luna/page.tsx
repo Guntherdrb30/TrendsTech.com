@@ -362,8 +362,8 @@ export default async function LunaPage({
             {/* Imagen principal: storefront DekoMundo */}
             <div className="relative overflow-hidden rounded-[22px] border border-black/8 bg-slate-100">
               <Image
-                src={pageImages.hero_primary?.imageUrl ?? "/screenshots/luna/luna-dekomundo-storefront.png"}
-                alt={pageImages.hero_primary?.alt ?? (isEs ? "Tienda DekoMundo — powered by LUNA" : "DekoMundo store — powered by LUNA")}
+                src="/screenshots/luna/luna-dekomundo-storefront.png"
+                alt={isEs ? "Tienda DekoMundo — powered by LUNA" : "DekoMundo store — powered by LUNA"}
                 width={1200}
                 height={680}
                 priority
