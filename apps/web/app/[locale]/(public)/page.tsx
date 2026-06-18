@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { getTranslations } from "next-intl/server";
 import { IBM_Plex_Sans, Space_Grotesk } from "next/font/google";
 import { PublicConciergeChat } from "./public-concierge-chat";
@@ -154,6 +155,129 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
             </p>
           </div>
           <PublicConciergeChat copy={intakeCopy} />
+        </div>
+      </section>
+
+      {/* ── LUNA SHOWCASE ── */}
+      <section className="relative overflow-hidden border-b border-white/6 bg-[#0D1B2A] px-6 py-16 sm:px-8 lg:px-14 lg:py-20 xl:px-20">
+        <div className="pointer-events-none absolute inset-0" aria-hidden="true">
+          <div className="absolute -top-40 left-1/4 h-[600px] w-[600px] rounded-full bg-[radial-gradient(circle,rgba(0,191,165,0.12),transparent_70%)]" />
+          <div className="absolute -bottom-40 right-1/4 h-[400px] w-[400px] rounded-full bg-[radial-gradient(circle,rgba(0,191,165,0.07),transparent_70%)]" />
+        </div>
+        <div className="relative mx-auto max-w-[1400px]">
+          <div className="grid gap-12 lg:grid-cols-[5fr_7fr] lg:items-center">
+
+            {/* Content */}
+            <div className="space-y-6">
+              <Image
+                src="/branding/luna-logo.png"
+                alt="LUNA ERP inteligente"
+                width={540} height={180}
+                className="h-auto w-[200px] sm:w-[260px]"
+              />
+
+              <div className="inline-flex items-center gap-2 rounded-full border border-[#00bfa5]/30 bg-[#00bfa5]/10 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.24em] text-[#00bfa5]">
+                {isEs ? "ERP Camaleónico · White Label · IA Operativa" : "Chameleon ERP · White Label · Operational AI"}
+              </div>
+
+              <h2 className="text-3xl font-[var(--font-display)] font-semibold leading-[1.1] tracking-[-0.04em] text-white sm:text-4xl lg:text-[2.6rem]">
+                {isEs ? (
+                  <>Una plataforma.<br /><span className="text-[#00bfa5]">Infinitas identidades.</span></>
+                ) : (
+                  <>One platform.<br /><span className="text-[#00bfa5]">Infinite identities.</span></>
+                )}
+              </h2>
+
+              <p className="max-w-md text-base leading-relaxed text-slate-400 sm:text-lg">
+                {isEs
+                  ? "Cada empresa recibe su propio ERP, su propia tienda y su propio branding. Mismo motor. Identidad única. Nunca verás dos LUNA iguales."
+                  : "Each business gets its own ERP, its own store, its own branding. Same engine. Unique identity. No two LUNA look alike."}
+              </p>
+
+              <div>
+                <div className="mb-3 text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500">
+                  {isEs ? "Empresas que confían en LUNA" : "Businesses running on LUNA"}
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {["🏠 DekoMundo", "🌲 Carpihogar", "🌿 Naturalis"].map((brand) => (
+                    <span key={brand} className="rounded-full border border-white/10 bg-white/6 px-4 py-1.5 text-sm font-medium text-slate-300">
+                      {brand}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              <ul className="grid gap-2 sm:grid-cols-2">
+                {(isEs
+                  ? ["ERP + tienda online integrada", "Marca 100% personalizable", "12 módulos activables", "IA operativa incluida", "Implementación en días", "Soporte dedicado"]
+                  : ["Integrated ERP + online store", "100% customizable branding", "12 activatable modules", "Built-in operational AI", "Go live in days", "Dedicated support"]
+                ).map((feat) => (
+                  <li key={feat} className="flex items-center gap-2 text-sm text-slate-300">
+                    <span className="text-[#00bfa5]">✓</span>
+                    {feat}
+                  </li>
+                ))}
+              </ul>
+
+              <div className="flex flex-wrap items-center gap-3 pt-2">
+                <Link
+                  href={`${base}/systems/luna`}
+                  className="inline-flex items-center gap-2 rounded-full bg-[#00bfa5] px-6 py-3 text-sm font-semibold text-white shadow-[0_14px_35px_-16px_rgba(0,191,165,0.5)] transition hover:-translate-y-0.5 hover:bg-[#00897b]"
+                >
+                  {isEs ? "Descubrir LUNA" : "Discover LUNA"} →
+                </Link>
+                <Link
+                  href={`https://wa.me/584122640371?text=${encodeURIComponent(isEs ? "Hola, quiero información sobre LUNA ERP" : "Hello, I want information about LUNA ERP")}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/6 px-6 py-3 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:bg-white/10"
+                >
+                  {isEs ? "Hablar con un asesor" : "Talk to an advisor"}
+                </Link>
+              </div>
+            </div>
+
+            {/* Screenshots */}
+            <div className="relative">
+              <div className="overflow-hidden rounded-[20px] border border-white/10 shadow-[0_40px_100px_-40px_rgba(0,0,0,0.7)]">
+                <div className="flex items-center gap-2 border-b border-white/8 bg-[#1a2332] px-4 py-2.5">
+                  <div className="flex gap-1.5">
+                    <div className="h-3 w-3 rounded-full bg-red-500/50" />
+                    <div className="h-3 w-3 rounded-full bg-yellow-500/50" />
+                    <div className="h-3 w-3 rounded-full bg-green-500/50" />
+                  </div>
+                  <div className="mx-auto rounded-md bg-[#0d1520] px-3 py-1 text-[11px] text-slate-500">
+                    dekomundo.com
+                  </div>
+                </div>
+                <Image
+                  src="/screenshots/luna/luna-dekomundo-storefront.png"
+                  alt={isEs ? "Tienda DekoMundo — impulsada por LUNA" : "DekoMundo store — powered by LUNA"}
+                  width={1200} height={680}
+                  priority
+                  className="w-full object-cover object-top"
+                />
+              </div>
+              <div className="mt-3 grid grid-cols-2 gap-3">
+                <div className="overflow-hidden rounded-[14px] border border-white/10">
+                  <Image
+                    src="/screenshots/luna/luna-admin-dashboard.png"
+                    alt={isEs ? "Panel administrativo LUNA" : "LUNA admin dashboard"}
+                    width={600} height={360}
+                    className="w-full object-cover"
+                  />
+                </div>
+                <div className="overflow-hidden rounded-[14px] border border-white/10">
+                  <Image
+                    src="/screenshots/luna/luna-dekomundo-catalogo.png"
+                    alt={isEs ? "Catálogo IA DekoMundo" : "DekoMundo AI catalog"}
+                    width={600} height={360}
+                    className="w-full object-cover"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
