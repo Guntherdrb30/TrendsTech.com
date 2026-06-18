@@ -277,11 +277,11 @@ export default async function LunaPage({
 
             <div className="inline-flex">
               <Image
-                src="/branding/luna-logo.svg"
+                src="/branding/luna-logo.png"
                 alt="LUNA ERP inteligente by Trends172Tech"
-                width={360}
-                height={105}
-                className="h-auto w-[260px] sm:w-[340px]"
+                width={540}
+                height={180}
+                className="h-auto w-[280px] sm:w-[380px]"
                 priority
               />
             </div>
