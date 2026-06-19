@@ -1,4 +1,7 @@
+'use client';
+
 import Link from 'next/link';
+import { motion } from 'framer-motion';
 
 type LinkHubCardProps = {
   title: string;
@@ -21,11 +24,24 @@ function CardInner({
   emoji?: string;
 }) {
   return (
-    <div className="interactive-panel group flex items-center gap-4 rounded-2xl border border-white/8 bg-white/[0.04] px-5 py-4 backdrop-blur-sm transition-all duration-300 hover:border-[#00bfa5]/35 hover:bg-white/[0.08] hover:shadow-[0_8px_40px_-12px_rgba(0,191,165,0.28)]">
+    <motion.div
+      className="group flex items-center gap-4 rounded-2xl border border-white/8 bg-white/[0.04] px-5 py-4 backdrop-blur-sm"
+      whileHover={{
+        y: -3,
+        backgroundColor: 'rgba(255,255,255,0.08)',
+        borderColor: 'rgba(0,191,165,0.35)',
+        boxShadow: '0 12px 48px -12px rgba(0,191,165,0.30)',
+      }}
+      transition={{ type: 'spring', stiffness: 500, damping: 28 }}
+    >
       {emoji && (
-        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-white/8 bg-white/[0.06] text-xl">
+        <motion.div
+          className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-white/8 bg-white/[0.06] text-xl"
+          whileHover={{ scale: 1.12, rotate: 5 }}
+          transition={{ type: 'spring', stiffness: 600, damping: 20 }}
+        >
           {emoji}
-        </div>
+        </motion.div>
       )}
       <div className="flex-1 min-w-0">
         <div className="flex flex-wrap items-center gap-2">
@@ -36,7 +52,16 @@ function CardInner({
         </div>
         <p className="mt-1 text-xs leading-relaxed text-slate-500">{description}</p>
       </div>
-      <div className="shrink-0 rounded-full border border-white/8 bg-white/[0.04] p-1.5 text-slate-600 transition-all duration-300 group-hover:border-[#00bfa5]/30 group-hover:bg-[#00bfa5]/10 group-hover:text-[#00bfa5]">
+      <motion.div
+        className="shrink-0 rounded-full border border-white/8 bg-white/[0.04] p-1.5 text-slate-600"
+        whileHover={{
+          borderColor: 'rgba(0,191,165,0.30)',
+          backgroundColor: 'rgba(0,191,165,0.10)',
+          color: '#00bfa5',
+          x: 2,
+        }}
+        transition={{ type: 'spring', stiffness: 600, damping: 25 }}
+      >
         <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
           <path
             d="M2.5 7h9M8 3.5L11.5 7 8 10.5"
@@ -46,8 +71,8 @@ function CardInner({
             strokeLinejoin="round"
           />
         </svg>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 }
 
