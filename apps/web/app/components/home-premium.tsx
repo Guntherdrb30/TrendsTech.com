@@ -3,8 +3,9 @@
 import { motion, useInView } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useRef, useState, useEffect } from 'react';
+import { useRef } from 'react';
 import { PublicConciergeChat } from '@/[locale]/(public)/public-concierge-chat';
+import { PremiumNav } from '@/components/premium-nav';
 
 type ConciergeCopy = {
   locale: string;
@@ -43,63 +44,6 @@ function FadeUp({
   );
 }
 
-/* ── Nav ── */
-function Nav({ fontClass }: { fontClass: string }) {
-  const [scrolled, setScrolled] = useState(false);
-  useEffect(() => {
-    const fn = () => setScrolled(window.scrollY > 20);
-    window.addEventListener('scroll', fn);
-    return () => window.removeEventListener('scroll', fn);
-  }, []);
-
-  return (
-    <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${fontClass} ${
-        scrolled ? 'border-b border-[#e5e7eb] bg-white/90 backdrop-blur-xl' : 'bg-transparent'
-      }`}
-    >
-      <nav className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6">
-        <Link href="/es" className="flex items-center gap-2.5">
-          <div className="relative h-8 w-8">
-            <Image
-              src="/branding/ttech-logo.svg"
-              alt="Trends172Tech"
-              fill
-              className="object-contain"
-            />
-          </div>
-          <span className="text-[15px] font-semibold tracking-tight text-[#0a0d14]">
-            Trends172Tech
-          </span>
-        </Link>
-
-        <div className="hidden items-center gap-8 md:flex">
-          {[
-            { label: 'LUNA ERP AI', href: '/es/systems/luna' },
-            { label: 'Carpihogar', href: 'https://www.carpihogar.com' },
-            { label: 'Ecosistema', href: '#ecosistema' },
-            { label: 'Contacto', href: '/es/contact' },
-          ].map((item) => (
-            <Link
-              key={item.label}
-              href={item.href}
-              className="text-[14px] font-medium text-[#6b7280] transition-colors hover:text-[#0a0d14]"
-            >
-              {item.label}
-            </Link>
-          ))}
-        </div>
-
-        <Link
-          href="/es/systems/luna"
-          className="hidden h-9 items-center rounded-full bg-[#0a0d14] px-5 text-[13px] font-semibold text-white transition-all hover:bg-[#14D9D9] hover:text-[#0a0d14] md:flex"
-        >
-          Ver LUNA ERP
-        </Link>
-      </nav>
-    </header>
-  );
-}
 
 /* ── Hero ── */
 function Hero({ fontClass }: { fontClass: string }) {
@@ -802,7 +746,7 @@ export function HomePremium({
 }) {
   return (
     <div className="overflow-x-hidden">
-      <Nav fontClass={fontClass} />
+      <PremiumNav fontClass={fontClass} />
       <Hero fontClass={fontClass} />
       <TrustStrip fontClass={fontClass} />
       <Carousel fontClass={fontClass} />

@@ -1,18 +1,18 @@
 import type { Metadata } from 'next';
 import Image from 'next/image';
-import { Space_Grotesk, IBM_Plex_Sans } from 'next/font/google';
+import { Syne, DM_Sans } from 'next/font/google';
+import { PremiumNav } from '@/components/premium-nav';
 import { LinkHubCard } from '@/components/link-hub-card';
-import { HubContainer, HubItem, FloatingOrb } from '@/components/hub-animations';
 
-const display = Space_Grotesk({
+const display = Syne({
   subsets: ['latin'],
-  weight: ['400', '500', '600', '700'],
+  weight: ['400', '600', '700', '800'],
   variable: '--font-display',
 });
 
-const body = IBM_Plex_Sans({
+const body = DM_Sans({
   subsets: ['latin'],
-  weight: ['300', '400', '500', '600'],
+  weight: ['300', '400', '500'],
   variable: '--font-body',
 });
 
@@ -81,151 +81,131 @@ const LINKS = [
 ];
 
 export default function LinksPage() {
+  const fontClass = `${display.variable} ${body.variable} font-[var(--font-body)]`;
+
   return (
-    <div
-      className={`${display.variable} ${body.variable} font-[var(--font-body)] relative min-h-screen overflow-hidden bg-[#030712]`}
-    >
-      {/* ── Fondo ── */}
-      <div className="pointer-events-none fixed inset-0 overflow-hidden" aria-hidden="true">
-        <FloatingOrb
-          className="absolute -top-32 left-1/2 h-[700px] w-[700px] -translate-x-1/2 rounded-full bg-[radial-gradient(circle,rgba(0,191,165,0.10)_0%,transparent_65%)] blur-3xl"
-          duration={7}
-          delay={0}
-        />
-        <FloatingOrb
-          className="absolute right-0 top-1/4 h-[450px] w-[450px] translate-x-1/3 rounded-full bg-[radial-gradient(circle,rgba(99,102,241,0.07)_0%,transparent_70%)] blur-3xl"
-          duration={5}
-          delay={1.5}
-        />
-        <FloatingOrb
-          className="absolute bottom-0 left-0 h-[400px] w-[400px] -translate-x-1/4 rounded-full bg-[radial-gradient(circle,rgba(0,191,165,0.06)_0%,transparent_70%)] blur-3xl"
-          duration={6}
-          delay={0.7}
-        />
-        <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.015)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.015)_1px,transparent_1px)] bg-[size:48px_48px] [mask-image:radial-gradient(ellipse_80%_50%_at_50%_0%,black_40%,transparent_100%)]" />
-      </div>
+    <div className={`${fontClass} relative min-h-screen bg-white`}>
+      {/* Subtle turquoise glow top */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none fixed inset-x-0 top-0 z-0 h-[500px]"
+        style={{
+          background:
+            'radial-gradient(ellipse 70% 40% at 50% 0%, rgba(20,217,217,0.06) 0%, transparent 70%)',
+        }}
+      />
 
-      <main className="relative mx-auto flex min-h-screen max-w-md flex-col items-center px-5 py-14">
-        <HubContainer className="flex w-full flex-col items-center">
+      <PremiumNav fontClass={fontClass} />
 
-          {/* ── Header completo como bloque ── */}
-          <HubItem className="mb-8 flex flex-col items-center text-center w-full">
-            {/* Logo con glow */}
-            <div className="relative mb-6">
-              <div className="absolute -inset-4 animate-pulse rounded-2xl bg-[radial-gradient(circle,rgba(0,191,165,0.15)_0%,transparent_70%)] blur-xl" />
-              <div className="absolute -inset-px rounded-2xl border border-[#00bfa5]/20" />
-              <div className="relative h-24 w-24 overflow-hidden rounded-2xl border border-white/10 bg-[#0a1628] shadow-[0_0_50px_rgba(0,191,165,0.12)]">
-                <Image
-                  src="/branding/trends172tech-logo.png"
-                  alt="Trends172Tech"
-                  fill
-                  className="object-contain p-2"
-                  priority
-                />
-              </div>
-            </div>
+      <main className="relative z-10 mx-auto flex min-h-screen max-w-lg flex-col items-center px-5 pb-20 pt-28">
 
-            {/* Nombre */}
-            <h1
-              className="font-[var(--font-display)] text-3xl font-bold tracking-[-0.04em]"
+        {/* ── Header ── */}
+        <div className="mb-10 flex flex-col items-center text-center w-full">
+          {/* Logo */}
+          <div className="relative mb-6">
+            <div
+              className="absolute -inset-3 rounded-2xl opacity-40"
               style={{
-                background: 'linear-gradient(135deg, #ffffff 0%, #94a3b8 100%)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                backgroundClip: 'text',
+                background:
+                  'radial-gradient(circle, rgba(20,217,217,0.25) 0%, transparent 70%)',
+                filter: 'blur(12px)',
               }}
-            >
-              Trends172Tech
-            </h1>
-
-            {/* Tags */}
-            <div className="mt-3 flex flex-wrap items-center justify-center gap-2">
-              <span className="rounded-full border border-[#00bfa5]/30 bg-[#00bfa5]/10 px-3 py-1 text-xs font-semibold text-[#00bfa5]">
-                Software
-              </span>
-              <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-medium text-slate-400">
-                Inteligencia Artificial
-              </span>
-              <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-medium text-slate-400">
-                Automatización
-              </span>
+            />
+            <div className="relative h-24 w-24 overflow-hidden rounded-2xl border border-[#14D9D9]/15 bg-white shadow-[0_2px_24px_rgba(0,0,0,0.06)]">
+              <Image
+                src="/branding/trends172tech-logo.png"
+                alt="Trends172Tech"
+                fill
+                className="object-contain p-3"
+                priority
+              />
             </div>
+          </div>
 
-            {/* Descripción */}
-            <p className="mt-4 max-w-xs text-sm leading-relaxed text-slate-500">
-              Creamos soluciones digitales para empresas que quieren{' '}
-              <span className="text-slate-300">escalar</span>, automatizar procesos y operar con
-              tecnología avanzada.
-            </p>
+          {/* Nombre */}
+          <h1
+            className="font-[var(--font-display)] text-[32px] font-extrabold tracking-[-0.04em] text-[#0a0d14]"
+          >
+            Trends172Tech
+          </h1>
 
-            {/* Frase */}
-            <div className="mt-4 rounded-full border border-white/8 bg-white/[0.04] px-4 py-1.5 backdrop-blur-sm">
-              <p className="text-[11px] font-medium tracking-wide text-slate-500">
-                Tecnología aplicada a negocios reales.
-              </p>
-            </div>
-          </HubItem>
-
-          {/* ── Stats ── */}
-          <HubItem className="mb-8 w-full">
-            <div className="grid grid-cols-3 gap-3">
-              {STATS.map((stat) => (
-                <div
-                  key={stat.label}
-                  className="rounded-2xl border border-white/8 bg-white/[0.04] px-3 py-4 text-center backdrop-blur-sm"
-                >
-                  <p
-                    className="font-[var(--font-display)] text-lg font-bold"
-                    style={{
-                      background: 'linear-gradient(135deg, #00bfa5 0%, #4dd0c4 100%)',
-                      WebkitBackgroundClip: 'text',
-                      WebkitTextFillColor: 'transparent',
-                      backgroundClip: 'text',
-                    }}
-                  >
-                    {stat.value}
-                  </p>
-                  <p className="mt-0.5 text-[10px] text-slate-600">{stat.label}</p>
-                </div>
-              ))}
-            </div>
-          </HubItem>
-
-          {/* ── Divisor ── */}
-          <HubItem className="mb-6 flex w-full items-center gap-3">
-            <div className="h-px flex-1 bg-gradient-to-r from-transparent via-white/10 to-transparent" />
-            <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-600">
-              Nuestros servicios
+          {/* Badges */}
+          <div className="mt-3 flex flex-wrap items-center justify-center gap-2">
+            <span className="rounded-full border border-[#14D9D9]/40 bg-[#14D9D9]/8 px-3 py-1 text-[12px] font-semibold text-[#0099a8]">
+              Software
             </span>
-            <div className="h-px flex-1 bg-gradient-to-r from-transparent via-white/10 to-transparent" />
-          </HubItem>
+            <span className="rounded-full border border-[#e5e7eb] bg-[#f9fafb] px-3 py-1 text-[12px] font-medium text-[#6b7280]">
+              Inteligencia Artificial
+            </span>
+            <span className="rounded-full border border-[#e5e7eb] bg-[#f9fafb] px-3 py-1 text-[12px] font-medium text-[#6b7280]">
+              Automatización
+            </span>
+          </div>
 
-          {/* ── Links ── */}
-          {LINKS.map((link) => (
-            <HubItem key={link.href} className="w-full mb-3">
-              <LinkHubCard {...link} />
-            </HubItem>
-          ))}
+          {/* Descripción */}
+          <p className="mt-4 max-w-xs text-[14px] leading-relaxed text-[#6b7280]">
+            Creamos soluciones digitales para empresas que quieren{' '}
+            <span className="font-medium text-[#374151]">escalar</span>, automatizar procesos y
+            operar con tecnología avanzada.
+          </p>
 
-          {/* ── Footer ── */}
-          <HubItem className="mt-12 flex flex-col items-center gap-3">
-            <div className="h-px w-24 bg-gradient-to-r from-transparent via-white/10 to-transparent" />
-            <div className="flex items-center gap-2">
-              <div className="relative h-5 w-5 overflow-hidden rounded-sm">
-                <Image
-                  src="/branding/trends172tech-logo.png"
-                  alt="Trends172Tech"
-                  fill
-                  className="object-contain"
-                />
-              </div>
-              <p className="text-[11px] text-slate-700">
-                Trends172Tech · Software · IA · Automatización · LUNA ERP AI
+          {/* Frase */}
+          <div className="mt-4 rounded-full border border-[#e5e7eb] bg-[#f9fafb] px-4 py-2">
+            <p className="text-[12px] font-medium text-[#9ca3af]">
+              Tecnología aplicada a negocios reales.
+            </p>
+          </div>
+        </div>
+
+        {/* ── Stats ── */}
+        <div className="mb-8 grid w-full grid-cols-3 gap-3">
+          {STATS.map((stat) => (
+            <div
+              key={stat.label}
+              className="rounded-2xl border border-[#f3f4f6] bg-[#fafafa] px-3 py-4 text-center"
+            >
+              <p className="font-[var(--font-display)] text-[20px] font-bold text-[#14D9D9]">
+                {stat.value}
               </p>
+              <p className="mt-0.5 text-[11px] text-[#9ca3af]">{stat.label}</p>
             </div>
-          </HubItem>
+          ))}
+        </div>
 
-        </HubContainer>
+        {/* ── Divisor ── */}
+        <div className="mb-6 flex w-full items-center gap-3">
+          <div className="h-px flex-1 bg-[#f3f4f6]" />
+          <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#d1d5db]">
+            Nuestros servicios
+          </span>
+          <div className="h-px flex-1 bg-[#f3f4f6]" />
+        </div>
+
+        {/* ── Links ── */}
+        <div className="flex w-full flex-col gap-3">
+          {LINKS.map((link) => (
+            <LinkHubCard key={link.href} {...link} />
+          ))}
+        </div>
+
+        {/* ── Footer ── */}
+        <div className="mt-14 flex flex-col items-center gap-2">
+          <div className="h-px w-16 bg-[#f3f4f6]" />
+          <div className="flex items-center gap-2">
+            <div className="relative h-4 w-4 overflow-hidden rounded-sm">
+              <Image
+                src="/branding/ttech-logo.svg"
+                alt="Trends172Tech"
+                fill
+                className="object-contain"
+              />
+            </div>
+            <p className="text-[11px] text-[#d1d5db]">
+              Trends172Tech · Software · IA · Automatización · LUNA ERP AI
+            </p>
+          </div>
+        </div>
+
       </main>
     </div>
   );
