@@ -161,7 +161,7 @@ export default function LinksPage() {
               key={stat.label}
               className="rounded-2xl border border-[#f3f4f6] bg-[#fafafa] px-3 py-4 text-center"
             >
-              <p className="font-[var(--font-display)] text-[20px] font-bold text-[#14D9D9]">
+              <p className="font-[var(--font-display)] text-[20px] font-extrabold text-[#14D9D9]">
                 {stat.value}
               </p>
               <p className="mt-0.5 text-[11px] text-[#9ca3af]">{stat.label}</p>
