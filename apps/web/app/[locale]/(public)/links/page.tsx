@@ -1,7 +1,6 @@
 import type { Metadata } from 'next';
 import Image from 'next/image';
 import { Syne, DM_Sans } from 'next/font/google';
-import { PremiumNav } from '@/components/premium-nav';
 import { LinkHubCard } from '@/components/link-hub-card';
 
 const display = Syne({
@@ -94,8 +93,6 @@ export default function LinksPage() {
             'radial-gradient(ellipse 70% 40% at 50% 0%, rgba(20,217,217,0.06) 0%, transparent 70%)',
         }}
       />
-
-      <PremiumNav fontClass={fontClass} />
 
       <main className="relative z-10 mx-auto flex min-h-screen max-w-lg flex-col items-center px-5 pb-20 pt-28">
 

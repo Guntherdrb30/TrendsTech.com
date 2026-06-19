@@ -5,7 +5,6 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useRef } from 'react';
 import { PublicConciergeChat } from '@/[locale]/(public)/public-concierge-chat';
-import { PremiumNav } from '@/components/premium-nav';
 
 type ConciergeCopy = {
   locale: string;
@@ -746,7 +745,6 @@ export function HomePremium({
 }) {
   return (
     <div className="overflow-x-hidden">
-      <PremiumNav fontClass={fontClass} />
       <Hero fontClass={fontClass} />
       <TrustStrip fontClass={fontClass} />
       <Carousel fontClass={fontClass} />
