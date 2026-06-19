@@ -510,7 +510,7 @@ function AgentSection({
           </p>
         </FadeUp>
         <FadeUp delay={0.15}>
-          <PublicConciergeChat {...conciergeCopy} />
+          <PublicConciergeChat copy={conciergeCopy} />
         </FadeUp>
       </div>
     </section>
