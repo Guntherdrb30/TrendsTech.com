@@ -85,7 +85,7 @@ export default function LinksPage() {
     <div
       className={`${display.variable} ${body.variable} font-[var(--font-body)] relative min-h-screen overflow-hidden bg-[#030712]`}
     >
-      {/* ── Fondo animado con framer-motion ── */}
+      {/* ── Fondo ── */}
       <div className="pointer-events-none fixed inset-0 overflow-hidden" aria-hidden="true">
         <FloatingOrb
           className="absolute -top-32 left-1/2 h-[700px] w-[700px] -translate-x-1/2 rounded-full bg-[radial-gradient(circle,rgba(0,191,165,0.10)_0%,transparent_65%)] blur-3xl"
@@ -106,12 +106,10 @@ export default function LinksPage() {
       </div>
 
       <main className="relative mx-auto flex min-h-screen max-w-md flex-col items-center px-5 py-14">
-
         <HubContainer className="flex w-full flex-col items-center">
 
-          {/* ── Header ── */}
-          <HubItem className="mb-8 flex flex-col items-center text-center">
-
+          {/* ── Header completo como bloque ── */}
+          <HubItem className="mb-8 flex flex-col items-center text-center w-full">
             {/* Logo con glow */}
             <div className="relative mb-6">
               <div className="absolute -inset-4 animate-pulse rounded-2xl bg-[radial-gradient(circle,rgba(0,191,165,0.15)_0%,transparent_70%)] blur-xl" />
@@ -202,7 +200,7 @@ export default function LinksPage() {
             <div className="h-px flex-1 bg-gradient-to-r from-transparent via-white/10 to-transparent" />
           </HubItem>
 
-          {/* ── Links con stagger ── */}
+          {/* ── Links ── */}
           {LINKS.map((link) => (
             <HubItem key={link.href} className="w-full mb-3">
               <LinkHubCard {...link} />

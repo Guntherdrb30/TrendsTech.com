@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { Syne, DM_Sans } from 'next/font/google';
+import { getTranslations } from 'next-intl/server';
 import { HomePremium } from '@/components/home-premium';
 
 const display = Syne({
@@ -27,8 +28,25 @@ export const metadata: Metadata = {
 };
 
 export default async function HomePage({ params }: { params: Promise<{ locale: string }> }) {
-  await params;
+  const { locale } = await params;
+  const home = await getTranslations('home');
+
   const fontClass = `${display.variable} ${body.variable} font-[var(--font-body)]`;
 
-  return <HomePremium fontClass={fontClass} />;
+  const conciergeCopy = {
+    locale,
+    intakeBadge: home('intakeBadge'),
+    intakeTitle: home('intakeTitle'),
+    intakeSubtitle: home('intakeSubtitle'),
+    intakeNote: home('intakeNote'),
+    chatPlaceholder: home('chatPlaceholder'),
+    chatClearLabel: home('chatClearLabel'),
+    chatSuggestionsTitle: home('chatSuggestionsTitle'),
+    chatSuggestions: [
+      { label: home('chatSuggestions.s1Label'), prompt: home('chatSuggestions.s1Prompt') },
+      { label: home('chatSuggestions.s2Label'), prompt: home('chatSuggestions.s2Prompt') },
+    ],
+  };
+
+  return <HomePremium fontClass={fontClass} conciergeCopy={conciergeCopy} />;
 }

@@ -17,7 +17,7 @@ const body = IBM_Plex_Sans({
 });
 
 export const metadata: Metadata = {
-  title: 'Gunther Del Rosario | IA & Software',
+  title: 'Gunther Del Rosario | CEO · Trends172Tech',
   description:
     'CEO de Trends172Tech, creador de LUNA ERP AI y fundador de Carpihogar, La Tienda Inteligente de Venezuela.',
   openGraph: {
@@ -77,7 +77,7 @@ export default function GuntherPage() {
     <div
       className={`${display.variable} ${body.variable} font-[var(--font-body)] relative min-h-screen overflow-hidden bg-[#030712]`}
     >
-      {/* ── Fondo animado con framer-motion ── */}
+      {/* ── Fondo ── */}
       <div className="pointer-events-none fixed inset-0 overflow-hidden" aria-hidden="true">
         <FloatingOrb
           className="absolute -top-40 left-1/2 h-[600px] w-[600px] -translate-x-1/2 rounded-full bg-[radial-gradient(circle,rgba(0,191,165,0.12)_0%,transparent_70%)] blur-3xl"
@@ -97,14 +97,12 @@ export default function GuntherPage() {
         <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:48px_48px] [mask-image:radial-gradient(ellipse_80%_50%_at_50%_0%,black_40%,transparent_100%)]" />
       </div>
 
-      <main className="relative mx-auto flex min-h-screen max-w-md flex-col items-center px-5 py-14 sm:py-18">
-
+      <main className="relative mx-auto flex min-h-screen max-w-md flex-col items-center px-5 py-14">
         <HubContainer className="flex w-full flex-col items-center">
 
-          {/* ── Header ── */}
-          <HubItem className="mb-10 flex flex-col items-center text-center">
-
-            {/* Logo con glow ring */}
+          {/* ── Header completo como un bloque ── */}
+          <HubItem className="mb-10 flex flex-col items-center text-center w-full">
+            {/* Logo circular con glow */}
             <div className="relative mb-6">
               <div className="absolute -inset-3 animate-pulse rounded-full bg-[radial-gradient(circle,rgba(0,191,165,0.2)_0%,transparent_70%)] blur-md" />
               <div className="absolute -inset-1 rounded-full border border-[#00bfa5]/25" />
@@ -119,7 +117,7 @@ export default function GuntherPage() {
               </div>
             </div>
 
-            {/* Nombre con gradiente */}
+            {/* Nombre */}
             <h1
               className="font-[var(--font-display)] text-3xl font-bold tracking-[-0.04em]"
               style={{
@@ -142,9 +140,10 @@ export default function GuntherPage() {
               </span>
             </div>
 
-            {/* Descripción */}
+            {/* Bio */}
             <p className="mt-4 max-w-xs text-sm leading-relaxed text-slate-500">
-              Fundador de <span className="text-slate-300">Carpihogar</span>, La Tienda Inteligente de Venezuela.
+              Fundador de <span className="text-slate-300">Carpihogar</span>, La Tienda Inteligente
+              de Venezuela. 17+ años construyendo empresa y tecnología.
             </p>
 
             {/* Frase */}
@@ -164,7 +163,7 @@ export default function GuntherPage() {
             <div className="h-px flex-1 bg-gradient-to-r from-transparent via-white/10 to-transparent" />
           </HubItem>
 
-          {/* ── Links con stagger ── */}
+          {/* ── Links ── */}
           {LINKS.map((link) => (
             <HubItem key={link.href} className="w-full mb-3">
               <LinkHubCard {...link} />
