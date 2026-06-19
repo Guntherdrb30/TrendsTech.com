@@ -1,6 +1,6 @@
 'use client';
 
-import { motion, useScroll, useTransform, useInView } from 'framer-motion';
+import { motion, useInView } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRef, useState, useEffect } from 'react';
@@ -563,7 +563,7 @@ function FounderSection({ fontClass }: { fontClass: string }) {
           {/* Quote side */}
           <FadeUp delay={0.1}>
             <blockquote>
-              <div className="mb-6 text-[64px] leading-none text-[#14D9D9]/30 font-serif">"</div>
+              <div className="mb-6 text-[64px] leading-none text-[#14D9D9]/30 font-serif">&ldquo;</div>
               <p className="mb-8 text-[24px] font-medium leading-[1.5] tracking-[-0.02em] text-[#0a0d14] sm:text-[28px]">
                 Después de más de 17 años construyendo una empresa en Venezuela, desarrollé la tecnología que necesitaba para administrarla. Lo que comenzó como una solución interna terminó convirtiéndose en{' '}
                 <span style={{ color: '#14D9D9', fontWeight: 700 }}>LUNA ERP AI.</span>
