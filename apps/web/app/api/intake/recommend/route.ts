@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createOpenAIClient } from '@trends172tech/openai';
+import Anthropic from '@anthropic-ai/sdk';
 
 const OBJECTIVE_SKILL_MAP: Record<string, string> = {
   'Atender clientes 24/7': 'customer_support',
@@ -33,34 +33,36 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(fallbackRecommend(objectives));
   }
 
-  const apiKey = process.env.OPENAI_API_KEY;
-  if (!apiKey) {
+  const apiKey = process.env.ANTHROPIC_API_KEY;
+  if (!apiKey || apiKey.includes('REEMPLAZA')) {
     return NextResponse.json(fallbackRecommend(objectives));
   }
 
-  try {
-    const openai = createOpenAIClient({ apiKey });
-    const prompt = `Based on this company description and goals, suggest:
-1. A professional, concise agent name (2-4 words, in the same language as the description)
-2. The most relevant skill keys from: customer_support, order_management, price_inquiry, appointment_booking, technical_support, sales, location_info
+  const validKeys = Object.values(OBJECTIVE_SKILL_MAP).join(', ');
+  const prompt = `Based on this company description and goals, suggest:
+1. A professional agent name (2-4 words, same language as the description)
+2. The most relevant skill keys from this list only: ${validKeys}
 
-Description: ${description}
+Company description: ${description}
 Goals: ${objectives.join(', ')}
 
-Respond ONLY with valid JSON (no markdown, no code blocks): {"suggestedName":"string","skillKeys":["key1","key2"]}`;
+Respond ONLY with valid JSON, no markdown: {"suggestedName":"string","skillKeys":["key1","key2"]}`;
 
-    const response = await openai.chat.completions.create({
-      model: 'gpt-4o-mini',
+  try {
+    const client = new Anthropic({ apiKey });
+    const response = await client.messages.create({
+      model: 'claude-haiku-4-5-20251001',
+      max_tokens: 150,
       messages: [{ role: 'user', content: prompt }],
-      max_tokens: 120,
-      temperature: 0.3,
     });
 
-    const text = response.choices[0]?.message?.content?.trim() ?? '';
+    const text =
+      response.content[0]?.type === 'text' ? response.content[0].text.trim() : '';
+
     const parsed = JSON.parse(text) as { suggestedName: string; skillKeys: string[] };
 
     if (typeof parsed.suggestedName !== 'string' || !Array.isArray(parsed.skillKeys)) {
-      throw new Error('Invalid GPT response shape');
+      throw new Error('Invalid response shape');
     }
 
     return NextResponse.json(parsed);

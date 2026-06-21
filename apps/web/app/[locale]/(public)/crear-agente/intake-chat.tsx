@@ -221,9 +221,11 @@ export function IntakeChatWizard({ locale, onIntakeComplete }: Props) {
       addMessage('agent', 'Perfecto, analizando tu información para recomendarte la mejor configuración...');
     }, 500);
 
-    // Fetch recommendation
+    // Fetch recommendation (8s timeout para evitar colgarse si la API falla)
     let rec = { suggestedName: 'Asistente Virtual', skillKeys: ['customer_support'] };
     try {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 8000);
       const res = await fetch('/api/intake/recommend', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -231,7 +233,9 @@ export function IntakeChatWizard({ locale, onIntakeComplete }: Props) {
           description: knowledgeTextContent,
           objectives: selectedObjectives,
         }),
+        signal: controller.signal,
       });
+      clearTimeout(timeout);
       if (res.ok) {
         rec = (await res.json()) as typeof rec;
       }
