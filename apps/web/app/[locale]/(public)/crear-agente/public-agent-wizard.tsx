@@ -4,6 +4,7 @@ import { useState, useTransition, useCallback } from 'react';
 import { signIn } from 'next-auth/react';
 import { IntakeChatWizard } from './intake-chat';
 import type { IntakeResult } from './intake-chat';
+import { AgentPreviewScreen } from './agent-preview-screen';
 import type { PublicSkillGroup, PublicSkillItem } from './actions';
 
 const STORAGE_KEY = 'pendingAgentConfig';
@@ -34,7 +35,7 @@ const BASE_PRICE = 29;
 
 export function PublicAgentWizard({ skillGroups, locale }: Props) {
   const isEs = locale.startsWith('es');
-  const [phase, setPhase] = useState<'intake' | 'steps'>('intake');
+  const [phase, setPhase] = useState<'intake' | 'preview' | 'steps'>('intake');
   const [step, setStep] = useState<1 | 2 | 3 | 4>(1);
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
@@ -85,7 +86,7 @@ export function PublicAgentWizard({ skillGroups, locale }: Props) {
       });
       setTargetChannel(result.targetChannel);
 
-      setPhase('steps');
+      setPhase('preview');
       setStep(1);
     },
     [allSkills]
@@ -213,6 +214,20 @@ export function PublicAgentWizard({ skillGroups, locale }: Props) {
 
   if (phase === 'intake') {
     return <IntakeChatWizard locale={locale} onIntakeComplete={handleIntakeComplete} />;
+  }
+
+  if (phase === 'preview') {
+    return (
+      <AgentPreviewScreen
+        agentName={name || (isEs ? 'Tu agente IA' : 'Your AI agent')}
+        skillKeys={Array.from(selectedIds).map(
+          (id) => allSkills.find((s) => s.id === id)?.key ?? id
+        )}
+        locale={locale}
+        onContinue={() => setPhase('steps')}
+        onSkip={() => setPhase('steps')}
+      />
+    );
   }
 
   return (
