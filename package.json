@@ -6,7 +6,7 @@
     "packages/*"
   ],
   "scripts": {
-    "postinstall": "npm --workspace packages/db run generate && node -e \"if(process.env.VERCEL!=='1'){require('child_process').execSync('npm --workspace packages/db run migrate:deploy',{stdio:'inherit'})}else{console.log('Skipping migrate:deploy on Vercel (run db:migrate manually)')}\"",
+    "postinstall": "npm --workspace packages/db run generate",
     "dev": "npm --workspace apps/web run dev",
     "build": "npm --workspace apps/web run build",
     "start": "npm --workspace apps/web run start",
@@ -17,6 +17,7 @@
     "luna:runner:start": "npm --workspace packages/luna-runner run start",
     "prisma": "npm --workspace packages/db run prisma",
     "db:migrate": "npm --workspace packages/db run prisma migrate dev",
+    "db:migrate:deploy": "npm --workspace packages/db run migrate:deploy",
     "db:studio": "npm --workspace packages/db run prisma studio",
     "db:seed": "npm --workspace packages/db run prisma db seed",
     "db:seed-news": "npm --workspace packages/db run seed:news"

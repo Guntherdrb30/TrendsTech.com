@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import pdfParse from 'pdf-parse';
 import * as XLSX from 'xlsx';
+import { enforceRequestRateLimit } from '@/lib/security/rate-limit';
 
 export const config = { api: { bodyParser: false } };
 
@@ -20,6 +21,13 @@ function cleanText(raw: string): string {
 }
 
 export async function POST(request: NextRequest) {
+  const limited = enforceRequestRateLimit(request, {
+    namespace: 'agent-preview-parse',
+    limit: 10,
+    windowMs: 10 * 60 * 1000
+  });
+  if (limited) return limited;
+
   let formData: FormData;
   try {
     formData = await request.formData();

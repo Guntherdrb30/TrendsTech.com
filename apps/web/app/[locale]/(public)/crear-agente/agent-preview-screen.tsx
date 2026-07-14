@@ -136,11 +136,14 @@ export function AgentPreviewScreen({
 
   // ── Chat ───────────────────────────────────────────────────────────────────
 
-  const buildContext = () =>
-    files
-      .filter((f) => f.status === 'ready' && f.text)
-      .map((f) => `== Archivo: ${f.name} ==\n${f.text}`)
-      .join('\n\n');
+  const buildContext = useCallback(
+    () =>
+      files
+        .filter((f) => f.status === 'ready' && f.text)
+        .map((f) => `== Archivo: ${f.name} ==\n${f.text}`)
+        .join('\n\n'),
+    [files]
+  );
 
   const startChat = () => {
     setChatStarted(true);
@@ -238,7 +241,7 @@ export function AgentPreviewScreen({
     } finally {
       setIsStreaming(false);
     }
-  }, [inputValue, isStreaming, demoOver, messages, agentName, skillKeys]);
+  }, [inputValue, isStreaming, demoOver, messages, agentName, skillKeys, buildContext]);
 
   // ── Render ─────────────────────────────────────────────────────────────────
 

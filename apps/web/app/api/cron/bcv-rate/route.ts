@@ -30,7 +30,13 @@ export const dynamic = 'force-dynamic';
 export async function GET(request: Request) {
   // Vercel Cron sends Authorization header — verify it
   const authHeader = request.headers.get('authorization');
-  if (process.env.CRON_SECRET && authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+  const cronSecret = process.env.CRON_SECRET;
+  if (!cronSecret) {
+    console.error('BCV cron is missing CRON_SECRET configuration');
+    return NextResponse.json({ error: 'Cron is not configured' }, { status: 503 });
+  }
+
+  if (authHeader !== `Bearer ${cronSecret}`) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
