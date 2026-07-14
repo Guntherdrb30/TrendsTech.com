@@ -1,0 +1,24 @@
+<svg width="920" height="720" viewBox="0 0 920 720" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="920" height="720" rx="36" fill="#07111F"/>
+  <rect x="46" y="44" width="828" height="632" rx="30" fill="#0E1B2B" stroke="#25364B"/>
+  <text x="82" y="102" fill="white" font-family="Arial, sans-serif" font-size="30" font-weight="700">Tuition control</text>
+  <text x="82" y="136" fill="#8FA0B5" font-family="Arial, sans-serif" font-size="16">Status visibility without exposing financial details</text>
+  <rect x="82" y="178" width="230" height="130" rx="24" fill="#122338" stroke="#28405A"/>
+  <text x="110" y="218" fill="#8FA0B5" font-family="Arial, sans-serif" font-size="14" font-weight="700">CURRENT</text>
+  <text x="110" y="268" fill="#2DD4BF" font-family="Arial, sans-serif" font-size="36" font-weight="700">TRACKED</text>
+  <rect x="332" y="178" width="230" height="130" rx="24" fill="#122338" stroke="#28405A"/>
+  <text x="360" y="218" fill="#8FA0B5" font-family="Arial, sans-serif" font-size="14" font-weight="700">PENDING</text>
+  <text x="360" y="268" fill="#FB923C" font-family="Arial, sans-serif" font-size="36" font-weight="700">VISIBLE</text>
+  <rect x="582" y="178" width="256" height="130" rx="24" fill="#122338" stroke="#28405A"/>
+  <text x="610" y="218" fill="#8FA0B5" font-family="Arial, sans-serif" font-size="14" font-weight="700">HISTORY</text>
+  <text x="610" y="268" fill="white" font-family="Arial, sans-serif" font-size="36" font-weight="700">AUDITABLE</text>
+  <rect x="82" y="342" width="756" height="280" rx="26" fill="#101F31" stroke="#25364B"/>
+  <g fill="#8FA0B5" font-family="Arial, sans-serif" font-size="13" font-weight="700">
+    <text x="116" y="386">PLAYER</text><text x="450" y="386">PERIOD</text><text x="690" y="386">STATUS</text>
+  </g>
+  <g>
+    <rect x="114" y="420" width="244" height="16" rx="8" fill="#33465D"/><rect x="450" y="420" width="120" height="16" rx="8" fill="#33465D"/><rect x="690" y="412" width="112" height="32" rx="16" fill="#0F766E"/>
+    <rect x="114" y="482" width="200" height="16" rx="8" fill="#33465D"/><rect x="450" y="482" width="120" height="16" rx="8" fill="#33465D"/><rect x="690" y="474" width="112" height="32" rx="16" fill="#C2410C"/>
+    <rect x="114" y="544" width="226" height="16" rx="8" fill="#33465D"/><rect x="450" y="544" width="120" height="16" rx="8" fill="#33465D"/><rect x="690" y="536" width="112" height="32" rx="16" fill="#0F766E"/>
+  </g>
+</svg>
