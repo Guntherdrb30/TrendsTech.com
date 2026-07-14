@@ -9,6 +9,7 @@ out
 .dist
 
 dist
+apps/widget/build/
 *.tsbuildinfo
 
 # env

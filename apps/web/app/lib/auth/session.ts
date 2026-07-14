@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { compare } from 'bcryptjs';
 import { prisma } from '@trends172tech/db';
+import { checkRateLimit } from '@/lib/security/rate-limit';
 
 export const authOptions: NextAuthOptions = {
   session: {
@@ -16,7 +17,7 @@ export const authOptions: NextAuthOptions = {
         email: { label: 'Email', type: 'email' },
         password: { label: 'Password', type: 'password' }
       },
-    async authorize(credentials) {
+    async authorize(credentials, request) {
       const email = credentials?.email?.toLowerCase().trim();
       const password = credentials?.password;
 
@@ -25,18 +26,31 @@ export const authOptions: NextAuthOptions = {
         return null;
       }
 
+      const forwarded = request.headers?.['x-forwarded-for'];
+      const rawIdentifier = Array.isArray(forwarded) ? forwarded[0] : forwarded;
+      const ip = rawIdentifier?.split(',')[0]?.trim() || request.headers?.['x-real-ip'] || 'unknown';
+      const loginLimit = checkRateLimit(`${ip}:${email}`, {
+        namespace: 'auth-login',
+        limit: 10,
+        windowMs: 15 * 60 * 1000
+      });
+      if (!loginLimit.allowed) {
+        console.warn('[auth] credentials signin rate limited');
+        return null;
+      }
+
       const user = await prisma.user.findUnique({
         where: { email }
       });
 
       if (!user || !user.passwordHash) {
-        console.warn(`[auth] credentials signin failed for ${email} - user missing or no password hash`);
+        console.warn('[auth] credentials signin failed - user missing or no password hash');
         return null;
       }
 
       const isValid = await compare(password, user.passwordHash);
       if (!isValid) {
-        console.warn(`[auth] credentials signin failed for ${email} - invalid password`);
+        console.warn('[auth] credentials signin failed - invalid password');
         return null;
       }
 

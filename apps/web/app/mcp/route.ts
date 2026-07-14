@@ -1,7 +1,10 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { WebStandardStreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/webStandardStreamableHttp.js";
+import { createHash, timingSafeEqual } from "node:crypto";
+import { NextResponse } from "next/server";
 import { z } from "zod";
 
+import { prisma } from "@trends172tech/db";
 import { getToolDefinitions, type ToolContext } from "@trends172tech/openai";
 
 export const runtime = "nodejs";
@@ -30,6 +33,44 @@ function buildToolContext(headers: Record<string, string | undefined>): ToolCont
   }
 
   return { tenantId, agentInstanceId, actorUserId, sessionId };
+}
+
+function secureEqual(left: string, right: string) {
+  const leftHash = createHash("sha256").update(left).digest();
+  const rightHash = createHash("sha256").update(right).digest();
+  return timingSafeEqual(leftHash, rightHash);
+}
+
+function authorizeMcpRequest(request: Request) {
+  const secret = process.env.MCP_API_SECRET;
+  if (!secret || secret.length < 32) {
+    return { ok: false as const, status: 503, error: "MCP is not configured." };
+  }
+
+  const authorization = request.headers.get("authorization") ?? "";
+  const token = authorization.startsWith("Bearer ") ? authorization.slice(7).trim() : "";
+  if (!token || !secureEqual(token, secret)) {
+    return { ok: false as const, status: 401, error: "Unauthorized." };
+  }
+
+  return { ok: true as const };
+}
+
+async function validateToolContext(context: ToolContext) {
+  const [tenant, agentInstance, actor] = await Promise.all([
+    prisma.tenant.findUnique({ where: { id: context.tenantId }, select: { id: true } }),
+    prisma.agentInstance.findFirst({
+      where: { id: context.agentInstanceId, tenantId: context.tenantId },
+      select: { id: true }
+    }),
+    prisma.user.findUnique({
+      where: { id: context.actorUserId },
+      select: { id: true, role: true, tenantId: true }
+    })
+  ]);
+
+  if (!tenant || !agentInstance || !actor) return false;
+  return actor.role === "ROOT" || actor.tenantId === context.tenantId;
 }
 
 function buildServer() {
@@ -86,6 +127,13 @@ function buildServer() {
           };
         }
 
+        if (!(await validateToolContext(context))) {
+          return {
+            content: [{ type: "text", text: "Invalid or unauthorized tool context." }],
+            isError: true
+          };
+        }
+
         try {
           const result = await definition.execute(args, {
             tenantId: context.tenantId,
@@ -126,6 +174,20 @@ function withNoStoreHeaders(response: Response) {
 async function handleMcpRequest(request: Request) {
   const url = new URL(request.url);
   console.log(`[mcp] ${request.method} ${url.pathname}`);
+
+  const authorization = authorizeMcpRequest(request);
+  if (!authorization.ok) {
+    return NextResponse.json(
+      { error: authorization.error },
+      {
+        status: authorization.status,
+        headers: {
+          "Cache-Control": "no-store",
+          "WWW-Authenticate": 'Bearer realm="Trends172 MCP"'
+        }
+      }
+    );
+  }
 
   const transport = new WebStandardStreamableHTTPServerTransport({
     sessionIdGenerator: undefined,

@@ -3,8 +3,8 @@ import { defaultLocale, locales } from './app/lib/i18n/config';
 
 export default getRequestConfig(async ({ requestLocale }) => {
   const locale = await requestLocale;
-  const resolvedLocale = locales.includes(locale as (typeof locales)[number])
-    ? locale
+  const resolvedLocale: (typeof locales)[number] = locales.includes(locale as (typeof locales)[number])
+    ? (locale as (typeof locales)[number])
     : defaultLocale;
 
   return {

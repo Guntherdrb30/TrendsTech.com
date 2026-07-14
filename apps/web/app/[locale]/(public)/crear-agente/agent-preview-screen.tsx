@@ -32,7 +32,7 @@ type Props = {
 
 const MAX_FILES = 3;
 const MAX_DEMO_MESSAGES = 8;
-const ACCEPTED = '.pdf,.xlsx,.xls,.txt,.csv';
+const ACCEPTED = '.pdf,.xlsx,.txt,.csv';
 
 // ── Componente ─────────────────────────────────────────────────────────────────
 
@@ -71,7 +71,7 @@ export function AgentPreviewScreen({
     if (files.length >= MAX_FILES) return;
 
     const ext = file.name.split('.').pop()?.toLowerCase() ?? '';
-    const allowed = ['pdf', 'xlsx', 'xls', 'txt', 'csv'];
+    const allowed = ['pdf', 'xlsx', 'txt', 'csv'];
     if (!allowed.includes(ext)) {
       setFiles((prev) => [
         ...prev,
@@ -377,7 +377,7 @@ export function AgentPreviewScreen({
                     }`}
                   >
                     <span className="text-lg">
-                      {f.type === 'pdf' ? '📄' : f.type === 'xlsx' || f.type === 'xls' ? '📊' : '📝'}
+                      {f.type === 'pdf' ? '📄' : f.type === 'xlsx' ? '📊' : '📝'}
                     </span>
                     <div className="min-w-0 flex-1">
                       <p className="truncate text-[13px] font-medium text-[#0a0d14]">{f.name}</p>

@@ -1,3 +1,5 @@
+import { fetchPublicHttp, readResponseTextLimited } from '../security/public-url';
+
 type RobotsRule = {
   userAgent: string;
   disallow: string[];
@@ -50,11 +52,14 @@ function isPathDisallowed(pathname: string, rules: RobotsRule[]) {
 export async function isAllowedByRobots(url: URL) {
   try {
     const robotsUrl = new URL('/robots.txt', url.origin);
-    const response = await fetch(robotsUrl, { headers: { 'user-agent': 'trends172tech-bot' } });
+    const response = await fetchPublicHttp(robotsUrl, {
+      headers: { 'user-agent': 'trends172tech-bot' },
+      timeoutMs: 5_000
+    });
     if (!response.ok) {
       return true;
     }
-    const content = await response.text();
+    const content = await readResponseTextLimited(response, 256 * 1024);
     const rules = parseRobotsTxt(content);
     return !isPathDisallowed(url.pathname, rules);
   } catch {

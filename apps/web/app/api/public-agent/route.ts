@@ -5,6 +5,7 @@ import * as cheerio from "cheerio";
 import { normalizeWhitespace } from "@/lib/kb/text";
 import { createOpenAIClient, getOpenAIRequestId } from "@trends172tech/openai";
 import { enforceRequestRateLimit } from "@/lib/security/rate-limit";
+import { fetchPublicHttp, readResponseTextLimited } from "@/lib/security/public-url";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -29,14 +30,15 @@ const RUN_TIMEOUT_MS = 25000;
 
 async function fetchUrlSnapshot(targetUrl: string): Promise<UrlSnapshot | null> {
   try {
-    const response = await fetch(targetUrl, {
-      headers: { "user-agent": "trends172tech-discovery-bot" }
+    const response = await fetchPublicHttp(targetUrl, {
+      headers: { "user-agent": "trends172tech-discovery-bot" },
+      timeoutMs: 8_000
     });
     if (!response.ok) {
       return null;
     }
 
-    const html = await response.text();
+    const html = await readResponseTextLimited(response, 2 * 1024 * 1024);
     const $ = cheerio.load(html);
     $("script, style, noscript").remove();
 

@@ -1,11 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server';
 import pdfParse from 'pdf-parse';
-import * as XLSX from 'xlsx';
+import readExcelFile, { type CellValue } from 'read-excel-file/node';
 import { enforceRequestRateLimit } from '@/lib/security/rate-limit';
 
 export const config = { api: { bodyParser: false } };
 
 const MAX_CHARS = 12000;
+const MAX_FILE_BYTES = 8 * 1024 * 1024;
+
+function csvCell(value: CellValue | null) {
+  if (value === null) return '';
+  const normalized = value instanceof Date ? value.toISOString() : String(value);
+  return /[",\r\n]/.test(normalized) ? `"${normalized.replace(/"/g, '""')}"` : normalized;
+}
 
 function truncate(text: string): string {
   if (text.length <= MAX_CHARS) return text;
@@ -42,6 +49,19 @@ export async function POST(request: NextRequest) {
 
   const filename = file.name;
   const ext = filename.split('.').pop()?.toLowerCase() ?? '';
+  if (!['pdf', 'xlsx', 'txt', 'md', 'csv'].includes(ext)) {
+    return NextResponse.json(
+      { error: 'Formato no soportado. Usa PDF, XLSX, CSV o TXT.' },
+      { status: 415 }
+    );
+  }
+  if (file.size <= 0 || file.size > MAX_FILE_BYTES) {
+    return NextResponse.json(
+      { error: 'El archivo debe pesar entre 1 byte y 8 MB.' },
+      { status: 413 }
+    );
+  }
+
   const bytes = await file.arrayBuffer();
   const buffer = Buffer.from(bytes);
 
@@ -51,24 +71,18 @@ export async function POST(request: NextRequest) {
     if (ext === 'pdf') {
       const result = await pdfParse(buffer);
       text = cleanText(result.text);
-    } else if (ext === 'xlsx' || ext === 'xls') {
-      const workbook = XLSX.read(buffer, { type: 'buffer' });
-      const parts: string[] = [];
-      for (const sheetName of workbook.SheetNames) {
-        const sheet = workbook.Sheets[sheetName];
-        const csv = XLSX.utils.sheet_to_csv(sheet, { blankrows: false });
+    } else if (ext === 'xlsx') {
+      const sheets = await readExcelFile(buffer);
+      const parts = sheets.flatMap(({ sheet, data }) => {
+        const csv = data.map((row) => row.map(csvCell).join(',')).join('\n');
         if (csv.trim()) {
-          parts.push(`=== Hoja: ${sheetName} ===\n${csv}`);
+          return [`=== Hoja: ${sheet} ===\n${csv}`];
         }
-      }
+        return [];
+      });
       text = cleanText(parts.join('\n\n'));
     } else if (ext === 'txt' || ext === 'md' || ext === 'csv') {
       text = cleanText(buffer.toString('utf-8'));
-    } else {
-      return NextResponse.json(
-        { error: 'Formato no soportado. Usa PDF, XLSX o TXT.' },
-        { status: 415 }
-      );
     }
 
     if (!text.trim()) {
