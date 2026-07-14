@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
+import { enforceRequestRateLimit } from '@/lib/security/rate-limit';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -13,6 +14,13 @@ function isProd() {
 }
 
 export async function POST(request: Request) {
+  const limited = enforceRequestRateLimit(request, {
+    namespace: 'human-verify',
+    limit: 10,
+    windowMs: 5 * 60 * 1000
+  });
+  if (limited) return limited;
+
   const secret = process.env.TURNSTILE_SECRET_KEY;
   if (!secret) {
     return NextResponse.json(

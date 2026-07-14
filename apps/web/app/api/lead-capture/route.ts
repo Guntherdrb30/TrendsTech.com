@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
+import { enforceRequestRateLimit } from "@/lib/security/rate-limit";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -96,6 +97,13 @@ function buildLeadHeader(payload: z.infer<typeof requestSchema>) {
 }
 
 export async function POST(request: Request) {
+  const limited = enforceRequestRateLimit(request, {
+    namespace: "lead-capture",
+    limit: 5,
+    windowMs: 10 * 60 * 1000
+  });
+  if (limited) return limited;
+
   const phoneNumberId = getPhoneNumberId();
   const to = getLeadRecipient();
 

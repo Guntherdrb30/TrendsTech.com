@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { prisma } from "@trends172tech/db";
 import { getLunaPlanSnapshot } from "@/lib/luna-agent/summary";
@@ -6,6 +7,10 @@ import { hashRemoteToken } from "@/lib/luna-agent/security";
 import { RemoteTaskClient } from "./remote-task-client";
 
 export const dynamic = "force-dynamic";
+
+export const metadata: Metadata = {
+  robots: { index: false, follow: false, noarchive: true }
+};
 
 type RouteParams = {
   token: string;

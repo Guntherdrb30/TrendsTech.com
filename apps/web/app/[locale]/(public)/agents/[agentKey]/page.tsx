@@ -6,6 +6,7 @@ import { IBM_Plex_Sans, Space_Grotesk } from 'next/font/google';
 import { Button } from '@/components/ui/button';
 import { AgentChat } from '@/components/agent-chat';
 import { getCurrentUser } from '@/lib/auth/guards';
+import { buildLocalizedMetadata } from '@/lib/seo';
 import { AGENT_PRODUCTS, type AgentKey } from '../agent-products';
 
 const WHATSAPP_BUY_NUMBER = '584122640371';
@@ -34,6 +35,31 @@ type PageParams = {
 
 export function generateStaticParams() {
   return AGENT_PRODUCTS.map((agent) => ({ agentKey: agent.key }));
+}
+
+export async function generateMetadata({ params }: { params: Promise<PageParams> }) {
+  const { locale, agentKey } = await params;
+  const agent = AGENT_PRODUCTS.find((item) => item.key === agentKey);
+
+  if (!agent) {
+    notFound();
+  }
+
+  const es = await getTranslations({ locale: 'es', namespace: 'agents' });
+  const en = await getTranslations({ locale: 'en', namespace: 'agents' });
+
+  return buildLocalizedMetadata({
+    locale,
+    pathname: `agents/${agent.key}`,
+    title: {
+      es: `${es(`${agent.key}.name`)} | Agente especializado`,
+      en: `${en(`${agent.key}.name`)} | Specialized agent`,
+    },
+    description: {
+      es: es(`${agent.key}.summary`),
+      en: en(`${agent.key}.summary`),
+    },
+  });
 }
 
 function isLunaCodeOrchestrator(agentKey: AgentKey) {

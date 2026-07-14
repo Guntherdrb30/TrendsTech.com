@@ -8,13 +8,26 @@ import { getMessages, setRequestLocale } from 'next-intl/server';
 import { ThemeProvider } from '../components/theme-provider';
 import { HumanVerificationGate } from '../components/human-verification-gate';
 import { locales } from '../lib/i18n/config';
+import { siteUrl } from '../lib/seo';
 import '../../styles/globals.css';
 
 export const runtime = 'nodejs';
 
 export const metadata: Metadata = {
-  title: 'Trends172 Tech',
-  description: 'AI agent platform for analysis, creation, and distribution.'
+  metadataBase: siteUrl,
+  applicationName: 'Trends172Tech',
+  title: {
+    default: 'Trends172Tech',
+    template: '%s | Trends172Tech'
+  },
+  description: 'Software empresarial, automatización e inteligencia aplicada a operaciones reales.',
+  openGraph: {
+    siteName: 'Trends172Tech',
+    type: 'website'
+  },
+  twitter: {
+    card: 'summary'
+  }
 };
 
 export function generateStaticParams() {

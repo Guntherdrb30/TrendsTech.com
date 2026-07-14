@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { hash } from 'bcryptjs';
 import { prisma } from '@trends172tech/db';
+import { enforceRequestRateLimit } from '@/lib/security/rate-limit';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -33,6 +34,13 @@ async function ensureUniqueSlug(base: string) {
 }
 
 export async function POST(request: Request) {
+  const limited = enforceRequestRateLimit(request, {
+    namespace: 'auth-register',
+    limit: 5,
+    windowMs: 15 * 60 * 1000
+  });
+  if (limited) return limited;
+
   const requireHumanCheck = Boolean(process.env.TURNSTILE_SECRET_KEY);
   if (requireHumanCheck) {
     const humanCookie = request.headers.get('cookie') ?? '';

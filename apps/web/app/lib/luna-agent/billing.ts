@@ -37,18 +37,6 @@ export type LunaBillingSnapshot = {
   usage: LunaUsageSnapshot;
 };
 
-const BASIC_POLICY: LunaCommercialPolicy = {
-  planKey: "basic",
-  sourcePlanKey: "basic",
-  subscriptionStatus: "NONE",
-  supportsRemote: true,
-  supportsMultiProvider: false,
-  supportsRunnerExecution: false,
-  supportsAdvancedRuntime: false,
-  taskLimit: 50,
-  projectLimit: 1
-};
-
 function monthWindow(date = new Date()) {
   const start = new Date(date.getFullYear(), date.getMonth(), 1);
   const end = new Date(date.getFullYear(), date.getMonth() + 1, 1);

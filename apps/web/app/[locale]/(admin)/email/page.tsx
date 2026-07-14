@@ -8,7 +8,8 @@ import { EmailTemplate, EmailTemplateData } from '@/lib/email/types';
 
 export const metadata: Metadata = {
   title: 'Email Templates Preview',
-  description: 'Preview and test email templates'
+  description: 'Preview and test email templates',
+  robots: { index: false, follow: false }
 };
 
 const templateInfo: Record<

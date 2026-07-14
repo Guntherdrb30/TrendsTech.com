@@ -1,3 +1,4 @@
+import type { Metadata } from 'next';
 import { prisma } from '@trends172tech/db';
 import { getCurrentUser } from '@/lib/auth/guards';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -6,6 +7,10 @@ import { RegisterForm } from '@/components/register-form';
 import { RechargeForm } from './recharge-form';
 
 export const dynamic = 'force-dynamic';
+
+export const metadata: Metadata = {
+  robots: { index: false, follow: false }
+};
 
 function getCopy(locale: string) {
   if (locale.startsWith('es')) {

@@ -2,6 +2,7 @@ import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import { IBM_Plex_Sans, Space_Grotesk } from "next/font/google";
 import { formatNewsDate, getPublishedNewsPosts, splitNewsBody } from "@/lib/news";
+import { buildLocalizedMetadata } from "@/lib/seo";
 
 const display = Space_Grotesk({
   subsets: ["latin"],
@@ -16,6 +17,22 @@ const body = IBM_Plex_Sans({
 });
 
 export const dynamic = "force-dynamic";
+
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
+  return buildLocalizedMetadata({
+    locale,
+    pathname: "news",
+    title: {
+      es: "Noticias, mejoras y avances de producto",
+      en: "News, improvements and product updates"
+    },
+    description: {
+      es: "Actualizaciones sobre productos, implementaciones, decisiones técnicas y evolución de las soluciones de Trends172Tech.",
+      en: "Updates on Trends172Tech products, implementations, technical decisions and solution development."
+    }
+  });
+}
 
 export default async function NewsPage({
   params

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import Anthropic from '@anthropic-ai/sdk';
+import { enforceRequestRateLimit } from '@/lib/security/rate-limit';
 
 const MAX_MESSAGES = 10;
 
@@ -35,6 +36,13 @@ ${skillList || '- Atención al cliente general'}
 }
 
 export async function POST(request: NextRequest) {
+  const limited = enforceRequestRateLimit(request, {
+    namespace: 'agent-preview-chat',
+    limit: 20,
+    windowMs: 10 * 60 * 1000
+  });
+  if (limited) return limited;
+
   let body: {
     messages: Array<{ role: 'user' | 'assistant'; content: string }>;
     context: string;

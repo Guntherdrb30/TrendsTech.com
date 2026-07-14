@@ -4,6 +4,7 @@ import * as cheerio from "cheerio";
 
 import { normalizeWhitespace } from "@/lib/kb/text";
 import { createOpenAIClient, getOpenAIRequestId } from "@trends172tech/openai";
+import { enforceRequestRateLimit } from "@/lib/security/rate-limit";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -126,6 +127,13 @@ function extractAssistantText(message: {
 }
 
 export async function POST(request: Request) {
+  const limited = enforceRequestRateLimit(request, {
+    namespace: "public-agent",
+    limit: 20,
+    windowMs: 10 * 60 * 1000
+  });
+  if (limited) return limited;
+
   const assistantId = process.env.OPENAI_PUBLIC_ASSISTANT_ID;
   if (!assistantId) {
     return NextResponse.json(

@@ -4,6 +4,7 @@ import { prisma } from '@trends172tech/db';
 import crypto from 'crypto';
 import { sendPasswordResetEmail } from '@/lib/email/reset';
 import { isEmailConfigured } from '@/lib/email/resend';
+import { enforceRequestRateLimit } from '@/lib/security/rate-limit';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -35,6 +36,13 @@ function isEmailResetConfigured() {
 }
 
 export async function POST(request: Request) {
+  const limited = enforceRequestRateLimit(request, {
+    namespace: 'password-reset',
+    limit: 5,
+    windowMs: 15 * 60 * 1000
+  });
+  if (limited) return limited;
+
   let payload: z.infer<typeof requestSchema>;
   try {
     payload = requestSchema.parse(await request.json());

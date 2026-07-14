@@ -3,7 +3,7 @@ import Image from "next/image";
 import { getTranslations } from "next-intl/server";
 import { Syne, DM_Sans } from "next/font/google";
 import { Button } from "@/components/ui/button";
-import { getResolvedPageImageSlots } from "@/lib/page-images";
+import { buildLocalizedMetadata } from "@/lib/seo";
 
 const WHATSAPP_BUY_NUMBER = "584122640371";
 
@@ -29,15 +29,18 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
-  const isEs = locale.startsWith("es");
-  return {
-    title: isEs
-      ? "LUNA ERP Inteligente | Plataforma Empresarial White Label con IA"
-      : "LUNA Intelligent ERP | White Label Business Platform with AI",
-    description: isEs
-      ? "LUNA es una plataforma empresarial inteligente que adapta ERP, tienda online, branding, procesos e inteligencia artificial a la identidad de cada empresa."
-      : "LUNA is an intelligent business platform that adapts ERP, online store, branding, processes, and artificial intelligence to each company's identity.",
-  };
+  return buildLocalizedMetadata({
+    locale,
+    pathname: "systems/luna",
+    title: {
+      es: "LUNA ERP inteligente y plataforma empresarial",
+      en: "LUNA intelligent ERP and business platform"
+    },
+    description: {
+      es: "LUNA integra operaciones, ventas, inventario, comercio digital y automatización inteligente en una plataforma adaptable para cada empresa.",
+      en: "LUNA combines operations, sales, inventory, digital commerce and intelligent automation in an adaptable platform for every business."
+    }
+  });
 }
 
 export default async function LunaPage({
@@ -49,7 +52,6 @@ export default async function LunaPage({
   const isEs = locale.startsWith("es");
   const base = `/${locale}`;
   const t = await getTranslations("lunaPage");
-  const pageImages = await getResolvedPageImageSlots("systems-luna", locale);
 
   const plans = isEs
     ? [

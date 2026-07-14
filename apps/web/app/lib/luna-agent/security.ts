@@ -3,9 +3,13 @@ import { createCipheriv, createDecipheriv, createHash, randomBytes } from "crypt
 const ALGORITHM = "aes-256-gcm";
 
 function getEncryptionKey() {
-  const secret = process.env.LUNA_AGENT_ENCRYPTION_KEY ?? process.env.NEXTAUTH_SECRET;
+  // Keep AUTH_SECRET/NEXTAUTH_SECRET as a temporary compatibility fallback for
+  // existing encrypted records. New production environments must configure the
+  // dedicated LUNA_AGENT_ENCRYPTION_KEY documented in .env.example.
+  const secret =
+    process.env.LUNA_AGENT_ENCRYPTION_KEY ?? process.env.AUTH_SECRET ?? process.env.NEXTAUTH_SECRET;
   if (!secret) {
-    throw new Error("Missing LUNA_AGENT_ENCRYPTION_KEY or NEXTAUTH_SECRET.");
+    throw new Error("Missing LUNA_AGENT_ENCRYPTION_KEY, AUTH_SECRET, or NEXTAUTH_SECRET.");
   }
 
   return createHash("sha256").update(secret).digest();

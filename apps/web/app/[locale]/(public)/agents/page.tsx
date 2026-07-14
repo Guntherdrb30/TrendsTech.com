@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { getTranslations } from 'next-intl/server';
 import { IBM_Plex_Sans, Space_Grotesk } from 'next/font/google';
 import { Button } from '@/components/ui/button';
+import { buildLocalizedMetadata } from '@/lib/seo';
 import { AGENT_PRODUCTS } from './agent-products';
 
 const WHATSAPP_BUY_NUMBER = '584122640371';
@@ -22,6 +23,22 @@ const body = IBM_Plex_Sans({
   weight: ['300', '400', '500', '600'],
   variable: '--font-body'
 });
+
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
+  return buildLocalizedMetadata({
+    locale,
+    pathname: 'agents',
+    title: {
+      es: 'Agentes inteligentes para procesos empresariales',
+      en: 'Intelligent agents for business processes',
+    },
+    description: {
+      es: 'Explora agentes especializados para marketing, ventas, citas, soporte, voz y orquestación de desarrollo con demostraciones controladas.',
+      en: 'Explore specialized agents for marketing, sales, appointments, support, voice and development orchestration through controlled demos.',
+    },
+  });
+}
 
 export default async function AgentsPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;

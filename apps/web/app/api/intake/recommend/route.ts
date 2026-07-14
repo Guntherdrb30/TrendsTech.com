@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import Anthropic from '@anthropic-ai/sdk';
+import { enforceRequestRateLimit } from '@/lib/security/rate-limit';
 
 const OBJECTIVE_SKILL_MAP: Record<string, string> = {
   'Atender clientes 24/7': 'customer_support',
@@ -22,6 +23,13 @@ function fallbackRecommend(objectives: string[]): { suggestedName: string; skill
 }
 
 export async function POST(request: NextRequest) {
+  const limited = enforceRequestRateLimit(request, {
+    namespace: 'intake-recommend',
+    limit: 10,
+    windowMs: 10 * 60 * 1000
+  });
+  if (limited) return limited;
+
   let description = '';
   let objectives: string[] = [];
 
