@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Syne, DM_Sans } from 'next/font/google';
 import { getTranslations } from 'next-intl/server';
 import { HomePremium } from '@/components/home-premium';
+import { localeAlternates, localizedPath } from '@/lib/seo';
 
 const display = Syne({
   subsets: ['latin'],
@@ -15,17 +16,40 @@ const body = DM_Sans({
   variable: '--font-body',
 });
 
-export const metadata: Metadata = {
-  title: 'Trends172Tech | Software Empresarial, IA y Automatización',
-  description:
-    'Empresa tecnológica especializada en desarrollo de software, inteligencia artificial, automatización empresarial y LUNA ERP AI. Tecnología que impulsa el futuro.',
-  openGraph: {
-    title: 'Trends172Tech | Tecnología que impulsa el futuro',
-    description:
-      'Software empresarial, Inteligencia Artificial y Automatización para empresas modernas.',
-    type: 'website',
-  },
-};
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const isEs = locale.startsWith('es');
+  const title = isEs
+    ? 'Software empresarial, IA y automatización'
+    : 'Business software, AI and automation';
+  const description = isEs
+    ? 'Trends172Tech desarrolla software empresarial, automatización e inteligencia aplicada a operaciones reales con LUNA, CarpiHogar y LUNA Football.'
+    : 'Trends172Tech builds business software, automation and applied intelligence for real operations through LUNA, CarpiHogar and LUNA Football.';
+
+  return {
+    title,
+    description,
+    alternates: {
+      ...localeAlternates(),
+      canonical: localizedPath(locale),
+    },
+    openGraph: {
+      title,
+      description,
+      url: localizedPath(locale),
+      locale: isEs ? 'es_VE' : 'en_US',
+      alternateLocale: isEs ? ['en_US'] : ['es_VE'],
+    },
+    twitter: {
+      title,
+      description,
+    },
+  };
+}
 
 export default async function HomePage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;

@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { getTranslations } from 'next-intl/server';
 import { IBM_Plex_Sans, Space_Grotesk } from 'next/font/google';
+import { buildLocalizedMetadata } from '@/lib/seo';
 
 const display = Space_Grotesk({
   subsets: ['latin'],
@@ -13,6 +14,22 @@ const body = IBM_Plex_Sans({
   weight: ['300', '400', '500', '600'],
   variable: '--font-body'
 });
+
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
+  return buildLocalizedMetadata({
+    locale,
+    pathname: 'pricing',
+    title: {
+      es: 'Precios y modelos de activación',
+      en: 'Pricing and activation models',
+    },
+    description: {
+      es: 'Consulta las modalidades de activación para agentes, plataformas empresariales e implementaciones adaptadas al alcance de cada operación.',
+      en: 'Review activation options for agents, business platforms and implementations tailored to each operation.',
+    },
+  });
+}
 
 export default async function PricingPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;

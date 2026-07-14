@@ -1,7 +1,7 @@
-import type { Metadata } from 'next';
 import Image from 'next/image';
 import { Syne, DM_Sans } from 'next/font/google';
 import { LinkHubCard } from '@/components/link-hub-card';
+import { buildLocalizedMetadata } from '@/lib/seo';
 
 const display = Syne({
   subsets: ['latin'],
@@ -15,17 +15,21 @@ const body = DM_Sans({
   variable: '--font-body',
 });
 
-export const metadata: Metadata = {
-  title: 'Trends172Tech | Software, IA y Automatización',
-  description:
-    'Empresa tecnológica especializada en desarrollo de software, inteligencia artificial, automatización empresarial y LUNA ERP AI.',
-  openGraph: {
-    title: 'Trends172Tech | Software, IA y Automatización',
-    description:
-      'Creamos soluciones digitales para empresas que quieren escalar, automatizar y operar con tecnología avanzada.',
-    type: 'website',
-  },
-};
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
+  return buildLocalizedMetadata({
+    locale,
+    pathname: 'links',
+    title: {
+      es: 'Enlaces oficiales de Trends172Tech',
+      en: 'Official Trends172Tech links',
+    },
+    description: {
+      es: 'Accede a los productos, casos reales, servicios y canales oficiales de contacto de Trends172Tech.',
+      en: 'Access Trends172Tech products, real-world cases, services and official contact channels.',
+    },
+  });
+}
 
 const STATS = [
   { value: '99.9%', label: 'Uptime' },

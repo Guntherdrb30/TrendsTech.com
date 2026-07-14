@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { prisma } from '@trends172tech/db';
 import { IBM_Plex_Sans, Space_Grotesk } from 'next/font/google';
+import { buildLocalizedMetadata } from '@/lib/seo';
 
 const display = Space_Grotesk({
   subsets: ['latin'],
@@ -17,6 +18,22 @@ const body = IBM_Plex_Sans({
 type PageParams = { locale: string };
 
 export const dynamic = 'force-dynamic';
+
+export async function generateMetadata({ params }: { params: Promise<PageParams> }) {
+  const { locale } = await params;
+  return buildLocalizedMetadata({
+    locale,
+    pathname: 'skills',
+    title: {
+      es: 'Habilidades especializadas para agentes inteligentes',
+      en: 'Specialized skills for intelligent agents',
+    },
+    description: {
+      es: 'Selecciona capacidades especializadas para adaptar cada agente al conocimiento, procesos y objetivos de tu industria.',
+      en: 'Select specialized capabilities to adapt each agent to your industry knowledge, processes and goals.',
+    },
+  });
+}
 
 export default async function SkillsPage({ params }: { params: Promise<PageParams> }) {
   const { locale } = await params;

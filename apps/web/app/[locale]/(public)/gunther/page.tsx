@@ -1,7 +1,7 @@
-import type { Metadata } from 'next';
 import Image from 'next/image';
 import { Syne, DM_Sans } from 'next/font/google';
 import { LinkHubCard } from '@/components/link-hub-card';
+import { buildLocalizedMetadata } from '@/lib/seo';
 
 const display = Syne({
   subsets: ['latin'],
@@ -15,16 +15,21 @@ const body = DM_Sans({
   variable: '--font-body',
 });
 
-export const metadata: Metadata = {
-  title: 'Gunther Del Rosario | CEO · Trends172Tech',
-  description:
-    'CEO de Trends172Tech, creador de LUNA ERP AI y fundador de Carpihogar, La Tienda Inteligente de Venezuela.',
-  openGraph: {
-    title: 'Gunther Del Rosario | IA & Software',
-    description: 'CEO de Trends172Tech · Creador de LUNA ERP AI · Fundador de Carpihogar',
-    type: 'profile',
-  },
-};
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
+  return buildLocalizedMetadata({
+    locale,
+    pathname: 'gunther',
+    title: {
+      es: 'Gunther Del Rosario, fundador de Trends172Tech',
+      en: 'Gunther Del Rosario, founder of Trends172Tech',
+    },
+    description: {
+      es: 'Perfil de Gunther Del Rosario, fundador de Trends172Tech y creador de productos empresariales como LUNA y CarpiHogar.',
+      en: 'Profile of Gunther Del Rosario, founder of Trends172Tech and creator of business products including LUNA and CarpiHogar.',
+    },
+  });
+}
 
 const LINKS = [
   {

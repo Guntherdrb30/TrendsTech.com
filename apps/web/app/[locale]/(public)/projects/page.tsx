@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import { IBM_Plex_Sans, Space_Grotesk } from "next/font/google";
+import { buildLocalizedMetadata } from "@/lib/seo";
 
 const display = Space_Grotesk({
   subsets: ["latin"],
@@ -13,6 +14,22 @@ const body = IBM_Plex_Sans({
   weight: ["300", "400", "500", "600"],
   variable: "--font-body"
 });
+
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
+  return buildLocalizedMetadata({
+    locale,
+    pathname: "projects",
+    title: {
+      es: "Proyectos y casos productivos",
+      en: "Projects and production case studies"
+    },
+    description: {
+      es: "Conoce implementaciones reales de Trends172Tech como CarpiHogar y LUNA Football, respaldadas por tecnología aplicada a operaciones activas.",
+      en: "Explore real Trends172Tech implementations such as CarpiHogar and LUNA Football, backed by technology used in active operations."
+    }
+  });
+}
 
 export default async function ProjectsPage({
   params

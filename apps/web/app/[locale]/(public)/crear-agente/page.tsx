@@ -1,4 +1,5 @@
 import { IBM_Plex_Sans, Space_Grotesk } from 'next/font/google';
+import { buildLocalizedMetadata } from '@/lib/seo';
 import { getPublicSkills } from './actions';
 import { PublicAgentWizard } from './public-agent-wizard';
 import { RestoreHandler } from './restore-handler';
@@ -19,6 +20,22 @@ const body = IBM_Plex_Sans({
 
 type PageParams = { locale: string };
 type PageSearchParams = { restore?: string };
+
+export async function generateMetadata({ params }: { params: Promise<PageParams> }) {
+  const { locale } = await params;
+  return buildLocalizedMetadata({
+    locale,
+    pathname: 'crear-agente',
+    title: {
+      es: 'Crea un agente adaptado a tu empresa',
+      en: 'Create an agent tailored to your business',
+    },
+    description: {
+      es: 'Configura un agente con conocimiento de tu empresa, habilidades especializadas y una demostración antes de su activación.',
+      en: 'Configure an agent with business knowledge, specialized skills and a demonstration before activation.',
+    },
+  });
+}
 
 export default async function CrearAgentePage({
   params,

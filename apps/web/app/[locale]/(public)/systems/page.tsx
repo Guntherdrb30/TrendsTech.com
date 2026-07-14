@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { getTranslations } from 'next-intl/server';
 import { IBM_Plex_Sans, Space_Grotesk } from 'next/font/google';
+import { buildLocalizedMetadata } from '@/lib/seo';
 import { AGENT_PRODUCTS } from '../agents/agent-products';
 
 const display = Space_Grotesk({
@@ -14,6 +15,22 @@ const body = IBM_Plex_Sans({
   weight: ['300', '400', '500', '600'],
   variable: '--font-body'
 });
+
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
+  return buildLocalizedMetadata({
+    locale,
+    pathname: 'systems',
+    title: {
+      es: 'Sistemas empresariales para operar con control',
+      en: 'Business systems built for operational control',
+    },
+    description: {
+      es: 'Plataformas empresariales de Trends172Tech para integrar operaciones, comercio, automatización y trazabilidad en entornos reales.',
+      en: 'Trends172Tech business platforms integrate operations, commerce, automation and traceability in real-world environments.',
+    },
+  });
+}
 
 export default async function SystemsPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
