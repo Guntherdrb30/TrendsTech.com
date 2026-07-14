@@ -10,6 +10,7 @@ export default async function LunaCodeOrchestratorLayout({
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
+  const isEs = locale.startsWith("es");
   const user = await requireRole("TENANT_OPERATOR");
   const tenant = await resolveTenantFromUser(user);
 
@@ -22,33 +23,35 @@ export default async function LunaCodeOrchestratorLayout({
         <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
           <div className="space-y-1">
             <h1 className="text-3xl font-semibold text-slate-900 dark:text-white">
-              Orquestacion de desarrollo multi-IA
+              {isEs ? "Orquestación de desarrollo multi-IA" : "Multi-AI development orchestration"}
             </h1>
             <p className="max-w-3xl text-sm text-slate-500 dark:text-slate-400">
-              Gestiona proyectos, tareas, sesiones QR y configuracion de proveedores IA dentro de{" "}
-              {tenant?.name ?? "tu tenant"}.
+              {isEs
+                ? "Gestiona proyectos, tareas, sesiones QR y proveedores de IA dentro de"
+                : "Manage projects, tasks, QR sessions, and AI providers within"}{" "}
+              {tenant?.name ?? (isEs ? "tu organización" : "your organization")}.
             </p>
           </div>
           <Link
             href={`/${locale}/dashboard/agents`}
             className="inline-flex items-center justify-center rounded-full border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:border-slate-900 hover:text-slate-900 dark:border-slate-700 dark:text-slate-200"
           >
-            Volver a agentes
+            {isEs ? "Volver a agentes" : "Back to agents"}
           </Link>
         </div>
       </div>
 
       <div className="flex flex-wrap gap-2 rounded-3xl border border-slate-200 bg-white p-3 shadow-sm dark:border-slate-800 dark:bg-slate-950/70">
         {[
-          { href: `/${locale}/dashboard/agents/luna-code-orchestrator`, label: "Overview" },
-          { href: `/${locale}/dashboard/agents/luna-code-orchestrator/projects`, label: "Proyectos" },
-          { href: `/${locale}/dashboard/agents/luna-code-orchestrator/tasks`, label: "Tareas" },
-          { href: `/${locale}/dashboard/agents/luna-code-orchestrator/tasks/new`, label: "Nueva tarea" },
-          { href: `/${locale}/dashboard/agents/luna-code-orchestrator/queue`, label: "Cola" },
+          { href: `/${locale}/dashboard/agents/luna-code-orchestrator`, label: isEs ? "Resumen" : "Overview" },
+          { href: `/${locale}/dashboard/agents/luna-code-orchestrator/projects`, label: isEs ? "Proyectos" : "Projects" },
+          { href: `/${locale}/dashboard/agents/luna-code-orchestrator/tasks`, label: isEs ? "Tareas" : "Tasks" },
+          { href: `/${locale}/dashboard/agents/luna-code-orchestrator/tasks/new`, label: isEs ? "Nueva tarea" : "New task" },
+          { href: `/${locale}/dashboard/agents/luna-code-orchestrator/queue`, label: isEs ? "Cola" : "Queue" },
           { href: `/${locale}/dashboard/agents/luna-code-orchestrator/runners`, label: "Runners" },
-          { href: `/${locale}/dashboard/agents/luna-code-orchestrator/billing`, label: "Billing" },
-          { href: `/${locale}/dashboard/agents/luna-code-orchestrator/usage`, label: "Usage" },
-          { href: `/${locale}/dashboard/agents/luna-code-orchestrator/settings`, label: "Settings" }
+          { href: `/${locale}/dashboard/agents/luna-code-orchestrator/billing`, label: isEs ? "Facturación" : "Billing" },
+          { href: `/${locale}/dashboard/agents/luna-code-orchestrator/usage`, label: isEs ? "Uso" : "Usage" },
+          { href: `/${locale}/dashboard/agents/luna-code-orchestrator/settings`, label: isEs ? "Configuración" : "Settings" }
         ].map((item) => (
           <Link
             key={item.href}

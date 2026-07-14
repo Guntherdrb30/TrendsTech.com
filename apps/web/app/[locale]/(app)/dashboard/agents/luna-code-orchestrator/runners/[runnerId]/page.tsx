@@ -8,6 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 export const dynamic = "force-dynamic";
 
 type RouteParams = {
+  locale: string;
   runnerId: string;
 };
 
@@ -16,7 +17,9 @@ export default async function LunaRunnerDetailPage({
 }: {
   params: Promise<RouteParams>;
 }) {
-  const { runnerId } = await params;
+  const { locale, runnerId } = await params;
+  const isEs = locale.startsWith("es");
+  const tr = (es: string, en: string) => (isEs ? es : en);
   await requireRole("TENANT_OPERATOR");
   const tenantId = await requireTenantId();
 
@@ -72,23 +75,23 @@ export default async function LunaRunnerDetailPage({
         </CardHeader>
         <CardContent className="grid gap-4 text-sm text-slate-600 dark:text-slate-300 md:grid-cols-2 xl:grid-cols-4">
           <div>
-            <div className="text-xs uppercase tracking-[0.2em] text-slate-400">Estado</div>
+            <div className="text-xs uppercase tracking-[0.2em] text-slate-400">{tr("Estado", "Status")}</div>
             <div className="mt-1 font-semibold text-slate-900 dark:text-white">{runner.status}</div>
           </div>
           <div>
-            <div className="text-xs uppercase tracking-[0.2em] text-slate-400">Modo</div>
+            <div className="text-xs uppercase tracking-[0.2em] text-slate-400">{tr("Modo", "Mode")}</div>
             <div className="mt-1 font-semibold text-slate-900 dark:text-white">{runner.mode}</div>
           </div>
           <div>
             <div className="text-xs uppercase tracking-[0.2em] text-slate-400">Heartbeat</div>
             <div className="mt-1 font-semibold text-slate-900 dark:text-white">
-              {runner.lastHeartbeatAt?.toISOString() ?? "sin senal"}
+              {runner.lastHeartbeatAt?.toISOString() ?? tr("sin señal", "no signal")}
             </div>
           </div>
           <div>
             <div className="text-xs uppercase tracking-[0.2em] text-slate-400">Host / label</div>
             <div className="mt-1 font-semibold text-slate-900 dark:text-white">
-              {runner.machineLabel ?? runner.host ?? "sin datos"}
+              {runner.machineLabel ?? runner.host ?? tr("sin datos", "no data")}
             </div>
           </div>
         </CardContent>
@@ -97,7 +100,7 @@ export default async function LunaRunnerDetailPage({
       <div className="grid gap-6 xl:grid-cols-[0.9fr_1.1fr]">
         <Card>
           <CardHeader>
-            <CardTitle>Capacidades y carga</CardTitle>
+            <CardTitle>{tr("Capacidades y carga", "Capabilities and load")}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4 text-sm text-slate-600 dark:text-slate-300">
             <div>
@@ -109,7 +112,7 @@ export default async function LunaRunnerDetailPage({
               <div className="mt-1 font-semibold text-slate-900 dark:text-white">{runner._count.queueItems}</div>
             </div>
             <div>
-              <div className="text-xs uppercase tracking-[0.2em] text-slate-400">Eventos</div>
+              <div className="text-xs uppercase tracking-[0.2em] text-slate-400">{tr("Eventos", "Events")}</div>
               <div className="mt-1 font-semibold text-slate-900 dark:text-white">{runner._count.events}</div>
             </div>
             <div>
@@ -123,11 +126,11 @@ export default async function LunaRunnerDetailPage({
 
         <Card>
           <CardHeader>
-            <CardTitle>Cola atendida por este runner</CardTitle>
+            <CardTitle>{tr("Cola atendida por este runner", "Queue handled by this runner")}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3 text-sm">
             {runner.queueItems.length === 0 ? (
-              <p className="text-slate-500 dark:text-slate-400">Este runner aun no reclama tareas.</p>
+              <p className="text-slate-500 dark:text-slate-400">{tr("Este runner aún no reclama tareas.", "This runner has not claimed any tasks yet.")}</p>
             ) : (
               runner.queueItems.map((item) => (
                 <div key={item.id} className="rounded-2xl border border-slate-200 px-4 py-3 dark:border-slate-800">
@@ -156,11 +159,11 @@ export default async function LunaRunnerDetailPage({
 
       <Card>
         <CardHeader>
-          <CardTitle>Eventos recientes</CardTitle>
+          <CardTitle>{tr("Eventos recientes", "Recent events")}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-3 text-sm">
           {runner.events.length === 0 ? (
-            <p className="text-slate-500 dark:text-slate-400">No hay eventos registrados.</p>
+            <p className="text-slate-500 dark:text-slate-400">{tr("No hay eventos registrados.", "No events registered.")}</p>
           ) : (
             runner.events.map((event) => (
               <div key={event.id} className="rounded-2xl border border-slate-200 px-4 py-3 dark:border-slate-800">

@@ -801,7 +801,11 @@ export default async function LunaPage({
 
                 <div className="mt-7 space-y-3">
                   <Link
-                    href={buildWhatsAppLink(`Quiero información sobre LUNA ${plan.name}`)}
+                    href={buildWhatsAppLink(
+                      isEs
+                        ? `Quiero información sobre LUNA ${plan.name}`
+                        : `I would like information about LUNA ${plan.name}`
+                    )}
                     target="_blank"
                     rel="noreferrer"
                     className={`flex w-full items-center justify-center rounded-full px-5 py-3 text-sm font-semibold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 ${

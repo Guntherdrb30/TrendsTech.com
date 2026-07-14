@@ -5,7 +5,9 @@ import { approvePayment, rejectPayment, setReviewing } from './actions';
 
 type Status = 'PENDING' | 'REVIEWING' | 'APPROVED' | 'REJECTED';
 
-export function PaymentActions({ paymentId, status }: { paymentId: string; status: Status }) {
+export function PaymentActions({ locale, paymentId, status }: { locale: string; paymentId: string; status: Status }) {
+  const isEs = locale.startsWith('es');
+  const tr = (es: string, en: string) => (isEs ? es : en);
   const [notes, setNotes] = useState('');
   const [open, setOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
@@ -14,7 +16,7 @@ export function PaymentActions({ paymentId, status }: { paymentId: string; statu
   if (status === 'APPROVED' || status === 'REJECTED') {
     return (
       <span className={`rounded-full px-3 py-1 text-xs font-semibold ${status === 'APPROVED' ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-600'}`}>
-        {status === 'APPROVED' ? 'Aprobado' : 'Rechazado'}
+        {status === 'APPROVED' ? tr('Aprobado', 'Approved') : tr('Rechazado', 'Rejected')}
       </span>
     );
   }
@@ -34,7 +36,7 @@ export function PaymentActions({ paymentId, status }: { paymentId: string; statu
           disabled={isPending}
           className="rounded-full border border-slate-300 px-3 py-1 text-xs font-medium text-slate-600 hover:bg-slate-50 disabled:opacity-50"
         >
-          Marcar revisando
+          {tr('Marcar revisando', 'Mark as reviewing')}
         </button>
       )}
 
@@ -44,14 +46,14 @@ export function PaymentActions({ paymentId, status }: { paymentId: string; statu
           disabled={isPending}
           className="rounded-full bg-emerald-600 px-3 py-1 text-xs font-semibold text-white hover:bg-emerald-700 disabled:opacity-50"
         >
-          Aprobar
+          {tr('Aprobar', 'Approve')}
         </button>
         <button
           onClick={() => run(() => rejectPayment(paymentId, notes))}
           disabled={isPending}
           className="rounded-full border border-red-300 px-3 py-1 text-xs font-semibold text-red-600 hover:bg-red-50 disabled:opacity-50"
         >
-          Rechazar
+          {tr('Rechazar', 'Reject')}
         </button>
       </div>
 
@@ -59,7 +61,7 @@ export function PaymentActions({ paymentId, status }: { paymentId: string; statu
         <div className="mt-1 space-y-2">
           <input
             className="w-full rounded-lg border border-slate-200 px-3 py-1.5 text-xs outline-none focus:border-[#00bfa5]"
-            placeholder="Nota interna (opcional)"
+            placeholder={tr('Nota interna (opcional)', 'Internal note (optional)')}
             value={notes}
             onChange={e => setNotes(e.target.value)}
           />
@@ -68,7 +70,7 @@ export function PaymentActions({ paymentId, status }: { paymentId: string; statu
             disabled={isPending}
             className="w-full rounded-full bg-emerald-600 px-3 py-2 text-xs font-bold text-white hover:bg-emerald-700 disabled:opacity-50"
           >
-            {isPending ? 'Procesando...' : 'Confirmar aprobación y acreditar'}
+            {isPending ? tr('Procesando...', 'Processing...') : tr('Confirmar aprobación y acreditar', 'Confirm approval and credit')}
           </button>
         </div>
       )}

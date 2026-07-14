@@ -84,7 +84,15 @@ export function RechargeForm({
         networkLabel: 'Red',
         sameEmailNote: 'Zelle y Binance usan el mismo correo',
         pagoMovilTitle: 'Datos de Pago Móvil',
-        usdTitle: 'Datos de pago USD'
+        usdTitle: 'Datos de pago USD',
+        bolivares: 'Bolívares (Bs.)',
+        zelleDescription: 'Transferencia bancaria en EE. UU.',
+        binanceDescription: 'Pago cripto en USD',
+        bcvRateLabel: 'Tasa BCV',
+        surchargeApplied: 'recargo aplicado',
+        typeLabel: 'Tipo',
+        currencyValueLabel: 'Moneda',
+        transferAmount: 'Monto a transferir:'
       }
     : {
         currencyLabel: 'Payment currency',
@@ -113,7 +121,15 @@ export function RechargeForm({
         networkLabel: 'Network',
         sameEmailNote: 'Zelle and Binance use the same email',
         pagoMovilTitle: 'Pago Móvil details',
-        usdTitle: 'USD payment details'
+        usdTitle: 'USD payment details',
+        bolivares: 'Bolivars (Bs.)',
+        zelleDescription: 'US bank transfer',
+        binanceDescription: 'Crypto payment in USD',
+        bcvRateLabel: 'BCV rate',
+        surchargeApplied: 'surcharge applied',
+        typeLabel: 'Type',
+        currencyValueLabel: 'Currency',
+        transferAmount: 'Amount to transfer:'
       };
 
   const hasPagoMovil = Boolean(pagoMovilPhone && pagoMovilBank && pagoMovilCedula);
@@ -185,7 +201,7 @@ export function RechargeForm({
               USD ($)
             </button>
             <button type="button" onClick={() => onCurrencyChange('VES')} className={currency === 'VES' ? tabActive : tabInactive}>
-              Bolívares (Bs.)
+              {c.bolivares}
             </button>
           </div>
         </div>
@@ -197,11 +213,11 @@ export function RechargeForm({
             <div className="grid grid-cols-2 gap-3">
               <button type="button" onClick={() => setMethod('ZELLE')} className={method === 'ZELLE' ? methodActive : methodInactive}>
                 <p className="font-semibold text-slate-900">Zelle</p>
-                <p className="mt-0.5 text-xs text-slate-500">Transferencia bancaria US</p>
+                <p className="mt-0.5 text-xs text-slate-500">{c.zelleDescription}</p>
               </button>
               <button type="button" onClick={() => setMethod('BINANCE')} className={method === 'BINANCE' ? methodActive : methodInactive}>
                 <p className="font-semibold text-slate-900">Binance Pay</p>
-                <p className="mt-0.5 text-xs text-slate-500">Pago cripto en USD</p>
+                <p className="mt-0.5 text-xs text-slate-500">{c.binanceDescription}</p>
               </button>
             </div>
           </div>
@@ -212,9 +228,9 @@ export function RechargeForm({
           <div className="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-xs text-amber-800">
             {bcvRate ? (
               <>
-                <span className="font-semibold">Tasa BCV: Bs. {bcvRate.toFixed(2)}/USD</span>
+                <span className="font-semibold">{c.bcvRateLabel}: Bs. {bcvRate.toFixed(2)}/USD</span>
                 {' · '}
-                <span>{vesMarkupPercent}% recargo aplicado</span>
+                <span>{vesMarkupPercent}% {c.surchargeApplied}</span>
                 {bcvUpdatedAt && <span className="ml-2 text-amber-600">· {c.bcvUpdated(fmtDate(bcvUpdatedAt, locale) ?? '')}</span>}
               </>
             ) : (
@@ -235,7 +251,7 @@ export function RechargeForm({
               placeholder={c.amountHint}
             />
             {currency === 'VES' && amountVes > 0 && (
-              <p className="text-xs text-amber-700">{c.vesNote(amountVes.toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }))}</p>
+              <p className="text-xs text-amber-700">{c.vesNote(amountVes.toLocaleString(isEs ? 'es-VE' : 'en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }))}</p>
             )}
           </div>
 
@@ -268,13 +284,13 @@ export function RechargeForm({
                 <>
                   <Row label={c.recipientLabel} value={zelleRecipientName ?? 'Gunther Del Rosario'} />
                   <Row label={c.emailLabel} value={zelleEmail ?? '—'} mono />
-                  <Row label="Tipo" value="Zelle (USD)" />
+                  <Row label={c.typeLabel} value="Zelle (USD)" />
                 </>
               ) : (
                 <>
                   <Row label={c.emailLabel} value={binanceEmail ?? zelleEmail ?? '—'} mono />
                   <Row label={c.networkLabel} value="Binance Pay" />
-                  <Row label="Moneda" value="USDT / USD" />
+                  <Row label={c.currencyValueLabel} value="USDT / USD" />
                 </>
               )}
               {(zelleEmail || binanceEmail) && (
@@ -295,9 +311,9 @@ export function RechargeForm({
               <Row label={c.cedulaLabel} value={pagoMovilCedula ?? '—'} mono />
               {numUsd > 0 && amountVes > 0 && (
                 <div className="mt-3 rounded-xl border border-amber-200 bg-amber-50 px-3 py-3 text-xs text-amber-800">
-                  <p className="font-semibold">Monto a transferir:</p>
+                  <p className="font-semibold">{c.transferAmount}</p>
                   <p className="mt-1 text-base font-bold text-amber-900">
-                    Bs. {amountVes.toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                    Bs. {amountVes.toLocaleString(isEs ? 'es-VE' : 'en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                   </p>
                   <p className="mt-0.5 text-[11px]">= ${numUsd.toFixed(2)} USD × {vesRate.toFixed(2)} × {vesMarkupFactor.toFixed(2)}</p>
                 </div>

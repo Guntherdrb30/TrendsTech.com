@@ -245,6 +245,8 @@ export default async function RootNewsPage({
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
+  const isEs = locale.startsWith("es");
+  const tr = (es: string, en: string) => (isEs ? es : en);
   await requireRole("ROOT");
   const posts = await getRootNewsPosts();
 
@@ -255,24 +257,24 @@ export default async function RootNewsPage({
           href={`/${locale}/root`}
           className="inline-flex text-sm text-slate-500 transition hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
         >
-          Volver al panel root
+          {tr("Volver al panel root", "Back to root panel")}
         </Link>
-        <h1 className="text-2xl font-semibold">Gestion de novedades</h1>
+        <h1 className="text-2xl font-semibold">{tr("Gestion de novedades", "News management")}</h1>
         <p className="text-sm text-slate-500 dark:text-slate-400">
-          Crea, edita, publica y elimina noticias para la vitrina corporativa.
+          {tr("Crea, edita, publica y elimina noticias para la vitrina corporativa.", "Create, edit, publish and delete news for the corporate website.")}
         </p>
       </div>
 
       <div className="grid gap-6 lg:grid-cols-[380px_1fr] lg:items-start">
         <Card>
           <CardHeader>
-            <CardTitle>Nueva publicacion</CardTitle>
+            <CardTitle>{tr("Nueva publicacion", "New post")}</CardTitle>
           </CardHeader>
           <CardContent>
             <form action={createNewsPost} className="space-y-4">
               <input type="hidden" name="locale" value={locale} />
               <div className="grid gap-2">
-                <Label htmlFor="title">Titulo</Label>
+                <Label htmlFor="title">{tr("Titulo", "Title")}</Label>
                 <Input id="title" name="title" required />
               </div>
               <div className="grid gap-2">
@@ -280,12 +282,12 @@ export default async function RootNewsPage({
                 <Input id="slug" name="slug" placeholder="nuevo-lanzamiento-luna" required />
               </div>
               <div className="grid gap-2">
-                <Label htmlFor="category">Categoria</Label>
+                <Label htmlFor="category">{tr("Categoria", "Category")}</Label>
                 <Input id="category" name="category" placeholder="Lanzamiento" required />
               </div>
               <div className="grid gap-2 sm:grid-cols-2">
                 <div className="grid gap-2">
-                  <Label htmlFor="language">Idioma</Label>
+                  <Label htmlFor="language">{tr("Idioma", "Language")}</Label>
                   <select
                     id="language"
                     name="language"
@@ -297,24 +299,24 @@ export default async function RootNewsPage({
                   </select>
                 </div>
                 <div className="grid gap-2">
-                  <Label htmlFor="status">Estado</Label>
+                  <Label htmlFor="status">{tr("Estado", "Status")}</Label>
                   <select
                     id="status"
                     name="status"
                     defaultValue="DRAFT"
                     className="h-9 rounded border border-slate-200 bg-white px-3 text-sm dark:border-slate-700 dark:bg-slate-900"
                   >
-                    <option value="DRAFT">Borrador</option>
-                    <option value="PUBLISHED">Publicado</option>
+                    <option value="DRAFT">{tr("Borrador", "Draft")}</option>
+                    <option value="PUBLISHED">{tr("Publicado", "Published")}</option>
                   </select>
                 </div>
               </div>
               <label className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300">
                 <input type="checkbox" name="featured" className="h-4 w-4" />
-                Marcar como destacado
+                {tr("Marcar como destacado", "Mark as featured")}
               </label>
               <div className="grid gap-2">
-                <Label htmlFor="summary">Resumen</Label>
+                <Label htmlFor="summary">{tr("Resumen", "Summary")}</Label>
                 <textarea
                   id="summary"
                   name="summary"
@@ -324,7 +326,7 @@ export default async function RootNewsPage({
                 />
               </div>
               <div className="grid gap-2">
-                <Label htmlFor="body">Contenido</Label>
+                <Label htmlFor="body">{tr("Contenido", "Content")}</Label>
                 <textarea
                   id="body"
                   name="body"
@@ -333,7 +335,7 @@ export default async function RootNewsPage({
                   className="w-full rounded border border-slate-200 bg-white px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900"
                 />
               </div>
-              <Button type="submit">Guardar publicacion</Button>
+              <Button type="submit">{tr("Guardar publicacion", "Save post")}</Button>
             </form>
           </CardContent>
         </Card>
@@ -342,7 +344,7 @@ export default async function RootNewsPage({
           {posts.length === 0 ? (
             <Card>
               <CardContent className="py-6 text-sm text-slate-500 dark:text-slate-400">
-                Todavia no hay publicaciones creadas.
+                {tr("Todavia no hay publicaciones creadas.", "No posts have been created yet.")}
               </CardContent>
             </Card>
           ) : (
@@ -362,7 +364,7 @@ export default async function RootNewsPage({
                       </span>
                       {post.featured ? (
                         <span className="rounded-full bg-emerald-100 px-3 py-1 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-300">
-                          Destacado
+                          {tr("Destacado", "Featured")}
                         </span>
                       ) : null}
                     </div>
@@ -372,23 +374,23 @@ export default async function RootNewsPage({
                   <div className="space-y-2 text-sm text-slate-600 dark:text-slate-300">
                     <p>{post.summary}</p>
                     <div className="flex flex-wrap gap-4 text-xs text-slate-500 dark:text-slate-400">
-                      <span>Publicado: {formatNewsDate(post.publishedAt, locale) ?? "-"}</span>
+                      <span>{tr("Publicado", "Published")}: {formatNewsDate(post.publishedAt, locale) ?? "-"}</span>
                       <span>
-                        Autor: {post.author?.name ?? post.author?.email ?? "Sin autor"}
+                        {tr("Autor", "Author")}: {post.author?.name ?? post.author?.email ?? tr("Sin autor", "No author")}
                       </span>
-                      <span>Actualizado: {formatNewsDate(post.updatedAt, locale) ?? "-"}</span>
+                      <span>{tr("Actualizado", "Updated")}: {formatNewsDate(post.updatedAt, locale) ?? "-"}</span>
                     </div>
                   </div>
 
                   <details className="rounded-2xl border border-slate-200 bg-slate-50/80 p-4 dark:border-slate-800 dark:bg-slate-900/40">
                     <summary className="cursor-pointer text-sm font-semibold text-slate-900 dark:text-white">
-                      Editar publicacion
+                      {tr("Editar publicacion", "Edit post")}
                     </summary>
                     <form action={updateNewsPost} className="mt-4 space-y-4">
                       <input type="hidden" name="locale" value={locale} />
                       <input type="hidden" name="postId" value={post.id} />
                       <div className="grid gap-2">
-                        <Label htmlFor={`title-${post.id}`}>Titulo</Label>
+                        <Label htmlFor={`title-${post.id}`}>{tr("Titulo", "Title")}</Label>
                         <Input id={`title-${post.id}`} name="title" defaultValue={post.title} required />
                       </div>
                       <div className="grid gap-2">
@@ -396,7 +398,7 @@ export default async function RootNewsPage({
                         <Input id={`slug-${post.id}`} name="slug" defaultValue={post.slug} required />
                       </div>
                       <div className="grid gap-2">
-                        <Label htmlFor={`category-${post.id}`}>Categoria</Label>
+                        <Label htmlFor={`category-${post.id}`}>{tr("Categoria", "Category")}</Label>
                         <Input
                           id={`category-${post.id}`}
                           name="category"
@@ -406,7 +408,7 @@ export default async function RootNewsPage({
                       </div>
                       <div className="grid gap-2 sm:grid-cols-2">
                         <div className="grid gap-2">
-                          <Label htmlFor={`language-${post.id}`}>Idioma</Label>
+                          <Label htmlFor={`language-${post.id}`}>{tr("Idioma", "Language")}</Label>
                           <select
                             id={`language-${post.id}`}
                             name="language"
@@ -418,24 +420,24 @@ export default async function RootNewsPage({
                           </select>
                         </div>
                         <div className="grid gap-2">
-                          <Label htmlFor={`status-${post.id}`}>Estado</Label>
+                          <Label htmlFor={`status-${post.id}`}>{tr("Estado", "Status")}</Label>
                           <select
                             id={`status-${post.id}`}
                             name="status"
                             defaultValue={post.status}
                             className="h-9 rounded border border-slate-200 bg-white px-3 text-sm dark:border-slate-700 dark:bg-slate-900"
                           >
-                            <option value="DRAFT">Borrador</option>
-                            <option value="PUBLISHED">Publicado</option>
+                            <option value="DRAFT">{tr("Borrador", "Draft")}</option>
+                            <option value="PUBLISHED">{tr("Publicado", "Published")}</option>
                           </select>
                         </div>
                       </div>
                       <label className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300">
                         <input type="checkbox" name="featured" defaultChecked={post.featured} className="h-4 w-4" />
-                        Marcar como destacado
+                        {tr("Marcar como destacado", "Mark as featured")}
                       </label>
                       <div className="grid gap-2">
-                        <Label htmlFor={`summary-${post.id}`}>Resumen</Label>
+                        <Label htmlFor={`summary-${post.id}`}>{tr("Resumen", "Summary")}</Label>
                         <textarea
                           id={`summary-${post.id}`}
                           name="summary"
@@ -446,7 +448,7 @@ export default async function RootNewsPage({
                         />
                       </div>
                       <div className="grid gap-2">
-                        <Label htmlFor={`body-${post.id}`}>Contenido</Label>
+                        <Label htmlFor={`body-${post.id}`}>{tr("Contenido", "Content")}</Label>
                         <textarea
                           id={`body-${post.id}`}
                           name="body"
@@ -457,14 +459,14 @@ export default async function RootNewsPage({
                         />
                       </div>
                       <Button type="submit" size="sm">
-                        Guardar cambios
+                        {tr("Guardar cambios", "Save changes")}
                       </Button>
                     </form>
                     <form action={deleteNewsPost} className="mt-3">
                       <input type="hidden" name="locale" value={locale} />
                       <input type="hidden" name="postId" value={post.id} />
                       <Button type="submit" size="sm" variant="outline">
-                        Eliminar
+                        {tr("Eliminar", "Delete")}
                       </Button>
                     </form>
                   </details>

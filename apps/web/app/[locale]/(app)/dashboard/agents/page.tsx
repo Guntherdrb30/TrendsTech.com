@@ -50,9 +50,9 @@ export default async function AgentsPage({ params }: { params: Promise<PageParam
               {isEs ? 'Inventario de agentes' : 'Agent inventory'}
             </div>
             <div className="space-y-2">
-              <h1 className="text-3xl font-semibold tracking-[-0.04em] text-slate-950 sm:text-4xl">Agentes</h1>
+              <h1 className="text-3xl font-semibold tracking-[-0.04em] text-slate-950 sm:text-4xl">{isEs ? 'Agentes' : 'Agents'}</h1>
               <p className="text-sm text-slate-500 dark:text-slate-400">
-                Listado de agentes configurados para este tenant.
+                {isEs ? 'Listado de agentes configurados para este tenant.' : 'Agents configured for this tenant.'}
               </p>
             </div>
           </div>
@@ -61,13 +61,13 @@ export default async function AgentsPage({ params }: { params: Promise<PageParam
               className="interactive-chip inline-flex rounded-full border border-black/8 bg-white/90 px-4 py-2 text-sm font-semibold text-slate-900 transition hover:bg-slate-900 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900/15 focus-visible:ring-offset-2"
               href={`/${locale}/dashboard/agents/luna-code-orchestrator`}
             >
-              Abrir Luna Code
+              {isEs ? 'Abrir Luna Code' : 'Open Luna Code'}
             </Link>
             <Link
               className="interactive-chip inline-flex rounded-full border border-black/8 bg-white/90 px-4 py-2 text-sm font-semibold text-slate-900 transition hover:bg-slate-900 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900/15 focus-visible:ring-offset-2"
               href={`/${locale}/dashboard`}
             >
-              Configurar nuevo agente
+              {isEs ? 'Configurar nuevo agente' : 'Configure new agent'}
             </Link>
           </div>
         </div>
@@ -76,22 +76,22 @@ export default async function AgentsPage({ params }: { params: Promise<PageParam
       <Card className="interactive-panel">
         <CardHeader className="space-y-2">
             <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500">{isEs ? 'Lista del workspace' : 'Workspace list'}</p>
-          <CardTitle>Agentes configurados</CardTitle>
+          <CardTitle>{isEs ? 'Agentes configurados' : 'Configured agents'}</CardTitle>
         </CardHeader>
         <CardContent>
           {agentInstances.length === 0 ? (
             <div className="interactive-panel rounded-[24px] border border-dashed border-black/10 bg-slate-50/80 px-5 py-6 text-sm text-slate-500">
-              Sin agentes configurados. Crea uno desde el dashboard.
+              {isEs ? 'Sin agentes configurados. Crea uno desde el dashboard.' : 'No agents configured. Create one from the dashboard.'}
             </div>
           ) : (
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Name</TableHead>
-                  <TableHead>Base key</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>End customer</TableHead>
-                  <TableHead>Actions</TableHead>
+                  <TableHead>{isEs ? 'Nombre' : 'Name'}</TableHead>
+                  <TableHead>{isEs ? 'Clave base' : 'Base key'}</TableHead>
+                  <TableHead>{isEs ? 'Estado' : 'Status'}</TableHead>
+                  <TableHead>{isEs ? 'Cliente final' : 'End customer'}</TableHead>
+                  <TableHead>{isEs ? 'Acciones' : 'Actions'}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>

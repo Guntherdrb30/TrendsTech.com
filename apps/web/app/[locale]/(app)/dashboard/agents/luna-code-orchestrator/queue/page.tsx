@@ -12,6 +12,8 @@ export default async function LunaQueuePage({
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
+  const isEs = locale.startsWith("es");
+  const tr = (es: string, en: string) => (isEs ? es : en);
   await requireRole("TENANT_OPERATOR");
   const tenantId = await requireTenantId();
   const queueItems = await prisma.devExecutionQueue.findMany({
@@ -38,11 +40,11 @@ export default async function LunaQueuePage({
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Cola de ejecucion</CardTitle>
+        <CardTitle>{tr("Cola de ejecución", "Execution queue")}</CardTitle>
       </CardHeader>
       <CardContent className="space-y-3">
         {queueItems.length === 0 ? (
-          <p className="text-sm text-slate-500 dark:text-slate-400">La cola esta vacia.</p>
+          <p className="text-sm text-slate-500 dark:text-slate-400">{tr("La cola está vacía.", "The queue is empty.")}</p>
         ) : (
           queueItems.map((item) => (
             <div
@@ -61,8 +63,8 @@ export default async function LunaQueuePage({
                 </span>
               </div>
               <div className="mt-3 flex flex-wrap gap-4 text-xs text-slate-500 dark:text-slate-400">
-                <span>Creada: {item.createdAt.toISOString()}</span>
-                <span>Intentos: {item.attemptCount}</span>
+                <span>{tr("Creada", "Created")}: {item.createdAt.toISOString()}</span>
+                <span>{tr("Intentos", "Attempts")}: {item.attemptCount}</span>
                 <span>
                   Runner:{" "}
                   {item.runner ? (
@@ -73,7 +75,7 @@ export default async function LunaQueuePage({
                       {item.runner.name}
                     </Link>
                   ) : (
-                    "sin asignar"
+                    tr("sin asignar", "unassigned")
                   )}
                 </span>
               </div>

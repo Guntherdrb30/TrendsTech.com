@@ -8,14 +8,48 @@ import { Label } from "@/components/ui/label";
 import type { LunaPlanSnapshot } from "@/types/luna-agent";
 
 export function RemoteTaskClient({
+  locale,
   token,
   projects,
   plan
 }: {
+  locale: string;
   token: string;
   projects: Pick<DevProject, "id" | "name">[];
   plan: LunaPlanSnapshot;
 }) {
+  const isEs = locale.startsWith("es");
+  const copy = isEs
+    ? {
+        createError: "No se pudo crear la tarea remota.",
+        created: "Tarea creada y enviada a la cola.",
+        project: "Proyecto",
+        title: "Título",
+        description: "Descripción",
+        priority: "Prioridad",
+        low: "Baja",
+        medium: "Media",
+        high: "Alta",
+        urgent: "Urgente",
+        planDryRun: "Tu plan actual solo permite tareas remotas en modo de prueba.",
+        planAdvanced: "Codex CLI requiere un plan avanzado. Usa Shell o sube de plan.",
+        submit: "Enviar al agente",
+      }
+    : {
+        createError: "The remote task could not be created.",
+        created: "Task created and sent to the queue.",
+        project: "Project",
+        title: "Title",
+        description: "Description",
+        priority: "Priority",
+        low: "Low",
+        medium: "Medium",
+        high: "High",
+        urgent: "Urgent",
+        planDryRun: "Your current plan only supports remote tasks in dry-run mode.",
+        planAdvanced: "Codex CLI requires an advanced plan. Use Shell or upgrade your plan.",
+        submit: "Send to agent",
+      };
   const [status, setStatus] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [title, setTitle] = useState("");
@@ -48,20 +82,20 @@ export function RemoteTaskClient({
 
     const payload = (await response.json().catch(() => ({}))) as { error?: string };
     if (!response.ok) {
-      setError(payload.error ?? "No se pudo crear la tarea remota.");
+      setError(payload.error ?? copy.createError);
       return;
     }
 
     setTitle("");
     setDescription("");
     setPrompt("");
-    setStatus("Tarea creada y enviada a la cola.");
+    setStatus(copy.created);
   };
 
   return (
     <form onSubmit={submitTask} className="space-y-4">
       <div className="space-y-2">
-        <Label htmlFor="remote-project">Proyecto</Label>
+        <Label htmlFor="remote-project">{copy.project}</Label>
         <select
           id="remote-project"
           className="h-10 w-full rounded border border-slate-200 bg-white px-3 text-sm"
@@ -77,11 +111,11 @@ export function RemoteTaskClient({
         </select>
       </div>
       <div className="space-y-2">
-        <Label htmlFor="remote-title">Titulo</Label>
+        <Label htmlFor="remote-title">{copy.title}</Label>
         <Input id="remote-title" value={title} onChange={(event) => setTitle(event.target.value)} required />
       </div>
       <div className="space-y-2">
-        <Label htmlFor="remote-description">Descripcion</Label>
+        <Label htmlFor="remote-description">{copy.description}</Label>
         <textarea
           id="remote-description"
           value={description}
@@ -101,17 +135,17 @@ export function RemoteTaskClient({
         />
       </div>
       <div className="space-y-2">
-        <Label htmlFor="remote-priority">Prioridad</Label>
+        <Label htmlFor="remote-priority">{copy.priority}</Label>
         <select
           id="remote-priority"
           className="h-10 w-full rounded border border-slate-200 bg-white px-3 text-sm"
           value={priority}
           onChange={(event) => setPriority(event.target.value as DevTaskPriority)}
         >
-          <option value={DevTaskPriority.LOW}>Low</option>
-          <option value={DevTaskPriority.MEDIUM}>Medium</option>
-          <option value={DevTaskPriority.HIGH}>High</option>
-          <option value={DevTaskPriority.URGENT}>Urgent</option>
+          <option value={DevTaskPriority.LOW}>{copy.low}</option>
+          <option value={DevTaskPriority.MEDIUM}>{copy.medium}</option>
+          <option value={DevTaskPriority.HIGH}>{copy.high}</option>
+          <option value={DevTaskPriority.URGENT}>{copy.urgent}</option>
         </select>
       </div>
       <div className="space-y-2">
@@ -133,17 +167,17 @@ export function RemoteTaskClient({
       </div>
       {!supportsRunnerExecution ? (
         <p className="text-xs text-amber-700">
-          Tu plan actual solo permite tareas remotas en modo dry run.
+          {copy.planDryRun}
         </p>
       ) : null}
       {supportsRunnerExecution && !supportsAdvancedRuntime ? (
         <p className="text-xs text-amber-700">
-          Codex CLI requiere un plan avanzado. Usa Shell o sube de plan.
+          {copy.planAdvanced}
         </p>
       ) : null}
       {status ? <p className="text-sm text-emerald-600">{status}</p> : null}
       {error ? <p className="text-sm text-red-500">{error}</p> : null}
-      <Button type="submit">Enviar al agente</Button>
+      <Button type="submit">{copy.submit}</Button>
     </form>
   );
 }

@@ -75,7 +75,14 @@ export function AgentPreviewScreen({
     if (!allowed.includes(ext)) {
       setFiles((prev) => [
         ...prev,
-        { name: file.name, type: ext, text: '', charCount: 0, status: 'error', errorMsg: 'Formato no soportado' },
+        {
+          name: file.name,
+          type: ext,
+          text: '',
+          charCount: 0,
+          status: 'error',
+          errorMsg: isEs ? 'Formato no soportado' : 'Unsupported format',
+        },
       ]);
       return;
     }
@@ -91,7 +98,14 @@ export function AgentPreviewScreen({
       if (!res.ok || data.error) {
         setFiles((prev) => [
           ...prev,
-          { name: file.name, type: ext, text: '', charCount: 0, status: 'error', errorMsg: data.error ?? 'Error al leer el archivo' },
+          {
+            name: file.name,
+            type: ext,
+            text: '',
+            charCount: 0,
+            status: 'error',
+            errorMsg: data.error ?? (isEs ? 'Error al leer el archivo' : 'Unable to read the file'),
+          },
         ]);
       } else {
         setFiles((prev) => [
@@ -102,12 +116,19 @@ export function AgentPreviewScreen({
     } catch {
       setFiles((prev) => [
         ...prev,
-        { name: file.name, type: ext, text: '', charCount: 0, status: 'error', errorMsg: 'Error de red' },
+        {
+          name: file.name,
+          type: ext,
+          text: '',
+          charCount: 0,
+          status: 'error',
+          errorMsg: isEs ? 'Error de red' : 'Network error',
+        },
       ]);
     } finally {
       setUploading(false);
     }
-  }, [files.length]);
+  }, [files.length, isEs]);
 
   const handleFileChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -140,9 +161,9 @@ export function AgentPreviewScreen({
     () =>
       files
         .filter((f) => f.status === 'ready' && f.text)
-        .map((f) => `== Archivo: ${f.name} ==\n${f.text}`)
+        .map((f) => `== ${isEs ? 'Archivo' : 'File'}: ${f.name} ==\n${f.text}`)
         .join('\n\n'),
-    [files]
+    [files, isEs]
   );
 
   const startChat = () => {
@@ -201,7 +222,13 @@ export function AgentPreviewScreen({
         setMessages((prev) =>
           prev.map((m) =>
             m.id === assistantId
-              ? { ...m, content: errData.message ?? 'Error al conectar con el agente.', streaming: false }
+              ? {
+                  ...m,
+                  content:
+                    errData.message ??
+                    (isEs ? 'Error al conectar con el agente.' : 'Unable to connect to the agent.'),
+                  streaming: false,
+                }
               : m
           )
         );
@@ -234,14 +261,20 @@ export function AgentPreviewScreen({
       setMessages((prev) =>
         prev.map((m) =>
           m.id === assistantId
-            ? { ...m, content: 'Error de conexión. Intenta de nuevo.', streaming: false }
+            ? {
+                ...m,
+                content: isEs
+                  ? 'Error de conexión. Intenta de nuevo.'
+                  : 'Connection error. Please try again.',
+                streaming: false,
+              }
             : m
         )
       );
     } finally {
       setIsStreaming(false);
     }
-  }, [inputValue, isStreaming, demoOver, messages, agentName, skillKeys, buildContext]);
+  }, [inputValue, isStreaming, demoOver, messages, agentName, skillKeys, buildContext, isEs]);
 
   // ── Render ─────────────────────────────────────────────────────────────────
 

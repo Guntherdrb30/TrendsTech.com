@@ -13,22 +13,37 @@ import '../../styles/globals.css';
 
 export const runtime = 'nodejs';
 
-export const metadata: Metadata = {
-  metadataBase: siteUrl,
-  applicationName: 'Trends172Tech',
-  title: {
-    default: 'Trends172Tech',
-    template: '%s | Trends172Tech'
-  },
-  description: 'Software empresarial, automatización e inteligencia aplicada a operaciones reales.',
-  openGraph: {
-    siteName: 'Trends172Tech',
-    type: 'website'
-  },
-  twitter: {
-    card: 'summary'
-  }
-};
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const isEs = locale.startsWith('es');
+  const description = isEs
+    ? 'Software empresarial, automatización e inteligencia aplicada a operaciones reales.'
+    : 'Business software, automation, and applied intelligence for real-world operations.';
+
+  return {
+    metadataBase: siteUrl,
+    applicationName: 'Trends172Tech',
+    title: {
+      default: 'Trends172Tech',
+      template: '%s | Trends172Tech',
+    },
+    description,
+    openGraph: {
+      siteName: 'Trends172Tech',
+      type: 'website',
+      description,
+      locale: isEs ? 'es_VE' : 'en_US',
+    },
+    twitter: {
+      card: 'summary',
+      description,
+    },
+  };
+}
 
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));

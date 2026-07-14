@@ -16,14 +16,16 @@ const STATUS_STYLE: Record<string, string> = {
   REJECTED: 'bg-red-100 text-red-600'
 };
 
-const STATUS_LABEL: Record<string, string> = {
-  PENDING: 'Pendiente',
-  REVIEWING: 'Revisando',
-  APPROVED: 'Aprobado',
-  REJECTED: 'Rechazado'
-};
-
-export default async function AdminPaymentsPage() {
+export default async function AdminPaymentsPage({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
+  const isEs = locale.startsWith('es');
+  const tr = (es: string, en: string) => (isEs ? es : en);
+  const statusLabel: Record<string, string> = {
+    PENDING: tr('Pendiente', 'Pending'),
+    REVIEWING: tr('Revisando', 'Reviewing'),
+    APPROVED: tr('Aprobado', 'Approved'),
+    REJECTED: tr('Rechazado', 'Rejected'),
+  };
   const payments = await prisma.manualPayment.findMany({
     orderBy: { createdAt: 'desc' },
     take: 200,
@@ -39,19 +41,19 @@ export default async function AdminPaymentsPage() {
   return (
     <div className="space-y-8">
       <div>
-        <h2 className="text-xl font-semibold text-slate-950">Revisión de Pagos</h2>
+        <h2 className="text-xl font-semibold text-slate-950">{tr('Revisión de pagos', 'Payment review')}</h2>
         <p className="mt-1 text-sm text-slate-500">
-          Aprueba o rechaza los pagos para acreditar créditos a las cuentas de los clientes.
+          {tr('Aprueba o rechaza los pagos para acreditar créditos a las cuentas de los clientes.', 'Approve or reject payments to credit customer accounts.')}
         </p>
       </div>
 
       {/* Pending */}
       <section>
         <h3 className="mb-4 text-sm font-semibold uppercase tracking-[0.15em] text-slate-500">
-          Por revisar ({pending.length})
+          {tr('Por revisar', 'To review')} ({pending.length})
         </h3>
         {pending.length === 0 ? (
-          <p className="text-sm text-slate-400">No hay pagos pendientes.</p>
+          <p className="text-sm text-slate-400">{tr('No hay pagos pendientes.', 'There are no pending payments.')}</p>
         ) : (
           <div className="space-y-3">
             {pending.map(p => (
@@ -60,7 +62,7 @@ export default async function AdminPaymentsPage() {
                   <div className="space-y-1">
                     <div className="flex items-center gap-2">
                       <span className={`rounded-full px-2.5 py-0.5 text-[11px] font-semibold ${STATUS_STYLE[p.status]}`}>
-                        {STATUS_LABEL[p.status]}
+                        {statusLabel[p.status]}
                       </span>
                       <span className="rounded-full border border-slate-200 px-2.5 py-0.5 text-[11px] font-medium text-slate-600">
                         {METHOD_LABEL[p.paymentMethod] ?? p.paymentMethod}
@@ -85,19 +87,19 @@ export default async function AdminPaymentsPage() {
                     </p>
                     {p.exchangeRateUsed && (
                       <p className="text-[11px] text-slate-400">
-                        Tasa BCV usada: {Number(p.exchangeRateUsed).toFixed(2)} Bs./USD
+                        {tr('Tasa BCV usada', 'BCV rate used')}: {Number(p.exchangeRateUsed).toFixed(2)} Bs./USD
                       </p>
                     )}
                     {p.proofUrl && (
                       <a href={p.proofUrl} target="_blank" rel="noreferrer" className="text-xs text-[#00bfa5] hover:underline">
-                        Ver comprobante →
+                        {tr('Ver comprobante', 'View receipt')} →
                       </a>
                     )}
                     <p className="text-[11px] text-slate-400">
-                      {new Date(p.createdAt).toLocaleString('es-VE', { dateStyle: 'medium', timeStyle: 'short' })}
+                      {new Date(p.createdAt).toLocaleString(isEs ? 'es-VE' : 'en-US', { dateStyle: 'medium', timeStyle: 'short' })}
                     </p>
                   </div>
-                  <PaymentActions paymentId={p.id} status={p.status as 'PENDING' | 'REVIEWING' | 'APPROVED' | 'REJECTED'} />
+                  <PaymentActions locale={locale} paymentId={p.id} status={p.status as 'PENDING' | 'REVIEWING' | 'APPROVED' | 'REJECTED'} />
                 </div>
               </div>
             ))}
@@ -109,19 +111,19 @@ export default async function AdminPaymentsPage() {
       {resolved.length > 0 && (
         <section>
           <h3 className="mb-4 text-sm font-semibold uppercase tracking-[0.15em] text-slate-500">
-            Historial ({resolved.length})
+            {tr('Historial', 'History')} ({resolved.length})
           </h3>
           <div className="overflow-x-auto rounded-[20px] border border-black/8 bg-white">
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-slate-100 text-[11px] font-semibold uppercase tracking-[0.15em] text-slate-400">
-                  <th className="px-5 py-3 text-left">Cliente</th>
-                  <th className="px-5 py-3 text-left">Monto</th>
-                  <th className="px-5 py-3 text-left">Método</th>
-                  <th className="px-5 py-3 text-left">Referencia</th>
-                  <th className="px-5 py-3 text-left">Estado</th>
-                  <th className="px-5 py-3 text-left">Revisado por</th>
-                  <th className="px-5 py-3 text-left">Fecha</th>
+                  <th className="px-5 py-3 text-left">{tr('Cliente', 'Customer')}</th>
+                  <th className="px-5 py-3 text-left">{tr('Monto', 'Amount')}</th>
+                  <th className="px-5 py-3 text-left">{tr('Método', 'Method')}</th>
+                  <th className="px-5 py-3 text-left">{tr('Referencia', 'Reference')}</th>
+                  <th className="px-5 py-3 text-left">{tr('Estado', 'Status')}</th>
+                  <th className="px-5 py-3 text-left">{tr('Revisado por', 'Reviewed by')}</th>
+                  <th className="px-5 py-3 text-left">{tr('Fecha', 'Date')}</th>
                 </tr>
               </thead>
               <tbody>
@@ -140,7 +142,7 @@ export default async function AdminPaymentsPage() {
                     <td className="px-5 py-3 font-mono text-xs text-slate-700">{p.reference}</td>
                     <td className="px-5 py-3">
                       <span className={`rounded-full px-2.5 py-0.5 text-[11px] font-semibold ${STATUS_STYLE[p.status]}`}>
-                        {STATUS_LABEL[p.status]}
+                        {statusLabel[p.status]}
                       </span>
                       {p.reviewNotes && (
                         <p className="mt-0.5 text-[11px] text-slate-400">{p.reviewNotes}</p>
@@ -150,7 +152,7 @@ export default async function AdminPaymentsPage() {
                       {p.reviewedBy?.name ?? p.reviewedBy?.email ?? '—'}
                     </td>
                     <td className="px-5 py-3 text-xs text-slate-400">
-                      {p.reviewedAt ? new Date(p.reviewedAt).toLocaleDateString('es-VE') : '—'}
+                      {p.reviewedAt ? new Date(p.reviewedAt).toLocaleDateString(isEs ? 'es-VE' : 'en-US') : '—'}
                     </td>
                   </tr>
                 ))}

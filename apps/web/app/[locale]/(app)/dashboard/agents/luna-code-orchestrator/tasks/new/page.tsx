@@ -13,6 +13,8 @@ export default async function LunaNewTaskPage({
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
+  const isEs = locale.startsWith("es");
+  const tr = (es: string, en: string) => (isEs ? es : en);
   const user = await requireRole("TENANT_OPERATOR");
   const tenantId = await requireTenantId();
   const [projects, providers, plan] = await Promise.all([
@@ -37,21 +39,21 @@ export default async function LunaNewTaskPage({
     <div className="space-y-6">
       <div className="rounded-3xl border border-slate-200 bg-white px-5 py-4 text-sm text-slate-600 shadow-sm dark:border-slate-800 dark:bg-slate-950/70 dark:text-slate-300">
         <div className="font-semibold text-slate-900 dark:text-white">
-          Plan activo: {plan.planKey}
+          {tr("Plan activo", "Active plan")}: {plan.planKey}
         </div>
         <div className="mt-1">
-          Tareas disponibles: {plan.taskLimitLabel}. Proyectos: {plan.projectLimitLabel}.
+          {tr("Tareas disponibles", "Available tasks")}: {plan.taskLimitLabel}. {tr("Proyectos", "Projects")}: {plan.projectLimitLabel}.
         </div>
         <div className="mt-2 flex flex-wrap gap-2 text-xs uppercase tracking-[0.14em]">
-          <span>{plan.supportsRunnerExecution ? "Runner enabled" : "Solo dry run"}</span>
-          <span>{plan.supportsAdvancedRuntime ? "Codex CLI enabled" : "Codex CLI bloqueado"}</span>
+          <span>{plan.supportsRunnerExecution ? tr("Runner habilitado", "Runner enabled") : tr("Solo modo de prueba", "Dry run only")}</span>
+          <span>{plan.supportsAdvancedRuntime ? tr("Codex CLI habilitado", "Codex CLI enabled") : tr("Codex CLI bloqueado", "Codex CLI locked")}</span>
         </div>
       </div>
       {projects.length === 0 ? (
         <div className="rounded-3xl border border-amber-200 bg-amber-50 px-5 py-4 text-sm text-amber-800">
-          Necesitas crear al menos un proyecto antes de registrar tareas.{" "}
+          {tr("Necesitas crear al menos un proyecto antes de registrar tareas.", "You need to create at least one project before registering tasks.")}{" "}
           <Link href={`/${locale}/dashboard/agents/luna-code-orchestrator/projects`} className="font-semibold underline">
-            Ir a proyectos
+            {tr("Ir a proyectos", "Go to projects")}
           </Link>
         </div>
       ) : null}
