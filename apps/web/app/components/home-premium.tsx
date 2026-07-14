@@ -26,6 +26,7 @@ export type HomePremiumCopy = {
   heroSubhead: string;
   heroPrimary: string;
   heroSecondary: string;
+  heroFootball: string;
   heroImageAlt: string;
   trustEyebrow: string;
   trustItems: string[];
@@ -213,6 +214,13 @@ function Hero({ fontClass, copy, locale }: { fontClass: string; copy: HomePremiu
           >
             {copy.heroSecondary}
           </Link>
+          <Link
+            href={`/${locale}/projects/luna-football`}
+            className="flex h-12 items-center gap-2 rounded-full border border-orange-200 bg-orange-50 px-7 text-[15px] font-semibold text-orange-700 transition-all hover:-translate-y-0.5 hover:border-orange-300 hover:bg-orange-100 hover:shadow-md"
+          >
+            <span className="h-2 w-2 rounded-full bg-orange-500" aria-hidden="true" />
+            {copy.heroFootball}
+          </Link>
         </motion.div>
 
         {/* Hero real image */}
@@ -349,6 +357,12 @@ const ECOSYSTEM = [
     accent: '#f97316',
   },
   {
+    icon: '⚽',
+    name: 'LUNA FOOTBALL',
+    path: '/projects/luna-football',
+    accent: '#ea580c',
+  },
+  {
     icon: '⚡',
     name: 'TRENDS172TECH',
     path: '/contact',
@@ -369,7 +383,7 @@ function EcosystemCards({ fontClass, copy, locale }: { fontClass: string; copy: 
           </h2>
         </FadeUp>
 
-        <div className="grid gap-6 md:grid-cols-3">
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
           {ECOSYSTEM.map((item, i) => {
             const content = copy.ecosystemItems[i];
             const href = item.path.startsWith('http') ? item.path : `/${locale}${item.path}`;
@@ -735,6 +749,7 @@ function Footer({ fontClass, copy, locale }: { fontClass: string; copy: HomePrem
           {[
             { label: 'LUNA ERP AI', href: `/${locale}/systems/luna` },
             { label: 'Carpihogar', href: 'https://www.carpihogar.com' },
+            { label: 'LUNA Football', href: `/${locale}/projects/luna-football` },
             { label: copy.footerContact, href: `/${locale}/contact` },
             { label: 'WhatsApp', href: 'https://wa.me/584122640371' },
           ].map((l) => (
