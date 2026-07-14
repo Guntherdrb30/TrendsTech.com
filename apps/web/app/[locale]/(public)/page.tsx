@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { Syne, DM_Sans } from 'next/font/google';
 import { getTranslations } from 'next-intl/server';
-import { HomePremium } from '@/components/home-premium';
+import { HomePremium, type HomePremiumCopy } from '@/components/home-premium';
 import { localeAlternates, localizedPath } from '@/lib/seo';
 
 const display = Syne({
@@ -72,5 +72,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
     ],
   };
 
-  return <HomePremium fontClass={fontClass} conciergeCopy={conciergeCopy} />;
+  const premiumCopy = home.raw('premium') as HomePremiumCopy;
+
+  return <HomePremium fontClass={fontClass} conciergeCopy={conciergeCopy} copy={premiumCopy} />;
 }
