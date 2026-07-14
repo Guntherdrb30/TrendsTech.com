@@ -40,26 +40,87 @@ type Props = {
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 
-const OBJECTIVES = [
-  { label: 'Atender clientes 24/7', skillKey: 'customer_support' },
-  { label: 'Recibir y gestionar pedidos', skillKey: 'order_management' },
-  { label: 'Responder preguntas de precios', skillKey: 'price_inquiry' },
-  { label: 'Agendar citas o reuniones', skillKey: 'appointment_booking' },
-  { label: 'Soporte técnico', skillKey: 'technical_support' },
-  { label: 'Ventas y cotizaciones', skillKey: 'sales' },
-  { label: 'Informar sobre ubicación y horarios', skillKey: 'location_info' },
-];
+const OBJECTIVE_KEYS = [
+  'customer_support',
+  'order_management',
+  'price_inquiry',
+  'appointment_booking',
+  'technical_support',
+  'sales',
+  'location_info',
+] as const;
 
-const CHANNELS: { value: 'web' | 'whatsapp' | 'both'; label: string }[] = [
-  { value: 'web', label: '🌐 En mi sitio web' },
-  { value: 'whatsapp', label: '💬 En WhatsApp' },
-  { value: 'both', label: '🔗 En ambos' },
-];
+const INTAKE_COPY = {
+  es: {
+    objectives: [
+      'Atender clientes 24/7',
+      'Recibir y gestionar pedidos',
+      'Responder preguntas de precios',
+      'Agendar citas o reuniones',
+      'Soporte técnico',
+      'Ventas y cotizaciones',
+      'Informar sobre ubicación y horarios',
+    ],
+    channels: ['🌐 En mi sitio web', '💬 En WhatsApp', '🔗 En ambos'],
+    welcome: '¡Hola! Soy tu asistente de configuración 🤖 Vamos a crear tu agente de IA juntos. Te haré unas preguntas para entender tu empresa y configurarlo perfectamente. ¿Comenzamos?',
+    start: 'Sí, empecemos →',
+    companyQuestion: '¿A qué se dedica tu empresa? Cuéntame qué haces, qué vendes o qué servicio ofreces. Mientras más detalle, mejor quedará tu agente.',
+    websiteQuestion: '¿Tienes un sitio web? Si me das la URL, lo reviso automáticamente y tu agente conocerá toda tu empresa desde el primer día.',
+    hasWebsite: 'Sí, tengo sitio web',
+    noWebsite: 'No tengo sitio web',
+    websiteUrlQuestion: '¿Cuál es la URL de tu sitio web?',
+    noWebsiteQuestion: 'No hay problema. Cuéntame más: ¿qué productos o servicios ofreces, cuáles son tus precios aproximados, dónde operas y cómo pueden contactarte tus clientes?',
+    websiteReview: (url: string) => `Listo, revisaré ${url}. ¿Hay información importante que no esté en tu web? Por ejemplo: precios especiales, políticas o datos de contacto adicionales. (Puedes saltar esto si no aplica)`,
+    skip: 'Saltar este paso',
+    objectivesQuestion: '¿Cuál es el objetivo principal de tu agente? Puedes elegir más de uno.',
+    channelQuestion: '¿Dónde quieres que opere principalmente tu agente?',
+    analyzing: 'Perfecto, analizando tu información para recomendarte la mejor configuración...',
+    fallbackName: 'Asistente Virtual',
+    recommendation: (name: string, count: number) => `¡Listo! Basado en lo que me contaste, te recomiendo nombrar a tu agente "${name}" con ${count} habilidad${count === 1 ? '' : 'es'} preconfigurada${count === 1 ? '' : 's'}. ¿Continuamos?`,
+  },
+  en: {
+    objectives: [
+      'Support customers 24/7',
+      'Receive and manage orders',
+      'Answer pricing questions',
+      'Schedule appointments or meetings',
+      'Technical support',
+      'Sales and quotations',
+      'Share locations and business hours',
+    ],
+    channels: ['🌐 On my website', '💬 On WhatsApp', '🔗 On both'],
+    welcome: "Hello! I'm your setup assistant 🤖 Let's create your AI agent together. I'll ask a few questions to understand your company and configure it properly. Shall we begin?",
+    start: "Yes, let's start →",
+    companyQuestion: 'What does your company do? Tell me what you sell or which services you offer. The more detail you provide, the better your agent will be.',
+    websiteQuestion: 'Do you have a website? Share the URL and I will review it automatically so your agent can learn about your company from day one.',
+    hasWebsite: 'Yes, I have a website',
+    noWebsite: "I don't have a website",
+    websiteUrlQuestion: 'What is your website URL?',
+    noWebsiteQuestion: 'No problem. Tell me more: which products or services do you offer, what are your approximate prices, where do you operate, and how can customers contact you?',
+    websiteReview: (url: string) => `Great, I will review ${url}. Is there any important information that is not on your website, such as special prices, policies, or additional contact details? (You can skip this if it does not apply)`,
+    skip: 'Skip this step',
+    objectivesQuestion: 'What is the main goal of your agent? You can choose more than one.',
+    channelQuestion: 'Where do you want your agent to operate?',
+    analyzing: 'Great, I am analyzing your information to recommend the best configuration...',
+    fallbackName: 'Virtual Assistant',
+    recommendation: (name: string, count: number) => `All set! Based on what you shared, I recommend naming your agent "${name}" with ${count} preconfigured skill${count === 1 ? '' : 's'}. Shall we continue?`,
+  },
+};
 
 // ── Component ─────────────────────────────────────────────────────────────────
 
 export function IntakeChatWizard({ locale, onIntakeComplete }: Props) {
   const isEs = locale.startsWith('es');
+  const copy = INTAKE_COPY[isEs ? 'es' : 'en'];
+  const objectives = OBJECTIVE_KEYS.map((skillKey, index) => ({
+    skillKey,
+    label: copy.objectives[index],
+  }));
+  const channels: { value: 'web' | 'whatsapp' | 'both'; label: string }[] = [
+    { value: 'web', label: copy.channels[0] },
+    { value: 'whatsapp', label: copy.channels[1] },
+    { value: 'both', label: copy.channels[2] },
+  ];
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [step, setStep] = useState<IntakeStep>('welcome');
   const [isTyping, setIsTyping] = useState(false);
@@ -101,12 +162,12 @@ export function IntakeChatWizard({ locale, onIntakeComplete }: Props) {
       () =>
         addMessage(
           'agent',
-          '¡Hola! Soy tu asistente de configuración 🤖 Vamos a crear tu agente de IA juntos. Te haré unas preguntas para entender tu empresa y configurarlo perfectamente. ¿Comenzamos?'
+          copy.welcome
         ),
       300
     );
     return () => clearTimeout(t);
-  }, [addMessage]);
+  }, [addMessage, copy.welcome]);
 
   // Scroll to bottom on new messages
   useEffect(() => {
@@ -116,9 +177,9 @@ export function IntakeChatWizard({ locale, onIntakeComplete }: Props) {
   // ── Step handlers ─────────────────────────────────────────────────────────
 
   const handleStart = () => {
-    addMessage('user', 'Sí, empecemos →');
+    addMessage('user', copy.start);
     agentSay(
-      '¿A qué se dedica tu empresa? Cuéntame qué haces, qué vendes o qué servicio ofreces. Mientras más detalle, mejor quedará tu agente.',
+      copy.companyQuestion,
       () => setStep('company')
     );
   };
@@ -130,18 +191,18 @@ export function IntakeChatWizard({ locale, onIntakeComplete }: Props) {
     addMessage('user', desc);
     setInputValue('');
     agentSay(
-      '¿Tienes un sitio web? Si me das la URL, lo reviso automáticamente y tu agente conocerá toda tu empresa desde el primer día.',
+      copy.websiteQuestion,
       () => setStep('has_website')
     );
-  }, [inputValue, addMessage, agentSay]);
+  }, [inputValue, addMessage, agentSay, copy.websiteQuestion]);
 
   const handleHasWebsite = (has: boolean) => {
-    addMessage('user', has ? 'Sí, tengo sitio web' : 'No tengo sitio web');
+    addMessage('user', has ? copy.hasWebsite : copy.noWebsite);
     if (has) {
-      agentSay('¿Cuál es la URL de tu sitio web?', () => setStep('website_url'));
+      agentSay(copy.websiteUrlQuestion, () => setStep('website_url'));
     } else {
       agentSay(
-        'No hay problema. Cuéntame más: ¿qué productos o servicios ofreces, cuáles son tus precios aproximados, dónde operas y cómo pueden contactarte tus clientes?',
+        copy.noWebsiteQuestion,
         () => setStep('no_web_detail')
       );
     }
@@ -155,27 +216,27 @@ export function IntakeChatWizard({ locale, onIntakeComplete }: Props) {
     addMessage('user', url);
     setInputValue('');
     agentSay(
-      `Listo, revisaré ${url}. ¿Hay información importante que no esté en tu web? Por ejemplo: precios especiales, políticas, datos de contacto adicionales. (Puedes saltar esto si no aplica)`,
+      copy.websiteReview(url),
       () => setStep('additional_info')
     );
-  }, [inputValue, addMessage, agentSay]);
+  }, [inputValue, addMessage, agentSay, copy]);
 
   const handleAdditionalInfo = useCallback(
     (skip: boolean) => {
       const info = skip ? '' : inputValue.trim();
       if (skip) {
-        addMessage('user', 'Saltar este paso');
+        addMessage('user', copy.skip);
       } else if (info) {
         addMessage('user', info);
       }
       setAdditionalInfo(info);
       setInputValue('');
       agentSay(
-        '¿Cuál es el objetivo principal de tu agente? Puedes elegir más de uno.',
+        copy.objectivesQuestion,
         () => setStep('objectives')
       );
     },
-    [inputValue, addMessage, agentSay]
+    [inputValue, addMessage, agentSay, copy.objectivesQuestion, copy.skip]
   );
 
   const handleNoWebDetail = useCallback(() => {
@@ -185,10 +246,10 @@ export function IntakeChatWizard({ locale, onIntakeComplete }: Props) {
     addMessage('user', detail);
     setInputValue('');
     agentSay(
-      '¿Cuál es el objetivo principal de tu agente? Puedes elegir más de uno.',
+      copy.objectivesQuestion,
       () => setStep('objectives')
     );
-  }, [inputValue, addMessage, agentSay]);
+  }, [inputValue, addMessage, agentSay, copy.objectivesQuestion]);
 
   const toggleObjective = (label: string) => {
     setSelectedObjectives((prev) =>
@@ -200,13 +261,13 @@ export function IntakeChatWizard({ locale, onIntakeComplete }: Props) {
     if (selectedObjectives.length === 0) return;
     addMessage('user', selectedObjectives.join(' · '));
     agentSay(
-      '¿Dónde quieres que opere principalmente tu agente?',
+      copy.channelQuestion,
       () => setStep('channel')
     );
   };
 
   const handleChannel = async (ch: 'web' | 'whatsapp' | 'both') => {
-    const channelLabel = CHANNELS.find((c) => c.value === ch)?.label ?? ch;
+    const channelLabel = channels.find((c) => c.value === ch)?.label ?? ch;
     addMessage('user', channelLabel);
     setStep('recommending');
 
@@ -218,11 +279,11 @@ export function IntakeChatWizard({ locale, onIntakeComplete }: Props) {
     setIsTyping(true);
     setTimeout(() => {
       setIsTyping(false);
-      addMessage('agent', 'Perfecto, analizando tu información para recomendarte la mejor configuración...');
+      addMessage('agent', copy.analyzing);
     }, 500);
 
     // Fetch recommendation (8s timeout para evitar colgarse si la API falla)
-    let rec = { suggestedName: 'Asistente Virtual', skillKeys: ['customer_support'] };
+    let rec = { suggestedName: copy.fallbackName, skillKeys: ['customer_support'] };
     try {
       const controller = new AbortController();
       const timeout = setTimeout(() => controller.abort(), 8000);
@@ -260,7 +321,7 @@ export function IntakeChatWizard({ locale, onIntakeComplete }: Props) {
     // Show final message after a small delay
     setTimeout(() => {
       agentSay(
-        `¡Listo! Basado en lo que me contaste, te recomiendo nombrar a tu agente "${rec.suggestedName}" con ${rec.skillKeys.length} habilidad${rec.skillKeys.length === 1 ? '' : 'es'} preconfigurada${rec.skillKeys.length === 1 ? '' : 's'}. ¿Continuamos?`,
+        copy.recommendation(rec.suggestedName, rec.skillKeys.length),
         () => setStep('complete'),
         900
       );
@@ -489,7 +550,7 @@ export function IntakeChatWizard({ locale, onIntakeComplete }: Props) {
         {step === 'objectives' && (
           <div className="space-y-2">
             <div className="flex flex-wrap gap-1.5">
-              {OBJECTIVES.map((obj) => (
+              {objectives.map((obj) => (
                 <button
                   key={obj.skillKey}
                   type="button"
@@ -517,7 +578,7 @@ export function IntakeChatWizard({ locale, onIntakeComplete }: Props) {
 
         {step === 'channel' && (
           <div className="flex gap-2">
-            {CHANNELS.map((ch) => (
+            {channels.map((ch) => (
               <button
                 key={ch.value}
                 type="button"

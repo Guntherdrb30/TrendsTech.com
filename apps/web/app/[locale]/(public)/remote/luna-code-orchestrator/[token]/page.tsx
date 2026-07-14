@@ -13,6 +13,7 @@ export const metadata: Metadata = {
 };
 
 type RouteParams = {
+  locale: string;
   token: string;
 };
 
@@ -21,7 +22,27 @@ export default async function LunaRemotePage({
 }: {
   params: Promise<RouteParams>;
 }) {
-  const { token } = await params;
+  const { locale, token } = await params;
+  const isEs = locale.startsWith("es");
+  const copy = isEs
+    ? {
+        title: "Control remoto desde teléfono",
+        subtitle: "Crea instrucciones rápidas y envíalas a la cola de ejecución de Luna Code Orchestrator.",
+        noProjects: "No hay proyectos activos disponibles para esta sesión.",
+        recent: "Actividad reciente",
+        recentBody: "Revisa estado, runtime y runner de tus últimas tareas móviles.",
+        noTasks: "Aún no hay tareas creadas desde esta sesión.",
+        unassigned: "sin asignar",
+      }
+    : {
+        title: "Remote control from your phone",
+        subtitle: "Create quick instructions and send them to the Luna Code Orchestrator execution queue.",
+        noProjects: "There are no active projects available for this session.",
+        recent: "Recent activity",
+        recentBody: "Review the status, runtime, and runner for your latest mobile tasks.",
+        noTasks: "No tasks have been created from this session yet.",
+        unassigned: "unassigned",
+      };
   await expireRemoteSessions();
 
   const session = await prisma.remoteSession.findFirst({
@@ -71,28 +92,28 @@ export default async function LunaRemotePage({
           <div className="inline-flex rounded-full border border-slate-200 bg-white px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-500">
             Luna Remote
           </div>
-          <h1 className="text-3xl font-semibold">Control remoto desde telefono</h1>
+          <h1 className="text-3xl font-semibold">{copy.title}</h1>
           <p className="text-sm text-slate-600">
-            Crea instrucciones rapidas y envialas a la cola de ejecucion de Luna Code Orchestrator.
+            {copy.subtitle}
           </p>
         </div>
 
         <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
           {projects.length === 0 ? (
-            <p className="text-sm text-slate-500">No hay proyectos activos disponibles para esta sesion.</p>
+            <p className="text-sm text-slate-500">{copy.noProjects}</p>
           ) : (
-            <RemoteTaskClient token={token} projects={projects} plan={plan} />
+            <RemoteTaskClient locale={locale} token={token} projects={projects} plan={plan} />
           )}
         </div>
 
         <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
           <div className="space-y-1">
-            <h2 className="text-lg font-semibold">Actividad reciente</h2>
-            <p className="text-sm text-slate-500">Revisa estado, runtime y runner de tus ultimas tareas moviles.</p>
+            <h2 className="text-lg font-semibold">{copy.recent}</h2>
+            <p className="text-sm text-slate-500">{copy.recentBody}</p>
           </div>
           <div className="mt-4 space-y-3">
             {recentTasks.length === 0 ? (
-              <p className="text-sm text-slate-500">Aun no hay tareas creadas desde esta sesion.</p>
+              <p className="text-sm text-slate-500">{copy.noTasks}</p>
             ) : (
               recentTasks.map((task) => (
                 <div key={task.id} className="rounded-2xl border border-slate-200 px-4 py-3 text-sm">
@@ -105,7 +126,7 @@ export default async function LunaRemotePage({
                   <div className="mt-2 flex flex-wrap gap-3 text-xs text-slate-500">
                     <span>Queue: {task.queue?.status ?? "none"}</span>
                     <span>Runtime: {task.queue?.runtime ?? "dry-run"}</span>
-                    <span>Runner: {task.queue?.runner?.name ?? "sin asignar"}</span>
+                    <span>Runner: {task.queue?.runner?.name ?? copy.unassigned}</span>
                   </div>
                 </div>
               ))

@@ -47,6 +47,8 @@ export function RunnersClient({
     failed: number;
   };
 }) {
+  const isEs = locale.startsWith("es");
+  const tr = (es: string, en: string) => (isEs ? es : en);
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
@@ -110,7 +112,7 @@ export function RunnersClient({
       };
 
       if (!response.ok || !payload.data || !payload.token) {
-        setError(payload.error ?? "No se pudo crear el runner.");
+        setError(payload.error ?? tr("No se pudo crear el runner.", "The runner could not be created."));
         return;
       }
 
@@ -132,19 +134,19 @@ export function RunnersClient({
       <div className="grid gap-4 md:grid-cols-3">
         <Card>
           <CardHeader>
-            <CardTitle>Cola pendiente</CardTitle>
+            <CardTitle>{tr("Cola pendiente", "Pending queue")}</CardTitle>
           </CardHeader>
           <CardContent className="text-3xl font-semibold">{queueSummary.pending}</CardContent>
         </Card>
         <Card>
           <CardHeader>
-            <CardTitle>En proceso</CardTitle>
+            <CardTitle>{tr("En proceso", "Processing")}</CardTitle>
           </CardHeader>
           <CardContent className="text-3xl font-semibold">{queueSummary.processing}</CardContent>
         </Card>
         <Card>
           <CardHeader>
-            <CardTitle>Fallidas recientes</CardTitle>
+            <CardTitle>{tr("Fallidas recientes", "Recent failures")}</CardTitle>
           </CardHeader>
           <CardContent className="text-3xl font-semibold">{queueSummary.failed}</CardContent>
         </Card>
@@ -154,12 +156,12 @@ export function RunnersClient({
         <div className="space-y-6">
           <Card>
             <CardHeader>
-              <CardTitle>Runners registrados</CardTitle>
+              <CardTitle>{tr("Runners registrados", "Registered runners")}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
               {runners.length === 0 ? (
                 <p className="text-sm text-slate-500 dark:text-slate-400">
-                  Aun no hay runners. Registra el primero para empezar a reclamar tareas de la cola.
+                  {tr("Aún no hay runners. Registra el primero para empezar a reclamar tareas de la cola.", "There are no runners yet. Register the first one to begin claiming queued tasks.")}
                 </p>
               ) : (
                 runners.map((runner) => (
@@ -173,7 +175,7 @@ export function RunnersClient({
                           {runner.name}
                         </div>
                         <div className="text-xs text-slate-500 dark:text-slate-400">
-                          {runner.slug} | {runner.mode} | {runner.machineLabel ?? runner.host ?? "sin label"}
+                          {runner.slug} | {runner.mode} | {runner.machineLabel ?? runner.host ?? tr("sin etiqueta", "no label")}
                         </div>
                       </div>
                       <span className="rounded-full bg-slate-100 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-700 dark:bg-slate-800 dark:text-slate-200">
@@ -181,13 +183,13 @@ export function RunnersClient({
                       </span>
                     </div>
                     <div className="mt-3 flex flex-wrap gap-4 text-xs text-slate-500 dark:text-slate-400">
-                      <span>Queue items: {runner._count.queueItems}</span>
-                      <span>Eventos: {runner._count.events}</span>
+                      <span>{tr("Elementos en cola", "Queue items")}: {runner._count.queueItems}</span>
+                      <span>{tr("Eventos", "Events")}: {runner._count.events}</span>
                       <span>
                         Heartbeat:{" "}
                         {runner.lastHeartbeatAt
                           ? new Date(runner.lastHeartbeatAt).toLocaleString()
-                          : "sin senal"}
+                          : tr("sin señal", "no signal")}
                       </span>
                     </div>
                     <div className="mt-3 flex flex-wrap gap-3">
@@ -195,7 +197,7 @@ export function RunnersClient({
                         href={`/${locale}/dashboard/agents/luna-code-orchestrator/runners/${runner.id}`}
                         className="text-sm font-semibold text-blue-600 hover:underline"
                       >
-                        Ver detalle
+                        {tr("Ver detalle", "View details")}
                       </Link>
                     </div>
                   </div>
@@ -206,11 +208,11 @@ export function RunnersClient({
 
           <Card>
             <CardHeader>
-              <CardTitle>Eventos recientes</CardTitle>
+              <CardTitle>{tr("Eventos recientes", "Recent events")}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
               {recentEvents.length === 0 ? (
-                <p className="text-sm text-slate-500 dark:text-slate-400">No hay eventos todavia.</p>
+                <p className="text-sm text-slate-500 dark:text-slate-400">{tr("No hay eventos todavía.", "There are no events yet.")}</p>
               ) : (
                 recentEvents.map((event) => (
                   <div
@@ -244,17 +246,17 @@ export function RunnersClient({
         <div className="space-y-6">
           <Card>
             <CardHeader>
-              <CardTitle>Crear runner local</CardTitle>
+              <CardTitle>{tr("Crear runner local", "Create local runner")}</CardTitle>
             </CardHeader>
             <CardContent>
               {!canManage ? (
                 <p className="text-sm text-slate-500 dark:text-slate-400">
-                  Solo TENANT_ADMIN o ROOT pueden crear runners.
+                  {tr("Solo TENANT_ADMIN o ROOT pueden crear runners.", "Only TENANT_ADMIN or ROOT users can create runners.")}
                 </p>
               ) : (
                 <form onSubmit={submitRunner} className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="runner-name">Nombre</Label>
+                    <Label htmlFor="runner-name">{tr("Nombre", "Name")}</Label>
                     <Input
                       id="runner-name"
                       value={name}
@@ -273,7 +275,7 @@ export function RunnersClient({
                   </div>
                   <div className="grid gap-4 md:grid-cols-2">
                     <div className="space-y-2">
-                      <Label htmlFor="runner-mode">Modo</Label>
+                      <Label htmlFor="runner-mode">{tr("Modo", "Mode")}</Label>
                       <select
                         id="runner-mode"
                         className="h-9 w-full rounded border border-slate-200 bg-white px-3 text-sm dark:border-slate-700 dark:bg-slate-900"
@@ -300,7 +302,7 @@ export function RunnersClient({
                   </div>
                   {error ? <p className="text-sm text-red-500">{error}</p> : null}
                   <Button type="submit" disabled={isPending}>
-                    {isPending ? "Creando..." : "Crear runner"}
+                    {isPending ? tr("Creando...", "Creating...") : tr("Crear runner", "Create runner")}
                   </Button>
                 </form>
               )}
@@ -309,13 +311,13 @@ export function RunnersClient({
 
           <Card>
             <CardHeader>
-              <CardTitle>Pairing y bootstrap</CardTitle>
+              <CardTitle>{tr("Emparejamiento y arranque", "Pairing and bootstrap")}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               {pairing ? (
                 <>
                   <div className="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800 dark:border-emerald-900 dark:bg-emerald-950/40 dark:text-emerald-200">
-                    Token generado para <span className="font-semibold">{pairing.slug}</span>. Guardalo ahora: no se vuelve a mostrar.
+                    {tr("Token generado para", "Token generated for")} <span className="font-semibold">{pairing.slug}</span>. {tr("Guárdalo ahora: no se volverá a mostrar.", "Save it now: it will not be displayed again.")}
                   </div>
                   <pre className="overflow-x-auto rounded-2xl border border-slate-200 bg-slate-950 p-4 text-xs text-slate-100 dark:border-slate-800">
                     <code>{bootstrapSnippet}</code>
@@ -323,17 +325,17 @@ export function RunnersClient({
                 </>
               ) : (
                 <p className="text-sm text-slate-500 dark:text-slate-400">
-                  Crea un runner para obtener el token de emparejamiento y el bloque de arranque.
+                  {tr("Crea un runner para obtener el token de emparejamiento y el bloque de arranque.", "Create a runner to obtain the pairing token and bootstrap block.")}
                 </p>
               )}
               <div className="rounded-2xl border border-slate-200 px-4 py-4 text-sm dark:border-slate-800">
-                <div className="font-semibold text-slate-900 dark:text-white">Flujo recomendado</div>
+                <div className="font-semibold text-slate-900 dark:text-white">{tr("Flujo recomendado", "Recommended flow")}</div>
                 <ol className="mt-3 list-decimal space-y-2 pl-5 text-slate-600 dark:text-slate-300">
-                  <li>Registra el runner desde este panel.</li>
-                  <li>Ejecuta el bloque de variables en la maquina local o VPS.</li>
-                  <li>Construye y arranca `packages/luna-runner`.</li>
-                  <li>Verifica el heartbeat en el detalle del runner.</li>
-                  <li>Crea una tarea y deja que el runner la reclame.</li>
+                  <li>{tr("Registra el runner desde este panel.", "Register the runner from this dashboard.")}</li>
+                  <li>{tr("Ejecuta el bloque de variables en la máquina local o VPS.", "Run the environment block on the local machine or VPS.")}</li>
+                  <li>{tr("Construye e inicia `packages/luna-runner`.", "Build and start `packages/luna-runner`.")}</li>
+                  <li>{tr("Verifica el heartbeat en el detalle del runner.", "Verify the heartbeat in the runner details.")}</li>
+                  <li>{tr("Crea una tarea y deja que el runner la reclame.", "Create a task and let the runner claim it.")}</li>
                 </ol>
               </div>
             </CardContent>

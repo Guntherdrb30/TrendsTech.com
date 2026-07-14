@@ -13,6 +13,28 @@ export default async function LunaCodeOrchestratorPage({
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
+  const isEs = locale.startsWith("es");
+  const copy = isEs
+    ? {
+        projects: "Proyectos activos", tasks: "Tareas activas", queue: "Cola pendiente",
+        runners: "Runners y QR", online: "runner(s) en línea u ocupados", sessions: "sesiones QR activas",
+        recent: "Tareas recientes", empty: "Aún no hay tareas. Crea la primera desde el panel.",
+        queueLabel: "Cola", none: "ninguna", unassigned: "sin asignar", detail: "Ver detalle",
+        plan: "Plan y capacidad", currentPlan: "Plan actual", taskLimit: "Límite orientativo de tareas",
+        projectLimit: "Límite orientativo de proyectos", providers: "Proveedores IA activos",
+        quick: "Acciones rápidas", manage: "Gestionar proyectos", create: "Crear tarea nueva",
+        pair: "Emparejar runners", configure: "Configurar IA y QR",
+      }
+    : {
+        projects: "Active projects", tasks: "Active tasks", queue: "Pending queue",
+        runners: "Runners and QR", online: "runner(s) online or busy", sessions: "active QR sessions",
+        recent: "Recent tasks", empty: "There are no tasks yet. Create the first one from the dashboard.",
+        queueLabel: "Queue", none: "none", unassigned: "unassigned", detail: "View details",
+        plan: "Plan and capacity", currentPlan: "Current plan", taskLimit: "Indicative task limit",
+        projectLimit: "Indicative project limit", providers: "Active AI providers",
+        quick: "Quick actions", manage: "Manage projects", create: "Create new task",
+        pair: "Pair runners", configure: "Configure AI and QR",
+      };
   const user = await requireRole("TENANT_OPERATOR");
   const tenantId = await requireTenantId();
 
@@ -55,30 +77,30 @@ export default async function LunaCodeOrchestratorPage({
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         <Card>
           <CardHeader>
-            <CardTitle>Proyectos activos</CardTitle>
+            <CardTitle>{copy.projects}</CardTitle>
           </CardHeader>
           <CardContent className="text-3xl font-semibold">{projectCount}</CardContent>
         </Card>
         <Card>
           <CardHeader>
-            <CardTitle>Tareas activas</CardTitle>
+            <CardTitle>{copy.tasks}</CardTitle>
           </CardHeader>
           <CardContent className="text-3xl font-semibold">{activeTasks}</CardContent>
         </Card>
         <Card>
           <CardHeader>
-            <CardTitle>Cola pendiente</CardTitle>
+            <CardTitle>{copy.queue}</CardTitle>
           </CardHeader>
           <CardContent className="text-3xl font-semibold">{queuedTasks}</CardContent>
         </Card>
         <Card>
           <CardHeader>
-            <CardTitle>Runners y QR</CardTitle>
+            <CardTitle>{copy.runners}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-2">
             <div className="text-3xl font-semibold">{runnerCount}</div>
             <div className="text-xs text-slate-500 dark:text-slate-400">
-              {busyRunners} runner(s) online o busy · {remoteSessions} sesiones QR activas
+              {busyRunners} {copy.online} · {remoteSessions} {copy.sessions}
             </div>
           </CardContent>
         </Card>
@@ -87,12 +109,12 @@ export default async function LunaCodeOrchestratorPage({
       <div className="grid gap-6 xl:grid-cols-[1.1fr_0.9fr]">
         <Card>
           <CardHeader>
-            <CardTitle>Tareas recientes</CardTitle>
+            <CardTitle>{copy.recent}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
             {recentTasks.length === 0 ? (
               <p className="text-sm text-slate-500 dark:text-slate-400">
-                Aun no hay tareas. Crea la primera desde el panel.
+                {copy.empty}
               </p>
             ) : (
               recentTasks.map((task) => (
@@ -112,14 +134,14 @@ export default async function LunaCodeOrchestratorPage({
                     </span>
                   </div>
                   <div className="mt-3 flex flex-wrap gap-3 text-xs text-slate-500 dark:text-slate-400">
-                    <span>Queue: {task.queue?.status ?? "none"}</span>
+                    <span>{copy.queueLabel}: {task.queue?.status ?? copy.none}</span>
                     <span>Runtime: {task.queue?.runtime ?? "dry-run"}</span>
-                    <span>Runner: {task.queue?.runner?.name ?? "sin asignar"}</span>
+                    <span>Runner: {task.queue?.runner?.name ?? copy.unassigned}</span>
                     <Link
                       href={`/${locale}/dashboard/agents/luna-code-orchestrator/tasks/${task.id}`}
                       className="font-semibold text-blue-600 hover:underline"
                     >
-                      Ver detalle
+                      {copy.detail}
                     </Link>
                   </div>
                 </div>
@@ -131,46 +153,46 @@ export default async function LunaCodeOrchestratorPage({
         <div className="space-y-6">
           <Card>
             <CardHeader>
-              <CardTitle>Plan y capacidad</CardTitle>
+              <CardTitle>{copy.plan}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-3 text-sm text-slate-600 dark:text-slate-300">
               <p>
-                Plan actual: <span className="font-semibold text-slate-900 dark:text-white">{plan.planKey}</span>
+                {copy.currentPlan}: <span className="font-semibold text-slate-900 dark:text-white">{plan.planKey}</span>
               </p>
-              <p>Limite orientativo de tareas: {plan.taskLimitLabel}</p>
-              <p>Limite orientativo de proyectos: {plan.projectLimitLabel}</p>
-              <p>Proveedores IA activos: {providers}</p>
+              <p>{copy.taskLimit}: {plan.taskLimitLabel}</p>
+              <p>{copy.projectLimit}: {plan.projectLimitLabel}</p>
+              <p>{copy.providers}: {providers}</p>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader>
-              <CardTitle>Acciones rapidas</CardTitle>
+              <CardTitle>{copy.quick}</CardTitle>
             </CardHeader>
             <CardContent className="grid gap-3">
               <Link
                 href={`/${locale}/dashboard/agents/luna-code-orchestrator/projects`}
                 className="rounded-2xl border border-slate-200 px-4 py-3 text-sm font-semibold text-slate-700 transition hover:border-slate-900 hover:text-slate-900 dark:border-slate-800 dark:text-slate-200"
               >
-                Gestionar proyectos
+                {copy.manage}
               </Link>
               <Link
                 href={`/${locale}/dashboard/agents/luna-code-orchestrator/tasks/new`}
                 className="rounded-2xl border border-slate-200 px-4 py-3 text-sm font-semibold text-slate-700 transition hover:border-slate-900 hover:text-slate-900 dark:border-slate-800 dark:text-slate-200"
               >
-                Crear tarea nueva
+                {copy.create}
               </Link>
               <Link
                 href={`/${locale}/dashboard/agents/luna-code-orchestrator/runners`}
                 className="rounded-2xl border border-slate-200 px-4 py-3 text-sm font-semibold text-slate-700 transition hover:border-slate-900 hover:text-slate-900 dark:border-slate-800 dark:text-slate-200"
               >
-                Emparejar runners
+                {copy.pair}
               </Link>
               <Link
                 href={`/${locale}/dashboard/agents/luna-code-orchestrator/settings`}
                 className="rounded-2xl border border-slate-200 px-4 py-3 text-sm font-semibold text-slate-700 transition hover:border-slate-900 hover:text-slate-900 dark:border-slate-800 dark:text-slate-200"
               >
-                Configurar IA y QR
+                {copy.configure}
               </Link>
             </CardContent>
           </Card>

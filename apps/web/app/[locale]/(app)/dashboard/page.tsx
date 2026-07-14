@@ -123,23 +123,25 @@ export default async function DashboardPage({ params }: { params: Promise<{ loca
             <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500">
               {isEs ? 'Libro operativo' : 'Operations ledger'}
             </p>
-            <CardTitle className="text-2xl">Agentes configurados</CardTitle>
+            <CardTitle className="text-2xl">{isEs ? 'Agentes configurados' : 'Configured agents'}</CardTitle>
             <p className="text-sm text-slate-500">
-              Vista rapida del inventario operativo de agentes activos y en preparacion.
+              {isEs
+                ? 'Vista rapida del inventario operativo de agentes activos y en preparacion.'
+                : 'Quick view of active agents and agents being prepared.'}
             </p>
           </CardHeader>
           <CardContent>
             {agentInstances.length === 0 ? (
-              <p className="text-sm text-slate-500 dark:text-slate-400">Sin agentes configurados.</p>
+              <p className="text-sm text-slate-500 dark:text-slate-400">{isEs ? 'Sin agentes configurados.' : 'No agents configured.'}</p>
             ) : (
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Name</TableHead>
-                    <TableHead>Base key</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>End customer</TableHead>
-                    <TableHead>Actions</TableHead>
+                    <TableHead>{isEs ? 'Nombre' : 'Name'}</TableHead>
+                    <TableHead>{isEs ? 'Clave base' : 'Base key'}</TableHead>
+                    <TableHead>{isEs ? 'Estado' : 'Status'}</TableHead>
+                    <TableHead>{isEs ? 'Cliente final' : 'End customer'}</TableHead>
+                    <TableHead>{isEs ? 'Acciones' : 'Actions'}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -168,12 +170,12 @@ export default async function DashboardPage({ params }: { params: Promise<{ loca
               <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500">
                 {isEs ? 'Finanzas' : 'Finance'}
               </p>
-              <CardTitle className="text-2xl">Tokens disponibles</CardTitle>
+              <CardTitle className="text-2xl">{isEs ? 'Tokens disponibles' : 'Available tokens'}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
               <p className="text-4xl font-semibold tracking-[-0.04em]">{tokenBalanceLabel}</p>
               <Link className={linkClass} href={`/${locale}/recharge`}>
-                Recargar tokens
+                {isEs ? 'Recargar tokens' : 'Recharge tokens'}
               </Link>
             </CardContent>
           </Card>
@@ -187,13 +189,15 @@ export default async function DashboardPage({ params }: { params: Promise<{ loca
             </CardHeader>
             <CardContent className="space-y-3">
               <p className="text-sm text-slate-300">
-                Gestiona proyectos, tareas, proveedores IA y control remoto QR para desarrollo asistido.
+                {isEs
+                  ? 'Gestiona proyectos, tareas, proveedores IA y control remoto QR para desarrollo asistido.'
+                  : 'Manage projects, tasks, AI providers and QR remote control for assisted development.'}
               </p>
               <Link
                 className="interactive-chip inline-flex rounded-full border border-white/12 bg-white/10 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/16 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/25 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950"
                 href={`/${locale}/dashboard/agents/luna-code-orchestrator`}
               >
-                Abrir agente
+                {isEs ? 'Abrir agente' : 'Open agent'}
               </Link>
             </CardContent>
           </Card>
@@ -203,7 +207,7 @@ export default async function DashboardPage({ params }: { params: Promise<{ loca
               <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500">
                 {isEs ? 'Accesos administrativos' : 'Admin shortcuts'}
               </p>
-              <CardTitle className="text-2xl">Gestion rapida</CardTitle>
+              <CardTitle className="text-2xl">{isEs ? 'Gestion rapida' : 'Quick management'}</CardTitle>
             </CardHeader>
             <CardContent className="grid gap-4">
               <div className="interactive-panel rounded-[24px] border border-black/8 bg-slate-50/90 px-4 py-4">

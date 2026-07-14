@@ -5,7 +5,8 @@ import { ProjectsClient } from "./projects-client";
 
 export const dynamic = "force-dynamic";
 
-export default async function LunaProjectsPage() {
+export default async function LunaProjectsPage({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
   await requireRole("TENANT_OPERATOR");
   const tenantId = await requireTenantId();
   const projects = await prisma.devProject.findMany({
@@ -13,5 +14,5 @@ export default async function LunaProjectsPage() {
     orderBy: [{ isActive: "desc" }, { createdAt: "desc" }]
   });
 
-  return <ProjectsClient projects={projects} />;
+  return <ProjectsClient locale={locale} projects={projects} />;
 }

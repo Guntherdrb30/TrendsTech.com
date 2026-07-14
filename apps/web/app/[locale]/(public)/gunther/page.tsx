@@ -31,52 +31,85 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   });
 }
 
-const LINKS = [
-  {
-    title: 'LUNA ERP AI',
-    description: 'ERP inteligente para inventario, ventas, compras, reportes e IA.',
-    badge: 'Producto principal',
-    href: '/es/systems/luna',
-    external: false,
-    emoji: '🌙',
-  },
-  {
-    title: 'Carpihogar',
-    description: 'La Tienda Inteligente de Venezuela, operada sobre LUNA ERP AI.',
-    badge: 'Ecosistema real',
-    href: 'https://www.carpihogar.com',
-    external: true,
-    emoji: '🏠',
-  },
-  {
-    title: 'Trends172Tech',
-    description: 'Desarrollo de software, inteligencia artificial y automatización empresarial.',
-    badge: 'Empresa tecnológica',
-    href: '/es',
-    external: false,
-    emoji: '⚡',
-  },
-  {
-    title: 'Desarrollo de Software e IA',
-    description: 'Soluciones empresariales, ERP, automatización y plataformas digitales.',
-    badge: 'Servicios',
-    href: '/es/contact',
-    external: false,
-    emoji: '🤖',
-  },
-  {
-    title: 'WhatsApp',
-    description: 'Agenda una reunión o solicita información comercial.',
-    badge: 'Contacto directo',
-    href:
-      'https://wa.me/584122640371?text=' +
-      encodeURIComponent('Hola Gunther, quiero agendar una reunión'),
-    external: true,
-    emoji: '💬',
-  },
-];
-
-export default function GuntherPage() {
+export default async function GuntherPage({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
+  const isEs = locale.startsWith('es');
+  const commercialContactHref =
+    'https://wa.me/584122640371?text=' +
+    encodeURIComponent(
+      isEs
+        ? 'Hola Gunther, quiero conversar sobre una solución de software e IA'
+        : 'Hello Gunther, I would like to discuss a software and AI solution'
+    );
+  const copy = isEs
+    ? {
+        creator: 'Creador de LUNA ERP AI',
+        bio: 'Fundador de Carpihogar, La Tienda Inteligente de Venezuela. 17+ años construyendo empresa y tecnología real.',
+        quote: 'Construyendo tecnología desde la experiencia empresarial.',
+        linksLabel: 'Mis enlaces',
+      }
+    : {
+        creator: 'Creator of LUNA ERP AI',
+        bio: "Founder of Carpihogar, Venezuela's Intelligent Store. 17+ years building real companies and technology.",
+        quote: 'Building technology from real business experience.',
+        linksLabel: 'My links',
+      };
+  const links = [
+    {
+      title: 'LUNA ERP AI',
+      description: isEs
+        ? 'ERP inteligente para inventario, ventas, compras, reportes e IA.'
+        : 'Intelligent ERP for inventory, sales, purchasing, reporting, and AI.',
+      badge: isEs ? 'Producto principal' : 'Flagship product',
+      href: `/${locale}/systems/luna`,
+      external: false,
+      emoji: '🌙',
+    },
+    {
+      title: 'Carpihogar',
+      description: isEs
+        ? 'La Tienda Inteligente de Venezuela, operada sobre LUNA ERP AI.'
+        : "Venezuela's Intelligent Store, powered by LUNA ERP AI.",
+      badge: isEs ? 'Ecosistema real' : 'Live ecosystem',
+      href: 'https://www.carpihogar.com',
+      external: true,
+      emoji: '🏠',
+    },
+    {
+      title: 'Trends172Tech',
+      description: isEs
+        ? 'Desarrollo de software, inteligencia artificial y automatización empresarial.'
+        : 'Business software, artificial intelligence, and automation development.',
+      badge: isEs ? 'Empresa tecnológica' : 'Technology company',
+      href: `/${locale}`,
+      external: false,
+      emoji: '⚡',
+    },
+    {
+      title: isEs ? 'Desarrollo de Software e IA' : 'Software and AI Development',
+      description: isEs
+        ? 'Soluciones empresariales, ERP, automatización y plataformas digitales.'
+        : 'Business solutions, ERP, automation, and digital platforms.',
+      badge: isEs ? 'Servicios' : 'Services',
+      href: commercialContactHref,
+      external: true,
+      emoji: '🤖',
+    },
+    {
+      title: 'WhatsApp',
+      description: isEs
+        ? 'Agenda una reunión o solicita información comercial.'
+        : 'Schedule a meeting or request commercial information.',
+      badge: isEs ? 'Contacto directo' : 'Direct contact',
+      href:
+        'https://wa.me/584122640371?text=' +
+        encodeURIComponent(
+          isEs ? 'Hola Gunther, quiero agendar una reunión' : 'Hello Gunther, I would like to schedule a meeting'
+        ),
+      external: true,
+      emoji: '💬',
+    },
+  ];
   const fontClass = `${display.variable} ${body.variable} font-[var(--font-body)]`;
 
   return (
@@ -129,20 +162,19 @@ export default function GuntherPage() {
               CEO · Trends172Tech
             </span>
             <span className="rounded-full border border-[#e5e7eb] bg-[#f9fafb] px-3 py-1 text-[12px] font-medium text-[#6b7280]">
-              Creador de LUNA ERP AI
+              {copy.creator}
             </span>
           </div>
 
           {/* Bio */}
           <p className="mt-4 max-w-xs text-[14px] leading-relaxed text-[#6b7280]">
-            Fundador de <span className="font-medium text-[#374151]">Carpihogar</span>, La Tienda
-            Inteligente de Venezuela. 17+ años construyendo empresa y tecnología real.
+            {copy.bio}
           </p>
 
           {/* Frase */}
           <div className="mt-4 rounded-full border border-[#e5e7eb] bg-[#f9fafb] px-4 py-2">
             <p className="text-[12px] font-medium text-[#9ca3af]">
-              Construyendo tecnología desde la experiencia empresarial.
+              {copy.quote}
             </p>
           </div>
         </div>
@@ -151,14 +183,14 @@ export default function GuntherPage() {
         <div className="mb-6 flex w-full items-center gap-3">
           <div className="h-px flex-1 bg-[#f3f4f6]" />
           <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#d1d5db]">
-            Mis enlaces
+            {copy.linksLabel}
           </span>
           <div className="h-px flex-1 bg-[#f3f4f6]" />
         </div>
 
         {/* ── Links ── */}
         <div className="flex w-full flex-col gap-3">
-          {LINKS.map((link) => (
+          {links.map((link) => (
             <LinkHubCard key={link.href} {...link} />
           ))}
         </div>

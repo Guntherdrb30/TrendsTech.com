@@ -121,7 +121,7 @@ export default async function DashboardLayout({
             {isEs ? 'Agentes contratados' : 'Contracted agents'}
           </p>
           <p className="mt-2 text-2xl font-semibold tracking-[-0.03em] text-slate-900 dark:text-white">
-            {activeAgents.length} activos
+            {activeAgents.length} {isEs ? 'activos' : 'active'}
           </p>
           <div className="mt-4 space-y-2 text-xs text-slate-600 dark:text-slate-300">
             {activeAgents.length === 0 ? (

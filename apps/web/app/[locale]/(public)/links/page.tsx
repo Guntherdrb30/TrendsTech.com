@@ -31,59 +31,100 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   });
 }
 
-const STATS = [
-  { value: '99.9%', label: 'Uptime' },
-  { value: '24/7', label: 'Soporte' },
-  { value: '48h', label: 'Entrega' },
-];
-
-const LINKS = [
-  {
-    title: 'LUNA ERP AI',
-    description:
-      'Plataforma ERP inteligente para gestionar operaciones, inventario, ventas, compras e IA.',
-    badge: 'ERP AI',
-    href: '/es/systems/luna',
-    external: false,
-    emoji: '🌙',
-  },
-  {
-    title: 'Desarrollo de Software a Medida',
-    description: 'Plataformas, sistemas internos, SaaS, dashboards y soluciones empresariales.',
-    badge: 'Software',
-    href: '/es/contact',
-    external: false,
-    emoji: '💻',
-  },
-  {
-    title: 'Inteligencia Artificial Empresarial',
-    description: 'Automatización, agentes IA, reportes inteligentes y flujos operativos con IA.',
-    badge: 'IA',
-    href: '/es/contact',
-    external: false,
-    emoji: '🤖',
-  },
-  {
-    title: 'Carpihogar',
-    description: 'Caso real: La Tienda Inteligente de Venezuela operada sobre LUNA ERP AI.',
-    badge: 'Caso real',
-    href: 'https://www.carpihogar.com',
-    external: true,
-    emoji: '🏠',
-  },
-  {
-    title: 'WhatsApp Comercial',
-    description: 'Habla con nuestro equipo para evaluar tu proyecto.',
-    badge: 'Contacto',
-    href:
-      'https://wa.me/584122640371?text=' +
-      encodeURIComponent('Hola, quiero información sobre los servicios de Trends172Tech'),
-    external: true,
-    emoji: '💬',
-  },
-];
-
-export default function LinksPage() {
+export default async function LinksPage({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
+  const isEs = locale.startsWith('es');
+  const commercialContactHref =
+    'https://wa.me/584122640371?text=' +
+    encodeURIComponent(
+      isEs
+        ? 'Hola, quiero evaluar un proyecto con Trends172Tech'
+        : 'Hello, I would like to discuss a project with Trends172Tech'
+    );
+  const stats = [
+    { value: '99.9%', label: 'Uptime' },
+    { value: '24/7', label: isEs ? 'Soporte' : 'Support' },
+    { value: '48h', label: isEs ? 'Entrega' : 'Delivery' },
+  ];
+  const copy = isEs
+    ? {
+        ai: 'Inteligencia Artificial',
+        automation: 'Automatización',
+        descriptionPrefix: 'Creamos soluciones digitales para empresas que quieren',
+        scale: 'escalar',
+        descriptionSuffix: 'automatizar procesos y operar con tecnología avanzada.',
+        quote: 'Tecnología aplicada a negocios reales.',
+        services: 'Nuestros servicios',
+        footer: 'Software · IA · Automatización · LUNA ERP AI',
+      }
+    : {
+        ai: 'Artificial Intelligence',
+        automation: 'Automation',
+        descriptionPrefix: 'We create digital solutions for companies that want to',
+        scale: 'scale',
+        descriptionSuffix: 'automate processes, and operate with advanced technology.',
+        quote: 'Technology applied to real businesses.',
+        services: 'Our services',
+        footer: 'Software · AI · Automation · LUNA ERP AI',
+      };
+  const links = [
+    {
+      title: 'LUNA ERP AI',
+      description: isEs
+        ? 'Plataforma ERP inteligente para gestionar operaciones, inventario, ventas, compras e IA.'
+        : 'Intelligent ERP platform for managing operations, inventory, sales, purchasing, and AI.',
+      badge: 'ERP AI',
+      href: `/${locale}/systems/luna`,
+      external: false,
+      emoji: '🌙',
+    },
+    {
+      title: isEs ? 'Desarrollo de Software a Medida' : 'Custom Software Development',
+      description: isEs
+        ? 'Plataformas, sistemas internos, SaaS, dashboards y soluciones empresariales.'
+        : 'Platforms, internal systems, SaaS, dashboards, and business solutions.',
+      badge: 'Software',
+      href: commercialContactHref,
+      external: true,
+      emoji: '💻',
+    },
+    {
+      title: isEs ? 'Inteligencia Artificial Empresarial' : 'Business Artificial Intelligence',
+      description: isEs
+        ? 'Automatización, agentes IA, reportes inteligentes y flujos operativos con IA.'
+        : 'Automation, AI agents, intelligent reporting, and AI-powered operational workflows.',
+      badge: isEs ? 'IA' : 'AI',
+      href: commercialContactHref,
+      external: true,
+      emoji: '🤖',
+    },
+    {
+      title: 'Carpihogar',
+      description: isEs
+        ? 'Caso real: La Tienda Inteligente de Venezuela operada sobre LUNA ERP AI.'
+        : "Live case: Venezuela's Intelligent Store powered by LUNA ERP AI.",
+      badge: isEs ? 'Caso real' : 'Live case',
+      href: 'https://www.carpihogar.com',
+      external: true,
+      emoji: '🏠',
+    },
+    {
+      title: isEs ? 'WhatsApp Comercial' : 'Sales WhatsApp',
+      description: isEs
+        ? 'Habla con nuestro equipo para evaluar tu proyecto.'
+        : 'Talk with our team to evaluate your project.',
+      badge: isEs ? 'Contacto' : 'Contact',
+      href:
+        'https://wa.me/584122640371?text=' +
+        encodeURIComponent(
+          isEs
+            ? 'Hola, quiero información sobre los servicios de Trends172Tech'
+            : 'Hello, I would like information about Trends172Tech services'
+        ),
+      external: true,
+      emoji: '💬',
+    },
+  ];
   const fontClass = `${display.variable} ${body.variable} font-[var(--font-body)]`;
 
   return (
@@ -136,31 +177,31 @@ export default function LinksPage() {
               Software
             </span>
             <span className="rounded-full border border-[#e5e7eb] bg-[#f9fafb] px-3 py-1 text-[12px] font-medium text-[#6b7280]">
-              Inteligencia Artificial
+              {copy.ai}
             </span>
             <span className="rounded-full border border-[#e5e7eb] bg-[#f9fafb] px-3 py-1 text-[12px] font-medium text-[#6b7280]">
-              Automatización
+              {copy.automation}
             </span>
           </div>
 
           {/* Descripción */}
           <p className="mt-4 max-w-xs text-[14px] leading-relaxed text-[#6b7280]">
-            Creamos soluciones digitales para empresas que quieren{' '}
-            <span className="font-medium text-[#374151]">escalar</span>, automatizar procesos y
-            operar con tecnología avanzada.
+            {copy.descriptionPrefix}{' '}
+            <span className="font-medium text-[#374151]">{copy.scale}</span>,{' '}
+            {copy.descriptionSuffix}
           </p>
 
           {/* Frase */}
           <div className="mt-4 rounded-full border border-[#e5e7eb] bg-[#f9fafb] px-4 py-2">
             <p className="text-[12px] font-medium text-[#9ca3af]">
-              Tecnología aplicada a negocios reales.
+              {copy.quote}
             </p>
           </div>
         </div>
 
         {/* ── Stats ── */}
         <div className="mb-8 grid w-full grid-cols-3 gap-3">
-          {STATS.map((stat) => (
+          {stats.map((stat) => (
             <div
               key={stat.label}
               className="rounded-2xl border border-[#f3f4f6] bg-[#fafafa] px-3 py-4 text-center"
@@ -177,14 +218,14 @@ export default function LinksPage() {
         <div className="mb-6 flex w-full items-center gap-3">
           <div className="h-px flex-1 bg-[#f3f4f6]" />
           <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#d1d5db]">
-            Nuestros servicios
+            {copy.services}
           </span>
           <div className="h-px flex-1 bg-[#f3f4f6]" />
         </div>
 
         {/* ── Links ── */}
         <div className="flex w-full flex-col gap-3">
-          {LINKS.map((link) => (
+          {links.map((link) => (
             <LinkHubCard key={link.href} {...link} />
           ))}
         </div>
@@ -202,7 +243,7 @@ export default function LinksPage() {
               />
             </div>
             <p className="text-[11px] text-[#d1d5db]">
-              Trends172Tech · Software · IA · Automatización · LUNA ERP AI
+              Trends172Tech · {copy.footer}
             </p>
           </div>
         </div>

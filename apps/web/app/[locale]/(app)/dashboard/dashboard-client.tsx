@@ -112,7 +112,9 @@ export function DashboardClient({ tenantMode, endCustomers, profilePhone }: Dash
             </p>
             <CardTitle className="text-2xl">{isEs ? 'Crear cliente final' : 'Create end customer'}</CardTitle>
             <p className="text-sm text-slate-500">
-              Registra nuevos clientes finales con una captura limpia y lista para operacion.
+              {isEs
+                ? 'Registra nuevos clientes finales con una captura limpia y lista para operacion.'
+                : 'Register end customers with a clear, production-ready setup.'}
             </p>
           </CardHeader>
           <CardContent>
@@ -157,15 +159,17 @@ export function DashboardClient({ tenantMode, endCustomers, profilePhone }: Dash
           <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500">
             {isEs ? 'Estudio de agentes' : 'Agent studio'}
           </p>
-          <CardTitle className="text-2xl">Configurar agente</CardTitle>
+          <CardTitle className="text-2xl">{isEs ? 'Configurar agente' : 'Configure agent'}</CardTitle>
           <p className="text-sm text-slate-500">
-            Define canal, idioma y contacto operativo con un setup mas claro para produccion.
+            {isEs
+              ? 'Define canal, idioma y contacto operativo con un setup mas claro para produccion.'
+              : 'Define the channel, language and operational contact with a clearer production setup.'}
           </p>
         </CardHeader>
         <CardContent>
           <form onSubmit={submitAgent} className="space-y-5">
             <div className="space-y-2">
-              <Label htmlFor="agentName">Nombre del agente</Label>
+              <Label htmlFor="agentName">{isEs ? 'Nombre del agente' : 'Agent name'}</Label>
               <Input
                 id="agentName"
                 value={agentName}
@@ -174,7 +178,7 @@ export function DashboardClient({ tenantMode, endCustomers, profilePhone }: Dash
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="baseAgentKey">Tipo de agente</Label>
+              <Label htmlFor="baseAgentKey">{isEs ? 'Tipo de agente' : 'Agent type'}</Label>
               <select
                 id="baseAgentKey"
                 className={selectClassName}
@@ -186,15 +190,15 @@ export function DashboardClient({ tenantMode, endCustomers, profilePhone }: Dash
                 }
               >
                 <option value="marketing">Marketing</option>
-                <option value="sales">Ventas</option>
-                <option value="appointments">Citas</option>
-                <option value="support">Soporte</option>
-                <option value="public_voice">Voz publica</option>
+                <option value="sales">{isEs ? 'Ventas' : 'Sales'}</option>
+                <option value="appointments">{isEs ? 'Citas' : 'Appointments'}</option>
+                <option value="support">{isEs ? 'Soporte' : 'Support'}</option>
+                <option value="public_voice">{isEs ? 'Voz publica' : 'Public voice'}</option>
               </select>
             </div>
             <div className="grid gap-4 md:grid-cols-2">
               <div className="space-y-2">
-                <Label htmlFor="languageDefault">Idioma</Label>
+                <Label htmlFor="languageDefault">{isEs ? 'Idioma' : 'Language'}</Label>
                 <select
                   id="languageDefault"
                   className={selectClassName}
@@ -206,7 +210,7 @@ export function DashboardClient({ tenantMode, endCustomers, profilePhone }: Dash
                 </select>
               </div>
               <div className="space-y-2">
-                <Label htmlFor="status">Estado</Label>
+                <Label htmlFor="status">{isEs ? 'Estado' : 'Status'}</Label>
                 <select
                   id="status"
                   className={selectClassName}
@@ -221,7 +225,7 @@ export function DashboardClient({ tenantMode, endCustomers, profilePhone }: Dash
             </div>
             {tenantMode === 'RESELLER' ? (
               <div className="space-y-2">
-                <Label htmlFor="endCustomerId">Cliente final</Label>
+                <Label htmlFor="endCustomerId">{isEs ? 'Cliente final' : 'End customer'}</Label>
                 <select
                   id="endCustomerId"
                   className={selectClassName}
@@ -252,7 +256,7 @@ export function DashboardClient({ tenantMode, endCustomers, profilePhone }: Dash
             ) : null}
             {!useProfilePhone ? (
               <div className="space-y-2">
-                <Label htmlFor="agentPhone">Telefono del agente</Label>
+                <Label htmlFor="agentPhone">{isEs ? 'Telefono del agente' : 'Agent phone'}</Label>
                 <Input
                   id="agentPhone"
                   value={agentPhone}

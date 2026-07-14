@@ -8,7 +8,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-export function ProjectsClient({ projects }: { projects: DevProject[] }) {
+export function ProjectsClient({ locale, projects }: { locale: string; projects: DevProject[] }) {
+  const isEs = locale.startsWith("es");
+  const tr = (es: string, en: string) => (isEs ? es : en);
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
@@ -40,7 +42,7 @@ export function ProjectsClient({ projects }: { projects: DevProject[] }) {
 
       const payload = (await response.json().catch(() => ({}))) as { error?: string };
       if (!response.ok) {
-        setError(payload.error ?? "No se pudo crear el proyecto.");
+        setError(payload.error ?? tr("No se pudo crear el proyecto.", "The project could not be created."));
         return;
       }
 
@@ -58,12 +60,12 @@ export function ProjectsClient({ projects }: { projects: DevProject[] }) {
     <div className="grid gap-6 xl:grid-cols-[0.85fr_1.15fr]">
       <Card>
         <CardHeader>
-          <CardTitle>Nuevo proyecto</CardTitle>
+          <CardTitle>{tr("Nuevo proyecto", "New project")}</CardTitle>
         </CardHeader>
         <CardContent>
           <form onSubmit={submitProject} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="project-name">Nombre</Label>
+              <Label htmlFor="project-name">{tr("Nombre", "Name")}</Label>
               <Input id="project-name" value={name} onChange={(event) => setName(event.target.value)} required />
             </div>
             <div className="space-y-2">
@@ -71,7 +73,7 @@ export function ProjectsClient({ projects }: { projects: DevProject[] }) {
               <Input id="project-slug" value={slug} onChange={(event) => setSlug(event.target.value)} required />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="project-repo">Repositorio</Label>
+              <Label htmlFor="project-repo">{tr("Repositorio", "Repository")}</Label>
               <Input
                 id="project-repo"
                 value={repositoryUrl}
@@ -80,7 +82,7 @@ export function ProjectsClient({ projects }: { projects: DevProject[] }) {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="project-path">Ruta local</Label>
+              <Label htmlFor="project-path">{tr("Ruta local", "Local path")}</Label>
               <Input
                 id="project-path"
                 value={localPath}
@@ -98,7 +100,7 @@ export function ProjectsClient({ projects }: { projects: DevProject[] }) {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="project-mode">Modo</Label>
+                <Label htmlFor="project-mode">{tr("Modo", "Mode")}</Label>
                 <select
                   id="project-mode"
                   className="h-9 w-full rounded border border-slate-200 bg-white px-3 text-sm dark:border-slate-700 dark:bg-slate-900"
@@ -113,7 +115,7 @@ export function ProjectsClient({ projects }: { projects: DevProject[] }) {
             </div>
             {error ? <p className="text-sm text-red-500">{error}</p> : null}
             <Button type="submit" disabled={isPending}>
-              {isPending ? "Guardando..." : "Crear proyecto"}
+              {isPending ? tr("Guardando...", "Saving...") : tr("Crear proyecto", "Create project")}
             </Button>
           </form>
         </CardContent>
@@ -121,12 +123,12 @@ export function ProjectsClient({ projects }: { projects: DevProject[] }) {
 
       <Card>
         <CardHeader>
-          <CardTitle>Proyectos registrados</CardTitle>
+          <CardTitle>{tr("Proyectos registrados", "Registered projects")}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
           {projects.length === 0 ? (
             <p className="text-sm text-slate-500 dark:text-slate-400">
-              Aun no hay proyectos para este agente.
+              {tr("Aún no hay proyectos para este agente.", "There are no projects for this agent yet.")}
             </p>
           ) : (
             projects.map((project) => (
@@ -144,9 +146,9 @@ export function ProjectsClient({ projects }: { projects: DevProject[] }) {
                   </span>
                 </div>
                 <div className="mt-3 grid gap-1 text-xs text-slate-500 dark:text-slate-400">
-                  <div>Repositorio: {project.repositoryUrl ?? "No definido"}</div>
-                  <div>Ruta local: {project.localPath ?? "No definida"}</div>
-                  <div>Branch por defecto: {project.defaultBranch ?? "main"}</div>
+                  <div>{tr("Repositorio", "Repository")}: {project.repositoryUrl ?? tr("No definido", "Not set")}</div>
+                  <div>{tr("Ruta local", "Local path")}: {project.localPath ?? tr("No definida", "Not set")}</div>
+                  <div>{tr("Branch por defecto", "Default branch")}: {project.defaultBranch ?? "main"}</div>
                 </div>
               </div>
             ))

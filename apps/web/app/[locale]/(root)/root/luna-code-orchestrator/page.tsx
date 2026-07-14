@@ -20,6 +20,8 @@ export default async function RootLunaCodeOrchestratorPage({
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
+  const isEs = locale.startsWith("es");
+  const tr = (es: string, en: string) => (isEs ? es : en);
   await requireRole("ROOT");
 
   const now = new Date();
@@ -186,43 +188,45 @@ export default async function RootLunaCodeOrchestratorPage({
             Root | Luna Code Orchestrator
           </div>
           <h1 className="text-2xl font-semibold text-slate-900 dark:text-white">
-            Visibilidad comercial y operativa por tenant
+            {tr("Visibilidad comercial y operativa por tenant", "Commercial and operational visibility by tenant")}
           </h1>
           <p className="max-w-3xl text-sm text-slate-500 dark:text-slate-400">
-            Monitorea adopcion, limites bloqueados, runners activos y carga mensual del agente en
-            todos los tenants.
+            {tr(
+              "Monitorea adopcion, limites bloqueados, runners activos y carga mensual del agente en todos los tenants.",
+              "Monitor adoption, blocked limits, active runners and monthly agent workload across all tenants."
+            )}
           </p>
         </div>
         <Link
           href={`/${locale}/root`}
           className="inline-flex items-center justify-center rounded-full border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:border-slate-900 hover:text-slate-900 dark:border-slate-700 dark:text-slate-200"
         >
-          Volver a root
+          {tr("Volver a root", "Back to root")}
         </Link>
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         <Card>
           <CardHeader>
-            <CardTitle>Tenants con uso</CardTitle>
+            <CardTitle>{tr("Tenants con uso", "Tenants with usage")}</CardTitle>
           </CardHeader>
           <CardContent className="text-3xl font-semibold">{rows.length}</CardContent>
         </Card>
         <Card>
           <CardHeader>
-            <CardTitle>Tareas creadas</CardTitle>
+            <CardTitle>{tr("Tareas creadas", "Tasks created")}</CardTitle>
           </CardHeader>
           <CardContent className="text-3xl font-semibold">{totals.tasksCreated}</CardContent>
         </Card>
         <Card>
           <CardHeader>
-            <CardTitle>Tareas ejecutadas</CardTitle>
+            <CardTitle>{tr("Tareas ejecutadas", "Tasks executed")}</CardTitle>
           </CardHeader>
           <CardContent className="text-3xl font-semibold">{totals.tasksExecuted}</CardContent>
         </Card>
         <Card>
           <CardHeader>
-            <CardTitle>Bloqueos del mes</CardTitle>
+            <CardTitle>{tr("Bloqueos del mes", "Blocks this month")}</CardTitle>
           </CardHeader>
           <CardContent className="text-3xl font-semibold">{totals.blocked}</CardContent>
         </Card>
@@ -231,23 +235,23 @@ export default async function RootLunaCodeOrchestratorPage({
       <div className="grid gap-6 xl:grid-cols-[1.15fr_0.85fr]">
         <Card>
           <CardHeader>
-            <CardTitle>Resumen por tenant</CardTitle>
+            <CardTitle>{tr("Resumen por tenant", "Summary by tenant")}</CardTitle>
           </CardHeader>
           <CardContent>
             {rows.length === 0 ? (
               <p className="text-sm text-slate-500 dark:text-slate-400">
-                Aun no hay adopcion comercial registrada de Luna Code Orchestrator.
+                {tr("Aun no hay adopcion comercial registrada de Luna Code Orchestrator.", "No commercial adoption of Luna Code Orchestrator has been recorded yet.")}
               </p>
             ) : (
               <Table>
                 <TableHeader>
                   <TableRow>
                     <TableHead>Tenant</TableHead>
-                    <TableHead>Plan</TableHead>
-                    <TableHead>Tareas</TableHead>
-                    <TableHead>Proyectos</TableHead>
+                    <TableHead>{tr("Plan", "Plan")}</TableHead>
+                    <TableHead>{tr("Tareas", "Tasks")}</TableHead>
+                    <TableHead>{tr("Proyectos", "Projects")}</TableHead>
                     <TableHead>Runners</TableHead>
-                    <TableHead>Bloqueos</TableHead>
+                    <TableHead>{tr("Bloqueos", "Blocks")}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -297,12 +301,12 @@ export default async function RootLunaCodeOrchestratorPage({
 
         <Card>
           <CardHeader>
-            <CardTitle>Ultimos bloqueos comerciales</CardTitle>
+            <CardTitle>{tr("Ultimos bloqueos comerciales", "Latest commercial blocks")}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
             {blockedEvents.length === 0 ? (
               <p className="text-sm text-slate-500 dark:text-slate-400">
-                No hay bloqueos por plan en el periodo actual.
+                {tr("No hay bloqueos por plan en el periodo actual.", "There are no plan blocks in the current period.")}
               </p>
             ) : (
               blockedEvents.slice(0, 10).map((event) => {

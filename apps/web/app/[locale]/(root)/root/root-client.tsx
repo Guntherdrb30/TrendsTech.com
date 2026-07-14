@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 
 interface RootClientProps {
+  locale: string;
   usdToVesRate: string;
   usdPaymentDiscountPercent: string;
   tokenInputUsdPer1M: string;
@@ -23,6 +24,7 @@ interface RootClientProps {
 }
 
 export function RootClient({
+  locale,
   usdToVesRate,
   usdPaymentDiscountPercent,
   tokenInputUsdPer1M,
@@ -36,6 +38,8 @@ export function RootClient({
   zellePhone,
   tenantOptions
 }: RootClientProps) {
+  const isEs = locale.startsWith('es');
+  const tr = (es: string, en: string) => (isEs ? es : en);
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [settingsError, setSettingsError] = useState<string | null>(null);
@@ -91,7 +95,7 @@ export function RootClient({
 
       if (!response.ok) {
         const result = await response.json();
-        setSettingsError(result?.error ?? 'No se pudieron guardar los ajustes.');
+        setSettingsError(result?.error ?? tr('No se pudieron guardar los ajustes.', 'The settings could not be saved.'));
         return;
       }
 
@@ -116,7 +120,7 @@ export function RootClient({
 
       if (!response.ok) {
         const result = await response.json();
-        setTenantError(result?.error ?? 'No se pudo crear el tenant.');
+        setTenantError(result?.error ?? tr('No se pudo crear el tenant.', 'The tenant could not be created.'));
         return;
       }
 
@@ -134,11 +138,11 @@ export function RootClient({
 
     const amountValue = Number(tokenAmount);
     if (!tokenTenantId) {
-      setTokenError('Selecciona un tenant.');
+      setTokenError(tr('Selecciona un tenant.', 'Select a tenant.'));
       return;
     }
     if (!Number.isFinite(amountValue) || amountValue <= 0) {
-      setTokenError('Ingresa un monto en USD valido.');
+      setTokenError(tr('Ingresa un monto en USD valido.', 'Enter a valid USD amount.'));
       return;
     }
 
@@ -154,12 +158,12 @@ export function RootClient({
 
       if (!response.ok) {
         const result = await response.json();
-        setTokenError(result?.error ?? 'No se pudo ajustar el saldo de tokens.');
+        setTokenError(result?.error ?? tr('No se pudo ajustar el saldo de tokens.', 'The token balance could not be adjusted.'));
         return;
       }
 
       setTokenAmount('');
-      setTokenSuccess('Saldo actualizado.');
+      setTokenSuccess(tr('Saldo actualizado.', 'Balance updated.'));
       router.refresh();
     });
   };
@@ -168,12 +172,12 @@ export function RootClient({
     <div className="grid gap-6 lg:grid-cols-2">
       <Card>
         <CardHeader>
-        <CardTitle>Configuracion global</CardTitle>
+        <CardTitle>{tr('Configuracion global', 'Global settings')}</CardTitle>
         </CardHeader>
         <CardContent>
           <form onSubmit={submitSettings} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="usdToVesRate">Tasa USD a VES</Label>
+              <Label htmlFor="usdToVesRate">{tr('Tasa USD a VES', 'USD to VES rate')}</Label>
               <Input
                 id="usdToVesRate"
                 value={rate}
@@ -182,7 +186,7 @@ export function RootClient({
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="usdPaymentDiscountPercent">Descuento pago USD %</Label>
+              <Label htmlFor="usdPaymentDiscountPercent">{tr('Descuento pago USD %', 'USD payment discount %')}</Label>
               <Input
                 id="usdPaymentDiscountPercent"
                 value={discount}
@@ -191,7 +195,7 @@ export function RootClient({
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="tokenInputUsdPer1M">OpenAI input / 1M tokens (USD)</Label>
+              <Label htmlFor="tokenInputUsdPer1M">{tr('Entrada del proveedor IA / 1M tokens (USD)', 'AI provider input / 1M tokens (USD)')}</Label>
               <Input
                 id="tokenInputUsdPer1M"
                 value={tokenInput}
@@ -200,7 +204,7 @@ export function RootClient({
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="tokenOutputUsdPer1M">OpenAI output / 1M tokens (USD)</Label>
+              <Label htmlFor="tokenOutputUsdPer1M">{tr('Salida del proveedor IA / 1M tokens (USD)', 'AI provider output / 1M tokens (USD)')}</Label>
               <Input
                 id="tokenOutputUsdPer1M"
                 value={tokenOutput}
@@ -209,7 +213,7 @@ export function RootClient({
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="tokenCachedInputUsdPer1M">OpenAI cached input / 1M tokens (USD)</Label>
+              <Label htmlFor="tokenCachedInputUsdPer1M">{tr('Entrada en cache / 1M tokens (USD)', 'Cached input / 1M tokens (USD)')}</Label>
               <Input
                 id="tokenCachedInputUsdPer1M"
                 value={tokenCachedInput}
@@ -218,7 +222,7 @@ export function RootClient({
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="tokenMarkupPercent">Markup % (ganancia)</Label>
+              <Label htmlFor="tokenMarkupPercent">{tr('Markup % (ganancia)', 'Markup % (profit)')}</Label>
               <Input
                 id="tokenMarkupPercent"
                 value={tokenMarkup}
@@ -227,7 +231,7 @@ export function RootClient({
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="roundingRule">Regla de redondeo</Label>
+              <Label htmlFor="roundingRule">{tr('Regla de redondeo', 'Rounding rule')}</Label>
               <select
                 id="roundingRule"
                 className="h-9 w-full rounded border border-slate-200 bg-white px-3 text-sm dark:border-slate-700 dark:bg-slate-900"
@@ -240,7 +244,7 @@ export function RootClient({
               </select>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="kbUrlPageLimit">Limite de paginas KB</Label>
+              <Label htmlFor="kbUrlPageLimit">{tr('Limite de paginas KB', 'KB page limit')}</Label>
               <Input
                 id="kbUrlPageLimit"
                 value={pageLimit}
@@ -249,7 +253,7 @@ export function RootClient({
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="zelleRecipientName">Nombre Zelle</Label>
+              <Label htmlFor="zelleRecipientName">{tr('Nombre Zelle', 'Zelle name')}</Label>
               <Input
                 id="zelleRecipientName"
                 value={zelleName}
@@ -266,7 +270,7 @@ export function RootClient({
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="zellePhone">Telefono Zelle</Label>
+              <Label htmlFor="zellePhone">{tr('Telefono Zelle', 'Zelle phone')}</Label>
               <Input
                 id="zellePhone"
                 value={zellePhoneValue}
@@ -275,7 +279,7 @@ export function RootClient({
             </div>
             {settingsError ? <p className="text-sm text-red-500">{settingsError}</p> : null}
             <Button type="submit" disabled={isPending}>
-              Guardar ajustes
+              {tr('Guardar ajustes', 'Save settings')}
             </Button>
           </form>
         </CardContent>
@@ -283,19 +287,19 @@ export function RootClient({
 
       <Card>
         <CardHeader>
-          <CardTitle>Tabla de precios (USD)</CardTitle>
+          <CardTitle>{tr('Tabla de precios (USD)', 'Pricing table (USD)')}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-3 text-sm text-slate-600 dark:text-slate-300">
           <p>
-            OpenAI vs precio al cliente (con markup {markupValue.toFixed(2)}%).
+            {tr('Costo del proveedor IA frente al precio al cliente', 'AI provider cost versus customer price')} ({tr('con markup', 'with markup')} {markupValue.toFixed(2)}%).
           </p>
           <div className="overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-800">
             <table className="w-full text-left text-xs">
               <thead className="bg-slate-50 text-slate-500 dark:bg-slate-900/60 dark:text-slate-400">
                 <tr>
-                  <th className="px-3 py-2 font-semibold">Concepto</th>
-                  <th className="px-3 py-2 font-semibold">OpenAI / 1M</th>
-                  <th className="px-3 py-2 font-semibold">Cliente / 1M</th>
+                  <th className="px-3 py-2 font-semibold">{tr('Concepto', 'Concept')}</th>
+                  <th className="px-3 py-2 font-semibold">{tr('Proveedor / 1M', 'Provider / 1M')}</th>
+                  <th className="px-3 py-2 font-semibold">{tr('Cliente / 1M', 'Customer / 1M')}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-200 dark:divide-slate-800">
@@ -322,12 +326,12 @@ export function RootClient({
 
       <Card>
         <CardHeader>
-        <CardTitle>Crear tenant</CardTitle>
+        <CardTitle>{tr('Crear tenant', 'Create tenant')}</CardTitle>
         </CardHeader>
         <CardContent>
           <form onSubmit={submitTenant} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="tenantName">Nombre</Label>
+              <Label htmlFor="tenantName">{tr('Nombre', 'Name')}</Label>
               <Input
                 id="tenantName"
                 value={tenantName}
@@ -345,20 +349,20 @@ export function RootClient({
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="tenantMode">Modo</Label>
+              <Label htmlFor="tenantMode">{tr('Modo', 'Mode')}</Label>
               <select
                 id="tenantMode"
                 className="h-9 w-full rounded border border-slate-200 bg-white px-3 text-sm dark:border-slate-700 dark:bg-slate-900"
                 value={tenantMode}
                 onChange={(event) => setTenantMode(event.target.value as 'SINGLE' | 'RESELLER')}
               >
-                <option value="SINGLE">Unico</option>
-                <option value="RESELLER">Revendedor</option>
+                <option value="SINGLE">{tr('Unico', 'Single')}</option>
+                <option value="RESELLER">{tr('Revendedor', 'Reseller')}</option>
               </select>
             </div>
             {tenantError ? <p className="text-sm text-red-500">{tenantError}</p> : null}
             <Button type="submit" disabled={isPending}>
-              Crear tenant
+              {tr('Crear tenant', 'Create tenant')}
             </Button>
           </form>
         </CardContent>
@@ -366,7 +370,7 @@ export function RootClient({
 
       <Card>
         <CardHeader>
-          <CardTitle>Recargar saldo (USD)</CardTitle>
+          <CardTitle>{tr('Recargar saldo (USD)', 'Recharge balance (USD)')}</CardTitle>
         </CardHeader>
         <CardContent>
           <form onSubmit={submitTokens} className="space-y-4">
@@ -379,7 +383,7 @@ export function RootClient({
                 onChange={(event) => setTokenTenantId(event.target.value)}
                 required
               >
-                <option value="">Selecciona un tenant</option>
+                <option value="">{tr('Selecciona un tenant', 'Select a tenant')}</option>
                 {tenantOptions.map((tenant) => (
                   <option key={tenant.id} value={tenant.id}>
                     {tenant.name} ({tenant.slug})
@@ -388,7 +392,7 @@ export function RootClient({
               </select>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="tokenAmount">Monto USD a agregar</Label>
+              <Label htmlFor="tokenAmount">{tr('Monto USD a agregar', 'USD amount to add')}</Label>
               <Input
                 id="tokenAmount"
                 value={tokenAmount}
@@ -400,7 +404,7 @@ export function RootClient({
             {tokenError ? <p className="text-sm text-red-500">{tokenError}</p> : null}
             {tokenSuccess ? <p className="text-sm text-emerald-500">{tokenSuccess}</p> : null}
             <Button type="submit" disabled={isPending}>
-              Ajustar tokens
+              {tr('Ajustar tokens', 'Adjust tokens')}
             </Button>
           </form>
         </CardContent>

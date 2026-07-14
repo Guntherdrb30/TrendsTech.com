@@ -33,6 +33,8 @@ export function CreateTaskForm({
   providers: ProviderOption[];
   plan: LunaPlanSnapshot;
 }) {
+  const isEs = locale.startsWith("es");
+  const tr = (es: string, en: string) => (isEs ? es : en);
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
@@ -76,7 +78,7 @@ export function CreateTaskForm({
         data?: { id: string };
       };
       if (!response.ok || !payload.data) {
-        setError(payload.error ?? "No se pudo crear la tarea.");
+        setError(payload.error ?? tr("No se pudo crear la tarea.", "The task could not be created."));
         return;
       }
 
@@ -88,12 +90,12 @@ export function CreateTaskForm({
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Nueva tarea de desarrollo</CardTitle>
+        <CardTitle>{tr("Nueva tarea de desarrollo", "New development task")}</CardTitle>
       </CardHeader>
       <CardContent>
         <form onSubmit={submitTask} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="task-project">Proyecto</Label>
+            <Label htmlFor="task-project">{tr("Proyecto", "Project")}</Label>
             <select
               id="task-project"
               className="h-9 w-full rounded border border-slate-200 bg-white px-3 text-sm dark:border-slate-700 dark:bg-slate-900"
@@ -109,11 +111,11 @@ export function CreateTaskForm({
             </select>
           </div>
           <div className="space-y-2">
-            <Label htmlFor="task-title">Titulo</Label>
+            <Label htmlFor="task-title">{tr("Título", "Title")}</Label>
             <Input id="task-title" value={title} onChange={(event) => setTitle(event.target.value)} required />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="task-description">Descripcion</Label>
+            <Label htmlFor="task-description">{tr("Descripción", "Description")}</Label>
             <textarea
               id="task-description"
               value={description}
@@ -124,21 +126,21 @@ export function CreateTaskForm({
           </div>
           <div className="grid gap-4 md:grid-cols-4">
             <div className="space-y-2">
-              <Label htmlFor="task-priority">Prioridad</Label>
+              <Label htmlFor="task-priority">{tr("Prioridad", "Priority")}</Label>
               <select
                 id="task-priority"
                 className="h-9 w-full rounded border border-slate-200 bg-white px-3 text-sm dark:border-slate-700 dark:bg-slate-900"
                 value={priority}
                 onChange={(event) => setPriority(event.target.value as DevTaskPriority)}
               >
-                <option value={DevTaskPriority.LOW}>Low</option>
-                <option value={DevTaskPriority.MEDIUM}>Medium</option>
-                <option value={DevTaskPriority.HIGH}>High</option>
-                <option value={DevTaskPriority.URGENT}>Urgent</option>
+                <option value={DevTaskPriority.LOW}>{tr("Baja", "Low")}</option>
+                <option value={DevTaskPriority.MEDIUM}>{tr("Media", "Medium")}</option>
+                <option value={DevTaskPriority.HIGH}>{tr("Alta", "High")}</option>
+                <option value={DevTaskPriority.URGENT}>{tr("Urgente", "Urgent")}</option>
               </select>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="task-mode">Modo</Label>
+              <Label htmlFor="task-mode">{tr("Modo", "Mode")}</Label>
               <select
                 id="task-mode"
                 className="h-9 w-full rounded border border-slate-200 bg-white px-3 text-sm dark:border-slate-700 dark:bg-slate-900"
@@ -168,14 +170,14 @@ export function CreateTaskForm({
               </select>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="task-provider">Proveedor IA</Label>
+              <Label htmlFor="task-provider">{tr("Proveedor IA", "AI provider")}</Label>
               <select
                 id="task-provider"
                 className="h-9 w-full rounded border border-slate-200 bg-white px-3 text-sm dark:border-slate-700 dark:bg-slate-900"
                 value={aiProvider}
                 onChange={(event) => setAiProvider(event.target.value as DevAIProviderType | "")}
               >
-                <option value="">Sin proveedor</option>
+                <option value="">{tr("Sin proveedor", "No provider")}</option>
                 {providers.map((provider) => (
                   <option key={provider.id} value={provider.provider}>
                     {provider.label}
@@ -189,7 +191,7 @@ export function CreateTaskForm({
             <Input id="task-branch" value={branch} onChange={(event) => setBranch(event.target.value)} />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="task-prompt">Instruccion para la IA</Label>
+            <Label htmlFor="task-prompt">{tr("Instrucción para la IA", "AI instruction")}</Label>
             <textarea
               id="task-prompt"
               value={prompt}
@@ -200,17 +202,17 @@ export function CreateTaskForm({
           </div>
           {!supportsRunnerExecution ? (
             <p className="text-sm text-amber-700">
-              Tu plan actual solo permite crear tareas en modo dry run.
+              {tr("Tu plan actual solo permite crear tareas en modo de prueba.", "Your current plan only supports tasks in dry-run mode.")}
             </p>
           ) : null}
           {supportsRunnerExecution && !supportsAdvancedRuntime ? (
             <p className="text-sm text-amber-700">
-              Codex CLI permanece bloqueado para este plan. Usa Shell o actualiza a un plan avanzado.
+              {tr("Codex CLI permanece bloqueado para este plan. Usa Shell o actualiza a un plan avanzado.", "Codex CLI remains locked for this plan. Use Shell or upgrade to an advanced plan.")}
             </p>
           ) : null}
           {error ? <p className="text-sm text-red-500">{error}</p> : null}
           <Button type="submit" disabled={isPending || projects.length === 0}>
-            {isPending ? "Creando..." : "Crear tarea"}
+            {isPending ? tr("Creando...", "Creating...") : tr("Crear tarea", "Create task")}
           </Button>
         </form>
       </CardContent>

@@ -7,8 +7,10 @@ import { AGENT_PRODUCTS } from './agent-products';
 
 const WHATSAPP_BUY_NUMBER = '584122640371';
 
-function buildWhatsAppLink(agentName: string) {
-  const text = encodeURIComponent(`Estoy interesado en el agente ${agentName}`);
+function buildWhatsAppLink(agentName: string, isEs: boolean) {
+  const text = encodeURIComponent(
+    isEs ? `Estoy interesado en el agente ${agentName}` : `I am interested in the ${agentName} agent`
+  );
   return `https://wa.me/${WHATSAPP_BUY_NUMBER}?text=${text}`;
 }
 
@@ -80,6 +82,7 @@ export default async function AgentsPage({ params }: { params: Promise<{ locale:
         ready: 'Ready',
         sequence: 'Sequence'
       };
+  const isEs = locale.startsWith('es');
 
   return (
     <div className={`${display.variable} ${body.variable} space-y-14 font-[var(--font-body)]`}>
@@ -241,7 +244,7 @@ export default async function AgentsPage({ params }: { params: Promise<{ locale:
                     <Link href={`${base}/agents/${agent.key}`}>{t('detailCta')}</Link>
                   </Button>
                   <Button asChild size="sm" variant="secondary">
-                    <Link href={buildWhatsAppLink(a(`${agent.key}.name`))} target="_blank" rel="noreferrer">
+                    <Link href={buildWhatsAppLink(a(`${agent.key}.name`), isEs)} target="_blank" rel="noreferrer">
                       {t('buyCta')}
                     </Link>
                   </Button>

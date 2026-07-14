@@ -12,6 +12,8 @@ export default async function LunaTasksPage({
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
+  const isEs = locale.startsWith("es");
+  const tr = (es: string, en: string) => (isEs ? es : en);
   await requireRole("TENANT_OPERATOR");
   const tenantId = await requireTenantId();
   const tasks = await prisma.devTask.findMany({
@@ -26,11 +28,11 @@ export default async function LunaTasksPage({
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Tareas del agente</CardTitle>
+        <CardTitle>{tr("Tareas del agente", "Agent tasks")}</CardTitle>
       </CardHeader>
       <CardContent className="space-y-3">
         {tasks.length === 0 ? (
-          <p className="text-sm text-slate-500 dark:text-slate-400">Sin tareas registradas.</p>
+          <p className="text-sm text-slate-500 dark:text-slate-400">{tr("Sin tareas registradas.", "No tasks registered.")}</p>
         ) : (
           tasks.map((task) => (
             <div
@@ -54,13 +56,13 @@ export default async function LunaTasksPage({
                 </div>
               </div>
               <div className="mt-3 flex flex-wrap gap-4 text-xs text-slate-500 dark:text-slate-400">
-                <span>Creada: {task.createdAt.toISOString().split("T")[0]}</span>
-                <span>Proveedor: {task.aiProvider ?? "manual"}</span>
+                <span>{tr("Creada", "Created")}: {task.createdAt.toISOString().split("T")[0]}</span>
+                <span>{tr("Proveedor", "Provider")}: {task.aiProvider ?? "manual"}</span>
                 <Link
                   href={`/${locale}/dashboard/agents/luna-code-orchestrator/tasks/${task.id}`}
                   className="font-semibold text-blue-600 hover:underline"
                 >
-                  Ver detalle
+                  {tr("Ver detalle", "View details")}
                 </Link>
               </div>
             </div>

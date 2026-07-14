@@ -173,15 +173,15 @@ export default async function AgentDetailPage({ params }: { params: Promise<Page
         sessionAware: 'Session aware',
         enterpriseFlow: 'Enterprise flow'
       };
+  const isEs = locale.startsWith('es');
 
   if (isLunaCodeOrchestrator(agent.key)) {
     const plans = ['basic', 'pro', 'enterprise'] as const;
     const capabilities = ['c1', 'c2', 'c3', 'c4', 'c5', 'c6'] as const;
     const fit = ['i1', 'i2', 'i3'] as const;
-    const whatsappMessage = [
-      'Quiero informacion comercial de Luna Code Orchestrator.',
-      'Necesito demo, alcance, planes y siguientes pasos de implementacion.'
-    ].join(' ');
+    const whatsappMessage = isEs
+      ? 'Quiero información comercial de Luna Code Orchestrator. Necesito una demo, alcance, planes y próximos pasos de implementación.'
+      : 'I would like commercial information about Luna Code Orchestrator, including a demo, scope, plans, and implementation next steps.';
 
     return (
       <DetailShell
@@ -378,7 +378,14 @@ export default async function AgentDetailPage({ params }: { params: Promise<Page
             <Link href={`${base}/pricing`}>{d('primaryCta')}</Link>
           </Button>
           <Button asChild variant="secondary">
-            <Link href={buildWhatsAppLink(agentName)} target="_blank" rel="noreferrer">
+            <Link
+              href={buildWhatsAppLink(
+                agentName,
+                isEs ? undefined : `I am interested in the ${agentName} agent`
+              )}
+              target="_blank"
+              rel="noreferrer"
+            >
               {d('whatsappCta')}
             </Link>
           </Button>

@@ -226,6 +226,8 @@ function formatNumber(value: number) {
 
 export default async function RootPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
+  const isEs = locale.startsWith('es');
+  const tr = (es: string, en: string) => (isEs ? es : en);
   const currentUser = await requireRole('ROOT');
   const usageWindow = new Date();
   usageWindow.setDate(usageWindow.getDate() - 30);
@@ -459,7 +461,7 @@ export default async function RootPage({ params }: { params: Promise<{ locale: s
   return (
     <section className="space-y-8">
       <div className="space-y-2">
-        <h1 className="text-2xl font-semibold">Panel administrador</h1>
+        <h1 className="text-2xl font-semibold">{tr('Panel administrador', 'Administrator panel')}</h1>
         <p className="text-sm text-slate-500 dark:text-slate-400">
           Control total de usuarios, recargas, agentes y operaciones del sistema.
         </p>
@@ -487,7 +489,7 @@ export default async function RootPage({ params }: { params: Promise<{ locale: s
               Reportes
             </a>
             <Link href={`/${locale}/root/news`} className="hover:text-slate-900 dark:hover:text-white">
-              Novedades
+              {tr('Novedades', 'News')}
             </Link>
             <Link
               href={`/${locale}/root/luna-code-orchestrator`}
@@ -509,12 +511,12 @@ export default async function RootPage({ params }: { params: Promise<{ locale: s
             </a>
           </nav>
           <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3 text-xs text-slate-600 dark:border-slate-800 dark:bg-slate-900/40 dark:text-slate-300">
-            <p className="font-semibold text-slate-900 dark:text-white">Indicadores clave</p>
+            <p className="font-semibold text-slate-900 dark:text-white">{tr('Indicadores clave', 'Key indicators')}</p>
             <div className="mt-2 grid gap-1">
               <div>Tenants: {tenantCount}</div>
-              <div>Usuarios: {userCount}</div>
-              <div>Agentes con uso (30d): {activeUsageCount}</div>
-              <div>Recargas pendientes: {pendingPaymentCount}</div>
+              <div>{tr('Usuarios', 'Users')}: {userCount}</div>
+              <div>{tr('Agentes con uso (30d)', 'Agents with usage (30d)')}: {activeUsageCount}</div>
+              <div>{tr('Recargas pendientes', 'Pending recharges')}: {pendingPaymentCount}</div>
             </div>
           </div>
         </aside>
@@ -530,19 +532,19 @@ export default async function RootPage({ params }: { params: Promise<{ locale: s
               </Card>
               <Card>
                 <CardHeader>
-                  <CardTitle>Usuarios</CardTitle>
+                  <CardTitle>{tr('Usuarios', 'Users')}</CardTitle>
                 </CardHeader>
                 <CardContent className="text-3xl font-semibold">{userCount}</CardContent>
               </Card>
               <Card>
                 <CardHeader>
-                  <CardTitle>Agentes con uso (30d)</CardTitle>
+                  <CardTitle>{tr('Agentes con uso (30d)', 'Agents with usage (30d)')}</CardTitle>
                 </CardHeader>
                 <CardContent className="text-3xl font-semibold">{activeUsageCount}</CardContent>
               </Card>
               <Card>
                 <CardHeader>
-                  <CardTitle>Recargas pendientes</CardTitle>
+                  <CardTitle>{tr('Recargas pendientes', 'Pending recharges')}</CardTitle>
                 </CardHeader>
                 <CardContent className="text-3xl font-semibold">{pendingPaymentCount}</CardContent>
               </Card>
@@ -551,13 +553,13 @@ export default async function RootPage({ params }: { params: Promise<{ locale: s
             <div className="grid gap-4 lg:grid-cols-3">
               <Card>
                 <CardHeader>
-                  <CardTitle>Pagos totales</CardTitle>
+                  <CardTitle>{tr('Pagos totales', 'Total payments')}</CardTitle>
                 </CardHeader>
                 <CardContent className="text-2xl font-semibold">{paymentCount}</CardContent>
               </Card>
               <Card>
                 <CardHeader>
-                  <CardTitle>USD aprobados</CardTitle>
+                  <CardTitle>{tr('USD aprobados', 'Approved USD')}</CardTitle>
                 </CardHeader>
                 <CardContent className="text-2xl font-semibold">
                   {formatNumber(Number(approvedUsdTotal._sum.amountPaid ?? 0))}
@@ -565,7 +567,7 @@ export default async function RootPage({ params }: { params: Promise<{ locale: s
               </Card>
               <Card>
                 <CardHeader>
-                  <CardTitle>Suscripciones activas</CardTitle>
+                  <CardTitle>{tr('Suscripciones activas', 'Active subscriptions')}</CardTitle>
                 </CardHeader>
                 <CardContent className="text-2xl font-semibold">{activeSubscriptionCount}</CardContent>
               </Card>
@@ -573,28 +575,28 @@ export default async function RootPage({ params }: { params: Promise<{ locale: s
           </section>
           <section id="usuarios" className="space-y-4">
             <div className="space-y-1">
-              <h2 className="text-xl font-semibold">Manejo de usuarios</h2>
+              <h2 className="text-xl font-semibold">{tr('Manejo de usuarios', 'User management')}</h2>
               <p className="text-sm text-slate-500 dark:text-slate-400">
                 Gestiona accesos, roles, estado y contrasenas desde un solo lugar.
               </p>
             </div>
             <Card>
               <CardHeader>
-                <CardTitle>Usuarios del sistema</CardTitle>
+                <CardTitle>{tr('Usuarios del sistema', 'System users')}</CardTitle>
               </CardHeader>
               <CardContent>
                 {users.length === 0 ? (
-                  <p className="text-sm text-slate-500 dark:text-slate-400">Sin usuarios registrados.</p>
+                  <p className="text-sm text-slate-500 dark:text-slate-400">{tr('Sin usuarios registrados.', 'No registered users.')}</p>
                 ) : (
                   <Table>
                     <TableHeader>
                       <TableRow>
-                        <TableHead>Usuario</TableHead>
-                        <TableHead>Rol</TableHead>
+                        <TableHead>{tr('Usuario', 'User')}</TableHead>
+                        <TableHead>{tr('Rol', 'Role')}</TableHead>
                         <TableHead>Tenant</TableHead>
-                        <TableHead>Estado</TableHead>
-                        <TableHead>Ultima actividad</TableHead>
-                        <TableHead>Acciones</TableHead>
+                        <TableHead>{tr('Estado', 'Status')}</TableHead>
+                        <TableHead>{tr('Ultima actividad', 'Last activity')}</TableHead>
+                        <TableHead>{tr('Acciones', 'Actions')}</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -647,14 +649,14 @@ export default async function RootPage({ params }: { params: Promise<{ locale: s
                                   <input type="hidden" name="locale" value={locale} />
                                   <input type="hidden" name="userId" value={user.id} />
                                   <Button type="submit" size="sm" variant="outline" disabled={!canManage}>
-                                    Pausar
+                                    {tr('Pausar', 'Pause')}
                                   </Button>
                                 </form>
                                 <form action={softDeleteUser}>
                                   <input type="hidden" name="locale" value={locale} />
                                   <input type="hidden" name="userId" value={user.id} />
                                   <Button type="submit" size="sm" variant="outline" disabled={!canManage}>
-                                    Eliminar
+                                    {tr('Eliminar', 'Delete')}
                                   </Button>
                                 </form>
                                 <details className="w-full rounded-xl border border-slate-200 p-3 text-xs dark:border-slate-800">
@@ -665,11 +667,11 @@ export default async function RootPage({ params }: { params: Promise<{ locale: s
                                     <input type="hidden" name="locale" value={locale} />
                                     <input type="hidden" name="userId" value={user.id} />
                                     <div className="grid gap-2">
-                                      <Label htmlFor={`name-${user.id}`}>Nombre</Label>
+                                      <Label htmlFor={`name-${user.id}`}>{tr('Nombre', 'Name')}</Label>
                                       <Input id={`name-${user.id}`} name="name" defaultValue={user.name ?? ''} />
                                     </div>
                                     <div className="grid gap-2">
-                                      <Label htmlFor={`email-${user.id}`}>Correo</Label>
+                                      <Label htmlFor={`email-${user.id}`}>{tr('Correo', 'Email')}</Label>
                                       <Input
                                         id={`email-${user.id}`}
                                         name="email"
@@ -678,11 +680,11 @@ export default async function RootPage({ params }: { params: Promise<{ locale: s
                                       />
                                     </div>
                                     <div className="grid gap-2">
-                                      <Label htmlFor={`phone-${user.id}`}>Telefono</Label>
+                                      <Label htmlFor={`phone-${user.id}`}>{tr('Telefono', 'Phone')}</Label>
                                       <Input id={`phone-${user.id}`} name="phone" defaultValue={user.phone ?? ''} />
                                     </div>
                                     <div className="grid gap-2">
-                                      <Label htmlFor={`role-${user.id}`}>Rol</Label>
+                                      <Label htmlFor={`role-${user.id}`}>{tr('Rol', 'Role')}</Label>
                                       <select
                                         id={`role-${user.id}`}
                                         name="role"
@@ -696,11 +698,11 @@ export default async function RootPage({ params }: { params: Promise<{ locale: s
                                       </select>
                                     </div>
                                     <div className="grid gap-2">
-                                      <Label htmlFor={`password-${user.id}`}>Nueva contrasena</Label>
+                                      <Label htmlFor={`password-${user.id}`}>{tr('Nueva contrasena', 'New password')}</Label>
                                       <Input id={`password-${user.id}`} name="password" type="password" />
                                     </div>
                                     <Button type="submit" size="sm" disabled={!canManage}>
-                                      Guardar cambios
+                                      {tr('Guardar cambios', 'Save changes')}
                                     </Button>
                                   </form>
                                 </details>
@@ -717,28 +719,28 @@ export default async function RootPage({ params }: { params: Promise<{ locale: s
           </section>
           <section id="recargas" className="space-y-4">
             <div className="space-y-1">
-              <h2 className="text-xl font-semibold">Control de recargas</h2>
+              <h2 className="text-xl font-semibold">{tr('Control de recargas', 'Recharge control')}</h2>
               <p className="text-sm text-slate-500 dark:text-slate-400">
                 Usuarios con recargas, estado activo e historial de pagos.
               </p>
             </div>
             <Card>
               <CardHeader>
-                <CardTitle>Recargas por tenant</CardTitle>
+                <CardTitle>{tr('Recargas por tenant', 'Recharges by tenant')}</CardTitle>
               </CardHeader>
               <CardContent>
                 {rechargeRows.length === 0 ? (
-                  <p className="text-sm text-slate-500 dark:text-slate-400">Sin recargas registradas.</p>
+                  <p className="text-sm text-slate-500 dark:text-slate-400">{tr('Sin recargas registradas.', 'No recorded recharges.')}</p>
                 ) : (
                   <Table>
                     <TableHeader>
                       <TableRow>
                         <TableHead>Tenant</TableHead>
-                        <TableHead>Ultima recarga</TableHead>
+                        <TableHead>{tr('Ultima recarga', 'Last recharge')}</TableHead>
                         <TableHead>USD</TableHead>
                         <TableHead>VES</TableHead>
-                        <TableHead>Estado</TableHead>
-                        <TableHead>Pagos</TableHead>
+                        <TableHead>{tr('Estado', 'Status')}</TableHead>
+                        <TableHead>{tr('Pagos', 'Payments')}</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -775,21 +777,21 @@ export default async function RootPage({ params }: { params: Promise<{ locale: s
 
             <Card>
               <CardHeader>
-                <CardTitle>Pagos recientes</CardTitle>
+                <CardTitle>{tr('Pagos recientes', 'Recent payments')}</CardTitle>
               </CardHeader>
               <CardContent>
                 {manualPayments.length === 0 ? (
-                  <p className="text-sm text-slate-500 dark:text-slate-400">Sin pagos registrados.</p>
+                  <p className="text-sm text-slate-500 dark:text-slate-400">{tr('Sin pagos registrados.', 'No recorded payments.')}</p>
                 ) : (
                   <Table>
                     <TableHeader>
                       <TableRow>
                         <TableHead>Tenant</TableHead>
-                        <TableHead>Monto</TableHead>
-                        <TableHead>Moneda</TableHead>
-                        <TableHead>Referencia</TableHead>
-                        <TableHead>Estado</TableHead>
-                        <TableHead>Acciones</TableHead>
+                        <TableHead>{tr('Monto', 'Amount')}</TableHead>
+                        <TableHead>{tr('Moneda', 'Currency')}</TableHead>
+                        <TableHead>{tr('Referencia', 'Reference')}</TableHead>
+                        <TableHead>{tr('Estado', 'Status')}</TableHead>
+                        <TableHead>{tr('Acciones', 'Actions')}</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -808,7 +810,7 @@ export default async function RootPage({ params }: { params: Promise<{ locale: s
                                   <input type="hidden" name="paymentId" value={payment.id} />
                                   <input type="hidden" name="action" value="APPROVE" />
                                   <Button type="submit" size="sm">
-                                    Aprobar
+                                    {tr('Aprobar', 'Approve')}
                                   </Button>
                                 </form>
                                 <form action={updateManualPayment}>
@@ -816,7 +818,7 @@ export default async function RootPage({ params }: { params: Promise<{ locale: s
                                   <input type="hidden" name="paymentId" value={payment.id} />
                                   <input type="hidden" name="action" value="REJECT" />
                                   <Button type="submit" size="sm" variant="outline">
-                                    Rechazar
+                                    {tr('Rechazar', 'Reject')}
                                   </Button>
                                 </form>
                               </div>
@@ -834,30 +836,30 @@ export default async function RootPage({ params }: { params: Promise<{ locale: s
           </section>
           <section id="agentes" className="space-y-4">
             <div className="space-y-1">
-              <h2 className="text-xl font-semibold">Agentes y operaciones</h2>
+              <h2 className="text-xl font-semibold">{tr('Agentes y operaciones', 'Agents and operations')}</h2>
               <p className="text-sm text-slate-500 dark:text-slate-400">
                 Consumo real, conexiones y control de configuracion por agente.
               </p>
             </div>
             <Card>
               <CardHeader>
-                <CardTitle>Agentes activos y configuraciones</CardTitle>
+                <CardTitle>{tr('Agentes activos y configuraciones', 'Active agents and configurations')}</CardTitle>
               </CardHeader>
               <CardContent>
                 {agentInstances.length === 0 ? (
-                  <p className="text-sm text-slate-500 dark:text-slate-400">Sin agentes registrados.</p>
+                  <p className="text-sm text-slate-500 dark:text-slate-400">{tr('Sin agentes registrados.', 'No registered agents.')}</p>
                 ) : (
                   <Table>
                     <TableHeader>
                       <TableRow>
-                        <TableHead>Agente</TableHead>
+                        <TableHead>{tr('Agente', 'Agent')}</TableHead>
                         <TableHead>Tenant</TableHead>
-                        <TableHead>Estado</TableHead>
-                        <TableHead>Estado uso</TableHead>
-                        <TableHead>Instalaciones</TableHead>
-                        <TableHead>Fuentes</TableHead>
-                        <TableHead>Consumo IA (30d)</TableHead>
-                        <TableHead>Ultimo uso</TableHead>
+                        <TableHead>{tr('Estado', 'Status')}</TableHead>
+                        <TableHead>{tr('Estado uso', 'Usage status')}</TableHead>
+                        <TableHead>{tr('Instalaciones', 'Installs')}</TableHead>
+                        <TableHead>{tr('Fuentes', 'Sources')}</TableHead>
+                        <TableHead>{tr('Consumo IA (30d)', 'AI usage (30d)')}</TableHead>
+                        <TableHead>{tr('Ultimo uso', 'Last usage')}</TableHead>
                         <TableHead>API</TableHead>
                       </TableRow>
                     </TableHeader>
@@ -909,7 +911,7 @@ export default async function RootPage({ params }: { params: Promise<{ locale: s
           </section>
           <section id="reportes" className="space-y-4">
             <div className="space-y-1">
-              <h2 className="text-xl font-semibold">Reportes estrategicos</h2>
+              <h2 className="text-xl font-semibold">{tr('Reportes estrategicos', 'Strategic reports')}</h2>
               <p className="text-sm text-slate-500 dark:text-slate-400">
                 Seguimiento a agentes mas vendidos y usuarios con mayor uso.
               </p>
@@ -917,11 +919,11 @@ export default async function RootPage({ params }: { params: Promise<{ locale: s
             <div className="grid gap-6 lg:grid-cols-4">
               <Card>
                 <CardHeader>
-                  <CardTitle>Agentes mas vendidos</CardTitle>
+                  <CardTitle>{tr('Agentes mas vendidos', 'Best-selling agents')}</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-2 text-sm text-slate-600 dark:text-slate-300">
                   {topAgents.length === 0 ? (
-                    <p>Sin datos de instalaciones.</p>
+                    <p>{tr('Sin datos de instalaciones.', 'No installation data.')}</p>
                   ) : (
                     topAgents.map((agent) => {
                       const usage = agentUsageMap.get(agent.id)?.count ?? 0;
@@ -948,11 +950,11 @@ export default async function RootPage({ params }: { params: Promise<{ locale: s
 
               <Card>
                 <CardHeader>
-                  <CardTitle>Usuarios mas activos (30d)</CardTitle>
+                  <CardTitle>{tr('Usuarios mas activos (30d)', 'Most active users (30d)')}</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-2 text-sm text-slate-600 dark:text-slate-300">
                   {activityRows.length === 0 ? (
-                    <p>Sin actividad registrada.</p>
+                    <p>{tr('Sin actividad registrada.', 'No recorded activity.')}</p>
                   ) : (
                     activityRows.map((row) => (
                       <div key={row.user?.id ?? row.total} className="flex items-center justify-between">
@@ -978,11 +980,11 @@ export default async function RootPage({ params }: { params: Promise<{ locale: s
 
               <Card>
                 <CardHeader>
-                  <CardTitle>Clientes con mayor recarga</CardTitle>
+                  <CardTitle>{tr('Clientes con mayor recarga', 'Customers with highest recharges')}</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-2 text-sm text-slate-600 dark:text-slate-300">
                   {paymentLeaders.length === 0 ? (
-                    <p>Sin recargas aprobadas.</p>
+                    <p>{tr('Sin recargas aprobadas.', 'No approved recharges.')}</p>
                   ) : (
                     paymentLeaders.map((leader) => (
                       <div key={leader.tenantId} className="flex items-center justify-between">
@@ -1000,11 +1002,11 @@ export default async function RootPage({ params }: { params: Promise<{ locale: s
 
               <Card>
                 <CardHeader>
-                  <CardTitle>Consumo por API</CardTitle>
+                  <CardTitle>{tr('Consumo por API', 'Usage by API')}</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-2 text-sm text-slate-600 dark:text-slate-300">
                   {apiUsageRows.length === 0 ? (
-                    <p>Sin consumo registrado.</p>
+                    <p>{tr('Sin consumo registrado.', 'No recorded usage.')}</p>
                   ) : (
                     apiUsageRows.map(([provider, count]) => (
                       <div key={provider} className="flex items-center justify-between">
@@ -1021,14 +1023,14 @@ export default async function RootPage({ params }: { params: Promise<{ locale: s
           </section>
           <section id="ajustes" className="space-y-4">
             <div className="space-y-1">
-              <h2 className="text-xl font-semibold">Ajustes globales</h2>
+              <h2 className="text-xl font-semibold">{tr('Ajustes globales', 'Global settings')}</h2>
               <p className="text-sm text-slate-500 dark:text-slate-400">
                 Configura tasas, limites y datos de pago.
               </p>
             </div>
             <Card>
               <CardHeader>
-                <CardTitle>Control visual del sitio</CardTitle>
+                <CardTitle>{tr('Control visual del sitio', 'Site visual controls')}</CardTitle>
               </CardHeader>
               <CardContent className="flex flex-col gap-3 text-sm text-slate-600 dark:text-slate-300 sm:flex-row sm:items-center sm:justify-between">
                 <p>
@@ -1036,11 +1038,12 @@ export default async function RootPage({ params }: { params: Promise<{ locale: s
                   nuevo centro de media.
                 </p>
                 <Button asChild>
-                  <Link href={`/${locale}/root/site-media`}>Abrir media del sitio</Link>
+                  <Link href={`/${locale}/root/site-media`}>{tr('Abrir media del sitio', 'Open site media')}</Link>
                 </Button>
               </CardContent>
             </Card>
             <RootClient
+              locale={locale}
               usdToVesRate={settings?.usdToVesRate?.toString() ?? '0'}
               usdPaymentDiscountPercent={settings?.usdPaymentDiscountPercent?.toString() ?? '0'}
               tokenInputUsdPer1M={settings?.tokenInputUsdPer1M?.toString() ?? '0.40'}
@@ -1067,15 +1070,15 @@ export default async function RootPage({ params }: { params: Promise<{ locale: s
               </CardHeader>
               <CardContent>
                 {tenants.length === 0 ? (
-                  <p className="text-sm text-slate-500 dark:text-slate-400">Sin tenants.</p>
+                  <p className="text-sm text-slate-500 dark:text-slate-400">{tr('Sin tenants.', 'No tenants.')}</p>
                 ) : (
                   <Table>
                     <TableHeader>
                       <TableRow>
-                        <TableHead>Nombre</TableHead>
+                        <TableHead>{tr('Nombre', 'Name')}</TableHead>
                         <TableHead>Slug</TableHead>
-                        <TableHead>Modo</TableHead>
-                        <TableHead>Estado</TableHead>
+                        <TableHead>{tr('Modo', 'Mode')}</TableHead>
+                        <TableHead>{tr('Estado', 'Status')}</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>

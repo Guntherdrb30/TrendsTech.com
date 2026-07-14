@@ -46,6 +46,8 @@ export function SettingsClient({
   sessions: SafeSession[];
   snapshot: BillingSnapshot;
 }) {
+  const isEs = locale.startsWith("es");
+  const tr = (es: string, en: string) => (isEs ? es : en);
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [providerError, setProviderError] = useState<string | null>(null);
@@ -62,11 +64,11 @@ export function SettingsClient({
   const remoteLocked = !snapshot.policy.supportsRemote;
   const taskLabel =
     snapshot.policy.taskLimit === null
-      ? `${snapshot.usage.tasksCreated} / ilimitado`
+      ? `${snapshot.usage.tasksCreated} / ${tr("ilimitado", "unlimited")}`
       : `${snapshot.usage.tasksCreated} / ${snapshot.policy.taskLimit}`;
   const projectLabel =
     snapshot.policy.projectLimit === null
-      ? `${snapshot.usage.activeProjects} / ilimitado`
+      ? `${snapshot.usage.activeProjects} / ${tr("ilimitado", "unlimited")}`
       : `${snapshot.usage.activeProjects} / ${snapshot.policy.projectLimit}`;
 
   const submitProvider = (event: React.FormEvent) => {
@@ -74,7 +76,7 @@ export function SettingsClient({
     setProviderError(null);
 
     if (providerLocked) {
-      setProviderError("Tu plan actual solo permite un proveedor IA activo. Sube de plan para agregar mas.");
+      setProviderError(tr("Tu plan actual solo permite un proveedor IA activo. Sube de plan para agregar más.", "Your current plan only allows one active AI provider. Upgrade to add more."));
       return;
     }
 
@@ -92,7 +94,7 @@ export function SettingsClient({
       });
       const payload = (await response.json().catch(() => ({}))) as { error?: string };
       if (!response.ok) {
-        setProviderError(payload.error ?? "No se pudo guardar el proveedor.");
+        setProviderError(payload.error ?? tr("No se pudo guardar el proveedor.", "The provider could not be saved."));
         return;
       }
 
@@ -107,7 +109,7 @@ export function SettingsClient({
     setSessionError(null);
 
     if (remoteLocked) {
-      setSessionError("Tu plan actual no habilita sesiones remotas QR.");
+      setSessionError(tr("Tu plan actual no habilita sesiones remotas QR.", "Your current plan does not include remote QR sessions."));
       return;
     }
 
@@ -125,7 +127,7 @@ export function SettingsClient({
       };
 
       if (!response.ok || !payload.data?.token) {
-        setSessionError(payload.error ?? "No se pudo crear la sesion remota.");
+        setSessionError(payload.error ?? tr("No se pudo crear la sesión remota.", "The remote session could not be created."));
         return;
       }
 
@@ -146,7 +148,7 @@ export function SettingsClient({
       <div className="space-y-6">
         <Card className="border-slate-200/90 bg-gradient-to-br from-white via-slate-50 to-amber-50 dark:border-slate-800 dark:from-slate-950 dark:via-slate-950 dark:to-slate-900">
           <CardHeader>
-            <CardTitle>Plan comercial de Luna</CardTitle>
+            <CardTitle>{tr("Plan comercial de Luna", "Luna commercial plan")}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="flex flex-wrap items-center gap-3">
@@ -154,23 +156,23 @@ export function SettingsClient({
                 {snapshot.policy.sourcePlanKey}
               </div>
               <div className="text-xs uppercase tracking-[0.18em] text-slate-500">
-                Estado {snapshot.policy.subscriptionStatus}
+                {tr("Estado", "Status")} {snapshot.policy.subscriptionStatus}
               </div>
             </div>
             <div className="grid gap-3 md:grid-cols-2">
               <div className="rounded-2xl border border-slate-200 bg-white px-4 py-4 text-sm dark:border-slate-800 dark:bg-slate-950/70">
-                <div className="text-xs uppercase tracking-[0.16em] text-slate-500">Tareas del mes</div>
+                <div className="text-xs uppercase tracking-[0.16em] text-slate-500">{tr("Tareas del mes", "Tasks this month")}</div>
                 <div className="mt-2 text-2xl font-semibold text-slate-900 dark:text-white">{taskLabel}</div>
               </div>
               <div className="rounded-2xl border border-slate-200 bg-white px-4 py-4 text-sm dark:border-slate-800 dark:bg-slate-950/70">
-                <div className="text-xs uppercase tracking-[0.16em] text-slate-500">Proyectos activos</div>
+                <div className="text-xs uppercase tracking-[0.16em] text-slate-500">{tr("Proyectos activos", "Active projects")}</div>
                 <div className="mt-2 text-2xl font-semibold text-slate-900 dark:text-white">{projectLabel}</div>
               </div>
             </div>
             <div className="grid gap-2 sm:grid-cols-2">
               {[
-                { label: "Control remoto QR", enabled: snapshot.policy.supportsRemote },
-                { label: "Multiples proveedores IA", enabled: snapshot.policy.supportsMultiProvider },
+                { label: tr("Control remoto QR", "QR remote control"), enabled: snapshot.policy.supportsRemote },
+                { label: tr("Múltiples proveedores IA", "Multiple AI providers"), enabled: snapshot.policy.supportsMultiProvider },
                 { label: "Runners", enabled: snapshot.policy.supportsRunnerExecution },
                 { label: "Codex CLI", enabled: snapshot.policy.supportsAdvancedRuntime }
               ].map((item) => (
@@ -188,10 +190,10 @@ export function SettingsClient({
             </div>
             <div className="flex flex-wrap gap-3 text-sm">
               <Button asChild size="sm">
-                <Link href={`/${locale}/dashboard/agents/luna-code-orchestrator/billing`}>Ver billing</Link>
+                <Link href={`/${locale}/dashboard/agents/luna-code-orchestrator/billing`}>{tr("Ver facturación", "View billing")}</Link>
               </Button>
               <Button asChild size="sm" variant="outline">
-                <Link href={`/${locale}/pricing`}>Subir de plan</Link>
+                <Link href={`/${locale}/pricing`}>{tr("Subir de plan", "Upgrade plan")}</Link>
               </Button>
             </div>
           </CardContent>
@@ -199,12 +201,12 @@ export function SettingsClient({
 
         <Card>
           <CardHeader>
-            <CardTitle>Proveedor IA</CardTitle>
+            <CardTitle>{tr("Proveedor IA", "AI provider")}</CardTitle>
           </CardHeader>
           <CardContent>
             <form onSubmit={submitProvider} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="provider-type">Proveedor</Label>
+                <Label htmlFor="provider-type">{tr("Proveedor", "Provider")}</Label>
                 <select
                   id="provider-type"
                   className="h-9 w-full rounded border border-slate-200 bg-white px-3 text-sm dark:border-slate-700 dark:bg-slate-900"
@@ -217,7 +219,7 @@ export function SettingsClient({
                 </select>
               </div>
               <div className="space-y-2">
-                <Label htmlFor="provider-label">Etiqueta</Label>
+                <Label htmlFor="provider-label">{tr("Etiqueta", "Label")}</Label>
                 <Input id="provider-label" value={label} onChange={(event) => setLabel(event.target.value)} required />
               </div>
               <div className="space-y-2">
@@ -230,16 +232,16 @@ export function SettingsClient({
               </div>
               <label className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300">
                 <input type="checkbox" checked={isDefault} onChange={(event) => setIsDefault(event.target.checked)} />
-                Definir como proveedor por defecto
+                {tr("Definir como proveedor por defecto", "Set as default provider")}
               </label>
               {providerLocked ? (
                 <div className="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800 dark:border-amber-900 dark:bg-amber-950/40 dark:text-amber-200">
-                  Tu plan actual ya tiene su cupo de proveedores IA cubierto. Para conectar multiples motores sube a Pro o Enterprise.
+                  {tr("Tu plan actual ya alcanzó su límite de proveedores IA. Para conectar múltiples motores, sube a Pro o Enterprise.", "Your current plan has reached its AI provider limit. Upgrade to Pro or Enterprise to connect multiple engines.")}
                 </div>
               ) : null}
               {providerError ? <p className="text-sm text-red-500">{providerError}</p> : null}
               <Button type="submit" disabled={isPending || providerLocked}>
-                Guardar proveedor
+                {tr("Guardar proveedor", "Save provider")}
               </Button>
             </form>
           </CardContent>
@@ -247,11 +249,11 @@ export function SettingsClient({
 
         <Card>
           <CardHeader>
-            <CardTitle>Control remoto QR</CardTitle>
+            <CardTitle>{tr("Control remoto QR", "QR remote control")}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="expiresInMinutes">Expira en minutos</Label>
+              <Label htmlFor="expiresInMinutes">{tr("Expira en minutos", "Expires in minutes")}</Label>
               <Input
                 id="expiresInMinutes"
                 value={expiresInMinutes}
@@ -260,17 +262,17 @@ export function SettingsClient({
             </div>
             {remoteLocked ? (
               <div className="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800 dark:border-amber-900 dark:bg-amber-950/40 dark:text-amber-200">
-                El control remoto por QR no esta habilitado para este plan. Activalo desde un upgrade comercial.
+                {tr("El control remoto por QR no está habilitado para este plan. Actívalo mediante una mejora de plan.", "QR remote control is not enabled for this plan. Enable it by upgrading your plan.")}
               </div>
             ) : null}
             {sessionError ? <p className="text-sm text-red-500">{sessionError}</p> : null}
             <Button type="button" onClick={createRemoteSession} disabled={isPending || remoteLocked}>
-              Generar sesion remota
+              {tr("Generar sesión remota", "Generate remote session")}
             </Button>
             {activeRemoteUrl && activeQrDataUrl ? (
               <div className="space-y-3 rounded-2xl border border-slate-200 p-4 text-sm dark:border-slate-800">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={activeQrDataUrl} alt="QR remoto" className="h-56 w-56 rounded-xl border border-slate-200" />
+                <img src={activeQrDataUrl} alt={tr("QR remoto", "Remote QR code")} className="h-56 w-56 rounded-xl border border-slate-200" />
                 <div className="break-all text-xs text-slate-500 dark:text-slate-400">{activeRemoteUrl}</div>
               </div>
             ) : null}
@@ -281,11 +283,11 @@ export function SettingsClient({
       <div className="space-y-6">
         <Card>
           <CardHeader>
-            <CardTitle>Proveedores guardados</CardTitle>
+            <CardTitle>{tr("Proveedores guardados", "Saved providers")}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
             {providers.length === 0 ? (
-              <p className="text-sm text-slate-500 dark:text-slate-400">Aun no hay proveedores IA.</p>
+              <p className="text-sm text-slate-500 dark:text-slate-400">{tr("Aún no hay proveedores IA.", "There are no AI providers yet.")}</p>
             ) : (
               providers.map((item) => (
                 <div key={item.id} className="rounded-2xl border border-slate-200 px-4 py-4 text-sm dark:border-slate-800">
@@ -296,29 +298,29 @@ export function SettingsClient({
                     </div>
                     {item.isDefault ? (
                       <span className="rounded-full bg-emerald-50 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-emerald-700">
-                        default
+                        {tr("por defecto", "default")}
                       </span>
                     ) : null}
                   </div>
                   <div className="mt-3 text-xs text-slate-500 dark:text-slate-400">
-                    Base URL: {item.baseUrl ?? "provider default"}
+                    Base URL: {item.baseUrl ?? tr("valor por defecto del proveedor", "provider default")}
                   </div>
                 </div>
               ))
             )}
             <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-xs text-slate-600 dark:border-slate-800 dark:bg-slate-950/40 dark:text-slate-300">
-              Proveedores activos: {snapshot.usage.activeProviders}. Runners activos: {snapshot.usage.activeRunners}.
+              {tr("Proveedores activos", "Active providers")}: {snapshot.usage.activeProviders}. {tr("Runners activos", "Active runners")}: {snapshot.usage.activeRunners}.
             </div>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader>
-            <CardTitle>Sesiones remotas recientes</CardTitle>
+            <CardTitle>{tr("Sesiones remotas recientes", "Recent remote sessions")}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
             {sessions.length === 0 ? (
-              <p className="text-sm text-slate-500 dark:text-slate-400">No hay sesiones recientes.</p>
+              <p className="text-sm text-slate-500 dark:text-slate-400">{tr("No hay sesiones recientes.", "There are no recent sessions.")}</p>
             ) : (
               sessions.map((session) => (
                 <div key={session.id} className="rounded-2xl border border-slate-200 px-4 py-4 text-sm dark:border-slate-800">
@@ -327,10 +329,10 @@ export function SettingsClient({
                     <div className="text-xs text-slate-500 dark:text-slate-400">{session.createdAt.toISOString()}</div>
                   </div>
                   <div className="mt-2 text-xs text-slate-500 dark:text-slate-400">
-                    Expira: {session.expiresAt.toISOString()}
+                    {tr("Expira", "Expires")}: {session.expiresAt.toISOString()}
                   </div>
                   <div className="mt-1 text-xs text-slate-500 dark:text-slate-400">
-                    Ultima actividad: {session.lastSeenAt?.toISOString() ?? "sin actividad"}
+                    {tr("Última actividad", "Last activity")}: {session.lastSeenAt?.toISOString() ?? tr("sin actividad", "no activity")}
                   </div>
                 </div>
               ))
