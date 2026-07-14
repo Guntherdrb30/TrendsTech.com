@@ -15,6 +15,13 @@ export const siteUrl = normalizeSiteUrl(
   process.env.NEXT_PUBLIC_SITE_URL ?? process.env.NEXT_PUBLIC_APP_URL
 );
 
+export const socialImage = {
+  url: '/branding/trends172tech-logo.png',
+  width: 1536,
+  height: 1024,
+  alt: 'Trends172Tech — Business software, AI and automation',
+};
+
 export function localizedPath(locale: Locale | string, pathname = '') {
   const normalizedPath = pathname === '/' ? '' : `/${pathname.replace(/^\/+|\/+$/g, '')}`;
   return `/${locale}${normalizedPath}`;
@@ -62,13 +69,17 @@ export function buildLocalizedMetadata({
       title: resolvedTitle,
       description: resolvedDescription,
       url: canonical,
+      siteName: 'Trends172Tech',
+      type: 'website',
       locale: isEs ? 'es_VE' : 'en_US',
       alternateLocale: isEs ? ['en_US'] : ['es_VE'],
+      images: [socialImage],
     },
     twitter: {
-      card: 'summary',
+      card: 'summary_large_image',
       title: resolvedTitle,
       description: resolvedDescription,
+      images: [socialImage.url],
     },
   };
 }

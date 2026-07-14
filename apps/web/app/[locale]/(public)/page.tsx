@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { Syne, DM_Sans } from 'next/font/google';
 import { getTranslations } from 'next-intl/server';
 import { HomePremium, type HomePremiumCopy } from '@/components/home-premium';
-import { localeAlternates, localizedPath } from '@/lib/seo';
+import { buildLocalizedMetadata } from '@/lib/seo';
 
 const display = Syne({
   subsets: ['latin'],
@@ -22,33 +22,17 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
   const { locale } = await params;
-  const isEs = locale.startsWith('es');
-  const title = isEs
-    ? 'Software empresarial, IA y automatización'
-    : 'Business software, AI and automation';
-  const description = isEs
-    ? 'Trends172Tech desarrolla software empresarial, automatización e inteligencia aplicada a operaciones reales con LUNA, CarpiHogar y LUNA Football.'
-    : 'Trends172Tech builds business software, automation and applied intelligence for real operations through LUNA, CarpiHogar and LUNA Football.';
-
-  return {
-    title,
-    description,
-    alternates: {
-      ...localeAlternates(),
-      canonical: localizedPath(locale),
+  return buildLocalizedMetadata({
+    locale,
+    title: {
+      es: 'Software empresarial, IA y automatización',
+      en: 'Business software, AI and automation',
     },
-    openGraph: {
-      title,
-      description,
-      url: localizedPath(locale),
-      locale: isEs ? 'es_VE' : 'en_US',
-      alternateLocale: isEs ? ['en_US'] : ['es_VE'],
+    description: {
+      es: 'Trends172Tech desarrolla software empresarial, automatización e inteligencia aplicada a operaciones reales con LUNA, CarpiHogar y LUNA Football.',
+      en: 'Trends172Tech builds business software, automation and applied intelligence for real operations through LUNA, CarpiHogar and LUNA Football.',
     },
-    twitter: {
-      title,
-      description,
-    },
-  };
+  });
 }
 
 export default async function HomePage({ params }: { params: Promise<{ locale: string }> }) {
