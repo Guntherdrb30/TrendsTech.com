@@ -8,6 +8,8 @@ const publicRoutes = [
   { pathname: 'systems', priority: 0.9, changeFrequency: 'monthly' as const },
   { pathname: 'systems/luna', priority: 0.9, changeFrequency: 'monthly' as const },
   { pathname: 'projects', priority: 0.8, changeFrequency: 'monthly' as const },
+  { pathname: 'projects/carpihogar', priority: 0.8, changeFrequency: 'monthly' as const },
+  { pathname: 'projects/luna-football', priority: 0.8, changeFrequency: 'monthly' as const },
   { pathname: 'agents', priority: 0.8, changeFrequency: 'monthly' as const },
   ...AGENT_PRODUCTS.map((agent) => ({
     pathname: `agents/${agent.key}`,

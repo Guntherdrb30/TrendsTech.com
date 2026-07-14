@@ -336,13 +336,20 @@
     "projectsSubtitle": "Deployed solutions that show how we turn real workflows into more structured digital operations.",
     "projectBadge": "Case",
     "projectTag": "Live operation",
-    "projectCta": "Visit",
+    "projectCta": "View full case study",
+    "projectExternalCta": "Open product",
     "projects": {
       "carpihogar": {
         "title": "Carpihogar.com",
         "body": "Real implementation built for ecommerce, commercial control, inventory, operations, and an installable PWA experience; the conceptual base behind LUNA.",
         "tagline1": "Real case",
         "tagline2": "PWA + LUNA foundation"
+      },
+      "lunaFootball": {
+        "title": "LUNA Football",
+        "body": "An active sports platform for managing players, teams, coaches, enrollment, tuition, inventory, employees, ID cards, and assisted modular training.",
+        "tagline1": "Club in production",
+        "tagline2": "End-to-end sports management"
       }
     }
   },

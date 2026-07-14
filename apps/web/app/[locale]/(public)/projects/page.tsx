@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { getTranslations } from "next-intl/server";
 import { IBM_Plex_Sans, Space_Grotesk } from "next/font/google";
 import { JsonLd } from "@/components/json-ld";
@@ -50,6 +51,26 @@ export default async function ProjectsPage({
     t("capabilities.c4"),
     t("capabilities.c5"),
     t("capabilities.c6")
+  ];
+  const cases = [
+    {
+      slug: "carpihogar",
+      title: t("projects.carpihogar.title"),
+      body: t("projects.carpihogar.body"),
+      tags: [t("projects.carpihogar.tagline1"), t("projects.carpihogar.tagline2")],
+      image: "/cases/carpihogar/carpihogar-pwa-home.svg",
+      externalUrl: "https://carpihogar.com/",
+      accent: "bg-teal-500"
+    },
+    {
+      slug: "luna-football",
+      title: t("projects.lunaFootball.title"),
+      body: t("projects.lunaFootball.body"),
+      tags: [t("projects.lunaFootball.tagline1"), t("projects.lunaFootball.tagline2")],
+      image: "/cases/luna-football/luna-football-operations.svg",
+      externalUrl: "https://cdebarinasef.com/",
+      accent: "bg-orange-500"
+    }
   ];
 
   return (
@@ -121,43 +142,65 @@ export default async function ProjectsPage({
           </p>
         </div>
         <div className="grid gap-6 lg:grid-cols-2">
-          <article className="relative overflow-hidden rounded-3xl border border-slate-200 bg-white/90 p-6 shadow-[0_30px_90px_-70px_rgba(15,23,42,0.45)] dark:border-slate-800 dark:bg-slate-950/70">
-            <div className="absolute inset-0 bg-gradient-to-br from-white via-white to-slate-50 opacity-90 dark:from-slate-950 dark:via-slate-950 dark:to-slate-900" />
-            <div className="relative space-y-4">
-              <div className="flex items-center justify-between text-xs uppercase tracking-[0.2em] text-slate-400">
-                <span className="rounded-full border border-slate-200 bg-white/80 px-3 py-1 font-semibold text-slate-600 shadow-sm dark:border-slate-700 dark:bg-slate-900/70 dark:text-slate-200">
-                  {t("projectBadge")}
-                </span>
-                <span className="rounded-full bg-emerald-100 px-2 py-1 text-[10px] font-semibold text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-300">
-                  {t("projectTag")}
-                </span>
+          {cases.map((item) => (
+            <article
+              key={item.slug}
+              className="group relative overflow-hidden rounded-3xl border border-slate-200 bg-white/90 shadow-[0_30px_90px_-70px_rgba(15,23,42,0.45)] dark:border-slate-800 dark:bg-slate-950/70"
+            >
+              <div className="relative aspect-[3/2] overflow-hidden border-b border-slate-200 bg-slate-100 dark:border-slate-800 dark:bg-slate-900">
+                <Image
+                  src={item.image}
+                  alt={item.title}
+                  width={1200}
+                  height={800}
+                  className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.02]"
+                />
               </div>
-              <div className="space-y-2">
-                <h3 className="text-2xl font-[var(--font-display)] font-semibold text-slate-900 dark:text-white">
-                  {t("projects.carpihogar.title")}
-                </h3>
-                <p className="text-sm text-slate-600 dark:text-slate-300">
-                  {t("projects.carpihogar.body")}
-                </p>
+              <div className="space-y-4 p-6">
+                <div className="flex items-center justify-between gap-3 text-xs uppercase tracking-[0.2em] text-slate-400">
+                  <span className="rounded-full border border-slate-200 bg-white/80 px-3 py-1 font-semibold text-slate-600 shadow-sm dark:border-slate-700 dark:bg-slate-900/70 dark:text-slate-200">
+                    {t("projectBadge")}
+                  </span>
+                  <span className="inline-flex items-center gap-2 rounded-full bg-emerald-100 px-2.5 py-1 text-[10px] font-semibold text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-300">
+                    <span className={`h-1.5 w-1.5 rounded-full ${item.accent}`} aria-hidden="true" />
+                    {t("projectTag")}
+                  </span>
+                </div>
+                <div className="space-y-2">
+                  <h3 className="text-2xl font-[var(--font-display)] font-semibold text-slate-900 dark:text-white">
+                    {item.title}
+                  </h3>
+                  <p className="text-sm leading-relaxed text-slate-600 dark:text-slate-300">{item.body}</p>
+                </div>
+                <div className="flex flex-wrap items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
+                  {item.tags.map((tag) => (
+                    <span
+                      key={tag}
+                      className="rounded-full border border-slate-200 bg-white/80 px-3 py-1 dark:border-slate-700 dark:bg-slate-900/70"
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  <Link
+                    href={`${base}/projects/${item.slug}`}
+                    className="inline-flex items-center justify-center rounded-full bg-slate-950 px-4 py-2 text-xs font-semibold text-white transition hover:-translate-y-0.5 hover:bg-slate-800 dark:bg-white dark:text-slate-950 dark:hover:bg-slate-200"
+                  >
+                    {t("projectCta")}
+                  </Link>
+                  <Link
+                    href={item.externalUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex items-center justify-center rounded-full border border-slate-300 bg-white/80 px-4 py-2 text-xs font-semibold text-slate-700 transition hover:-translate-y-0.5 hover:border-slate-400 dark:border-slate-700 dark:bg-slate-900/60 dark:text-slate-200"
+                  >
+                    {t("projectExternalCta")} →
+                  </Link>
+                </div>
               </div>
-              <div className="flex flex-wrap items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
-                <span className="rounded-full border border-slate-200 bg-white/80 px-3 py-1 dark:border-slate-700 dark:bg-slate-900/70">
-                  {t("projects.carpihogar.tagline1")}
-                </span>
-                <span className="rounded-full border border-slate-200 bg-white/80 px-3 py-1 dark:border-slate-700 dark:bg-slate-900/70">
-                  {t("projects.carpihogar.tagline2")}
-                </span>
-              </div>
-              <Link
-                href="https://carpihogar.com"
-                target="_blank"
-                rel="noreferrer"
-                className="inline-flex items-center justify-center rounded-full border border-slate-300 bg-white/80 px-4 py-1.5 text-xs font-semibold text-slate-700 transition hover:-translate-y-0.5 hover:border-slate-400 dark:border-slate-700 dark:bg-slate-900/60 dark:text-slate-200"
-              >
-                {t("projectCta")}
-              </Link>
-            </div>
-          </article>
+            </article>
+          ))}
         </div>
       </section>
     </div>

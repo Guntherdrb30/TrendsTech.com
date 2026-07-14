@@ -336,13 +336,20 @@
     "projectsSubtitle": "Soluciones desplegadas que demuestran como llevamos procesos reales a una operacion digital mas ordenada.",
     "projectBadge": "Caso",
     "projectTag": "Operacion real",
-    "projectCta": "Visitar",
+    "projectCta": "Ver caso completo",
+    "projectExternalCta": "Abrir producto",
     "projects": {
       "carpihogar": {
         "title": "Carpihogar.com",
         "body": "Implementacion real desarrollada para ecommerce, control comercial, inventario, operaciones y experiencia PWA instalable; base conceptual del sistema LUNA.",
         "tagline1": "Caso real",
         "tagline2": "PWA + base de LUNA"
+      },
+      "lunaFootball": {
+        "title": "LUNA Football",
+        "body": "Plataforma deportiva activa para controlar jugadores, equipos, entrenadores, inscripciones, mensualidades, inventario, empleados, carnetizacion y entrenamientos modulares asistidos.",
+        "tagline1": "Club en produccion",
+        "tagline2": "Gestion deportiva integral"
       }
     }
   },

@@ -52,7 +52,8 @@ export function buildProductionCasesStructuredData(locale: string) {
     '@type': 'SoftwareApplication',
     '@id': `${siteUrl.origin}/#carpihogar`,
     name: 'CarpiHogar',
-    url: 'https://carpihogar.com/',
+    url: localizedUrl(locale, 'projects/carpihogar'),
+    sameAs: 'https://carpihogar.com/',
     applicationCategory: 'BusinessApplication',
     operatingSystem: 'Web, PWA',
     inLanguage: 'es-VE',
@@ -82,7 +83,8 @@ export function buildProductionCasesStructuredData(locale: string) {
     '@type': 'SoftwareApplication',
     '@id': `${siteUrl.origin}/#luna-football`,
     name: 'LUNA Football',
-    url: 'https://cdebarinasef.com/',
+    url: localizedUrl(locale, 'projects/luna-football'),
+    sameAs: 'https://cdebarinasef.com/',
     applicationCategory: 'SportsApplication',
     operatingSystem: 'Web, PWA',
     inLanguage: 'es-VE',
@@ -123,6 +125,95 @@ export function buildProductionCasesStructuredData(locale: string) {
         itemListElement: [
           { '@type': 'ListItem', position: 1, item: { '@id': carpihogar['@id'] } },
           { '@type': 'ListItem', position: 2, item: { '@id': lunaFootball['@id'] } },
+        ],
+      },
+    ],
+  };
+}
+
+export function buildProductionCaseStructuredData(
+  locale: string,
+  slug: 'carpihogar' | 'luna-football'
+) {
+  const isEs = locale.startsWith('es');
+  const casePageUrl = localizedUrl(locale, `projects/${slug}`);
+  const projectsUrl = localizedUrl(locale, 'projects');
+  const cases = {
+    carpihogar: {
+      id: `${siteUrl.origin}/#carpihogar`,
+      name: 'CarpiHogar',
+      externalUrl: 'https://carpihogar.com/',
+      category: 'BusinessApplication',
+      description: isEs
+        ? 'Caso productivo de comercio digital y control operativo conectado sobre LUNA.'
+        : 'Production case study for connected digital commerce and operational control on LUNA.',
+      features: isEs
+        ? ['Catálogo y productos', 'Ventas e inventario', 'Contenido comercial', 'Administración', 'Reportes ejecutivos']
+        : ['Catalog and products', 'Sales and inventory', 'Commercial content', 'Administration', 'Executive reporting'],
+    },
+    'luna-football': {
+      id: `${siteUrl.origin}/#luna-football`,
+      name: 'LUNA Football',
+      externalUrl: 'https://cdebarinasef.com/',
+      category: 'SportsApplication',
+      description: isEs
+        ? 'Caso productivo de gestión deportiva para jugadores, equipos, pagos, inventario, personal y entrenamientos modulares.'
+        : 'Production sports-management case study for players, teams, payments, inventory, staff, and modular training.',
+      features: isEs
+        ? ['Jugadores y equipos', 'Inscripciones y mensualidades', 'Inventario deportivo', 'Personal y carnetización', 'Entrenamientos modulares asistidos']
+        : ['Players and teams', 'Enrollment and tuition', 'Sports inventory', 'Staff and ID cards', 'Assisted modular training'],
+    },
+  } as const;
+  const item = cases[slug];
+
+  return {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'SoftwareApplication',
+        '@id': item.id,
+        name: item.name,
+        url: casePageUrl,
+        sameAs: item.externalUrl,
+        applicationCategory: item.category,
+        operatingSystem: 'Web, PWA',
+        inLanguage: isEs ? 'es-VE' : 'en-US',
+        description: item.description,
+        provider: { '@id': organizationId },
+        featureList: item.features,
+      },
+      {
+        '@type': 'WebPage',
+        '@id': `${casePageUrl}#webpage`,
+        url: casePageUrl,
+        name: isEs ? `${item.name} | Caso productivo` : `${item.name} | Production case study`,
+        description: item.description,
+        inLanguage: isEs ? 'es-VE' : 'en-US',
+        about: { '@id': item.id },
+        isPartOf: { '@id': new URL('/#website', siteUrl).toString() },
+      },
+      {
+        '@type': 'BreadcrumbList',
+        '@id': `${casePageUrl}#breadcrumb`,
+        itemListElement: [
+          {
+            '@type': 'ListItem',
+            position: 1,
+            name: isEs ? 'Inicio' : 'Home',
+            item: localizedUrl(locale, ''),
+          },
+          {
+            '@type': 'ListItem',
+            position: 2,
+            name: isEs ? 'Casos productivos' : 'Production case studies',
+            item: projectsUrl,
+          },
+          {
+            '@type': 'ListItem',
+            position: 3,
+            name: item.name,
+            item: casePageUrl,
+          },
         ],
       },
     ],
