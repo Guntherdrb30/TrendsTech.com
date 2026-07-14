@@ -3,6 +3,8 @@ import Image from "next/image";
 import { getTranslations } from "next-intl/server";
 import { Syne, DM_Sans } from "next/font/google";
 import { Button } from "@/components/ui/button";
+import { JsonLd } from "@/components/json-ld";
+import { buildLunaStructuredData } from "@/lib/product-structured-data";
 import { buildLocalizedMetadata } from "@/lib/seo";
 
 const WHATSAPP_BUY_NUMBER = "584122640371";
@@ -52,6 +54,7 @@ export default async function LunaPage({
   const isEs = locale.startsWith("es");
   const base = `/${locale}`;
   const t = await getTranslations("lunaPage");
+  const structuredData = buildLunaStructuredData(locale);
 
   const plans = isEs
     ? [
@@ -263,6 +266,7 @@ export default async function LunaPage({
 
   return (
     <div className={`${display.variable} ${body.variable} space-y-14 font-[var(--font-body)]`}>
+      <JsonLd data={structuredData} />
 
       {/* ── HERO ── */}
       <section className="premium-spotlight relative overflow-hidden border-y border-[#e5e7eb] bg-white px-6 py-12 sm:px-8 lg:px-12 xl:px-16 2xl:px-20">

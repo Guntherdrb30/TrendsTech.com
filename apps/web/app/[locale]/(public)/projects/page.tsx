@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import { IBM_Plex_Sans, Space_Grotesk } from "next/font/google";
+import { JsonLd } from "@/components/json-ld";
+import { buildProductionCasesStructuredData } from "@/lib/product-structured-data";
 import { buildLocalizedMetadata } from "@/lib/seo";
 
 const display = Space_Grotesk({
@@ -39,6 +41,7 @@ export default async function ProjectsPage({
   const { locale } = await params;
   const base = `/${locale}`;
   const t = await getTranslations("projectsPage");
+  const structuredData = buildProductionCasesStructuredData(locale);
 
   const capabilities = [
     t("capabilities.c1"),
@@ -51,6 +54,7 @@ export default async function ProjectsPage({
 
   return (
     <div className={`${display.variable} ${body.variable} space-y-16 font-[var(--font-body)]`}>
+      <JsonLd data={structuredData} />
       <section className="relative overflow-hidden rounded-3xl border border-slate-200 bg-gradient-to-br from-white via-slate-50 to-slate-100 px-6 py-10 shadow-[0_40px_120px_-80px_rgba(15,23,42,0.45)] dark:border-slate-800 dark:from-slate-950 dark:via-slate-900 dark:to-slate-900 sm:px-10 sm:py-14">
         <div className="grid-lines absolute inset-0 opacity-60" aria-hidden="true" />
         <div className="absolute -right-24 -top-20 h-72 w-72 rounded-full bg-[radial-gradient(circle_at_center,_rgba(14,116,144,0.35),_transparent_70%)] blur-2xl" aria-hidden="true" />

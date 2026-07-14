@@ -8,7 +8,7 @@ import { getMessages, setRequestLocale } from 'next-intl/server';
 import { ThemeProvider } from '../components/theme-provider';
 import { HumanVerificationGate } from '../components/human-verification-gate';
 import { locales } from '../lib/i18n/config';
-import { siteUrl, socialImage } from '../lib/seo';
+import { getSocialImage, siteUrl } from '../lib/seo';
 import '../../styles/globals.css';
 
 export const runtime = 'nodejs';
@@ -23,6 +23,7 @@ export async function generateMetadata({
   const description = isEs
     ? 'Software empresarial, automatización e inteligencia aplicada a operaciones reales.'
     : 'Business software, automation, and applied intelligence for real-world operations.';
+  const socialImage = getSocialImage(locale);
 
   return {
     metadataBase: siteUrl,
