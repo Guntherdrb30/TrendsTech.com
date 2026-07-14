@@ -8,7 +8,7 @@ import { getMessages, setRequestLocale } from 'next-intl/server';
 import { ThemeProvider } from '../components/theme-provider';
 import { HumanVerificationGate } from '../components/human-verification-gate';
 import { locales } from '../lib/i18n/config';
-import { siteUrl } from '../lib/seo';
+import { siteUrl, socialImage } from '../lib/seo';
 import '../../styles/globals.css';
 
 export const runtime = 'nodejs';
@@ -37,10 +37,12 @@ export async function generateMetadata({
       type: 'website',
       description,
       locale: isEs ? 'es_VE' : 'en_US',
+      images: [socialImage],
     },
     twitter: {
-      card: 'summary',
+      card: 'summary_large_image',
       description,
+      images: [socialImage.url],
     },
   };
 }
@@ -67,9 +69,42 @@ export default async function LocaleLayout({
   const cookieStore = await cookies();
   const verified = cookieStore.get('human_verified')?.value === '1';
   const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? null;
+  const isEs = locale.startsWith('es');
+  const organizationId = new URL('/#organization', siteUrl).toString();
+  const structuredData = {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'Organization',
+        '@id': organizationId,
+        name: 'Trends172Tech',
+        url: siteUrl.origin,
+        logo: new URL('/branding/trends172tech-logo.png', siteUrl).toString(),
+        description: isEs
+          ? 'Empresa de software empresarial, automatización e inteligencia aplicada a operaciones reales.'
+          : 'Business software, automation and applied intelligence for real-world operations.',
+      },
+      {
+        '@type': 'WebSite',
+        '@id': new URL('/#website', siteUrl).toString(),
+        name: 'Trends172Tech',
+        url: siteUrl.origin,
+        inLanguage: ['es-VE', 'en-US'],
+        publisher: { '@id': organizationId },
+      },
+    ],
+  };
 
   return (
     <html lang={locale} suppressHydrationWarning>
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(structuredData).replace(/</g, '\\u003c'),
+          }}
+        />
+      </head>
       <body>
         <Script
           src="https://cdn.platform.openai.com/deployments/chatkit/chatkit.js"
