@@ -18,6 +18,50 @@ type ConciergeCopy = {
   chatSuggestions: Array<{ label: string; prompt: string }>;
 };
 
+export type HomePremiumCopy = {
+  badge: string;
+  heroPrefix: string;
+  heroAccent: string;
+  heroSuffix: string;
+  heroSubhead: string;
+  heroPrimary: string;
+  heroSecondary: string;
+  heroImageAlt: string;
+  trustEyebrow: string;
+  trustItems: string[];
+  carouselEyebrow: string;
+  carouselTitle: string;
+  carouselItems: Array<{ tag: string; title: string; description: string }>;
+  ecosystemEyebrow: string;
+  ecosystemTitle: string;
+  ecosystemMore: string;
+  ecosystemItems: Array<{ tag: string; description: string }>;
+  stats: string[];
+  agentEyebrow: string;
+  agentTitle: string;
+  agentBody: string;
+  showcaseEyebrow: string;
+  showcaseTitle: string;
+  showcaseBody: string;
+  showcaseItems: Array<{ title: string; subtitle: string }>;
+  marketingEyebrow: string;
+  marketingTitle: string;
+  marketingItems: string[];
+  founderEyebrow: string;
+  founderQuotePrefix: string;
+  founderQuoteAccent: string;
+  founderRole: string;
+  founderImageAlt: string;
+  finalEyebrow: string;
+  finalTitle: string;
+  finalBody: string;
+  finalPrimary: string;
+  finalSecondary: string;
+  footerTagline: string;
+  footerContact: string;
+  footerCopyright: string;
+};
+
 /* ── Fade-up reusable ── */
 function FadeUp({
   children,
@@ -45,7 +89,7 @@ function FadeUp({
 
 
 /* ── Hero ── */
-function Hero({ fontClass }: { fontClass: string }) {
+function Hero({ fontClass, copy, locale }: { fontClass: string; copy: HomePremiumCopy; locale: string }) {
   return (
     <section className={`relative overflow-hidden bg-white pt-28 pb-0 ${fontClass}`}>
       {/* Turquoise glow */}
@@ -100,7 +144,7 @@ function Hero({ fontClass }: { fontClass: string }) {
         >
           <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#14D9D9]" />
           <span className="text-[12px] font-semibold uppercase tracking-[0.12em] text-[#14D9D9]">
-            Software · IA · Automatización
+            {copy.badge}
           </span>
         </motion.div>
 
@@ -111,7 +155,7 @@ function Hero({ fontClass }: { fontClass: string }) {
           transition={{ delay: 0.3, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
           className="mb-5 text-[52px] font-extrabold leading-[1.06] tracking-[-0.04em] text-[#0a0d14] sm:text-[68px] lg:text-[84px]"
         >
-          Tecnología que{' '}
+          {copy.heroPrefix}{' '}
           <span
             style={{
               background: 'linear-gradient(135deg, #14D9D9 0%, #0fb8b8 100%)',
@@ -120,9 +164,9 @@ function Hero({ fontClass }: { fontClass: string }) {
               backgroundClip: 'text',
             }}
           >
-            impulsa
+            {copy.heroAccent}
           </span>{' '}
-          el futuro
+          {copy.heroSuffix}
         </motion.h1>
 
         {/* Subheadline */}
@@ -132,7 +176,7 @@ function Hero({ fontClass }: { fontClass: string }) {
           transition={{ delay: 0.45, duration: 0.6 }}
           className="mx-auto mb-10 max-w-xl text-[18px] font-normal leading-relaxed text-[#6b7280]"
         >
-          Software empresarial, Inteligencia Artificial y Automatización para empresas modernas.
+          {copy.heroSubhead}
         </motion.p>
 
         {/* CTAs */}
@@ -143,10 +187,10 @@ function Hero({ fontClass }: { fontClass: string }) {
           className="flex flex-wrap items-center justify-center gap-3"
         >
           <Link
-            href="/es/systems/luna"
+            href={`/${locale}/systems/luna`}
             className="group flex h-12 items-center gap-2 rounded-full bg-[#0a0d14] px-7 text-[15px] font-semibold text-white shadow-lg transition-all hover:bg-[#14D9D9] hover:text-[#0a0d14] hover:shadow-[0_8px_30px_rgba(20,217,217,0.35)]"
           >
-            Conocer LUNA ERP AI
+            {copy.heroPrimary}
             <svg
               className="transition-transform group-hover:translate-x-0.5"
               width="16"
@@ -167,7 +211,7 @@ function Hero({ fontClass }: { fontClass: string }) {
             href="#ecosistema"
             className="flex h-12 items-center gap-2 rounded-full border border-[#e5e7eb] bg-white px-7 text-[15px] font-semibold text-[#374151] transition-all hover:border-[#14D9D9]/40 hover:shadow-md"
           >
-            Explorar Ecosistema
+            {copy.heroSecondary}
           </Link>
         </motion.div>
 
@@ -180,7 +224,7 @@ function Hero({ fontClass }: { fontClass: string }) {
         >
           <Image
             src="/marketing/luna/luna-hero-light.png"
-            alt="LUNA ERP AI — Dashboard empresarial"
+            alt={copy.heroImageAlt}
             width={1200}
             height={720}
             className="w-full"
@@ -193,16 +237,16 @@ function Hero({ fontClass }: { fontClass: string }) {
 }
 
 /* ── Trust strip ── */
-function TrustStrip({ fontClass }: { fontClass: string }) {
+function TrustStrip({ fontClass, copy }: { fontClass: string; copy: HomePremiumCopy }) {
   return (
     <div className={`border-y border-[#f3f4f6] bg-[#fafafa] py-5 ${fontClass}`}>
       <div className="mx-auto max-w-7xl px-6">
         <div className="flex flex-wrap items-center justify-center gap-x-10 gap-y-3">
           <span className="text-[12px] font-medium uppercase tracking-[0.15em] text-[#9ca3af]">
-            Tecnología de nivel mundial
+            {copy.trustEyebrow}
           </span>
           <div className="h-px w-6 bg-[#e5e7eb]" />
-          {['Venezuela', 'Latinoamérica', 'ERP AI', 'Automatización', 'SaaS Empresarial'].map(
+          {copy.trustItems.map(
             (t) => (
               <span key={t} className="text-[13px] font-medium text-[#6b7280]">
                 {t}
@@ -218,45 +262,33 @@ function TrustStrip({ fontClass }: { fontClass: string }) {
 /* ── Carousel ── */
 const CAROUSEL_ITEMS = [
   {
-    tag: 'ERP AI',
-    title: 'LUNA ERP AI',
-    desc: 'Dashboard con analítica avanzada, insights de IA y gestión operativa en tiempo real.',
     accent: '#14D9D9',
     image: '/screenshots/luna/luna-admin-dashboard.png',
   },
   {
-    tag: 'Marketplace Real',
-    title: 'DekoMundo · LUNA en acción',
-    desc: 'La tienda inteligente operada sobre LUNA ERP AI. Catálogo, carrito, cotizaciones y asistente IA.',
     accent: '#f97316',
     image: '/screenshots/luna/luna-dekomundo-storefront.png',
   },
   {
-    tag: 'Automatización',
-    title: 'Agentes IA',
-    desc: 'Agentes inteligentes que automatizan inventario, reportes, marketing y soporte sin intervención manual.',
     accent: '#8b5cf6',
     image: '/screenshots/luna/luna-agentes-ia.png',
   },
   {
-    tag: 'Operaciones',
-    title: 'Gestión de Ventas',
-    desc: 'Módulo de ventas con facturación, multi-precio, métodos de pago y flujos empresariales completos.',
     accent: '#10b981',
     image: '/screenshots/luna/luna-nueva-venta.png',
   },
 ];
 
-function Carousel({ fontClass }: { fontClass: string }) {
+function Carousel({ fontClass, copy }: { fontClass: string; copy: HomePremiumCopy }) {
   return (
     <section className={`overflow-hidden bg-white py-24 ${fontClass}`}>
       <div className="mx-auto mb-12 max-w-7xl px-6">
         <FadeUp>
           <p className="mb-3 text-[12px] font-semibold uppercase tracking-[0.15em] text-[#14D9D9]">
-            Lo que construimos
+            {copy.carouselEyebrow}
           </p>
           <h2 className="max-w-lg text-[40px] font-extrabold leading-[1.1] tracking-[-0.03em] text-[#0a0d14] sm:text-[48px]">
-            Un ecosistema tecnológico completo
+            {copy.carouselTitle}
           </h2>
         </FadeUp>
       </div>
@@ -264,9 +296,11 @@ function Carousel({ fontClass }: { fontClass: string }) {
         className="flex snap-x snap-mandatory gap-4 overflow-x-auto px-6 pb-4"
         style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
       >
-        {CAROUSEL_ITEMS.map((item) => (
+        {CAROUSEL_ITEMS.map((item, index) => {
+          const content = copy.carouselItems[index];
+          return (
           <div
-            key={item.title}
+            key={content.title}
             className="relative flex w-[340px] shrink-0 snap-start flex-col overflow-hidden rounded-2xl border border-[#e5e7eb] bg-white shadow-sm sm:w-[480px]"
           >
             {/* Card header */}
@@ -276,23 +310,24 @@ function Carousel({ fontClass }: { fontClass: string }) {
                 style={{ background: `${item.accent}15`, color: item.accent }}
               >
                 <span className="h-1.5 w-1.5 rounded-full" style={{ background: item.accent }} />
-                {item.tag}
+                {content.tag}
               </span>
-              <h3 className="mb-2 text-[20px] font-bold text-[#0a0d14]">{item.title}</h3>
-              <p className="text-[14px] leading-relaxed text-[#6b7280]">{item.desc}</p>
+              <h3 className="mb-2 text-[20px] font-bold text-[#0a0d14]">{content.title}</h3>
+              <p className="text-[14px] leading-relaxed text-[#6b7280]">{content.description}</p>
             </div>
             {/* Real screenshot */}
             <div className="overflow-hidden">
               <Image
                 src={item.image}
-                alt={item.title}
+                alt={content.title}
                 width={480}
                 height={300}
                 className="w-full object-cover object-top"
               />
             </div>
           </div>
-        ))}
+          );
+        })}
         <div className="w-6 shrink-0" />
       </div>
     </section>
@@ -304,48 +339,45 @@ const ECOSYSTEM = [
   {
     icon: '🌙',
     name: 'LUNA ERP AI',
-    tag: 'Producto Principal',
-    desc: 'ERP inteligente para ventas, inventario, compras y automatización con Inteligencia Artificial.',
-    href: '/es/systems/luna',
+    path: '/systems/luna',
     accent: '#14D9D9',
   },
   {
     icon: '🏠',
     name: 'CARPIHOGAR',
-    tag: 'Caso Real',
-    desc: 'La Tienda Inteligente de Venezuela operada sobre LUNA ERP AI. Primer caso de uso real del ecosistema.',
-    href: 'https://www.carpihogar.com',
+    path: 'https://www.carpihogar.com',
     accent: '#f97316',
   },
   {
     icon: '⚡',
     name: 'TRENDS172TECH',
-    tag: 'Empresa Tecnológica',
-    desc: 'Desarrollo de software, inteligencia artificial y automatización empresarial. Tecnología hecha en Venezuela.',
-    href: '/es/contact',
+    path: '/contact',
     accent: '#8b5cf6',
   },
 ];
 
-function EcosystemCards({ fontClass }: { fontClass: string }) {
+function EcosystemCards({ fontClass, copy, locale }: { fontClass: string; copy: HomePremiumCopy; locale: string }) {
   return (
     <section id="ecosistema" className={`bg-[#fafafa] py-24 ${fontClass}`}>
       <div className="mx-auto max-w-7xl px-6">
         <FadeUp className="mb-14 text-center">
           <p className="mb-3 text-[12px] font-semibold uppercase tracking-[0.15em] text-[#14D9D9]">
-            Nuestro Ecosistema
+            {copy.ecosystemEyebrow}
           </p>
           <h2 className="text-[40px] font-extrabold leading-[1.1] tracking-[-0.03em] text-[#0a0d14] sm:text-[48px]">
-            Tres pilares. Un ecosistema.
+            {copy.ecosystemTitle}
           </h2>
         </FadeUp>
 
         <div className="grid gap-6 md:grid-cols-3">
-          {ECOSYSTEM.map((item, i) => (
+          {ECOSYSTEM.map((item, i) => {
+            const content = copy.ecosystemItems[i];
+            const href = item.path.startsWith('http') ? item.path : `/${locale}${item.path}`;
+            return (
             <FadeUp key={item.name} delay={i * 0.12}>
               <Link
-                href={item.href}
-                target={item.href.startsWith('http') ? '_blank' : undefined}
+                href={href}
+                target={href.startsWith('http') ? '_blank' : undefined}
                 className="group block h-full"
               >
                 <div className="relative flex h-full flex-col overflow-hidden rounded-2xl border border-[#e5e7eb] bg-white p-8 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-transparent hover:shadow-[0_20px_60px_rgba(0,0,0,0.10)]">
@@ -358,17 +390,17 @@ function EcosystemCards({ fontClass }: { fontClass: string }) {
                     className="mb-1 text-[11px] font-semibold uppercase tracking-[0.12em]"
                     style={{ color: item.accent }}
                   >
-                    {item.tag}
+                    {content.tag}
                   </span>
                   <h3 className="mb-3 text-[22px] font-bold tracking-tight text-[#0a0d14]">
                     {item.name}
                   </h3>
-                  <p className="flex-1 text-[14px] leading-relaxed text-[#6b7280]">{item.desc}</p>
+                  <p className="flex-1 text-[14px] leading-relaxed text-[#6b7280]">{content.description}</p>
                   <div
                     className="mt-6 flex items-center gap-1.5 text-[13px] font-semibold"
                     style={{ color: item.accent }}
                   >
-                    Conocer más
+                    {copy.ecosystemMore}
                     <svg
                       className="transition-transform group-hover:translate-x-1"
                       width="14"
@@ -388,7 +420,8 @@ function EcosystemCards({ fontClass }: { fontClass: string }) {
                 </div>
               </Link>
             </FadeUp>
-          ))}
+            );
+          })}
         </div>
       </div>
     </section>
@@ -397,18 +430,18 @@ function EcosystemCards({ fontClass }: { fontClass: string }) {
 
 /* ── Stats ── */
 const STATS = [
-  { value: '17+', label: 'Años de experiencia empresarial' },
-  { value: '99.9%', label: 'Uptime garantizado en producción' },
-  { value: '3+', label: 'Productos en el ecosistema activo' },
+  { value: '17+' },
+  { value: '99.9%' },
+  { value: '3+' },
 ];
 
-function Stats({ fontClass }: { fontClass: string }) {
+function Stats({ fontClass, copy }: { fontClass: string; copy: HomePremiumCopy }) {
   return (
     <section className={`border-y border-[#f3f4f6] bg-white py-20 ${fontClass}`}>
       <div className="mx-auto max-w-5xl px-6">
         <div className="grid grid-cols-1 gap-12 sm:grid-cols-3">
           {STATS.map((s, i) => (
-            <FadeUp key={s.label} delay={i * 0.1} className="text-center">
+            <FadeUp key={s.value} delay={i * 0.1} className="text-center">
               <p
                 className="mb-2 text-[56px] font-extrabold leading-none tracking-[-0.04em]"
                 style={{
@@ -420,7 +453,7 @@ function Stats({ fontClass }: { fontClass: string }) {
               >
                 {s.value}
               </p>
-              <p className="text-[14px] font-medium text-[#6b7280]">{s.label}</p>
+              <p className="text-[14px] font-medium text-[#6b7280]">{copy.stats[i]}</p>
             </FadeUp>
           ))}
         </div>
@@ -433,23 +466,24 @@ function Stats({ fontClass }: { fontClass: string }) {
 function AgentSection({
   conciergeCopy,
   fontClass,
+  copy,
 }: {
   conciergeCopy: ConciergeCopy;
   fontClass: string;
+  copy: HomePremiumCopy;
 }) {
   return (
     <section className={`bg-[#fafafa] py-24 ${fontClass}`}>
       <div className="mx-auto max-w-7xl px-6">
         <FadeUp className="mb-12 text-center">
           <p className="mb-3 text-[12px] font-semibold uppercase tracking-[0.15em] text-[#14D9D9]">
-            Agente IA
+            {copy.agentEyebrow}
           </p>
           <h2 className="text-[40px] font-extrabold leading-[1.1] tracking-[-0.03em] text-[#0a0d14] sm:text-[48px]">
-            Crea tu agente empresarial con IA
+            {copy.agentTitle}
           </h2>
           <p className="mx-auto mt-4 max-w-md text-[16px] text-[#6b7280]">
-            Describe lo que necesitas automatizar y nuestro asistente construye el agente perfecto
-            para tu empresa.
+            {copy.agentBody}
           </p>
         </FadeUp>
         <FadeUp delay={0.15}>
@@ -463,57 +497,49 @@ function AgentSection({
 /* ── Showcase con imágenes reales ── */
 const SHOWCASE = [
   {
-    title: 'LUNA ERP AI — Dashboard',
-    sub: 'Panel de control empresarial completo',
     image: '/screenshots/luna/luna-admin-dashboard.png',
     wide: true,
   },
   {
-    title: 'DekoMundo — Tienda Inteligente',
-    sub: 'E-commerce sobre LUNA ERP',
     image: '/screenshots/luna/luna-dekomundo-storefront.png',
     wide: false,
   },
   {
-    title: 'Asistente IA Comercial',
-    sub: 'Vende más con IA conversacional',
     image: '/screenshots/luna/luna-asistente-ia.png',
     wide: false,
   },
   {
-    title: 'Agente IA de Inventario',
-    sub: 'Automatización inteligente de stock',
     image: '/screenshots/luna/luna-agente-inventario.png',
     wide: false,
   },
   {
-    title: 'ERP Camaleónico',
-    sub: 'Una plataforma, infinitas identidades',
     image: '/screenshots/luna/luna-marketing-erp-camaleonico.png',
     wide: false,
   },
 ];
 
-function ShowcaseSection({ fontClass }: { fontClass: string }) {
+function ShowcaseSection({ fontClass, copy }: { fontClass: string; copy: HomePremiumCopy }) {
   return (
     <section className={`bg-white py-24 ${fontClass}`}>
       <div className="mx-auto max-w-7xl px-6">
         <FadeUp className="mb-14 text-center">
           <p className="mb-3 text-[12px] font-semibold uppercase tracking-[0.15em] text-[#14D9D9]">
-            Showcase
+            {copy.showcaseEyebrow}
           </p>
           <h2 className="text-[40px] font-extrabold leading-[1.1] tracking-[-0.03em] text-[#0a0d14] sm:text-[48px]">
-            Tecnología que se ve y se siente
+            {copy.showcaseTitle}
           </h2>
           <p className="mx-auto mt-4 max-w-md text-[16px] text-[#6b7280]">
-            Interfaces de nivel enterprise, diseñadas para escalar con tu negocio.
+            {copy.showcaseBody}
           </p>
         </FadeUp>
 
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {SHOWCASE.map((item, i) => (
+          {SHOWCASE.map((item, i) => {
+            const content = copy.showcaseItems[i];
+            return (
             <FadeUp
-              key={item.title}
+              key={content.title}
               delay={i * 0.08}
               className={item.wide ? 'sm:col-span-2 lg:col-span-2' : ''}
             >
@@ -526,19 +552,20 @@ function ShowcaseSection({ fontClass }: { fontClass: string }) {
                 <div className="overflow-hidden">
                   <Image
                     src={item.image}
-                    alt={item.title}
+                    alt={content.title}
                     width={item.wide ? 800 : 400}
                     height={280}
                     className="w-full object-cover object-top transition-transform duration-500 group-hover:scale-[1.02]"
                   />
                 </div>
                 <div className="border-t border-[#f3f4f6] px-5 py-4">
-                  <p className="text-[14px] font-semibold text-[#0a0d14]">{item.title}</p>
-                  <p className="text-[12px] text-[#9ca3af]">{item.sub}</p>
+                  <p className="text-[14px] font-semibold text-[#0a0d14]">{content.title}</p>
+                  <p className="text-[12px] text-[#9ca3af]">{content.subtitle}</p>
                 </div>
               </div>
             </FadeUp>
-          ))}
+            );
+          })}
         </div>
       </div>
     </section>
@@ -546,31 +573,31 @@ function ShowcaseSection({ fontClass }: { fontClass: string }) {
 }
 
 /* ── Marketing section con infografías ── */
-function MarketingSection({ fontClass }: { fontClass: string }) {
+function MarketingSection({ fontClass, copy }: { fontClass: string; copy: HomePremiumCopy }) {
   return (
     <section className={`bg-[#fafafa] py-24 ${fontClass}`}>
       <div className="mx-auto max-w-7xl px-6">
         <FadeUp className="mb-14 text-center">
           <p className="mb-3 text-[12px] font-semibold uppercase tracking-[0.15em] text-[#14D9D9]">
-            Por qué LUNA ERP AI
+            {copy.marketingEyebrow}
           </p>
           <h2 className="text-[40px] font-extrabold leading-[1.1] tracking-[-0.03em] text-[#0a0d14] sm:text-[48px]">
-            Un solo sistema para todo tu negocio
+            {copy.marketingTitle}
           </h2>
         </FadeUp>
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {[
             {
               img: '/screenshots/luna/luna-marketing-empresas-hoy.png',
-              label: 'Hecho para empresas de hoy',
+               label: copy.marketingItems[0],
             },
             {
               img: '/screenshots/luna/luna-marketing-ia-operativa.png',
-              label: 'IA Operativa integrada',
+               label: copy.marketingItems[1],
             },
             {
               img: '/screenshots/luna/luna-marketing-infinitas-identidades.png',
-              label: 'Infinitas identidades',
+               label: copy.marketingItems[2],
             },
           ].map((item) => (
             <FadeUp key={item.label}>
@@ -592,13 +619,13 @@ function MarketingSection({ fontClass }: { fontClass: string }) {
 }
 
 /* ── Founder ── */
-function FounderSection({ fontClass }: { fontClass: string }) {
+function FounderSection({ fontClass, copy }: { fontClass: string; copy: HomePremiumCopy }) {
   return (
     <section className={`overflow-hidden bg-white py-24 ${fontClass}`}>
       <div className="mx-auto max-w-7xl px-6">
         <FadeUp className="mb-12">
           <p className="text-[12px] font-semibold uppercase tracking-[0.15em] text-[#14D9D9]">
-            Fundador
+            {copy.founderEyebrow}
           </p>
         </FadeUp>
 
@@ -609,10 +636,8 @@ function FounderSection({ fontClass }: { fontClass: string }) {
                 &ldquo;
               </div>
               <p className="mb-8 text-[24px] font-medium leading-[1.5] tracking-[-0.02em] text-[#0a0d14] sm:text-[28px]">
-                Después de más de 17 años construyendo una empresa en Venezuela, desarrollé la
-                tecnología que necesitaba para administrarla. Lo que comenzó como una solución
-                interna terminó convirtiéndose en{' '}
-                <span style={{ color: '#14D9D9', fontWeight: 700 }}>LUNA ERP AI.</span>
+                {copy.founderQuotePrefix}{' '}
+                <span style={{ color: '#14D9D9', fontWeight: 700 }}>{copy.founderQuoteAccent}</span>
               </p>
               <footer className="flex items-center gap-4">
                 <div className="flex h-12 w-12 items-center justify-center overflow-hidden rounded-full border-2 border-[#14D9D9]/30 bg-gradient-to-br from-[#14D9D9]/20 to-[#14D9D9]/5">
@@ -620,7 +645,7 @@ function FounderSection({ fontClass }: { fontClass: string }) {
                 </div>
                 <div>
                   <p className="text-[15px] font-bold text-[#0a0d14]">Gunther Del Rosario</p>
-                  <p className="text-[13px] text-[#9ca3af]">CEO & Fundador · Trends172Tech</p>
+                  <p className="text-[13px] text-[#9ca3af]">{copy.founderRole}</p>
                 </div>
               </footer>
             </blockquote>
@@ -634,7 +659,7 @@ function FounderSection({ fontClass }: { fontClass: string }) {
               />
               <Image
                 src="/screenshots/luna/luna-marketing-tu-empresa.png"
-                alt="LUNA ERP AI — Tu empresa, tu plataforma"
+                alt={copy.founderImageAlt}
                 width={600}
                 height={500}
                 className="w-full object-cover"
@@ -648,7 +673,7 @@ function FounderSection({ fontClass }: { fontClass: string }) {
 }
 
 /* ── CTA Final ── */
-function FinalCTA({ fontClass }: { fontClass: string }) {
+function FinalCTA({ fontClass, copy, locale }: { fontClass: string; copy: HomePremiumCopy; locale: string }) {
   return (
     <section className={`bg-[#0a0d14] py-28 ${fontClass}`}>
       <div className="relative mx-auto max-w-3xl px-6 text-center">
@@ -658,27 +683,26 @@ function FinalCTA({ fontClass }: { fontClass: string }) {
         />
         <FadeUp className="relative">
           <p className="mb-4 text-[12px] font-semibold uppercase tracking-[0.15em] text-[#14D9D9]">
-            ¿Listo para escalar?
+            {copy.finalEyebrow}
           </p>
           <h2 className="mb-5 text-[40px] font-extrabold leading-[1.1] tracking-[-0.03em] text-white sm:text-[52px]">
-            Construye el futuro de tu empresa hoy.
+            {copy.finalTitle}
           </h2>
           <p className="mx-auto mb-10 max-w-md text-[17px] leading-relaxed text-white/50">
-            LUNA ERP AI está disponible para empresas que quieren operar con tecnología de nivel
-            enterprise.
+            {copy.finalBody}
           </p>
           <div className="flex flex-wrap items-center justify-center gap-3">
             <Link
-              href="/es/systems/luna"
+              href={`/${locale}/systems/luna`}
               className="flex h-12 items-center gap-2 rounded-full bg-[#14D9D9] px-7 text-[15px] font-semibold text-[#0a0d14] shadow-[0_0_40px_rgba(20,217,217,0.3)] transition-all hover:shadow-[0_0_60px_rgba(20,217,217,0.5)]"
             >
-              Conocer LUNA ERP AI
+              {copy.finalPrimary}
             </Link>
             <Link
-              href="/es/contact"
+              href={`/${locale}/contact`}
               className="flex h-12 items-center rounded-full border border-white/15 px-7 text-[15px] font-semibold text-white/70 transition-all hover:border-white/30 hover:text-white"
             >
-              Hablar con el equipo
+              {copy.finalSecondary}
             </Link>
           </div>
         </FadeUp>
@@ -688,7 +712,7 @@ function FinalCTA({ fontClass }: { fontClass: string }) {
 }
 
 /* ── Footer ── */
-function Footer({ fontClass }: { fontClass: string }) {
+function Footer({ fontClass, copy, locale }: { fontClass: string; copy: HomePremiumCopy; locale: string }) {
   return (
     <footer className={`border-t border-[#f3f4f6] bg-white py-16 ${fontClass}`}>
       <div className="mx-auto max-w-7xl px-6">
@@ -703,15 +727,15 @@ function Footer({ fontClass }: { fontClass: string }) {
           </div>
           <div className="text-center">
             <p className="text-[18px] font-bold tracking-tight text-[#0a0d14]">Trends172Tech</p>
-            <p className="mt-1 text-[13px] text-[#9ca3af]">Tecnología que impulsa el futuro</p>
+            <p className="mt-1 text-[13px] text-[#9ca3af]">{copy.footerTagline}</p>
           </div>
         </div>
 
         <div className="flex flex-wrap items-center justify-center gap-8 text-[13px] text-[#9ca3af]">
           {[
-            { label: 'LUNA ERP AI', href: '/es/systems/luna' },
+            { label: 'LUNA ERP AI', href: `/${locale}/systems/luna` },
             { label: 'Carpihogar', href: 'https://www.carpihogar.com' },
-            { label: 'Contacto', href: '/es/contact' },
+            { label: copy.footerContact, href: `/${locale}/contact` },
             { label: 'WhatsApp', href: 'https://wa.me/584122640371' },
           ].map((l) => (
             <Link
@@ -727,7 +751,7 @@ function Footer({ fontClass }: { fontClass: string }) {
 
         <div className="mt-10 border-t border-[#f3f4f6] pt-8 text-center">
           <p className="text-[12px] text-[#d1d5db]">
-            © {new Date().getFullYear()} Trends172Tech · Software · IA · Automatización · Venezuela
+            © {new Date().getFullYear()} Trends172Tech · {copy.footerCopyright}
           </p>
         </div>
       </div>
@@ -739,23 +763,27 @@ function Footer({ fontClass }: { fontClass: string }) {
 export function HomePremium({
   fontClass = '',
   conciergeCopy,
+  copy,
 }: {
   fontClass?: string;
   conciergeCopy: ConciergeCopy;
+  copy: HomePremiumCopy;
 }) {
+  const locale = conciergeCopy.locale;
+
   return (
     <div className="overflow-x-hidden">
-      <Hero fontClass={fontClass} />
-      <TrustStrip fontClass={fontClass} />
-      <Carousel fontClass={fontClass} />
-      <EcosystemCards fontClass={fontClass} />
-      <Stats fontClass={fontClass} />
-      <AgentSection conciergeCopy={conciergeCopy} fontClass={fontClass} />
-      <ShowcaseSection fontClass={fontClass} />
-      <MarketingSection fontClass={fontClass} />
-      <FounderSection fontClass={fontClass} />
-      <FinalCTA fontClass={fontClass} />
-      <Footer fontClass={fontClass} />
+      <Hero fontClass={fontClass} copy={copy} locale={locale} />
+      <TrustStrip fontClass={fontClass} copy={copy} />
+      <Carousel fontClass={fontClass} copy={copy} />
+      <EcosystemCards fontClass={fontClass} copy={copy} locale={locale} />
+      <Stats fontClass={fontClass} copy={copy} />
+      <AgentSection conciergeCopy={conciergeCopy} fontClass={fontClass} copy={copy} />
+      <ShowcaseSection fontClass={fontClass} copy={copy} />
+      <MarketingSection fontClass={fontClass} copy={copy} />
+      <FounderSection fontClass={fontClass} copy={copy} />
+      <FinalCTA fontClass={fontClass} copy={copy} locale={locale} />
+      <Footer fontClass={fontClass} copy={copy} locale={locale} />
     </div>
   );
 }
