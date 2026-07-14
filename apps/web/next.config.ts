@@ -4,6 +4,7 @@ const withNextIntl = createNextIntlPlugin('./i18n.ts');
 
 const nextConfig = {
   reactStrictMode: true,
+  poweredByHeader: false,
   transpilePackages: ['@trends172tech/db', '@trends172tech/core', '@trends172tech/openai'],
   async headers() {
     return [
@@ -11,6 +12,7 @@ const nextConfig = {
         source: '/:path*',
         headers: [
           { key: 'X-Content-Type-Options', value: 'nosniff' },
+          { key: 'X-Frame-Options', value: 'SAMEORIGIN' },
           { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
           { key: 'X-DNS-Prefetch-Control', value: 'on' },
           {

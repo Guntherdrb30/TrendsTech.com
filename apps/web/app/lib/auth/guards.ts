@@ -1,5 +1,6 @@
 import { getServerAuthSession } from './session';
 import { isRoleAtLeast, type UserRole } from './roles';
+import { prisma } from '@trends172tech/db';
 
 export class AuthError extends Error {
   status: number;
@@ -12,7 +13,27 @@ export class AuthError extends Error {
 
 export async function getCurrentUser() {
   const session = await getServerAuthSession();
-  return session?.user ?? null;
+  if (!session?.user?.id) return null;
+
+  const currentUser = await prisma.user.findUnique({
+    where: { id: session.user.id },
+    select: {
+      id: true,
+      email: true,
+      name: true,
+      phone: true,
+      avatarUrl: true,
+      role: true,
+      tenantId: true
+    }
+  });
+
+  if (!currentUser) return null;
+  return {
+    ...session.user,
+    ...currentUser,
+    role: currentUser.role as string
+  };
 }
 
 export async function requireAuth() {

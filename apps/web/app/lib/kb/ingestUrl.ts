@@ -8,6 +8,7 @@ import { detectLanguage } from './language';
 import { isAllowedByRobots } from './robots';
 import { URL_PAGE_LIMIT_DEFAULT, URL_PAGE_LIMIT_HARD } from './config';
 import type { KnowledgeLogger } from './logs';
+import { assertPublicHttpUrl, fetchPublicHttp, readResponseTextLimited } from '../security/public-url';
 
 type CrawledPage = {
   url: string;
@@ -48,12 +49,13 @@ function extractTextFromHtml(html: string) {
   };
 }
 
-function normalizeUrl(rawUrl: string) {
+async function normalizeUrl(rawUrl: string) {
   const url = new URL(rawUrl);
   if (!['http:', 'https:'].includes(url.protocol)) {
     throw new Error('Unsupported URL protocol');
   }
   url.hash = '';
+  await assertPublicHttpUrl(url);
   return url.toString();
 }
 
@@ -79,14 +81,15 @@ async function crawlUrl(startUrl: string, limit: number) {
       continue;
     }
 
-    const response = await fetch(url, {
-      headers: { 'user-agent': 'trends172tech-bot' }
+    const response = await fetchPublicHttp(url, {
+      headers: { 'user-agent': 'trends172tech-bot' },
+      timeoutMs: 10_000
     });
     if (!response.ok) {
       continue;
     }
 
-    const html = await response.text();
+    const html = await readResponseTextLimited(response, 4 * 1024 * 1024);
     const { title, text } = extractTextFromHtml(html);
     if (text) {
       pages.push({ url: url.toString(), title, text });
@@ -110,7 +113,7 @@ async function crawlUrl(startUrl: string, limit: number) {
         if (!isSameHost(url, candidate)) {
           return;
         }
-        const normalized = normalizeUrl(candidate.toString());
+        const normalized = candidate.toString();
         if (!seen.has(normalized) && pages.length + queue.length < limit) {
           queue.push(normalized);
         }
@@ -137,7 +140,7 @@ export async function ingestUrl(params: {
   title?: string | null;
   logger?: KnowledgeLogger;
 }) {
-  const normalizedUrl = normalizeUrl(params.url);
+  const normalizedUrl = await normalizeUrl(params.url);
   const pageLimit = await resolveUrlPageLimit();
 
   await prisma.knowledgeSource.update({

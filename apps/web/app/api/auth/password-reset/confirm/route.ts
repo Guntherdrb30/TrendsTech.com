@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { hash } from 'bcryptjs';
 import { prisma } from '@trends172tech/db';
 import crypto from 'crypto';
+import { enforceRequestRateLimit } from '@/lib/security/rate-limit';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -17,6 +18,13 @@ function getTokenSecret() {
 }
 
 export async function POST(request: Request) {
+  const limited = enforceRequestRateLimit(request, {
+    namespace: 'password-reset-confirm',
+    limit: 10,
+    windowMs: 15 * 60 * 1000
+  });
+  if (limited) return limited;
+
   let payload: z.infer<typeof requestSchema>;
   try {
     payload = requestSchema.parse(await request.json());
