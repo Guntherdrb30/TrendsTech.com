@@ -352,12 +352,14 @@
       "carpihogar": {
         "title": "Carpihogar.com",
         "body": "Real implementation built for ecommerce, commercial control, inventory, operations, and an installable PWA experience; the conceptual base behind LUNA.",
+        "imageAlt": "CarpiHogar homepage with its product catalog, commerce navigation, and intelligent assistant",
         "tagline1": "Real case",
         "tagline2": "PWA + LUNA foundation"
       },
       "lunaFootball": {
         "title": "LUNA Football",
         "body": "An active sports platform for managing players, teams, coaches, enrollment, tuition, inventory, employees, ID cards, and assisted modular training.",
+        "imageAlt": "Homepage of the Club Deportivo Español de Barinas youth football academy",
         "tagline1": "Club in production",
         "tagline2": "End-to-end sports management"
       }
