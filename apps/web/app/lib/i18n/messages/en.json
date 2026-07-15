@@ -4,6 +4,7 @@
     "agents": "Agents",
     "systems": "Systems",
     "projects": "Cases",
+    "lunaFootball": "LUNA Football",
     "news": "News",
     "pricing": "Pricing",
     "login": "Login",
@@ -265,6 +266,7 @@
       "heroSubhead": "Business software, Artificial Intelligence, and Automation for modern companies.",
       "heroPrimary": "Discover LUNA ERP AI",
       "heroSecondary": "Explore the Ecosystem",
+      "heroFootball": "View LUNA Football",
       "heroImageAlt": "LUNA ERP AI — Business dashboard",
       "trustEyebrow": "World-class technology",
       "trustItems": ["Venezuela", "Latin America", "ERP AI", "Automation", "Business SaaS"],
@@ -277,11 +279,12 @@
         {"tag": "Operations", "title": "Sales Management", "description": "A sales module with invoicing, multi-price support, payment methods, and complete business workflows."}
       ],
       "ecosystemEyebrow": "Our Ecosystem",
-      "ecosystemTitle": "Three pillars. One ecosystem.",
+      "ecosystemTitle": "Real products. One ecosystem.",
       "ecosystemMore": "Learn more",
       "ecosystemItems": [
         {"tag": "Flagship Product", "description": "An intelligent ERP for sales, inventory, purchasing, and automation with Artificial Intelligence."},
         {"tag": "Real-World Case", "description": "Venezuela's Intelligent Store powered by LUNA ERP AI. The ecosystem's first real-world implementation."},
+        {"tag": "Sports Product", "description": "End-to-end management for players, teams, coaches, tuition, inventory, and sports planning."},
         {"tag": "Technology Company", "description": "Business software, artificial intelligence, and automation development. Technology made in Venezuela."}
       ],
       "stats": ["Years of business experience", "Guaranteed production uptime", "Products in the active ecosystem"],

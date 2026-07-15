@@ -27,6 +27,7 @@ export async function SiteHeader({ locale }: SiteHeaderProps) {
         agents: t('agents'),
         systems: t('systems'),
         projects: t('projects'),
+        lunaFootball: t('lunaFootball'),
         news: t('news'),
         pricing: t('pricing'),
         login: t('login'),

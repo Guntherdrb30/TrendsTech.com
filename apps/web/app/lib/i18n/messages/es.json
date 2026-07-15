@@ -4,6 +4,7 @@
     "agents": "Agentes",
     "systems": "Sistemas",
     "projects": "Casos",
+    "lunaFootball": "LUNA Football",
     "news": "Novedades",
     "pricing": "Precios",
     "login": "Iniciar sesion",
@@ -265,6 +266,7 @@
       "heroSubhead": "Software empresarial, Inteligencia Artificial y Automatización para empresas modernas.",
       "heroPrimary": "Conocer LUNA ERP AI",
       "heroSecondary": "Explorar Ecosistema",
+      "heroFootball": "Ver LUNA Football",
       "heroImageAlt": "LUNA ERP AI — Dashboard empresarial",
       "trustEyebrow": "Tecnología de nivel mundial",
       "trustItems": ["Venezuela", "Latinoamérica", "ERP AI", "Automatización", "SaaS Empresarial"],
@@ -277,11 +279,12 @@
         {"tag": "Operaciones", "title": "Gestión de Ventas", "description": "Módulo de ventas con facturación, multi-precio, métodos de pago y flujos empresariales completos."}
       ],
       "ecosystemEyebrow": "Nuestro Ecosistema",
-      "ecosystemTitle": "Tres pilares. Un ecosistema.",
+      "ecosystemTitle": "Productos reales. Un ecosistema.",
       "ecosystemMore": "Conocer más",
       "ecosystemItems": [
         {"tag": "Producto Principal", "description": "ERP inteligente para ventas, inventario, compras y automatización con Inteligencia Artificial."},
         {"tag": "Caso Real", "description": "La Tienda Inteligente de Venezuela operada sobre LUNA ERP AI. Primer caso de uso real del ecosistema."},
+        {"tag": "Producto Deportivo", "description": "Gestión integral para jugadores, equipos, entrenadores, mensualidades, inventario y planificación deportiva."},
         {"tag": "Empresa Tecnológica", "description": "Desarrollo de software, inteligencia artificial y automatización empresarial. Tecnología hecha en Venezuela."}
       ],
       "stats": ["Años de experiencia empresarial", "Uptime garantizado en producción", "Productos en el ecosistema activo"],

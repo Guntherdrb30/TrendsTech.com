@@ -22,6 +22,7 @@ type SiteHeaderClientProps = {
     agents: string;
     systems: string;
     projects: string;
+    lunaFootball: string;
     news: string;
     pricing: string;
     login: string;
@@ -89,10 +90,11 @@ export function SiteHeaderClient({ base, isAuthenticated, labels, agentOptions }
   };
 
   const navLinks = [
-    { href: base, label: labels.home },
+    { href: base, label: labels.home, desktopHidden: true },
     { href: `${base}/agents`, label: labels.agents },
     { href: `${base}/systems`, label: labels.systems },
     { href: `${base}/projects`, label: labels.projects },
+    { href: `${base}/projects/luna-football`, label: labels.lunaFootball, featured: true },
     { href: `${base}/news`, label: labels.news },
     { href: `${base}/pricing`, label: labels.pricing },
   ];
@@ -102,7 +104,7 @@ export function SiteHeaderClient({ base, isAuthenticated, labels, agentOptions }
       <div className="mx-auto w-full max-w-[1760px] px-4 sm:px-6 lg:px-8 xl:px-10">
 
         {/* ── Mobile header ── */}
-        <div className="flex items-center justify-between gap-3 py-3 lg:hidden">
+        <div className="flex items-center justify-between gap-3 py-3 min-[1440px]:hidden">
           <Link
             href={base}
             className="flex items-center gap-2.5 text-sm font-semibold text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-300 dark:text-white"
@@ -140,14 +142,16 @@ export function SiteHeaderClient({ base, isAuthenticated, labels, agentOptions }
 
         {/* Mobile menu drawer */}
         {menuOpen ? (
-          <div className="border-t border-black/6 py-4 lg:hidden dark:border-slate-800">
+          <div className="border-t border-black/6 py-4 min-[1440px]:hidden dark:border-slate-800">
             <nav className="flex flex-col gap-0.5 text-sm text-slate-700 dark:text-slate-200">
               {navLinks.map((link) => (
                 <Link
                   key={link.href}
                   href={link.href}
                   onClick={() => setMenuOpen(false)}
-                  className="rounded-xl px-3 py-2.5 font-medium transition hover:bg-slate-50 hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-200 dark:hover:bg-slate-900/70"
+                  className={`rounded-xl px-3 py-2.5 font-medium transition hover:bg-slate-50 hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-200 dark:hover:bg-slate-900/70 ${
+                    link.featured ? 'text-orange-600 dark:text-orange-300' : ''
+                  }`}
                 >
                   {link.label}
                 </Link>
@@ -198,7 +202,7 @@ export function SiteHeaderClient({ base, isAuthenticated, labels, agentOptions }
         ) : null}
 
         {/* ── Desktop header — single row ── */}
-        <div className="hidden items-center gap-6 py-3 lg:flex">
+        <div className="hidden items-center gap-4 py-3 min-[1440px]:flex">
 
           {/* Logo */}
           <Link
@@ -225,7 +229,11 @@ export function SiteHeaderClient({ base, isAuthenticated, labels, agentOptions }
               <Link
                 key={link.href}
                 href={link.href}
-                className="whitespace-nowrap rounded-full px-3.5 py-2 font-medium transition hover:bg-slate-100 hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-200 dark:hover:bg-slate-800/70 dark:hover:text-white"
+                className={`whitespace-nowrap rounded-full px-2.5 py-2 font-medium transition hover:bg-slate-100 hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-200 dark:hover:bg-slate-800/70 dark:hover:text-white xl:px-3 ${
+                  link.featured
+                    ? 'bg-orange-50 text-orange-700 hover:bg-orange-100 dark:bg-orange-500/10 dark:text-orange-300 dark:hover:bg-orange-500/20'
+                    : ''
+                } ${link.desktopHidden ? 'min-[1440px]:hidden' : ''}`}
               >
                 {link.label}
               </Link>
@@ -239,7 +247,7 @@ export function SiteHeaderClient({ base, isAuthenticated, labels, agentOptions }
               placeholder={labels.searchPlaceholder}
               label={labels.searchLabel}
               options={agentOptions}
-              className="w-52 xl:w-64"
+              className="w-44 xl:w-56"
             />
 
             <div className="mx-1 h-5 w-px bg-black/10 dark:bg-white/10" aria-hidden="true" />
