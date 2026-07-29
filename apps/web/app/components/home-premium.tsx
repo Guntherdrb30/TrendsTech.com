@@ -79,7 +79,7 @@ const COPY: Record<'es' | 'en', LocaleCopy> = {
     implementationsTitle: 'La plataforma se demuestra operando.',
     implementationsBody: 'Cada implementación adopta una identidad, una industria y una lógica operacional diferente sin perder el mismo núcleo tecnológico.',
     implementationItems: [
-      { title: 'Carpihogar', label: 'Comercio y operaciones', body: 'Ecommerce, ventas, inventario, cotizaciones y experiencia instalable conectados sobre una operación real.', image: '/screenshots/luna/luna-dekomundo-storefront.png' },
+      { title: 'Carpihogar', label: 'Comercio y operaciones', body: 'Ecommerce, ventas, inventario, cotizaciones y experiencia instalable conectados sobre una operación real.', image: '/screenshots/luna/carpihogar-real-mobile.jpg' },
       { title: 'LUNA Football', label: 'Gestión deportiva', body: 'Jugadores, equipos, mensualidades, inventario y planificación deportiva desde una experiencia especializada.', image: '/screenshots/luna/luna-admin-dashboard.png' },
     ],
     capabilitiesEyebrow: 'Capacidades',
@@ -131,7 +131,7 @@ const COPY: Record<'es' | 'en', LocaleCopy> = {
     implementationsTitle: 'The platform proves itself in operation.',
     implementationsBody: 'Each implementation adopts a different identity, industry and operating logic without losing the same technology core.',
     implementationItems: [
-      { title: 'Carpihogar', label: 'Commerce and operations', body: 'Ecommerce, sales, inventory, quotations and an installable experience connected to a real operation.', image: '/screenshots/luna/luna-dekomundo-storefront.png' },
+      { title: 'Carpihogar', label: 'Commerce and operations', body: 'Ecommerce, sales, inventory, quotations and an installable experience connected to a real operation.', image: '/screenshots/luna/carpihogar-real-mobile.jpg' },
       { title: 'LUNA Football', label: 'Sports management', body: 'Players, teams, memberships, inventory and sports planning through a specialised experience.', image: '/screenshots/luna/luna-admin-dashboard.png' },
     ],
     capabilitiesEyebrow: 'Capabilities',
