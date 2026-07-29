@@ -25,12 +25,12 @@ export async function generateMetadata({
   return buildLocalizedMetadata({
     locale,
     title: {
-      es: 'Software empresarial, IA y automatización',
-      en: 'Business software, AI and automation',
+      es: 'LUNA — Plataforma Empresarial Inteligente',
+      en: 'LUNA — Intelligent Business Platform',
     },
     description: {
-      es: 'Trends172Tech desarrolla software empresarial, automatización e inteligencia aplicada a operaciones reales con LUNA, CarpiHogar y LUNA Football.',
-      en: 'Trends172Tech builds business software, automation and applied intelligence for real operations through LUNA, CarpiHogar and LUNA Football.',
+      es: 'Trends172Tech es la creadora de LUNA, una plataforma empresarial inteligente que conecta operaciones, comercio, datos, automatización e inteligencia artificial.',
+      en: 'Trends172Tech created LUNA, an intelligent business platform connecting operations, commerce, data, automation and artificial intelligence.',
     },
   });
 }
