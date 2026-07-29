@@ -182,50 +182,45 @@ function Eyebrow({ children }: { children: React.ReactNode }) {
 
 function Hero({ locale, t }: { locale: string; t: LocaleCopy }) {
   const reduce = useReducedMotion();
-  return <section className="relative isolate min-h-[94vh] overflow-hidden bg-[#f6f7f4] pt-28">
-    <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_74%_23%,rgba(20,217,217,.15),transparent_28%),linear-gradient(to_bottom,transparent,rgba(255,255,255,.88))]" />
-    <div className="mx-auto grid max-w-7xl items-center gap-10 px-6 pb-20 lg:grid-cols-[.92fr_1.08fr] lg:pb-28">
-      <div className="relative z-10">
-        <motion.p initial={reduce ? false : { opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="mb-8 text-sm font-medium text-[#59606b]">{t.creator}</motion.p>
-        <motion.h1 initial={reduce ? false : { opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: .08, duration: .8 }} className="font-[var(--font-display)] text-[72px] font-semibold leading-[.88] tracking-[-.065em] text-[#0b0d10] sm:text-[104px] lg:text-[132px]">LUNA</motion.h1>
-        <motion.p initial={reduce ? false : { opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: .18, duration: .7 }} className="mt-6 max-w-2xl text-2xl font-medium leading-tight tracking-[-.03em] text-[#20252b] sm:text-4xl">{t.platform}</motion.p>
-        <motion.p initial={reduce ? false : { opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: .28 }} className="mt-7 max-w-xl text-base leading-7 text-[#69717c] sm:text-lg">{t.heroBody}</motion.p>
-        <motion.div initial={reduce ? false : { opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: .38 }} className="mt-10 flex flex-wrap gap-3">
-          <Link href={`/${locale}/systems/luna`} className="rounded-full bg-[#0b0d10] px-7 py-3.5 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:bg-[#079f9f]">{t.discover}</Link>
-          <Link href={`/${locale}/contact`} className="rounded-full border border-black/10 bg-white/75 px-7 py-3.5 text-sm font-semibold text-[#20252b] backdrop-blur transition hover:border-black/25">{t.demo}</Link>
+  return <section className="relative isolate overflow-hidden bg-[#f6f7f4] pt-20 sm:pt-24 lg:min-h-[94vh] lg:pt-28">
+    <motion.div aria-hidden="true" className="absolute -right-24 top-12 -z-10 h-[420px] w-[420px] rounded-full bg-[radial-gradient(circle,rgba(20,217,217,.22),rgba(20,217,217,.08)_38%,transparent_70%)] blur-3xl sm:h-[560px] sm:w-[560px] lg:right-[4%] lg:top-[8%]" animate={reduce ? undefined : { scale: [0.92, 1.08, 0.92], opacity: [0.55, 0.9, 0.55] }} transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }} />
+    <div className="absolute inset-0 -z-20 bg-[linear-gradient(to_bottom,transparent,rgba(255,255,255,.94))]" />
+    <div className="relative mx-auto grid max-w-7xl items-center gap-4 px-6 pb-10 sm:pb-14 lg:min-h-[calc(94vh-112px)] lg:grid-cols-[.92fr_1.08fr] lg:gap-10 lg:pb-20">
+      <div className="relative z-10 max-w-2xl pt-5 sm:pt-8 lg:pt-0">
+        <motion.p initial={reduce ? false : { opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="mb-5 text-xs font-semibold uppercase tracking-[.16em] text-[#59606b] sm:mb-7 sm:text-sm sm:normal-case sm:tracking-normal">{t.creator}</motion.p>
+        <motion.h1 initial={reduce ? false : { opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: .08, duration: .8 }} className="font-[var(--font-display)] text-[64px] font-semibold leading-[.86] tracking-[-.07em] text-[#0b0d10] min-[390px]:text-[72px] sm:text-[104px] lg:text-[132px]">LUNA</motion.h1>
+        <motion.p initial={reduce ? false : { opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: .18, duration: .7 }} className="mt-5 max-w-[18ch] text-[27px] font-medium leading-[1.03] tracking-[-.045em] text-[#20252b] sm:mt-6 sm:max-w-2xl sm:text-4xl">{t.platform}</motion.p>
+        <motion.p initial={reduce ? false : { opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: .28 }} className="mt-5 max-w-[31rem] text-[15px] leading-6 text-[#69717c] sm:mt-7 sm:text-lg sm:leading-7">{t.heroBody}</motion.p>
+        <motion.div initial={reduce ? false : { opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: .38 }} className="mt-7 flex max-w-md flex-col gap-3 sm:mt-10 sm:flex-row sm:flex-wrap">
+          <Link href={`/${locale}/systems/luna`} className="rounded-full bg-[#0b0d10] px-7 py-3.5 text-center text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:bg-[#079f9f]">{t.discover}</Link>
+          <Link href={`/${locale}/contact`} className="rounded-full border border-black/10 bg-white/80 px-7 py-3.5 text-center text-sm font-semibold text-[#20252b] backdrop-blur transition hover:border-black/25">{t.demo}</Link>
         </motion.div>
       </div>
-      <motion.div initial={reduce ? false : { opacity: 0, scale: .96, y: 24 }} animate={{ opacity: 1, scale: 1, y: 0 }} transition={{ delay: .2, duration: 1 }}>
+      <motion.div className="relative min-h-[250px] sm:min-h-[360px] lg:min-h-0" initial={reduce ? false : { opacity: 0, scale: .96, y: 24 }} animate={{ opacity: 1, scale: 1, y: 0 }} transition={{ delay: .2, duration: 1 }}>
         <LunaSystemMap nodes={t.architectureNodes} />
       </motion.div>
+      <motion.div aria-hidden="true" className="mx-auto mt-1 flex flex-col items-center gap-2 text-[10px] font-semibold uppercase tracking-[.2em] text-[#899198] lg:absolute lg:bottom-5 lg:left-1/2 lg:-translate-x-1/2" initial={reduce ? false : { opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1 }}>
+        <span className="h-8 w-px bg-gradient-to-b from-[#18beba] to-transparent" />
+        <span>Scroll</span>
+      </motion.div>
     </div>
-    <div className="border-y border-black/[.05] bg-white/70 py-5 backdrop-blur"><div className="mx-auto flex max-w-7xl flex-wrap items-center gap-x-8 gap-y-3 px-6"><span className="text-xs font-semibold uppercase tracking-[.16em] text-[#8a9199]">{t.proof}</span>{t.proofItems.map(item => <span key={item} className="text-sm text-[#515862]">{item}</span>)}</div></div>
+    <div className="border-y border-black/[.05] bg-white/75 py-4 backdrop-blur"><div className="mx-auto flex max-w-7xl gap-5 overflow-x-auto px-6 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"><span className="shrink-0 text-[10px] font-semibold uppercase tracking-[.16em] text-[#8a9199] sm:text-xs">{t.proof}</span>{t.proofItems.map(item => <span key={item} className="shrink-0 text-xs text-[#515862] sm:text-sm">{item}</span>)}</div></div>
   </section>;
 }
 
 export function HomePremium({ fontClass = '', conciergeCopy }: { fontClass?: string; conciergeCopy: ConciergeCopy; copy: HomePremiumCopy }) {
   const locale = conciergeCopy.locale;
   const t = COPY[locale.startsWith('es') ? 'es' : 'en'];
-
   return <main className={`overflow-x-hidden bg-white ${fontClass}`}>
     <Hero locale={locale} t={t} />
-
     <section className="py-28 sm:py-36"><div className="mx-auto grid max-w-7xl gap-14 px-6 lg:grid-cols-[.9fr_1.1fr]"><Reveal><Eyebrow>{t.problemEyebrow}</Eyebrow><h2 className="max-w-xl font-[var(--font-display)] text-4xl font-semibold leading-[1.03] tracking-[-.045em] text-[#111418] sm:text-6xl">{t.problemTitle}</h2></Reveal><Reveal delay={.12}><p className="max-w-2xl text-xl leading-8 text-[#606873]">{t.problemBody}</p><div className="mt-10 grid grid-cols-2 gap-px overflow-hidden rounded-2xl bg-black/[.08]">{t.problemItems.map(item => <div key={item} className="bg-white p-5 text-sm font-medium text-[#3f4650]">{item}</div>)}</div></Reveal></div></section>
-
     <section className="bg-[#f5f6f3] py-28 sm:py-36"><div className="mx-auto max-w-7xl px-6"><Reveal className="mb-14 grid gap-8 lg:grid-cols-2"><div><Eyebrow>{t.implementationsEyebrow}</Eyebrow><h2 className="font-[var(--font-display)] text-4xl font-semibold tracking-[-.045em] sm:text-6xl">{t.implementationsTitle}</h2></div><p className="self-end text-lg leading-8 text-[#69717c]">{t.implementationsBody}</p></Reveal><div className="grid gap-6 lg:grid-cols-2">{t.implementationItems.map((item, index) => <Reveal key={item.title} delay={index * .12}><article className="group overflow-hidden rounded-[30px] border border-black/[.07] bg-white shadow-[0_24px_80px_rgba(25,40,45,.06)]"><div className="aspect-[16/10] overflow-hidden bg-[#e9ece8]"><Image src={item.image} alt={item.title} width={900} height={560} className="h-full w-full object-cover object-top transition duration-700 group-hover:scale-[1.025]" /></div><div className="p-8"><p className="text-xs font-semibold uppercase tracking-[.16em] text-[#079f9f]">{item.label}</p><h3 className="mt-3 text-3xl font-semibold tracking-[-.03em]">{item.title}</h3><p className="mt-4 max-w-xl leading-7 text-[#68707b]">{item.body}</p></div></article></Reveal>)}</div></div></section>
-
     <section className="bg-[#0d1014] py-28 text-white sm:py-36"><div className="mx-auto max-w-7xl px-6"><Reveal className="mb-16 max-w-3xl"><Eyebrow>{t.capabilitiesEyebrow}</Eyebrow><h2 className="font-[var(--font-display)] text-4xl font-semibold leading-[1.06] tracking-[-.045em] sm:text-6xl">{t.capabilitiesTitle}</h2></Reveal><div className="grid border-l border-t border-white/10 md:grid-cols-2">{t.capabilities.map((item, index) => <Reveal key={item.number} delay={index * .08} className="border-b border-r border-white/10 p-8 sm:p-10"><span className="text-xs text-[#40d4d4]">{item.number}</span><h3 className="mt-12 text-2xl font-semibold">{item.title}</h3><p className="mt-4 max-w-md leading-7 text-white/55">{item.body}</p></Reveal>)}</div></div></section>
-
     <section id="arquitectura" className="py-28 sm:py-36"><div className="mx-auto grid max-w-7xl items-center gap-16 px-6 lg:grid-cols-2"><Reveal><Eyebrow>{t.architectureEyebrow}</Eyebrow><h2 className="font-[var(--font-display)] text-4xl font-semibold tracking-[-.045em] sm:text-6xl">{t.architectureTitle}</h2><p className="mt-7 max-w-xl text-lg leading-8 text-[#65707a]">{t.architectureBody}</p><div className="mt-12 rounded-[28px] border border-black/[.07] bg-[#f5f6f3] p-7"><h3 className="text-xl font-semibold">{t.intelligenceTitle}</h3><p className="mt-3 leading-7 text-[#6d747d]">{t.intelligenceBody}</p></div></Reveal><Reveal delay={.15}><LunaSystemMap nodes={t.architectureNodes} compact /></Reveal></div></section>
-
     <section className="bg-[#f5f6f3] py-28 sm:py-36"><div className="mx-auto max-w-7xl px-6"><Reveal className="mb-14 max-w-3xl"><Eyebrow>{t.technologyEyebrow}</Eyebrow><h2 className="font-[var(--font-display)] text-4xl font-semibold tracking-[-.045em] sm:text-6xl">{t.technologyTitle}</h2></Reveal><div className="grid gap-px overflow-hidden rounded-[28px] bg-black/10 lg:grid-cols-3">{t.technologyItems.map((item, index) => <Reveal key={item.title} delay={index * .07} className="bg-white p-8 sm:p-10"><span className="text-xs text-[#079f9f]">0{index + 1}</span><h3 className="mt-10 text-2xl font-semibold tracking-[-.025em]">{item.title}</h3><p className="mt-4 leading-7 text-[#68707b]">{item.body}</p></Reveal>)}</div></div></section>
-
     <section className="bg-[#0d1014] py-28 text-white sm:py-36"><div className="mx-auto max-w-5xl px-6 text-center"><Reveal><Eyebrow>{t.visionEyebrow}</Eyebrow><blockquote className="font-[var(--font-display)] text-3xl font-medium leading-tight tracking-[-.04em] sm:text-5xl">“{t.visionQuote} <span className="text-[#40d4d4]">{t.visionAccent}</span>”</blockquote></Reveal></div></section>
-
     <section className="bg-[#f5f6f3] py-28 sm:py-36"><div className="mx-auto max-w-7xl px-6"><Reveal className="mb-12 text-center"><Eyebrow>{t.conciergeEyebrow}</Eyebrow><h2 className="font-[var(--font-display)] text-4xl font-semibold tracking-[-.045em] sm:text-6xl">{t.conciergeTitle}</h2><p className="mx-auto mt-5 max-w-xl text-lg leading-8 text-[#68717b]">{t.conciergeBody}</p></Reveal><Reveal delay={.12}><PublicConciergeChat copy={conciergeCopy} /></Reveal></div></section>
-
     <section className="py-28 sm:py-36"><div className="mx-auto max-w-4xl px-6 text-center"><Reveal><Eyebrow>{t.finalEyebrow}</Eyebrow><h2 className="font-[var(--font-display)] text-4xl font-semibold leading-tight tracking-[-.045em] sm:text-6xl">{t.finalTitle}</h2><p className="mx-auto mt-6 max-w-xl text-lg leading-8 text-[#68717b]">{t.finalBody}</p><div className="mt-10 flex flex-wrap justify-center gap-3"><Link href={`/${locale}/contact`} className="rounded-full bg-[#0d1014] px-7 py-3.5 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:bg-[#079f9f]">{t.demo}</Link><Link href={`/${locale}/systems/luna`} className="rounded-full border border-black/10 px-7 py-3.5 text-sm font-semibold transition hover:border-black/25">{t.discover}</Link></div></Reveal></div></section>
-
     <footer className="border-t border-black/[.06] py-12"><div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-6 px-6 text-center sm:flex-row sm:text-left"><div><p className="font-[var(--font-display)] text-xl font-semibold">Trends172Tech</p><p className="mt-1 text-sm text-[#818891]">{t.footer}</p></div><div className="flex gap-6 text-sm text-[#626a74]"><Link href={`/${locale}/systems/luna`}>LUNA</Link><Link href={`/${locale}/projects`}>{t.implementationsEyebrow}</Link><Link href={`/${locale}/contact`}>{t.contact}</Link></div></div></footer>
   </main>;
 }
