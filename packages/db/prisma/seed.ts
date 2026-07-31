@@ -24,7 +24,7 @@ function generatePassword() {
   return randomBytes(8).toString('hex');
 }
 
-async function seedAdminData() {
+async function seedAdminDemoData() {
   const clients = [
     {
       id: 'client-carpihogar',
@@ -534,6 +534,159 @@ async function seedAdminData() {
       create: payment
     });
   }
+}
+
+async function seedAdminData() {
+  const legacyClientIds = ['client-cosentino', 'client-catemar'];
+  const legacyRecordIds = {
+    tasks: ['task-carp-001', 'task-carp-002'],
+    deliverables: ['del-carp-01', 'del-carp-02'],
+    licenses: ['lic-carp-vercel', 'lic-carp-openai'],
+    subscriptions: ['sub-carp-maint'],
+    integrations: ['int-carp-github', 'int-carp-vercel'],
+    invoices: ['inv-001'],
+    payments: ['pay-001'],
+    agents: ['agent-sales-ops', 'agent-delivery-pm', 'agent-finance-watch']
+  };
+
+  await prisma.$transaction(async (tx) => {
+    await tx.adminClient.deleteMany({ where: { id: { in: legacyClientIds } } });
+    await tx.adminPayment.deleteMany({ where: { id: { in: legacyRecordIds.payments } } });
+    await tx.adminInvoice.deleteMany({ where: { id: { in: legacyRecordIds.invoices } } });
+    await tx.adminTask.deleteMany({ where: { id: { in: legacyRecordIds.tasks } } });
+    await tx.adminDeliverable.deleteMany({ where: { id: { in: legacyRecordIds.deliverables } } });
+    await tx.adminProjectLicense.deleteMany({ where: { id: { in: legacyRecordIds.licenses } } });
+    await tx.adminProjectSubscription.deleteMany({ where: { id: { in: legacyRecordIds.subscriptions } } });
+    await tx.adminProjectIntegration.deleteMany({ where: { id: { in: legacyRecordIds.integrations } } });
+    await tx.adminProposal.deleteMany({ where: { id: 'prop-luna-carpihogar' } });
+    await tx.adminAiAgent.deleteMany({ where: { id: { in: legacyRecordIds.agents } } });
+
+    const clients = [
+      {
+        id: 'client-carpihogar',
+        name: 'Carpihogar',
+        country: 'VE',
+        industry: 'Comercio, hogar y construcción',
+        health: 'GOOD'
+      },
+      {
+        id: 'client-club-espanol-ef',
+        name: 'Club Español E.F',
+        country: 'VE',
+        industry: 'Escuela de fútbol menor',
+        health: 'GOOD'
+      },
+      {
+        id: 'client-trends172tech',
+        name: 'Trends172Tech',
+        country: 'VE',
+        industry: 'Software empresarial e inteligencia artificial',
+        health: 'GOOD'
+      }
+    ];
+
+    for (const client of clients) {
+      await tx.adminClient.upsert({
+        where: { id: client.id },
+        update: { ...client, contactName: null, email: null, phone: null },
+        create: client
+      });
+    }
+
+    const projects = [
+      {
+        id: 'project-luna-carpihogar',
+        clientId: 'client-carpihogar',
+        name: 'LUNA',
+        description: 'Plataforma empresarial implementada en Carpihogar para centralizar la operación comercial, administrativa y logística.',
+        status: AdminProjectStatus.ACTIVE,
+        priority: AdminPriority.HIGH,
+        manager: 'Gunther Del Rosario'
+      },
+      {
+        id: 'project-luna-football-cde',
+        clientId: 'client-club-espanol-ef',
+        name: 'LUNA Football',
+        description: 'Plataforma para Club Español E.F con inscripciones, pagos, torneos, asistencia, noticias y paneles por rol.',
+        status: AdminProjectStatus.ACTIVE,
+        priority: AdminPriority.HIGH,
+        manager: 'Gunther Del Rosario'
+      },
+      {
+        id: 'project-trends172tech-corporate',
+        clientId: 'client-trends172tech',
+        name: 'Trends172Tech.com',
+        description: 'Plataforma corporativa para presentar LUNA, agentes de IA, casos de uso y servicios tecnológicos de Trends172Tech.',
+        status: AdminProjectStatus.ACTIVE,
+        priority: AdminPriority.HIGH,
+        manager: 'Gunther Del Rosario'
+      },
+      {
+        id: 'project-trends-projects',
+        clientId: 'client-trends172tech',
+        name: 'Trends Projects',
+        description: 'Centro operativo interno multiempresa para controlar clientes, proyectos, tareas, entregables, finanzas e integraciones.',
+        status: AdminProjectStatus.ACTIVE,
+        priority: AdminPriority.HIGH,
+        manager: 'Gunther Del Rosario'
+      }
+    ];
+
+    for (const project of projects) {
+      await tx.adminProject.upsert({
+        where: { id: project.id },
+        update: {
+          ...project,
+          proposalId: null,
+          contractId: null,
+          soldAmount: new Prisma.Decimal(0),
+          monthlyRetainer: new Prisma.Decimal(0),
+          paymentMethod: null,
+          soldAt: null
+        },
+        create: {
+          ...project,
+          soldAmount: new Prisma.Decimal(0),
+          monthlyRetainer: new Prisma.Decimal(0)
+        }
+      });
+    }
+
+    const systems = [
+      { projectId: 'project-luna-carpihogar', name: 'LUNA ERP AI', domain: 'carpihogar.com', stackJson: ['LUNA', 'Next.js'] },
+      { projectId: 'project-luna-football-cde', name: 'LUNA Football', domain: 'cdebarinasef.com', stackJson: ['Next.js', 'Vercel'] },
+      { projectId: 'project-trends172tech-corporate', name: 'Trends172Tech.com', domain: 'trends172tech.com', stackJson: ['Next.js', 'Prisma', 'PostgreSQL', 'Vercel'] },
+      { projectId: 'project-trends-projects', name: 'Trends Projects', domain: 'trends172tech.com', stackJson: ['Next.js', 'Prisma', 'PostgreSQL', 'Vercel'] }
+    ];
+
+    for (const system of systems) {
+      await tx.adminProjectSystem.upsert({
+        where: { projectId: system.projectId },
+        update: { ...system, repositoryUrl: null, vercelProject: null, databaseName: null },
+        create: system
+      });
+      await tx.adminProjectFinance.upsert({
+        where: { projectId: system.projectId },
+        update: {
+          initialBudget: new Prisma.Decimal(0),
+          soldAmount: new Prisma.Decimal(0),
+          recurringMonthly: new Prisma.Decimal(0),
+          operationalCostsMonthly: new Prisma.Decimal(0),
+          licenseCostsMonthly: new Prisma.Decimal(0),
+          estimatedMonthlyProfit: new Prisma.Decimal(0)
+        },
+        create: {
+          projectId: system.projectId,
+          initialBudget: new Prisma.Decimal(0),
+          soldAmount: new Prisma.Decimal(0),
+          recurringMonthly: new Prisma.Decimal(0),
+          operationalCostsMonthly: new Prisma.Decimal(0),
+          licenseCostsMonthly: new Prisma.Decimal(0),
+          estimatedMonthlyProfit: new Prisma.Decimal(0)
+        }
+      });
+    }
+  });
 }
 
 async function main() {
