@@ -17,6 +17,7 @@ type AdminShellProps = {
     proposals: string;
     licenses: string;
     aiAgents: string;
+    luna: string;
     payments: string;
     systemNavigation: string;
     systemControl: string;
@@ -36,7 +37,8 @@ const operationsNavItems = [
   { key: 'projects', href: '/admin/projects' },
   { key: 'proposals', href: '/admin/proposals' },
   { key: 'licenses', href: '/admin/licenses' },
-  { key: 'aiAgents', href: '/admin/ai-agents' }
+  { key: 'aiAgents', href: '/admin/ai-agents' },
+  { key: 'luna', href: '/admin/luna' }
 ] as const;
 
 const systemNavItems = [

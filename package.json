@@ -12,7 +12,7 @@
     "start": "npm --workspace apps/web run start",
     "lint": "npm --workspace apps/web run lint",
     "typecheck": "npm --workspace apps/web run typecheck",
-    "luna:test": "npx tsx --test apps/web/tests/luna-agent/*.test.ts packages/luna-runner/tests/*.test.ts",
+    "luna:test": "npx tsx --test apps/web/tests/luna-agent/*.test.ts apps/web/tests/luna-root/*.test.ts packages/luna-runner/tests/*.test.ts",
     "luna:runner:build": "npm --workspace packages/luna-runner run build",
     "luna:runner:start": "npm --workspace packages/luna-runner run start",
     "prisma": "npm --workspace packages/db run prisma",

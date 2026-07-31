@@ -34,6 +34,7 @@ export default async function AdminLayout({
         proposals: t('proposals'),
         licenses: t('licenses'),
         aiAgents: t('aiAgents'),
+        luna: t('luna'),
         payments: t('payments'),
         systemNavigation: t('systemNavigation'),
         systemControl: t('systemControl'),
