@@ -18,11 +18,18 @@ type AdminShellProps = {
     licenses: string;
     aiAgents: string;
     payments: string;
+    systemNavigation: string;
+    systemControl: string;
+    users: string;
+    recharges: string;
+    tenants: string;
+    siteMedia: string;
+    globalSettings: string;
     backToSite: string;
   };
 };
 
-const navItems = [
+const operationsNavItems = [
   { key: 'dashboard', href: '/admin' },
   { key: 'payments', href: '/admin/payments' },
   { key: 'clients', href: '/admin/clients' },
@@ -30,6 +37,15 @@ const navItems = [
   { key: 'proposals', href: '/admin/proposals' },
   { key: 'licenses', href: '/admin/licenses' },
   { key: 'aiAgents', href: '/admin/ai-agents' }
+] as const;
+
+const systemNavItems = [
+  { key: 'systemControl', href: '/root' },
+  { key: 'users', href: '/root#usuarios' },
+  { key: 'recharges', href: '/root#recargas' },
+  { key: 'tenants', href: '/root#tenants' },
+  { key: 'siteMedia', href: '/root/site-media' },
+  { key: 'globalSettings', href: '/root#ajustes' }
 ] as const;
 
 export function AdminShell({ locale, children, labels }: AdminShellProps) {
@@ -58,7 +74,7 @@ export function AdminShell({ locale, children, labels }: AdminShellProps) {
               {labels.navigation}
             </p>
             <nav className="flex gap-2 overflow-x-auto lg:flex-col lg:overflow-visible">
-              {navItems.map((item) => {
+              {operationsNavItems.map((item) => {
                 const href = `${base}${item.href}`;
                 const active = pathname === href || (item.href !== '/admin' && pathname.startsWith(href));
                 return (
@@ -69,6 +85,33 @@ export function AdminShell({ locale, children, labels }: AdminShellProps) {
                       'whitespace-nowrap rounded-lg border px-3 py-2 text-sm font-medium transition lg:w-full',
                       active
                         ? 'border-slate-950 bg-slate-950 text-white dark:border-white dark:bg-white dark:text-slate-950'
+                        : 'border-transparent text-slate-600 hover:border-black/10 hover:bg-slate-50 hover:text-slate-950 dark:text-slate-300 dark:hover:border-slate-800 dark:hover:bg-slate-900 dark:hover:text-white'
+                    )}
+                  >
+                    {labels[item.key]}
+                  </Link>
+                );
+              })}
+            </nav>
+          </div>
+
+          <div className="mt-6 border-t border-black/8 pt-5 dark:border-slate-800">
+            <p className="mb-3 text-[11px] font-semibold uppercase text-slate-500 dark:text-slate-400">
+              {labels.systemNavigation}
+            </p>
+            <nav className="flex gap-2 overflow-x-auto lg:flex-col lg:overflow-visible">
+              {systemNavItems.map((item) => {
+                const href = `${base}${item.href}`;
+                const path = href.split('#')[0];
+                const active = pathname === path || (item.key === 'siteMedia' && pathname.startsWith(path));
+                return (
+                  <Link
+                    key={item.key}
+                    href={href}
+                    className={cn(
+                      'whitespace-nowrap rounded-lg border px-3 py-2 text-sm font-medium transition lg:w-full',
+                      active
+                        ? 'border-cyan-200 bg-cyan-50 text-cyan-800 dark:border-cyan-900 dark:bg-cyan-950/40 dark:text-cyan-200'
                         : 'border-transparent text-slate-600 hover:border-black/10 hover:bg-slate-50 hover:text-slate-950 dark:text-slate-300 dark:hover:border-slate-800 dark:hover:bg-slate-900 dark:hover:text-white'
                     )}
                   >

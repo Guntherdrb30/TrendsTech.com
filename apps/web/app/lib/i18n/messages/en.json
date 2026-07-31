@@ -814,16 +814,23 @@
   "admin": {
     "empty": "No records to show.",
     "shell": {
-      "title": "Admin AI Dashboard",
-      "subtitle": "Trends172Tech internal center for sales, projects, finance, licenses, maintenance, and AI agents.",
-      "navigation": "Administration",
-      "dashboard": "Dashboard",
+      "title": "Operations center",
+      "subtitle": "Total control of Trends172Tech projects, companies, finance, licenses, maintenance, and AI agents.",
+      "navigation": "Project operations",
+      "dashboard": "Overview",
       "clients": "Clients",
       "projects": "Projects",
       "proposals": "Proposals",
       "licenses": "Licenses",
       "aiAgents": "AI Agents",
       "payments": "Payments",
+      "systemNavigation": "System administration",
+      "systemControl": "General panel",
+      "users": "Users",
+      "recharges": "Recharges",
+      "tenants": "Companies and tenants",
+      "siteMedia": "Site media",
+      "globalSettings": "Global settings",
       "backToSite": "Back to site"
     },
     "dashboard": {

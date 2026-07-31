@@ -35,6 +35,13 @@ export default async function AdminLayout({
         licenses: t('licenses'),
         aiAgents: t('aiAgents'),
         payments: t('payments'),
+        systemNavigation: t('systemNavigation'),
+        systemControl: t('systemControl'),
+        users: t('users'),
+        recharges: t('recharges'),
+        tenants: t('tenants'),
+        siteMedia: t('siteMedia'),
+        globalSettings: t('globalSettings'),
         backToSite: t('backToSite')
       }}
     >

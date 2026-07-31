@@ -490,10 +490,22 @@ export default async function RootPage({ params }: { params: Promise<{ locale: s
   return (
     <section className="space-y-8">
       <div className="space-y-2">
-        <h1 className="text-2xl font-semibold">{tr('Panel administrador', 'Administrator panel')}</h1>
-        <p className="text-sm text-slate-500 dark:text-slate-400">
-          Control total de usuarios, recargas, agentes y operaciones del sistema.
-        </p>
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <h1 className="text-2xl font-semibold">{tr('Administracion del sistema', 'System administration')}</h1>
+            <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
+              {tr(
+                'Control de usuarios, recargas, agentes, tenants y configuracion global.',
+                'Control users, recharges, agents, tenants, and global settings.'
+              )}
+            </p>
+          </div>
+          <Button asChild>
+            <Link href={`/${locale}/admin`}>
+              {tr('Abrir centro operativo', 'Open operations center')}
+            </Link>
+          </Button>
+        </div>
       </div>
 
       <div className="grid gap-6 lg:grid-cols-[280px_1fr] lg:items-start">
@@ -502,6 +514,12 @@ export default async function RootPage({ params }: { params: Promise<{ locale: s
             Barra de control
           </p>
           <nav className="flex flex-col gap-2 text-sm text-slate-600 dark:text-slate-300">
+            <Link
+              href={`/${locale}/admin`}
+              className="mb-2 rounded-xl border border-cyan-200 bg-cyan-50 px-3 py-2.5 font-semibold text-cyan-800 transition hover:bg-cyan-100 dark:border-cyan-900 dark:bg-cyan-950/40 dark:text-cyan-200"
+            >
+              {tr('Centro operativo de proyectos', 'Project operations center')}
+            </Link>
             <a href="#resumen" className="hover:text-slate-900 dark:hover:text-white">
               Resumen
             </a>

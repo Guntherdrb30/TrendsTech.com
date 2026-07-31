@@ -814,16 +814,23 @@
   "admin": {
     "empty": "Sin registros para mostrar.",
     "shell": {
-      "title": "Admin AI Dashboard",
-      "subtitle": "Centro interno de Trends172Tech para ventas, proyectos, finanzas, licencias, mantenimiento y agentes IA.",
-      "navigation": "Administracion",
-      "dashboard": "Dashboard",
+      "title": "Centro operativo",
+      "subtitle": "Control total de proyectos, empresas, finanzas, licencias, mantenimiento y agentes IA de Trends172Tech.",
+      "navigation": "Operacion de proyectos",
+      "dashboard": "Resumen",
       "clients": "Clientes",
       "projects": "Proyectos",
       "proposals": "Propuestas",
       "licenses": "Licencias",
       "aiAgents": "Agentes IA",
       "payments": "Pagos",
+      "systemNavigation": "Administracion del sistema",
+      "systemControl": "Panel general",
+      "users": "Usuarios",
+      "recharges": "Recargas",
+      "tenants": "Empresas y tenants",
+      "siteMedia": "Media del sitio",
+      "globalSettings": "Ajustes globales",
       "backToSite": "Volver al sitio"
     },
     "dashboard": {

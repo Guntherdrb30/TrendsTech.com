@@ -21,7 +21,7 @@ export default async function DashboardPage({ params }: { params: Promise<{ loca
   });
 
   if (user.role === 'ROOT' && !tenant) {
-    redirect(`/${locale}/root`);
+    redirect(`/${locale}/admin`);
   }
 
   if (!tenant) {

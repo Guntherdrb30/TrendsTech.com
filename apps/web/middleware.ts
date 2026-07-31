@@ -46,7 +46,11 @@ function stripLocale(pathname: string) {
 
 function isProtectedPath(pathname: string) {
   const normalized = stripLocale(pathname);
-  return normalized.startsWith('/dashboard') || normalized.startsWith('/root');
+  return (
+    normalized.startsWith('/dashboard') ||
+    normalized.startsWith('/root') ||
+    normalized.startsWith('/admin')
+  );
 }
 
 const SESSION_COOKIE_PREFIXES = ['__Secure-better-auth.session_token', 'better-auth.session_token'];
