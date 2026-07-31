@@ -59,6 +59,12 @@ export async function PublicSiteFooter({ locale }: { locale: string }) {
                 >
                   {nav('pricing')}
                 </Link>
+                <Link
+                  href={`${base}/security`}
+                  className="interactive-chip rounded-2xl px-3 py-2 transition hover:bg-slate-50 hover:text-slate-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900/15 focus-visible:ring-offset-2"
+                >
+                  {footer('trustCenter')}
+                </Link>
               </div>
             </div>
 
@@ -81,9 +87,17 @@ export async function PublicSiteFooter({ locale }: { locale: string }) {
           </div>
         </div>
 
-        <div className="flex flex-col gap-3 border-t border-black/6 pt-6 text-xs uppercase tracking-[0.18em] text-slate-500 sm:flex-row sm:items-center sm:justify-between">
-          <span>{footer('legal')}</span>
-          <span>{footer('tagline')}</span>
+        <div className="flex flex-col gap-4 border-t border-black/6 pt-6 text-xs text-slate-500 lg:flex-row lg:items-center lg:justify-between">
+          <div className="flex flex-wrap gap-x-5 gap-y-2 font-medium">
+            <Link className="transition hover:text-slate-950" href={`${base}/privacy`}>{footer('privacy')}</Link>
+            <Link className="transition hover:text-slate-950" href={`${base}/terms`}>{footer('terms')}</Link>
+            <Link className="transition hover:text-slate-950" href={`${base}/security`}>{footer('security')}</Link>
+            <Link className="transition hover:text-slate-950" href={`${base}/contact`}>{footer('contact')}</Link>
+          </div>
+          <div className="flex flex-col gap-1 uppercase tracking-[0.16em] sm:flex-row sm:gap-4">
+            <span>{footer('legal')}</span>
+            <span>{footer('tagline')}</span>
+          </div>
         </div>
       </div>
     </footer>

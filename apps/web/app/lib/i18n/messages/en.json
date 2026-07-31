@@ -538,7 +538,12 @@
     "navTitle": "Explore",
     "contactTitle": "Direct contact",
     "contactBody": "Talk with Trends172 Tech about demos, implementation, scope, and next steps.",
-    "legal": "Trends172 Tech",
+    "trustCenter": "Trust center",
+    "privacy": "Privacy",
+    "terms": "Terms",
+    "security": "Security",
+    "contact": "Contact",
+    "legal": "© 2026 Trends172Tech LLC · Florida, USA",
     "tagline": "AI Systems, Agents and Enterprise Interfaces"
   },
   "pricingPage": {
