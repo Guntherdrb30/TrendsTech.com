@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
+import { LunaRootWidget } from './luna-root-widget';
 
 type AdminShellProps = {
   locale: string;
@@ -145,6 +146,7 @@ export function AdminShell({ locale, children, labels }: AdminShellProps) {
           <main className="mx-auto w-full max-w-[1600px] px-4 py-6 sm:px-6 lg:px-8">{children}</main>
         </div>
       </div>
+      <LunaRootWidget locale={locale} />
     </div>
   );
 }
