@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { authClient } from "@/lib/auth/client";
 
 type ResetPasswordFormProps = {
   locale: string;
@@ -54,7 +55,7 @@ function getCopy(locale: string): ResetCopy {
       errors: {
         missingToken: "Falta el token de recuperacion.",
         passwordRequired: "La contrasena es obligatoria",
-        passwordShort: "La contrasena debe tener al menos 8 caracteres",
+        passwordShort: "La contrasena debe tener al menos 12 caracteres",
         confirmRequired: "Confirma tu contrasena",
         confirmMismatch: "Las contrasenas no coinciden",
         invalidToken: "Token invalido o expirado",
@@ -77,7 +78,7 @@ function getCopy(locale: string): ResetCopy {
     errors: {
       missingToken: "Missing reset token.",
       passwordRequired: "Password is required",
-      passwordShort: "Password must be at least 8 characters",
+      passwordShort: "Password must be at least 12 characters",
       confirmRequired: "Confirm your password",
       confirmMismatch: "Passwords do not match",
       invalidToken: "Invalid or expired token",
@@ -90,7 +91,7 @@ function validate(password: string, confirm: string, copy: ResetCopy): FieldErro
   const errors: FieldErrors = {};
   if (!password) {
     errors.password = copy.errors.passwordRequired;
-  } else if (password.length < 8) {
+  } else if (password.length < 12) {
     errors.password = copy.errors.passwordShort;
   }
   if (!confirm) {
@@ -128,16 +129,14 @@ export function ResetPasswordForm({ locale, token }: ResetPasswordFormProps) {
 
     startTransition(async () => {
       try {
-        const response = await fetch("/api/auth/password-reset/confirm", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ token, password })
+        const { error: resetError } = await authClient.resetPassword({
+          token,
+          newPassword: password
         });
-        const payload = (await response.json().catch(() => ({}))) as { error?: string };
-        if (!response.ok) {
-          const message = payload.error?.toLowerCase().includes("token")
+        if (resetError) {
+          const message = resetError.code?.toLowerCase().includes("token")
             ? copy.errors.invalidToken
-            : copy.errors.generic;
+            : (resetError.message || copy.errors.generic);
           setError(message);
           return;
         }
@@ -168,7 +167,7 @@ export function ResetPasswordForm({ locale, token }: ResetPasswordFormProps) {
                 if (fieldErrors.password) {
                   setFieldErrors((prev) => ({
                     ...prev,
-                    password: value.length >= 8 ? undefined : prev.password
+                    password: value.length >= 12 ? undefined : prev.password
                   }));
                 }
               }}

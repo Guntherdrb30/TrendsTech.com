@@ -1,4 +1,3 @@
-import { hash } from 'bcryptjs';
 import { z } from 'zod';
 import Link from 'next/link';
 import { revalidatePath } from 'next/cache';
@@ -12,6 +11,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { RootClient } from './root-client';
+import { hashPassword } from '@/lib/auth/password';
 
 export const dynamic = 'force-dynamic';
 
@@ -22,7 +22,7 @@ const editUserSchema = z.object({
   email: z.string().email().max(190),
   role: z.enum(['ROOT', 'TENANT_ADMIN', 'TENANT_OPERATOR', 'TENANT_VIEWER']),
   phone: z.string().min(4).max(40).optional(),
-  password: z.string().min(8).max(72).optional()
+  password: z.string().min(12).max(128).optional()
 });
 
 const actionSchema = z.object({
@@ -65,7 +65,6 @@ async function updateUser(formData: FormData) {
     email: string;
     role: 'ROOT' | 'TENANT_ADMIN' | 'TENANT_OPERATOR' | 'TENANT_VIEWER';
     phone: string | null;
-    passwordHash?: string;
   } = {
     name: parsed.data.name.trim(),
     email,
@@ -73,13 +72,33 @@ async function updateUser(formData: FormData) {
     phone: parsed.data.phone?.trim() || null
   };
 
-  if (parsed.data.password) {
-    updateData.passwordHash = await hash(parsed.data.password, 10);
-  }
+  const newPasswordHash = parsed.data.password
+    ? await hashPassword(parsed.data.password)
+    : null;
 
-  await prisma.user.update({
-    where: { id: parsed.data.userId },
-    data: updateData
+  await prisma.$transaction(async (tx) => {
+    await tx.user.update({
+      where: { id: parsed.data.userId },
+      data: updateData
+    });
+    if (newPasswordHash) {
+      await tx.authAccount.upsert({
+        where: {
+          providerId_accountId: {
+            providerId: 'credential',
+            accountId: parsed.data.userId
+          }
+        },
+        create: {
+          providerId: 'credential',
+          accountId: parsed.data.userId,
+          userId: parsed.data.userId,
+          password: newPasswordHash
+        },
+        update: { password: newPasswordHash }
+      });
+      await tx.authSession.deleteMany({ where: { userId: parsed.data.userId } });
+    }
   });
 
   const path = `/${parsed.data.locale}/root`;
@@ -103,10 +122,12 @@ async function suspendUser(formData: FormData) {
     throw new Error('Cannot suspend the current user.');
   }
 
-  await prisma.user.update({
-    where: { id: parsed.data.userId },
-    data: { passwordHash: null }
-  });
+  await prisma.$transaction([
+    prisma.authAccount.deleteMany({
+      where: { userId: parsed.data.userId, providerId: 'credential' }
+    }),
+    prisma.authSession.deleteMany({ where: { userId: parsed.data.userId } })
+  ]);
 
   const path = `/${parsed.data.locale}/root`;
   revalidatePath(path);
@@ -131,16 +152,20 @@ async function softDeleteUser(formData: FormData) {
 
   const tombstoneEmail = `deleted+${parsed.data.userId}+${Date.now()}@trends172tech.local`;
 
-  await prisma.user.update({
-    where: { id: parsed.data.userId },
-    data: {
-      email: tombstoneEmail,
-      name: 'Usuario eliminado',
-      phone: null,
-      role: 'TENANT_VIEWER',
-      passwordHash: null
-    }
-  });
+  await prisma.$transaction([
+    prisma.authAccount.deleteMany({ where: { userId: parsed.data.userId } }),
+    prisma.authSession.deleteMany({ where: { userId: parsed.data.userId } }),
+    prisma.user.update({
+      where: { id: parsed.data.userId },
+      data: {
+        email: tombstoneEmail,
+        name: 'Usuario eliminado',
+        phone: null,
+        role: 'TENANT_VIEWER',
+        passwordHash: null
+      }
+    })
+  ]);
 
   const path = `/${parsed.data.locale}/root`;
   revalidatePath(path);
@@ -268,7 +293,11 @@ export default async function RootPage({ params }: { params: Promise<{ locale: s
         role: true,
         phone: true,
         tenantId: true,
-        passwordHash: true,
+        authAccounts: {
+          where: { providerId: 'credential' },
+          select: { id: true },
+          take: 1
+        },
         createdAt: true,
         tenant: { select: { name: true, status: true } }
       }
@@ -601,7 +630,7 @@ export default async function RootPage({ params }: { params: Promise<{ locale: s
                     </TableHeader>
                     <TableBody>
                       {users.map((user) => {
-                        const hasAccess = Boolean(user.passwordHash);
+                        const hasAccess = user.authAccounts.length > 0;
                         const lastActivity = userActivityMap.get(user.id) ?? null;
                         const isActive =
                           hasAccess && Boolean(lastActivity && lastActivity >= usageWindow);

@@ -18,6 +18,11 @@
     "prisma": "npm --workspace packages/db run prisma",
     "db:migrate": "npm --workspace packages/db run prisma migrate dev",
     "db:migrate:deploy": "npm --workspace packages/db run migrate:deploy",
+    "db:migrate:status": "npm --workspace packages/db run prisma migrate status",
+    "db:health": "npm --workspace packages/db run health",
+    "db:health:http": "npm --workspace packages/db run health:http",
+    "db:auth:status:http": "npm --workspace packages/db run auth:status:http",
+    "db:auth:migrate:http": "npm --workspace packages/db run auth:migrate:http",
     "db:studio": "npm --workspace packages/db run prisma studio",
     "db:seed": "npm --workspace packages/db run prisma db seed",
     "db:seed-news": "npm --workspace packages/db run seed:news"

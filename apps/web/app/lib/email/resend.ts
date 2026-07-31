@@ -22,7 +22,7 @@ const FROM_EMAIL = process.env.RESEND_FROM_EMAIL || process.env.EMAIL_FROM;
 
 export const EMAIL_CONFIG = {
   from: FROM_EMAIL,
-  replyTo: process.env.RESEND_REPLY_TO_EMAIL || 'support@trends172tech.com',
+  replyTo: process.env.RESEND_REPLY_TO_EMAIL || 'trends172tech@gmail.com',
 } as const;
 
 export function isEmailConfigured(): boolean {

@@ -5,7 +5,7 @@ function getLoginPageCopy(locale: string) {
   if (locale.startsWith('es')) {
     return {
       title: 'Iniciar sesion',
-      subtitle: 'Solo credenciales (dev).',
+      subtitle: 'Acceso seguro para administrar Trends172 Tech y sus productos.',
       linkLabel: 'Crear cuenta',
       forgotLabel: 'Olvidaste tu contrasena?',
       eyebrow: 'Acceso empresarial',
@@ -17,7 +17,7 @@ function getLoginPageCopy(locale: string) {
   }
   return {
     title: 'Login',
-    subtitle: 'Credentials only (dev).',
+    subtitle: 'Secure access to manage Trends172 Tech and its products.',
     linkLabel: 'Create an account',
     forgotLabel: 'Forgot your password?',
     eyebrow: 'Enterprise access',

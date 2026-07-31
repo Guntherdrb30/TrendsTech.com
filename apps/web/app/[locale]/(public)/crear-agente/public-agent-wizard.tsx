@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useTransition, useCallback } from 'react';
-import { signIn } from 'next-auth/react';
+import { authClient } from '@/lib/auth/client';
 import { IntakeChatWizard } from './intake-chat';
 import type { IntakeResult } from './intake-chat';
 import { AgentPreviewScreen } from './agent-preview-screen';
@@ -117,10 +117,9 @@ export function PublicAgentWizard({ skillGroups, locale }: Props) {
     setAuthLoading(true);
     setAuthError('');
     saveToStorage(buildWizardData());
-    const res = await signIn('credentials', {
+    const res = await authClient.signIn.email({
       email: authEmail.trim(),
       password: authPassword,
-      redirect: false,
     });
     if (res?.error) {
       setAuthError(isEs ? 'Correo o contraseña incorrectos.' : 'Incorrect email or password.');

@@ -1,7 +1,6 @@
 import { redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
-import { hash } from 'bcryptjs';
 import { prisma } from '@trends172tech/db';
 import { requireRole } from '@/lib/auth/guards';
 import { requireTenantId } from '@/lib/tenant';
@@ -10,6 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { hashPassword } from '@/lib/auth/password';
 
 export const dynamic = 'force-dynamic';
 
@@ -21,7 +21,7 @@ const createSchema = z.object({
   locale: z.string().min(1),
   name: z.string().min(1).max(120),
   email: z.string().email().max(190),
-  password: z.string().min(8).max(72),
+  password: z.string().min(12).max(128),
   role: z.enum(['TENANT_ADMIN', 'TENANT_OPERATOR', 'TENANT_VIEWER']),
   phone: z.string().min(4).max(40).optional()
 });
@@ -56,17 +56,28 @@ async function createUser(formData: FormData) {
     throw new Error('Email already exists.');
   }
 
-  const passwordHash = await hash(parsed.data.password, 10);
+  const passwordHash = await hashPassword(parsed.data.password);
 
-  await prisma.user.create({
-    data: {
-      tenantId,
-      name: parsed.data.name.trim(),
-      email,
-      role: parsed.data.role,
-      passwordHash,
-      phone: parsed.data.phone?.trim() || null
-    }
+  await prisma.$transaction(async (tx) => {
+    const user = await tx.user.create({
+      data: {
+        tenantId,
+        name: parsed.data.name.trim(),
+        email,
+        role: parsed.data.role,
+        emailVerified: true,
+        passwordHash: null,
+        phone: parsed.data.phone?.trim() || null
+      }
+    });
+    await tx.authAccount.create({
+      data: {
+        providerId: 'credential',
+        accountId: user.id,
+        userId: user.id,
+        password: passwordHash
+      }
+    });
   });
 
   const path = `/${parsed.data.locale}/dashboard/users`;

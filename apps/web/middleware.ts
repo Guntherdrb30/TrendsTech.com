@@ -49,7 +49,7 @@ function isProtectedPath(pathname: string) {
   return normalized.startsWith('/dashboard') || normalized.startsWith('/root');
 }
 
-const SESSION_COOKIE_PREFIXES = ['__Secure-next-auth.session-token', 'next-auth.session-token'];
+const SESSION_COOKIE_PREFIXES = ['__Secure-better-auth.session_token', 'better-auth.session_token'];
 
 function hasSessionCookie(request: Request) {
   const cookieHeader = request.headers.get('cookie') ?? '';

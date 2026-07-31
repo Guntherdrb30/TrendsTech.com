@@ -540,25 +540,53 @@ async function main() {
   const rootEmail = process.env.ROOT_EMAIL ?? 'root@trends172tech.local';
   const rootPassword = process.env.ROOT_PASSWORD ?? generatePassword();
   const demoEmail = process.env.DEMO_EMAIL ?? 'admin@demo.trends172tech.local';
-  const demoPassword = process.env.DEMO_PASSWORD ?? 'Demo123!';
+  const demoPassword = process.env.DEMO_PASSWORD ?? 'Demo123!Secure';
 
-  const bcryptjsModule = (await import('bcryptjs')) as any;
-  const bcryptjs = bcryptjsModule.default ?? bcryptjsModule;
-  const rootHash = await bcryptjs.hash(rootPassword, 10);
-  const demoHash = await bcryptjs.hash(demoPassword, 10);
+  if (rootPassword.length < 12 || demoPassword.length < 12) {
+    throw new Error('ROOT_PASSWORD and DEMO_PASSWORD must have at least 12 characters.');
+  }
+
+  const { hash } = await import('@node-rs/argon2');
+  const argon2Options = {
+    algorithm: 2,
+    memoryCost: 65_536,
+    timeCost: 3,
+    parallelism: 4,
+    outputLen: 32
+  } as const;
+  const rootHash = await hash(rootPassword, argon2Options);
+  const demoHash = await hash(demoPassword, argon2Options);
 
   const rootUser = await prisma.user.upsert({
     where: { email: rootEmail },
     update: {
       role: UserRole.ROOT,
-      passwordHash: rootHash
+      emailVerified: true,
+      passwordHash: null
     },
     create: {
       email: rootEmail,
       name: 'Root Admin',
       role: UserRole.ROOT,
-      passwordHash: rootHash
+      emailVerified: true,
+      passwordHash: null
     }
+  });
+
+  await prisma.authAccount.upsert({
+    where: {
+      providerId_accountId: {
+        providerId: 'credential',
+        accountId: rootUser.id
+      }
+    },
+    create: {
+      providerId: 'credential',
+      accountId: rootUser.id,
+      userId: rootUser.id,
+      password: rootHash
+    },
+    update: { password: rootHash }
   });
 
   await prisma.globalSettings.upsert({
@@ -642,20 +670,38 @@ async function main() {
     });
   }
 
-  await prisma.user.upsert({
+  const demoUser = await prisma.user.upsert({
     where: { email: demoEmail },
     update: {
       role: UserRole.TENANT_ADMIN,
       tenantId: demoTenant.id,
-      passwordHash: demoHash
+      emailVerified: true,
+      passwordHash: null
     },
     create: {
       email: demoEmail,
       name: 'Demo Admin',
       role: UserRole.TENANT_ADMIN,
       tenantId: demoTenant.id,
-      passwordHash: demoHash
+      emailVerified: true,
+      passwordHash: null
     }
+  });
+
+  await prisma.authAccount.upsert({
+    where: {
+      providerId_accountId: {
+        providerId: 'credential',
+        accountId: demoUser.id
+      }
+    },
+    create: {
+      providerId: 'credential',
+      accountId: demoUser.id,
+      userId: demoUser.id,
+      password: demoHash
+    },
+    update: { password: demoHash }
   });
 
   await seedAdminData();

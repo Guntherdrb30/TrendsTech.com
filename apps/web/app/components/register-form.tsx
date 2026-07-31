@@ -1,8 +1,6 @@
 'use client';
 
 import { useState, useTransition } from 'react';
-import { signIn } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -89,7 +87,7 @@ function getRegisterCopy(locale: string): RegisterCopy {
         emailRequired: 'El correo es obligatorio',
         emailInvalid: 'Ingresa un correo valido',
         passwordRequired: 'La contrasena es obligatoria',
-        passwordShort: 'La contrasena debe tener al menos 8 caracteres',
+        passwordShort: 'La contrasena debe tener al menos 12 caracteres',
         phoneFormat: 'Usa solo digitos, espacios y + ( ) -',
         phoneLength: 'Ingresa al menos 7 digitos',
         emailExists: 'El correo ya esta registrado',
@@ -97,7 +95,7 @@ function getRegisterCopy(locale: string): RegisterCopy {
         invalidForm: 'Revisa los campos y vuelve a intentar',
         securityConfigMissing: 'Falta configurar la verificacion humana',
         registrationFailed: 'No se pudo registrar la cuenta',
-        loginAfterRegisterFailed: 'Cuenta creada, pero no se pudo iniciar sesion'
+        loginAfterRegisterFailed: 'Cuenta creada. Revisa tu correo para verificarla antes de iniciar sesión.'
       }
     };
   }
@@ -127,7 +125,7 @@ function getRegisterCopy(locale: string): RegisterCopy {
       emailRequired: 'Email is required',
       emailInvalid: 'Enter a valid email',
       passwordRequired: 'Password is required',
-      passwordShort: 'Password must be at least 8 characters',
+      passwordShort: 'Password must be at least 12 characters',
       phoneFormat: 'Use only digits, spaces, and + ( ) -',
       phoneLength: 'Enter at least 7 digits',
       emailExists: 'Email already exists',
@@ -135,7 +133,7 @@ function getRegisterCopy(locale: string): RegisterCopy {
       invalidForm: 'Review the fields and try again',
       securityConfigMissing: 'Human verification is not configured',
       registrationFailed: 'Registration failed',
-      loginAfterRegisterFailed: 'Account created but sign in failed'
+      loginAfterRegisterFailed: 'Account created. Check your email to verify it before signing in.'
     }
   };
 }
@@ -172,7 +170,7 @@ function validatePayload(payload: RegisterPayload, copy: RegisterCopy): FieldErr
   }
   if (!payload.password) {
     errors.password = copy.errors.passwordRequired;
-  } else if (payload.password.length < 8) {
+  } else if (payload.password.length < 12) {
     errors.password = copy.errors.passwordShort;
   }
   const phoneError = validatePhone(payload.phone, copy);
@@ -210,20 +208,10 @@ function mapRegisterError(status: number, serverMessage: string | null, copy: Re
   }
 }
 
-function resolveRedirect(locale: string, redirectTo?: string) {
-  if (!redirectTo || !redirectTo.startsWith('/')) {
-    return `/${locale}/dashboard`;
-  }
-  if (!redirectTo.startsWith(`/${locale}/`)) {
-    return `/${locale}/dashboard`;
-  }
-  return redirectTo;
-}
-
-export function RegisterForm({ locale, redirectTo }: RegisterFormProps) {
-  const router = useRouter();
+export function RegisterForm({ locale }: RegisterFormProps) {
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
   const [payload, setPayload] = useState<RegisterPayload>({
     name: '',
@@ -233,11 +221,11 @@ export function RegisterForm({ locale, redirectTo }: RegisterFormProps) {
     phone: ''
   });
   const copy = getRegisterCopy(locale);
-  const destination = resolveRedirect(locale, redirectTo);
 
   const onSubmit = (event: React.FormEvent) => {
     event.preventDefault();
     setError(null);
+    setSuccess(null);
     const errors = validatePayload(payload, copy);
     setFieldErrors(errors);
     if (Object.keys(errors).length > 0) {
@@ -247,6 +235,7 @@ export function RegisterForm({ locale, redirectTo }: RegisterFormProps) {
     startTransition(async () => {
       const normalized = {
         ...payload,
+        locale: locale.startsWith('en') ? 'en' : 'es',
         phone: payload.phone.trim() || undefined
       };
 
@@ -269,19 +258,7 @@ export function RegisterForm({ locale, redirectTo }: RegisterFormProps) {
         return;
       }
 
-      const signInResult = await signIn('credentials', {
-        email: payload.email,
-        password: payload.password,
-        redirect: false
-      });
-
-      if (!signInResult || signInResult.error || signInResult.ok === false) {
-        setError(copy.errors.loginAfterRegisterFailed);
-        return;
-      }
-
-      router.push(destination);
-      router.refresh();
+      setSuccess(copy.errors.loginAfterRegisterFailed);
     });
   };
 
@@ -416,7 +393,7 @@ export function RegisterForm({ locale, redirectTo }: RegisterFormProps) {
                 if (fieldErrors.password) {
                   setFieldErrors((prev) => ({
                     ...prev,
-                    password: value.length >= 8 ? undefined : prev.password
+                    password: value.length >= 12 ? undefined : prev.password
                   }));
                 }
               }}
@@ -434,6 +411,11 @@ export function RegisterForm({ locale, redirectTo }: RegisterFormProps) {
           {error ? (
             <div className="rounded-[18px] border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
               {error}
+            </div>
+          ) : null}
+          {success ? (
+            <div className="rounded-[18px] border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
+              {success}
             </div>
           ) : null}
           <Button type="submit" disabled={isPending} className="w-full">

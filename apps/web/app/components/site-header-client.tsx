@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname, useSearchParams, type ReadonlyURLSearchParams } from 'next/navigation';
-import { signOut } from 'next-auth/react';
+import { authClient } from '@/lib/auth/client';
 import { AgentSearch } from './agent-search';
 import { LocaleSwitcher } from './locale-switcher';
 import { ThemeToggle } from './theme-toggle';
@@ -86,7 +86,13 @@ export function SiteHeaderClient({ base, isAuthenticated, labels, agentOptions }
 
   const handleSignOut = () => {
     setMenuOpen(false);
-    void signOut({ callbackUrl: base });
+    void authClient.signOut({
+      fetchOptions: {
+        onSuccess: () => {
+          window.location.href = base;
+        }
+      }
+    });
   };
 
   const navLinks = [

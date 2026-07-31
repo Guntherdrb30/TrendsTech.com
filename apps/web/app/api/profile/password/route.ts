@@ -1,15 +1,14 @@
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
-import { compare, hash } from 'bcryptjs';
-import { prisma } from '@trends172tech/db';
 import { AuthError, requireAuth } from '@/lib/auth/guards';
+import { auth } from '@/lib/auth/auth';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
 const passwordSchema = z.object({
-  currentPassword: z.string().min(8).max(72),
-  newPassword: z.string().min(8).max(72)
+  currentPassword: z.string().min(12).max(128),
+  newPassword: z.string().min(12).max(128)
 });
 
 function handleError(error: unknown) {
@@ -24,7 +23,7 @@ function handleError(error: unknown) {
 
 export async function POST(request: Request) {
   try {
-    const user = await requireAuth();
+    await requireAuth();
     const payload = passwordSchema.parse(await request.json());
 
     if (payload.currentPassword === payload.newPassword) {
@@ -34,35 +33,14 @@ export async function POST(request: Request) {
       );
     }
 
-    const existing = await prisma.user.findUnique({
-      where: { id: user.id },
-      select: { id: true, passwordHash: true }
+    await auth.api.changePassword({
+      body: {
+        currentPassword: payload.currentPassword,
+        newPassword: payload.newPassword,
+        revokeOtherSessions: true
+      },
+      headers: request.headers
     });
-
-    if (!existing || !existing.passwordHash) {
-      return NextResponse.json(
-        { error: 'Current user does not have a password configured.' },
-        { status: 400 }
-      );
-    }
-
-    const isValid = await compare(payload.currentPassword, existing.passwordHash);
-    if (!isValid) {
-      return NextResponse.json({ error: 'Current password is incorrect.' }, { status: 400 });
-    }
-
-    const passwordHash = await hash(payload.newPassword, 10);
-
-    await prisma.$transaction([
-      prisma.user.update({
-        where: { id: user.id },
-        data: { passwordHash }
-      }),
-      prisma.passwordResetToken.updateMany({
-        where: { userId: user.id, usedAt: null },
-        data: { usedAt: new Date() }
-      })
-    ]);
 
     return NextResponse.json({ ok: true });
   } catch (error) {

@@ -1,8 +1,9 @@
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
-import { hash } from 'bcryptjs';
 import { prisma } from '@trends172tech/db';
 import { enforceRequestRateLimit } from '@/lib/security/rate-limit';
+import { hashPassword } from '@/lib/auth/password';
+import { auth } from '@/lib/auth/auth';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -10,9 +11,10 @@ export const dynamic = 'force-dynamic';
 const requestSchema = z.object({
   name: z.string().min(1).max(120),
   email: z.string().email().max(190),
-  password: z.string().min(8).max(72),
+  password: z.string().min(12).max(128),
   company: z.string().min(2).max(120),
-  phone: z.string().min(4).max(40).optional()
+  phone: z.string().min(4).max(40).optional(),
+  locale: z.enum(['es', 'en']).optional()
 });
 
 function slugify(value: string) {
@@ -34,6 +36,12 @@ async function ensureUniqueSlug(base: string) {
 }
 
 export async function POST(request: Request) {
+  if (process.env.AUTH_DISABLE_SIGN_UP === 'true') {
+    return NextResponse.json(
+      { error: 'Account creation is disabled.' },
+      { status: 403, headers: { 'Cache-Control': 'no-store' } }
+    );
+  }
   const limited = enforceRequestRateLimit(request, {
     namespace: 'auth-register',
     limit: 5,
@@ -72,7 +80,7 @@ export async function POST(request: Request) {
     );
   }
 
-  const passwordHash = await hash(payload.password, 10);
+  const passwordHash = await hashPassword(payload.password);
   const baseSlug = slugify(payload.company);
   const slug = await ensureUniqueSlug(baseSlug);
 
@@ -101,20 +109,39 @@ export async function POST(request: Request) {
       }
     });
 
-    await tx.user.create({
+    const user = await tx.user.create({
       data: {
         tenantId: tenant.id,
         name: payload.name.trim(),
         email,
         role: 'TENANT_ADMIN',
-        passwordHash,
+        passwordHash: null,
+        emailVerified: false,
         phone: payload.phone?.trim() || null
+      }
+    });
+
+    await tx.authAccount.create({
+      data: {
+        accountId: user.id,
+        providerId: 'credential',
+        userId: user.id,
+        password: passwordHash
       }
     });
   });
 
+  const locale = payload.locale ?? 'es';
+  await auth.api.sendVerificationEmail({
+    body: {
+      email,
+      callbackURL: `/${locale}/dashboard`
+    },
+    headers: request.headers
+  });
+
   return NextResponse.json(
-    { ok: true },
+    { ok: true, requiresVerification: true },
     { headers: { 'Cache-Control': 'no-store' } }
   );
 }

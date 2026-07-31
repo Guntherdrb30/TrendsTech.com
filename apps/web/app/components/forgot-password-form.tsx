@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { authClient } from "@/lib/auth/client";
 
 type ForgotPasswordFormProps = {
   locale: string;
@@ -89,28 +90,17 @@ export function ForgotPasswordForm({ locale }: ForgotPasswordFormProps) {
 
     startTransition(async () => {
       try {
-        const response = await fetch("/api/auth/password-reset", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email, locale })
+        const { error: requestError } = await authClient.requestPasswordReset({
+          email: email.trim().toLowerCase(),
+          redirectTo: `/${locale}/reset-password`
         });
-        const payload = (await response.json().catch(() => ({}))) as {
-          error?: string;
-          resetUrl?: string;
-        };
 
-        if (!response.ok) {
-          const message = payload.error
-            ? `${copy.errors.generic}: ${payload.error}`
-            : copy.errors.generic;
-          setError(message);
+        if (requestError) {
+          setError(requestError.message || copy.errors.generic);
           return;
         }
 
         setSuccess(copy.success);
-        if (payload.resetUrl) {
-          setDebugLink(payload.resetUrl);
-        }
         router.refresh();
       } catch (fetchError) {
         console.error("Forgot password failed", fetchError);

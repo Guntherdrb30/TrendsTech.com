@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useTransition } from 'react';
-import { signIn } from 'next-auth/react';
+import { authClient } from '@/lib/auth/client';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -125,12 +125,12 @@ export function LoginForm({ locale, redirectTo }: LoginFormProps) {
     }
 
     startTransition(async () => {
-      let result: Awaited<ReturnType<typeof signIn>> | undefined;
+      let result: Awaited<ReturnType<typeof authClient.signIn.email>> | undefined;
       try {
-        result = await signIn('credentials', {
+        result = await authClient.signIn.email({
           email,
           password,
-          redirect: false
+          rememberMe: true
         });
       } catch (fetchError) {
         console.error('Login failed', fetchError);
@@ -138,9 +138,9 @@ export function LoginForm({ locale, redirectTo }: LoginFormProps) {
         return;
       }
 
-      if (!result || result.error || result.ok === false) {
-        const isCredentialError = result?.error === 'CredentialsSignin';
-        setError(isCredentialError ? copy.errors.invalidCredentials : copy.errors.generic);
+      if (!result || result.error) {
+        const isCredentialError = result?.error?.status === 401 || result?.error?.code === 'INVALID_EMAIL_OR_PASSWORD';
+        setError(isCredentialError ? copy.errors.invalidCredentials : (result?.error?.message || copy.errors.generic));
         return;
       }
 
