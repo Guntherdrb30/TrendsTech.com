@@ -23,12 +23,29 @@ export default async function AdminDashboardPage({ params }: { params: Promise<{
 
   return (
     <div className="space-y-6">
-      <div>
-        <h2 className="text-xl font-semibold text-slate-950 dark:text-white">{t('dashboard.title')}</h2>
-        <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">{t('dashboard.subtitle')}</p>
+      <div className="overflow-hidden rounded-[28px] border border-cyan-100 bg-[radial-gradient(circle_at_top_right,rgba(34,211,238,0.18),transparent_34%),linear-gradient(135deg,#ffffff_0%,#f0fdfa_100%)] px-6 py-7 shadow-[0_30px_90px_-65px_rgba(8,145,178,0.55)] dark:border-cyan-950 dark:bg-slate-950 sm:px-8">
+        <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-cyan-600">
+              {locale.startsWith('es') ? 'Operación multiempresa' : 'Multi-company operations'}
+            </p>
+            <h2 className="mt-3 text-3xl font-semibold tracking-[-0.04em] text-slate-950 dark:text-white">
+              {t('dashboard.title')}
+            </h2>
+            <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-600 dark:text-slate-300">
+              {t('dashboard.subtitle')}
+            </p>
+          </div>
+          <Link
+            href={`/${locale}/admin/projects`}
+            className="inline-flex shrink-0 items-center justify-center rounded-full bg-slate-950 px-5 py-3 text-sm font-semibold text-white transition hover:bg-cyan-600 dark:bg-white dark:text-slate-950"
+          >
+            {locale.startsWith('es') ? 'Gestionar proyectos' : 'Manage projects'}
+          </Link>
+        </div>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
         <MetricCard label={t('metrics.monthSales')} value={money(overview.monthSales)} accent="emerald" />
         <MetricCard label={t('metrics.budgetsSent')} value={String(overview.budgetsSent)} accent="cyan" />
         <MetricCard label={t('metrics.acceptedProposals')} value={String(overview.acceptedProposals)} accent="slate" />

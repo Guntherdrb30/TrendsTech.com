@@ -816,7 +816,7 @@
     "shell": {
       "title": "Centro operativo",
       "subtitle": "Control total de proyectos, empresas, finanzas, licencias, mantenimiento y agentes IA de Trends172Tech.",
-      "navigation": "Operacion de proyectos",
+      "navigation": "Operación de proyectos",
       "dashboard": "Resumen",
       "clients": "Clientes",
       "projects": "Proyectos",
@@ -824,7 +824,7 @@
       "licenses": "Licencias",
       "aiAgents": "Agentes IA",
       "payments": "Pagos",
-      "systemNavigation": "Administracion del sistema",
+      "systemNavigation": "Administración del sistema",
       "systemControl": "Panel general",
       "users": "Usuarios",
       "recharges": "Recargas",
@@ -834,8 +834,8 @@
       "backToSite": "Volver al sitio"
     },
     "dashboard": {
-      "title": "Resumen ejecutivo",
-      "subtitle": "Vista de control para ventas, proyectos activos, cobros, renovaciones y alertas operativas."
+      "title": "Control general de proyectos",
+      "subtitle": "Seguimiento real de empresas, proyectos, ingresos recurrentes, cobros y próximos compromisos."
     },
     "clients": {
       "title": "Clientes",
@@ -843,9 +843,9 @@
       "table": "Cartera de clientes"
     },
     "projects": {
-      "title": "Proyectos vendidos",
-      "subtitle": "Administracion independiente por cliente, sistema, finanzas, tareas, licencias e integraciones.",
-      "table": "Portafolio activo"
+      "title": "Proyectos",
+      "subtitle": "Cada proyecto reúne su empresa, alcance, responsable, finanzas, tareas, entregables e integraciones.",
+      "table": "Proyectos registrados"
     },
     "proposals": {
       "title": "Propuestas",
@@ -945,18 +945,18 @@
       }
     },
     "metrics": {
-      "monthSales": "Ventas del mes",
-      "budgetsSent": "Presupuestos enviados",
+      "monthSales": "Proyectos vendidos este mes",
+      "budgetsSent": "Propuestas enviadas",
       "acceptedProposals": "Propuestas aceptadas",
       "activeProjects": "Proyectos activos",
       "activeSubscriptions": "Mensualidades activas",
-      "mrr": "Ingreso recurrente mensual",
+      "mrr": "Ingresos mensuales recurrentes",
       "pendingInvoices": "Facturas pendientes",
       "overduePayments": "Pagos vencidos",
       "expiringLicenses": "Licencias por vencer",
       "overdueTasks": "Tareas atrasadas",
       "maintenanceProjects": "Proyectos en mantenimiento",
-      "estimatedProfit": "Ganancia estimada mensual",
+      "estimatedProfit": "Rentabilidad mensual estimada",
       "clients": "Clientes",
       "openBalance": "Balance pendiente",
       "projects": "Proyectos",
@@ -1077,16 +1077,14 @@
         "PENDING": "Pendiente",
         "ISSUE": "Incidente"
       }
-    }
-  },
-  "admin": {
+    },
     "email": {
       "title": "Vista Previa de Plantillas de Email",
-      "description": "Previsualiza y prueba plantillas de email. Usa datos mock para ver cómo se verán los emails.",
+      "description": "Previsualiza y verifica las plantillas antes de utilizarlas.",
       "templates": "Plantillas",
       "test": "Enviar Prueba",
       "testTitle": "Envío de Email de Prueba",
-      "testDescription": "Envía emails de prueba usando datos mock. Asegúrate de que tu servicio de email esté configurado.",
+      "testDescription": "Envía una prueba para verificar el contenido y la configuración del servicio de correo.",
       "recipientEmail": "Email del Destinatario",
       "template": "Plantilla",
       "locale": "Idioma",

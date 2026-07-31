@@ -834,8 +834,8 @@
       "backToSite": "Back to site"
     },
     "dashboard": {
-      "title": "Executive overview",
-      "subtitle": "Control view for sales, active projects, collections, renewals, and operational alerts."
+      "title": "Overall project control",
+      "subtitle": "Real tracking of companies, projects, recurring revenue, collections, and upcoming commitments."
     },
     "clients": {
       "title": "Clients",
@@ -843,9 +843,9 @@
       "table": "Client portfolio"
     },
     "projects": {
-      "title": "Sold projects",
-      "subtitle": "Independent administration by client, system, finances, tasks, licenses, and integrations.",
-      "table": "Active portfolio"
+      "title": "Projects",
+      "subtitle": "Each project brings together its company, scope, owner, finances, tasks, deliverables, and integrations.",
+      "table": "Registered projects"
     },
     "proposals": {
       "title": "Proposals",
@@ -945,18 +945,18 @@
       }
     },
     "metrics": {
-      "monthSales": "Monthly sales",
-      "budgetsSent": "Budgets sent",
+      "monthSales": "Projects sold this month",
+      "budgetsSent": "Proposals sent",
       "acceptedProposals": "Accepted proposals",
       "activeProjects": "Active projects",
       "activeSubscriptions": "Active subscriptions",
-      "mrr": "Monthly recurring revenue",
+      "mrr": "Recurring monthly revenue",
       "pendingInvoices": "Pending invoices",
       "overduePayments": "Overdue payments",
       "expiringLicenses": "Expiring licenses",
       "overdueTasks": "Overdue tasks",
       "maintenanceProjects": "Maintenance projects",
-      "estimatedProfit": "Estimated monthly profit",
+      "estimatedProfit": "Estimated monthly profitability",
       "clients": "Clients",
       "openBalance": "Open balance",
       "projects": "Projects",
@@ -1077,16 +1077,14 @@
         "PENDING": "Pending",
         "ISSUE": "Issue"
       }
-    }
-  },
-  "admin": {
+    },
     "email": {
       "title": "Email Templates Preview",
-      "description": "Preview and test email templates. Use mock data to see how emails will look.",
+      "description": "Preview and verify templates before using them.",
       "templates": "Templates",
       "test": "Test Send",
       "testTitle": "Test Email Send",
-      "testDescription": "Send test emails using mock data. Make sure your email service is configured.",
+      "testDescription": "Send a test to verify the content and email service configuration.",
       "recipientEmail": "Recipient Email",
       "template": "Template",
       "locale": "Locale",

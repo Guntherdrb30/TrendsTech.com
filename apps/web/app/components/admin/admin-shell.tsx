@@ -53,13 +53,18 @@ export function AdminShell({ locale, children, labels }: AdminShellProps) {
   const base = `/${locale}`;
 
   return (
-    <div className="min-h-screen bg-[linear-gradient(180deg,#f7f8fb_0%,#ffffff_30%,#f8fafc_100%)] text-slate-950 dark:bg-slate-950 dark:text-white">
-      <div className="grid min-h-screen lg:grid-cols-[280px_1fr]">
-        <aside className="border-b border-black/8 bg-white/90 px-4 py-4 dark:border-slate-800 dark:bg-slate-950 lg:border-b-0 lg:border-r lg:px-5 lg:py-6">
+    <div className="min-h-screen bg-[linear-gradient(180deg,#f6f8fb_0%,#ffffff_32%,#f8fafc_100%)] text-slate-950 dark:bg-slate-950 dark:text-white">
+      <div className="grid min-h-screen lg:grid-cols-[268px_1fr]">
+        <aside className="border-b border-black/8 bg-white/95 px-4 py-4 dark:border-slate-800 dark:bg-slate-950 lg:sticky lg:top-0 lg:h-screen lg:border-b-0 lg:border-r lg:px-5 lg:py-6">
           <div className="flex items-center justify-between gap-3 lg:block">
             <Link href={`${base}/admin`} className="block">
-              <div className="text-sm font-semibold text-slate-950 dark:text-white">Trends172Tech</div>
-              <div className="mt-1 text-xs text-slate-500 dark:text-slate-400">{labels.title}</div>
+              <div className="flex items-center gap-3">
+                <span className="grid h-10 w-10 place-items-center rounded-full border-2 border-cyan-400 text-lg font-medium text-cyan-600">T</span>
+                <span>
+                  <span className="block text-sm font-semibold text-slate-950 dark:text-white">Trends172 Tech</span>
+                  <span className="mt-0.5 block text-xs text-slate-500 dark:text-slate-400">{labels.title}</span>
+                </span>
+              </div>
             </Link>
             <Link
               href={base}
@@ -124,14 +129,14 @@ export function AdminShell({ locale, children, labels }: AdminShellProps) {
         </aside>
 
         <div className="min-w-0">
-          <header className="border-b border-black/8 bg-white/80 px-4 py-5 dark:border-slate-800 dark:bg-slate-950/80 sm:px-6 lg:px-8">
+          <header className="border-b border-black/8 bg-white/85 px-4 py-5 backdrop-blur dark:border-slate-800 dark:bg-slate-950/80 sm:px-6 lg:px-8">
             <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
               <div>
                 <h1 className="text-2xl font-semibold text-slate-950 dark:text-white">{labels.title}</h1>
                 <p className="mt-1 max-w-3xl text-sm text-slate-500 dark:text-slate-400">{labels.subtitle}</p>
               </div>
-              <div className="rounded-full border border-black/10 px-3 py-1.5 text-xs font-semibold text-slate-600 dark:border-slate-800 dark:text-slate-300">
-                ROOT
+              <div className="rounded-full border border-cyan-200 bg-cyan-50 px-3 py-1.5 text-xs font-semibold text-cyan-800 dark:border-cyan-900 dark:bg-cyan-950/40 dark:text-cyan-200">
+                {locale.startsWith('es') ? 'Administrador ROOT' : 'ROOT administrator'}
               </div>
             </div>
           </header>
