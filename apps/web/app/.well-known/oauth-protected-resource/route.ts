@@ -11,8 +11,6 @@ export async function GET() {
     resource: `${siteUrl}/mcp`,
     authorization_servers: [siteUrl],
     scopes_supported: ['mcp:read', 'mcp:write']
-  }, {
-    externalScopes: ['mcp:read', 'mcp:write']
   });
 
   return Response.json(metadata, {
