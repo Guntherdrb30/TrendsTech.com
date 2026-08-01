@@ -20,20 +20,22 @@ const pingOutputSchema = z.object({
   ts: z.string()
 });
 
-const REQUIRED_CONTEXT_HEADERS = ["x-tenant-id", "x-agent-instance-id", "x-actor-user-id"] as const;
+const scopedClientSchema = z.object({
+  tokenSha256: z.string().regex(/^[a-f0-9]{64}$/i),
+  tenantId: z.string().min(1),
+  agentInstanceId: z.string().min(1),
+  actorUserId: z.string().min(1),
+  allowedTools: z.array(z.string().min(1)).min(1).max(20),
+});
 
-function buildToolContext(headers: Record<string, string | undefined>): ToolContext | null {
-  const tenantId = headers["x-tenant-id"];
-  const agentInstanceId = headers["x-agent-instance-id"];
-  const actorUserId = headers["x-actor-user-id"];
-  const sessionId = headers["x-session-id"] ?? headers["mcp-session-id"] ?? "mcp";
+const scopedClientsSchema = z.array(scopedClientSchema).max(50);
 
-  if (!tenantId || !agentInstanceId || !actorUserId) {
-    return null;
-  }
+type ScopedClient = z.infer<typeof scopedClientSchema>;
 
-  return { tenantId, agentInstanceId, actorUserId, sessionId };
-}
+type McpAuthorization =
+  | { ok: false; status: 401 | 503; error: string }
+  | { ok: true; mode: "health" }
+  | { ok: true; mode: "scoped"; client: ScopedClient };
 
 function secureEqual(left: string, right: string) {
   const leftHash = createHash("sha256").update(left).digest();
@@ -41,19 +43,42 @@ function secureEqual(left: string, right: string) {
   return timingSafeEqual(leftHash, rightHash);
 }
 
-function authorizeMcpRequest(request: Request) {
-  const secret = process.env.MCP_API_SECRET;
-  if (!secret || secret.length < 32) {
-    return { ok: false as const, status: 503, error: "MCP is not configured." };
+function readScopedClients() {
+  const value = process.env.MCP_CLIENTS_JSON;
+  if (!value) return [];
+
+  try {
+    return scopedClientsSchema.parse(JSON.parse(value));
+  } catch {
+    console.error("[mcp] MCP_CLIENTS_JSON is invalid.");
+    return null;
+  }
+}
+
+function authorizeMcpRequest(request: Request): McpAuthorization {
+  const healthSecret = process.env.MCP_API_SECRET;
+  const clients = readScopedClients();
+  if (clients === null) {
+    return { ok: false, status: 503, error: "MCP is not configured." };
   }
 
   const authorization = request.headers.get("authorization") ?? "";
   const token = authorization.startsWith("Bearer ") ? authorization.slice(7).trim() : "";
-  if (!token || !secureEqual(token, secret)) {
-    return { ok: false as const, status: 401, error: "Unauthorized." };
+  if (!token) {
+    return { ok: false, status: 401, error: "Unauthorized." };
   }
 
-  return { ok: true as const };
+  const tokenSha256 = createHash("sha256").update(token).digest("hex");
+  const client = clients.find((candidate) => secureEqual(tokenSha256, candidate.tokenSha256));
+  if (client) {
+    return { ok: true, mode: "scoped", client };
+  }
+
+  if (healthSecret && healthSecret.length >= 32 && secureEqual(token, healthSecret)) {
+    return { ok: true, mode: "health" };
+  }
+
+  return { ok: false, status: 401, error: "Unauthorized." };
 }
 
 async function validateToolContext(context: ToolContext) {
@@ -73,7 +98,7 @@ async function validateToolContext(context: ToolContext) {
   return actor.role === "ROOT" || actor.tenantId === context.tenantId;
 }
 
-function buildServer() {
+function buildServer(authorization: Extract<McpAuthorization, { ok: true }>) {
   const server = new McpServer(
     {
       name: "Trends172 MCP Server",
@@ -91,7 +116,8 @@ function buildServer() {
     {
       description: "Health check tool that echoes a message.",
       inputSchema: pingInputSchema,
-      outputSchema: pingOutputSchema
+      outputSchema: pingOutputSchema,
+      annotations: { readOnlyHint: true, destructiveHint: false, openWorldHint: false },
     },
     async ({ message }) => {
       const payload = { ok: true, echo: message, ts: new Date().toISOString() };
@@ -102,7 +128,10 @@ function buildServer() {
     }
   );
 
-  const definitions = getToolDefinitions();
+  const definitions =
+    authorization.mode === "scoped"
+      ? getToolDefinitions(authorization.client.allowedTools)
+      : [];
   for (const definition of definitions) {
     if (definition.name === "ping") {
       continue;
@@ -112,20 +141,20 @@ function buildServer() {
       definition.name,
       {
         description: definition.description,
-        inputSchema: definition.schema
+        inputSchema: definition.schema,
+        annotations: definition.annotations,
       },
-      async (args, extra) => {
-        const headers =
-          (extra.requestInfo?.headers as Record<string, string | undefined> | undefined) ?? {};
-        const context = buildToolContext(headers);
-
-        if (!context) {
-          const message = `Missing required headers: ${REQUIRED_CONTEXT_HEADERS.join(", ")}`;
-          return {
-            content: [{ type: "text", text: message }],
-            isError: true
-          };
+      async (args) => {
+        if (authorization.mode !== "scoped") {
+          return { content: [{ type: "text", text: "Unauthorized." }], isError: true };
         }
+
+        const context: ToolContext = {
+          tenantId: authorization.client.tenantId,
+          agentInstanceId: authorization.client.agentInstanceId,
+          actorUserId: authorization.client.actorUserId,
+          sessionId: `mcp:${authorization.client.tokenSha256.slice(0, 16)}`,
+        };
 
         if (!(await validateToolContext(context))) {
           return {
@@ -146,10 +175,10 @@ function buildServer() {
             structuredContent: result
           };
         } catch (error) {
-          const message = error instanceof Error ? error.message : "Tool execution failed";
-          console.log(`[mcp] tool error (${definition.name}):`, message);
+          const message = error instanceof Error ? error.message : "Unknown tool error";
+          console.error(`[mcp] tool error (${definition.name}):`, message);
           return {
-            content: [{ type: "text", text: message }],
+            content: [{ type: "text", text: "Tool execution failed." }],
             isError: true
           };
         }
@@ -194,7 +223,7 @@ async function handleMcpRequest(request: Request) {
     enableJsonResponse: true
   });
 
-  const server = buildServer();
+  const server = buildServer(authorization);
   await server.connect(transport);
 
   const response = await transport.handleRequest(request);

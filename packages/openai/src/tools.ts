@@ -10,10 +10,17 @@ export type ToolContext = {
   sessionId: string;
 };
 
+export type ToolSafetyAnnotations = {
+  readOnlyHint: boolean;
+  destructiveHint: boolean;
+  openWorldHint: boolean;
+};
+
 type ToolDefinition = {
   name: string;
   description: string;
   schema: z.AnyZodObject;
+  annotations: ToolSafetyAnnotations;
   execute: (input: unknown, context: ToolContext) => Promise<Record<string, unknown>>;
 };
 
@@ -118,6 +125,7 @@ const TOOL_DEFINITIONS: ToolDefinition[] = [
     name: 'create_lead',
     description: 'Create a new lead with contact information.',
     schema: createLeadSchema,
+    annotations: { readOnlyHint: false, destructiveHint: false, openWorldHint: false },
     execute: async (input, context) => {
       const parsed = createLeadSchema.parse(input);
       const lead = await prisma.endCustomer.create({
@@ -142,6 +150,7 @@ const TOOL_DEFINITIONS: ToolDefinition[] = [
     name: 'create_appointment',
     description: 'Schedule an appointment request.',
     schema: createAppointmentSchema,
+    annotations: { readOnlyHint: false, destructiveHint: false, openWorldHint: false },
     execute: async (input, context) => {
       const parsed = createAppointmentSchema.parse(input);
       const audit = await logAction(context, 'create_appointment', 'appointment', {
@@ -160,16 +169,12 @@ const TOOL_DEFINITIONS: ToolDefinition[] = [
     name: 'get_pricing_info',
     description: 'Return current pricing tiers and limits.',
     schema: pricingInfoSchema,
+    annotations: { readOnlyHint: true, destructiveHint: false, openWorldHint: false },
     execute: async (input, context) => {
       const parsed = pricingInfoSchema.parse(input);
       const plans = await prisma.plan.findMany({
         where: { isActive: true },
         orderBy: { priceUsdMonthly: 'asc' }
-      });
-
-      await logAction(context, 'get_pricing_info', 'plan', {
-        sessionId: context.sessionId,
-        locale: parsed.locale ?? null
       });
 
       return {
@@ -187,6 +192,7 @@ const TOOL_DEFINITIONS: ToolDefinition[] = [
     name: 'request_human_contact',
     description: 'Escalate the conversation to a human.',
     schema: requestHumanContactSchema,
+    annotations: { readOnlyHint: false, destructiveHint: false, openWorldHint: false },
     execute: async (input, context) => {
       const parsed = requestHumanContactSchema.parse(input);
       const audit = await logAction(context, 'request_human_contact', 'human_contact', {
@@ -204,12 +210,9 @@ const TOOL_DEFINITIONS: ToolDefinition[] = [
     name: 'get_token_pricing',
     description: 'Return token pricing per 1M tokens with markup applied.',
     schema: getTokenPricingSchema,
+    annotations: { readOnlyHint: true, destructiveHint: false, openWorldHint: false },
     execute: async (_, context) => {
       const pricing = await resolveTokenPricing();
-
-      await logAction(context, 'get_token_pricing', 'pricing', {
-        sessionId: context.sessionId
-      });
 
       return {
         currency: 'USD',
@@ -231,6 +234,7 @@ const TOOL_DEFINITIONS: ToolDefinition[] = [
     name: 'create_agent_instance',
     description: 'Create a new agent instance for the tenant after collecting onboarding data.',
     schema: createAgentInstanceSchema,
+    annotations: { readOnlyHint: false, destructiveHint: false, openWorldHint: false },
     execute: async (input, context) => {
       const parsed = createAgentInstanceSchema.parse(input);
 

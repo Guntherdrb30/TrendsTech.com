@@ -1,0 +1,3 @@
+# Historical OpenAI domain-challenge value. It was publicly served by design,
+# has been removed from source, and is now provided through Vercel environment configuration.
+af08d4c4ebc965aa47c685ec9f5e33df6429750e:apps/web/app/lib/openai/verification.ts:generic-api-key:1
