@@ -1,4 +1,7 @@
 import { NextResponse } from 'next/server';
+import { randomUUID } from 'node:crypto';
+
+import { prisma } from '@trends172tech/db';
 
 type RateLimitEntry = {
   count: number;
@@ -9,6 +12,11 @@ type RateLimitOptions = {
   namespace: string;
   limit: number;
   windowMs: number;
+};
+
+type PersistentRateLimitRow = {
+  count: number;
+  lastRequest: bigint;
 };
 
 const globalForRateLimit = globalThis as typeof globalThis & {
@@ -60,6 +68,64 @@ export function checkRateLimit(identifier: string, options: RateLimitOptions, no
 
 export function enforceRequestRateLimit(request: Request, options: RateLimitOptions) {
   const result = checkRateLimit(getRequestIdentifier(request), options);
+  if (result.allowed) return null;
+
+  const retryAfter = Math.max(1, Math.ceil((result.resetAt - Date.now()) / 1000));
+  return NextResponse.json(
+    { error: 'Too many requests. Please try again later.' },
+    {
+      status: 429,
+      headers: {
+        'Cache-Control': 'no-store',
+        'Retry-After': String(retryAfter),
+        'X-RateLimit-Limit': String(result.limit),
+        'X-RateLimit-Remaining': String(result.remaining),
+        'X-RateLimit-Reset': String(Math.ceil(result.resetAt / 1000))
+      }
+    }
+  );
+}
+
+export async function checkPersistentRateLimit(
+  identifier: string,
+  options: RateLimitOptions,
+  now = Date.now()
+) {
+  const key = `api:${options.namespace}:${identifier}`;
+  const resetBoundary = BigInt(now - options.windowMs);
+  const timestamp = BigInt(now);
+  const rows = await prisma.$queryRaw<PersistentRateLimitRow[]>`
+    INSERT INTO "rateLimit" ("id", "key", "count", "lastRequest")
+    VALUES (${randomUUID()}, ${key}, 1, ${timestamp})
+    ON CONFLICT ("key") DO UPDATE SET
+      "count" = CASE
+        WHEN "rateLimit"."lastRequest" <= ${resetBoundary} THEN 1
+        ELSE "rateLimit"."count" + 1
+      END,
+      "lastRequest" = CASE
+        WHEN "rateLimit"."lastRequest" <= ${resetBoundary} THEN ${timestamp}
+        ELSE "rateLimit"."lastRequest"
+      END
+    RETURNING "count", "lastRequest"
+  `;
+  const entry = rows[0];
+  const count = entry?.count ?? options.limit + 1;
+  const startedAt = Number(entry?.lastRequest ?? timestamp);
+
+  return {
+    allowed: count <= options.limit,
+    limit: options.limit,
+    remaining: Math.max(0, options.limit - count),
+    resetAt: startedAt + options.windowMs
+  };
+}
+
+export async function enforcePersistentRequestRateLimit(
+  request: Request,
+  options: RateLimitOptions,
+  identifier = getRequestIdentifier(request)
+) {
+  const result = await checkPersistentRateLimit(identifier, options);
   if (result.allowed) return null;
 
   const retryAfter = Math.max(1, Math.ceil((result.resetAt - Date.now()) / 1000));

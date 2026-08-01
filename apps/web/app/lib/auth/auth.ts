@@ -2,6 +2,7 @@ import { after } from 'next/server';
 import { betterAuth } from 'better-auth';
 import { prismaAdapter } from 'better-auth/adapters/prisma';
 import { jwt } from 'better-auth/plugins';
+import { oauthProvider } from '@better-auth/oauth-provider';
 import { prisma } from '@trends172tech/db';
 import { sendEmail } from '@/lib/email/send';
 import { hashPassword, verifyPassword } from './password';
@@ -15,6 +16,7 @@ const trustedOrigins = Array.from(new Set([
     .map((origin) => origin.trim().replace(/\/$/, ''))
     .filter(Boolean)
 ]));
+const mcpResourceUrl = `${siteUrl}/mcp`;
 
 function localeFromUrl(url: string) {
   try {
@@ -42,6 +44,7 @@ export const auth = betterAuth({
   database: prismaAdapter(prisma, {
     provider: 'postgresql'
   }),
+  disabledPaths: ['/token'],
   trustedOrigins,
   user: {
     modelName: 'User',
@@ -145,6 +148,32 @@ export const auth = betterAuth({
           role: user.role,
           tenantId: user.tenantId ?? null
         })
+      }
+    }),
+    oauthProvider({
+      loginPage: '/es/login',
+      consentPage: '/es/oauth/consent',
+      validAudiences: [mcpResourceUrl],
+      scopes: ['openid', 'profile', 'email', 'offline_access', 'mcp:read', 'mcp:write'],
+      clientRegistrationDefaultScopes: ['openid', 'profile', 'email', 'mcp:read'],
+      clientRegistrationAllowedScopes: ['offline_access', 'mcp:write'],
+      allowDynamicClientRegistration: true,
+      allowUnauthenticatedClientRegistration: true,
+      accessTokenExpiresIn: 60 * 30,
+      scopeExpirations: {
+        'mcp:read': '30m',
+        'mcp:write': '10m'
+      },
+      customAccessTokenClaims: ({ user }) => user ? ({
+        'https://trends172tech.com/tenant_id': user.tenantId ?? null,
+        'https://trends172tech.com/role': user.role
+      }) : ({}),
+      clientPrivileges: async ({ user }) => user?.role === 'ROOT',
+      schema: {
+        oauthClient: { modelName: 'OAuthClient' },
+        oauthRefreshToken: { modelName: 'OAuthRefreshToken' },
+        oauthAccessToken: { modelName: 'OAuthAccessToken' },
+        oauthConsent: { modelName: 'OAuthConsent' }
       }
     })
   ]

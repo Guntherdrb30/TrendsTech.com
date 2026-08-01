@@ -6,6 +6,8 @@ import { z } from "zod";
 
 import { prisma } from "@trends172tech/db";
 import { getToolDefinitions, type ToolContext } from "@trends172tech/openai";
+import { oauthResourceClient } from "@/lib/auth/oauth-resource";
+import { enforcePersistentRequestRateLimit, getRequestIdentifier } from "@/lib/security/rate-limit";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -35,7 +37,11 @@ type ScopedClient = z.infer<typeof scopedClientSchema>;
 type McpAuthorization =
   | { ok: false; status: 401 | 503; error: string }
   | { ok: true; mode: "health" }
-  | { ok: true; mode: "scoped"; client: ScopedClient };
+  | { ok: true; mode: "scoped"; client: ScopedClient }
+  | { ok: true; mode: "oauth"; client: ScopedClient | null };
+
+const OAUTH_READ_TOOLS = ["get_pricing_info", "get_token_pricing"];
+const OAUTH_WRITE_TOOLS = ["create_lead", "create_appointment", "request_human_contact"];
 
 function secureEqual(left: string, right: string) {
   const leftHash = createHash("sha256").update(left).digest();
@@ -55,7 +61,7 @@ function readScopedClients() {
   }
 }
 
-function authorizeMcpRequest(request: Request): McpAuthorization {
+async function authorizeMcpRequest(request: Request): Promise<McpAuthorization> {
   const healthSecret = process.env.MCP_API_SECRET;
   const clients = readScopedClients();
   if (clients === null) {
@@ -78,7 +84,53 @@ function authorizeMcpRequest(request: Request): McpAuthorization {
     return { ok: true, mode: "health" };
   }
 
-  return { ok: false, status: 401, error: "Unauthorized." };
+  try {
+    const payload = await oauthResourceClient.verifyAccessToken(token, {
+      verifyOptions: { audience: `${new URL(request.url).origin}/mcp` },
+      scopes: ["mcp:read"]
+    });
+    const actorUserId = typeof payload.sub === "string" ? payload.sub : "";
+    if (!actorUserId) return { ok: false, status: 401, error: "Unauthorized." };
+
+    const actor = await prisma.user.findUnique({
+      where: { id: actorUserId },
+      select: { id: true, tenantId: true, role: true }
+    });
+    if (!actor) return { ok: false, status: 401, error: "Unauthorized." };
+
+    const scopes = typeof payload.scope === "string" ? payload.scope.split(" ") : [];
+    const allowedTools = [
+      ...OAUTH_READ_TOOLS,
+      ...(scopes.includes("mcp:write") ? OAUTH_WRITE_TOOLS : [])
+    ];
+
+    if (!actor.tenantId) {
+      return { ok: true, mode: "oauth", client: null };
+    }
+
+    const agentInstance = await prisma.agentInstance.findFirst({
+      where: { tenantId: actor.tenantId, status: "ACTIVE" },
+      orderBy: { createdAt: "asc" },
+      select: { id: true }
+    });
+    if (!agentInstance) {
+      return { ok: true, mode: "oauth", client: null };
+    }
+
+    return {
+      ok: true,
+      mode: "oauth",
+      client: {
+        tokenSha256,
+        tenantId: actor.tenantId,
+        agentInstanceId: agentInstance.id,
+        actorUserId: actor.id,
+        allowedTools
+      }
+    };
+  } catch {
+    return { ok: false, status: 401, error: "Unauthorized." };
+  }
 }
 
 async function validateToolContext(context: ToolContext) {
@@ -128,10 +180,12 @@ function buildServer(authorization: Extract<McpAuthorization, { ok: true }>) {
     }
   );
 
-  const definitions =
-    authorization.mode === "scoped"
-      ? getToolDefinitions(authorization.client.allowedTools)
-      : [];
+  const businessClient = authorization.mode === "scoped" || authorization.mode === "oauth"
+    ? authorization.client
+    : null;
+  const definitions = businessClient
+    ? getToolDefinitions(businessClient.allowedTools)
+    : [];
   for (const definition of definitions) {
     if (definition.name === "ping") {
       continue;
@@ -145,15 +199,15 @@ function buildServer(authorization: Extract<McpAuthorization, { ok: true }>) {
         annotations: definition.annotations,
       },
       async (args) => {
-        if (authorization.mode !== "scoped") {
+        if (!businessClient) {
           return { content: [{ type: "text", text: "Unauthorized." }], isError: true };
         }
 
         const context: ToolContext = {
-          tenantId: authorization.client.tenantId,
-          agentInstanceId: authorization.client.agentInstanceId,
-          actorUserId: authorization.client.actorUserId,
-          sessionId: `mcp:${authorization.client.tokenSha256.slice(0, 16)}`,
+          tenantId: businessClient.tenantId,
+          agentInstanceId: businessClient.agentInstanceId,
+          actorUserId: businessClient.actorUserId,
+          sessionId: `mcp:${businessClient.tokenSha256.slice(0, 16)}`,
         };
 
         if (!(await validateToolContext(context))) {
@@ -204,7 +258,18 @@ async function handleMcpRequest(request: Request) {
   const url = new URL(request.url);
   console.log(`[mcp] ${request.method} ${url.pathname}`);
 
-  const authorization = authorizeMcpRequest(request);
+  const bearerToken = request.headers.get("authorization")?.replace(/^Bearer\s+/i, "").trim();
+  const rateLimitIdentifier = bearerToken
+    ? createHash("sha256").update(bearerToken).digest("hex").slice(0, 24)
+    : getRequestIdentifier(request);
+  const limiter = await enforcePersistentRequestRateLimit(
+    request,
+    { namespace: "mcp", limit: 120, windowMs: 60_000 },
+    rateLimitIdentifier
+  );
+  if (limiter) return limiter;
+
+  const authorization = await authorizeMcpRequest(request);
   if (!authorization.ok) {
     return NextResponse.json(
       { error: authorization.error },
@@ -212,7 +277,7 @@ async function handleMcpRequest(request: Request) {
         status: authorization.status,
         headers: {
           "Cache-Control": "no-store",
-          "WWW-Authenticate": 'Bearer realm="Trends172 MCP"'
+          "WWW-Authenticate": `Bearer realm="Trends172 MCP", resource_metadata="${url.origin}/.well-known/oauth-protected-resource/mcp", scope="mcp:read"`
         }
       }
     );
