@@ -77,6 +77,11 @@ export default function middleware(request: Request) {
   const url = new URL(request.url);
   const pathname = url.pathname;
 
+  // Public commercial presentations are static HTML assets and must not be locale-prefixed.
+  if (pathname.startsWith('/presentaciones/')) {
+    return nextResponse();
+  }
+
   if (!hasLocalePrefix(pathname)) {
     const locale = resolveLocale(request);
     url.pathname = `/${locale}${pathname === '/' ? '' : pathname}`;
