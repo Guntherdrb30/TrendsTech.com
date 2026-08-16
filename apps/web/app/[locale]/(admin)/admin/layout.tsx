@@ -35,6 +35,7 @@ export default async function AdminLayout({
         licenses: t('licenses'),
         aiAgents: t('aiAgents'),
         luna: t('luna'),
+        lunaImplementations: locale.startsWith('es') ? 'Implementaciones LUNA' : 'LUNA implementations',
         payments: t('payments'),
         systemNavigation: t('systemNavigation'),
         systemControl: t('systemControl'),
