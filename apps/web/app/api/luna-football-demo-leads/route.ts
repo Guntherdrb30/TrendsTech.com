@@ -27,9 +27,9 @@ const leadSchema = z.object({
 });
 
 function implementationRate(playerCount: number) {
-  if (playerCount > 500) return 4;
-  if (playerCount >= 250) return 5;
-  return 6;
+  if (playerCount > 500) return 5;
+  if (playerCount >= 250) return 6;
+  return 8;
 }
 
 function optionalString(value?: string | null) {
@@ -63,7 +63,8 @@ export async function POST(request: Request) {
     `Jugadores estimados: ${payload.playerCount}.`,
     `Categorias: ${payload.categoryCount}.`,
     `Implementacion estimada: $${rate} por jugador = $${estimatedValue}.`,
-    `Mensualidad estimada desde segundo mes: $${monthlyRecurring}.`,
+    `Primer mes incluido en la implementacion.`,
+    `Mensualidad estimada desde segundo mes: $${monthlyRecurring} ($1 por jugador/mes).`,
     `Colores: ${payload.primaryColor ?? 'N/A'} / ${payload.secondaryColor ?? 'N/A'}.`,
     `Instagram: ${payload.instagram ?? 'N/A'}.`,
     payload.modules.length ? `Modulos: ${payload.modules.join(', ')}.` : null
@@ -91,7 +92,7 @@ export async function POST(request: Request) {
         source: payload.source,
         estimatedValue,
         owner: 'Trends172Tech',
-        nextStep: `Contactar a ${payload.contactName} por ${payload.phone}. Preparar propuesta LUNA Football para ${payload.playerCount} jugadores. Mensualidad estimada: $${monthlyRecurring}/mes.`
+        nextStep: `Contactar a ${payload.contactName} por ${payload.phone}. Preparar propuesta LUNA Football para ${payload.playerCount} jugadores. Implementacion: $${rate}/jugador. Primer mes incluido. Mensualidad desde segundo mes: $${monthlyRecurring}/mes.`
       }
     });
 
