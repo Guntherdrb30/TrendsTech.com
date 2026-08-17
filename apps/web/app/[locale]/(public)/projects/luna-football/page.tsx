@@ -21,21 +21,21 @@ const plans = [
     name: 'Academia Pro',
     range: 'Más de 500 jugadores',
     setup: '$5',
-    monthly: '$1',
+    monthly: '$1.5',
     note: 'Para escuelas grandes que distribuyen la implementación con una cuota especial inicial por jugador.'
   },
   {
     name: 'Escuela Growth',
     range: '250 a 500 jugadores',
     setup: '$6',
-    monthly: '$1',
+    monthly: '$1.5',
     note: 'Para academias en crecimiento que necesitan ordenar pagos, jugadores, categorías y comunicación oficial.'
   },
   {
     name: 'Club Starter',
     range: 'Menos de 250 jugadores',
     setup: '$8',
-    monthly: '$1',
+    monthly: '$1.5',
     note: 'Ideal para iniciar la digitalización completa sin depender de hojas de cálculo y grupos dispersos.'
   }
 ];
@@ -117,7 +117,7 @@ export default async function LunaFootballLanding({ params }: { params: Promise<
                 </div>
                 <div className="grid gap-3">
                   {[
-                    ['Jugadores activos', '520'], ['Solvencia estimada', '86%'], ['Categorías', '8'], ['Mensualidad demo', '$520']
+                    ['Jugadores activos', '520'], ['Solvencia estimada', '86%'], ['Categorías', '8'], ['Mensualidad demo', '$780']
                   ].map(([label, value]) => (
                     <div key={label} className="rounded-2xl border border-white/10 bg-white/8 p-4"><p className="text-xs text-slate-400">{label}</p><p className="mt-1 text-2xl font-semibold text-white">{value}</p></div>
                   ))}
@@ -147,7 +147,7 @@ export default async function LunaFootballLanding({ params }: { params: Promise<
           <div className="max-w-4xl space-y-3">
             <p className="text-xs font-semibold uppercase tracking-[0.22em] text-orange-600">Planes de implementación</p>
             <h2 className="text-3xl font-[var(--font-display)] font-semibold tracking-[-0.04em] sm:text-4xl">Precio simple por jugador.</h2>
-            <p className="text-slate-600">La implementación incluye el primer mes. La mensualidad operativa empieza desde el segundo mes y es de $1 por jugador activo en el sistema.</p>
+            <p className="text-slate-600">La implementación incluye el primer mes. La mensualidad operativa empieza desde el segundo mes y es de $1.5 por jugador activo en el sistema.</p>
           </div>
           <div className="grid gap-5 lg:grid-cols-3">
             {plans.map((plan) => (
