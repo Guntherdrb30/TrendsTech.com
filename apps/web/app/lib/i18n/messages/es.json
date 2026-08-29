@@ -3,8 +3,15 @@
     "home": "Inicio",
     "agents": "Agentes",
     "systems": "Sistemas",
+    "systemsOverview": "Todos los sistemas",
+    "systemsOverviewDescription": "Explora nuestro portafolio de plataformas",
+    "lunaSystem": "LUNA ERP AI",
+    "lunaSystemDescription": "ERP y operación empresarial inteligente",
+    "carpihogarSystem": "CarpiHogar",
+    "carpihogarSystemDescription": "Comercio digital actualmente en producción",
     "projects": "Casos",
     "lunaFootball": "LUNA Football",
+    "lunaFootballDescription": "Gestión deportiva actualmente en producción",
     "news": "Novedades",
     "pricing": "Precios",
     "login": "Iniciar sesion",
@@ -345,12 +352,14 @@
       "carpihogar": {
         "title": "Carpihogar.com",
         "body": "Implementacion real desarrollada para ecommerce, control comercial, inventario, operaciones y experiencia PWA instalable; base conceptual del sistema LUNA.",
+        "imageAlt": "Página principal de CarpiHogar con catálogo, navegación comercial y asistente inteligente",
         "tagline1": "Caso real",
         "tagline2": "PWA + base de LUNA"
       },
       "lunaFootball": {
         "title": "LUNA Football",
         "body": "Plataforma deportiva activa para controlar jugadores, equipos, entrenadores, inscripciones, mensualidades, inventario, empleados, carnetizacion y entrenamientos modulares asistidos.",
+        "imageAlt": "Página principal de la Escuela de Fútbol Menor del Club Deportivo Español de Barinas",
         "tagline1": "Club en produccion",
         "tagline2": "Gestion deportiva integral"
       }

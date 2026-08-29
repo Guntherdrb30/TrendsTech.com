@@ -58,7 +58,8 @@ export default async function ProjectsPage({
       title: t("projects.carpihogar.title"),
       body: t("projects.carpihogar.body"),
       tags: [t("projects.carpihogar.tagline1"), t("projects.carpihogar.tagline2")],
-      image: "/cases/carpihogar/carpihogar-pwa-home.svg",
+      image: "/cases/carpihogar/carpihogar-platform-home.png",
+      imageAlt: t("projects.carpihogar.imageAlt"),
       externalUrl: "https://carpihogar.com/",
       accent: "bg-teal-500"
     },
@@ -67,7 +68,8 @@ export default async function ProjectsPage({
       title: t("projects.lunaFootball.title"),
       body: t("projects.lunaFootball.body"),
       tags: [t("projects.lunaFootball.tagline1"), t("projects.lunaFootball.tagline2")],
-      image: "/cases/luna-football/luna-football-operations.svg",
+      image: "/cases/luna-football/club-espanol-home.png",
+      imageAlt: t("projects.lunaFootball.imageAlt"),
       externalUrl: "https://cdebarinasef.com/",
       accent: "bg-orange-500"
     }
@@ -147,12 +149,12 @@ export default async function ProjectsPage({
               key={item.slug}
               className="group relative overflow-hidden rounded-3xl border border-slate-200 bg-white/90 shadow-[0_30px_90px_-70px_rgba(15,23,42,0.45)] dark:border-slate-800 dark:bg-slate-950/70"
             >
-              <div className="relative aspect-[3/2] overflow-hidden border-b border-slate-200 bg-slate-100 dark:border-slate-800 dark:bg-slate-900">
+              <div className="relative aspect-[2.28/1] overflow-hidden border-b border-slate-200 bg-slate-100 dark:border-slate-800 dark:bg-slate-900">
                 <Image
                   src={item.image}
-                  alt={item.title}
-                  width={1200}
-                  height={800}
+                  alt={item.imageAlt}
+                  fill
+                  sizes="(min-width: 1024px) 50vw, 100vw"
                   className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.02]"
                 />
               </div>
