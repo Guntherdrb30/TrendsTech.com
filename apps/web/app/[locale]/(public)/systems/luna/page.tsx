@@ -449,7 +449,7 @@ export default async function LunaPage({
               </p>
             </div>
 
-            <div className="grid gap-6 lg:grid-cols-[1fr_auto_1fr]">
+            <div className="grid gap-6 lg:grid-cols-[1.25fr_auto_0.75fr]">
               {/* Carpihogar card */}
               <div className="rounded-[28px] border border-amber-500/20 bg-[linear-gradient(135deg,#1a1200_0%,#0f1a1a_100%)] p-6">
                 <div className="mb-4 flex items-center gap-3">
@@ -457,8 +457,10 @@ export default async function LunaPage({
                     <span className="text-lg">🪵</span>
                   </div>
                   <div>
-                    <div className="text-sm font-bold text-white">Carpihogar</div>
-                    <div className="text-[11px] text-amber-400/70">carpihogar.com</div>
+                    <div className="text-sm font-bold text-white">CarpiHogar.com</div>
+                    <div className="text-[11px] text-amber-400/70">
+                      {isEs ? "Implementación empresarial integral" : "Comprehensive enterprise implementation"}
+                    </div>
                   </div>
                 </div>
                 <div className="mb-5 overflow-hidden rounded-[20px] border border-white/10 bg-black/20 p-2">
@@ -471,20 +473,63 @@ export default async function LunaPage({
                     sizes="(max-width: 1024px) 90vw, 38vw"
                   />
                 </div>
-                <div className="space-y-2">
+                <div className="space-y-3">
+                  <p className="text-sm leading-relaxed text-slate-200">
+                    {isEs
+                      ? "CarpiHogar es la implementación más amplia de LUNA desarrollada por Trends172Tech: una operación omnicanal en producción que conecta comercio electrónico, punto de venta, gestión empresarial, inventario, compras, finanzas, logística, postventa y equipos con responsabilidades diferentes dentro de una sola plataforma."
+                      : "CarpiHogar is the broadest LUNA implementation developed by Trends172Tech: a production omnichannel operation connecting ecommerce, point of sale, business management, inventory, purchasing, finance, logistics, after-sales and teams with different responsibilities in one platform."}
+                  </p>
+                  <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-amber-400/80">
+                    {isEs ? "Capacidades implementadas" : "Implemented capabilities"}
+                  </div>
+                </div>
+                <div className="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
                   {(isEs
-                    ? ["Tienda con catálogo de carpintería", "Colores ámbar y madera", "App PWA con logo Carpihogar", "Panel admin personalizado", "Facturación con su razón social"]
-                    : ["Store with carpentry catalog", "Amber and wood colors", "PWA app with Carpihogar logo", "Custom admin panel", "Invoicing with their legal name"]
+                    ? [
+                        "E-commerce, POS, ventas y checkout",
+                        "Inventario, compras y proveedores",
+                        "Finanzas, caja, cobros y reportes",
+                        "Delivery, despacho y trazabilidad",
+                        "Portales por rol y permisos",
+                        "IA aplicada a búsqueda, análisis y contenido",
+                        "Marketing conectado con Meta y WhatsApp",
+                        "PWA, notificaciones y flujos automatizados",
+                        "Proyectos, moodboards y visualización 3D",
+                        "Aliados, inversionistas y gestores de marca",
+                      ]
+                    : [
+                        "Ecommerce, POS, sales and checkout",
+                        "Inventory, purchasing and suppliers",
+                        "Finance, cash management, collections and reporting",
+                        "Delivery, dispatch and traceability",
+                        "Role-based portals and permissions",
+                        "Applied AI for search, analysis and content",
+                        "Marketing connected to Meta and WhatsApp",
+                        "PWA, notifications and automated workflows",
+                        "Projects, moodboards and 3D visualization",
+                        "Allies, investors and brand managers",
+                      ]
                   ).map((item) => (
-                    <div key={item} className="flex items-center gap-2 text-[13px] text-slate-300">
-                      <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-amber-400" />
+                    <div key={item} className="flex items-start gap-2 rounded-xl border border-white/8 bg-white/[0.035] px-3 py-2 text-[12px] leading-relaxed text-slate-300">
+                      <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-amber-400" />
                       {item}
                     </div>
                   ))}
                 </div>
+                <p className="mt-4 text-[12px] leading-relaxed text-slate-400">
+                  {isEs
+                    ? "Esta experiencia permite adaptar el núcleo de LUNA a otras empresas, conectando sus procesos, datos, canales y reglas sin obligarlas a operar alrededor de un software rígido."
+                    : "This experience allows the LUNA core to be adapted to other companies, connecting their processes, data, channels and rules without forcing them to operate around rigid software."}
+                </p>
                 <div className="mt-4 rounded-[14px] border border-amber-500/20 bg-amber-500/8 px-3 py-2 text-[11px] font-semibold text-amber-400/80">
                   {isEs ? "✓ En producción desde 2024" : "✓ In production since 2024"}
                 </div>
+                <Link
+                  href={`${base}/projects/carpihogar`}
+                  className="mt-4 inline-flex rounded-full border border-amber-400/30 bg-amber-400/10 px-4 py-2 text-xs font-semibold text-amber-300 transition hover:bg-amber-400/15"
+                >
+                  {isEs ? "Explorar el caso CarpiHogar" : "Explore the CarpiHogar case"}
+                </Link>
               </div>
 
               {/* Center LUNA CORE badge */}
