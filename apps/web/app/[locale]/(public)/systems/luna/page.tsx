@@ -1198,3 +1198,107 @@ export default async function LunaPage({
                     className="object-cover object-top transition duration-500 group-hover:scale-[1.02]"
                     sizes="(min-width: 768px) 30vw, 100vw"
                   />
+                </div>
+                <div className="px-4 py-4">
+                  <div className="text-sm font-semibold text-[#0a0d14]">{item.label}</div>
+                  <p className="mt-1 text-xs leading-relaxed text-[#6b7280]">{item.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* 2-column */}
+          <div className="grid gap-4 md:grid-cols-2">
+            {(isEs
+              ? [
+                  { src: "/screenshots/luna/luna-agente-inventario.png", label: "Agente IA de Inventario", desc: "Consultas en lenguaje natural: stock crítico, rentabilidad, qué liquidar y reportes para gerencia, al instante." },
+                  { src: "/screenshots/luna/luna-nueva-venta.png", label: "Nueva Venta · POS / Tienda", desc: "Registro completo: cliente, vendedor, dirección de envío, modo de precio (P1/P2/P3) y tipo de documento fiscal." },
+                ]
+              : [
+                  { src: "/screenshots/luna/luna-agente-inventario.png", label: "Inventory AI Agent", desc: "Natural language queries: critical stock, profitability, what to liquidate, and management reports — instantly." },
+                  { src: "/screenshots/luna/luna-nueva-venta.png", label: "New Sale · POS / Store", desc: "Full sale entry: customer, seller, shipping address, pricing mode (P1/P2/P3), and fiscal document type." },
+                ]
+            ).map((item) => (
+              <div
+                key={item.label}
+                className="group overflow-hidden rounded-[24px] border border-[#e5e7eb] bg-white shadow-[0_2px_16px_rgba(0,0,0,0.04)] transition-all hover:-translate-y-0.5 hover:shadow-[0_8px_32px_rgba(20,217,217,0.10)]"
+              >
+                <div className="relative aspect-video overflow-hidden bg-[#f9fafb]">
+                  <Image
+                    src={item.src}
+                    alt={item.label}
+                    fill
+                    className="object-cover object-top transition duration-500 group-hover:scale-[1.02]"
+                    sizes="(min-width: 768px) 48vw, 100vw"
+                  />
+                </div>
+                <div className="px-4 py-4">
+                  <div className="text-sm font-semibold text-[#0a0d14]">{item.label}</div>
+                  <p className="mt-1 text-xs leading-relaxed text-[#6b7280]">{item.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── CTA FINAL ── */}
+      <section className="relative overflow-hidden border-y border-[#1e293b]/10 bg-[#0a0d14] px-6 py-16 text-white sm:px-8 lg:px-12 xl:px-16 2xl:px-20">
+        <div className="absolute inset-0 opacity-70" aria-hidden="true">
+          <div className="absolute -left-32 top-1/2 h-96 w-96 -translate-y-1/2 rounded-full bg-[radial-gradient(circle_at_center,_rgba(20,217,217,0.18),_transparent_70%)] blur-3xl" />
+          <div className="absolute -right-20 -top-20 h-80 w-80 rounded-full bg-[radial-gradient(circle_at_center,_rgba(0,153,168,0.15),_transparent_70%)] blur-3xl" />
+          <div className="absolute bottom-0 left-1/2 h-60 w-60 -translate-x-1/2 rounded-full bg-[radial-gradient(circle_at_center,_rgba(20,217,217,0.08),_transparent_70%)] blur-2xl" />
+        </div>
+        <div className="relative z-10 mx-auto flex w-full max-w-[1760px] flex-col items-center gap-8 text-center lg:gap-10">
+          <div className="space-y-5">
+            <div className="inline-flex items-center gap-2 rounded-full border border-[#14D9D9]/30 bg-[#14D9D9]/10 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.22em] text-[#14D9D9]">
+              <span className="h-1.5 w-1.5 rounded-full bg-[#14D9D9]" />
+              LUNA ERP · {isEs ? "Por Trends172 Tech" : "By Trends172 Tech"}
+            </div>
+            <h2 className="font-[var(--font-display)] text-4xl font-extrabold tracking-[-0.05em] sm:text-5xl">
+              {isEs
+                ? "Tu marca al frente. Nuestra tecnología detrás."
+                : "Your brand in front. Our technology behind."}
+            </h2>
+            <p className="mx-auto max-w-2xl text-lg text-slate-300">
+              {isEs
+                ? "LUNA es la plataforma que tu empresa necesita para competir al nivel de las grandes, con la agilidad de las pequeñas. Tu empresa con su propia plataforma tecnológica."
+                : "LUNA is the platform your company needs to compete at the level of the big players, with the agility of the small ones. Your company with its own technology platform."}
+            </p>
+          </div>
+
+          <div className="flex flex-wrap items-center justify-center gap-4">
+            <Link
+              href={buildWhatsAppLink(isEs ? "Quiero una demo de LUNA para mi empresa" : "I want a LUNA demo for my company")}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-2 rounded-full bg-[#14D9D9] px-7 py-4 text-sm font-semibold text-[#0a0d14] shadow-[0_4px_24px_rgba(20,217,217,0.35)] transition-all hover:bg-[#0099a8] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#14D9D9] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0a0d14]"
+            >
+              <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z" />
+                <path d="M12 0C5.373 0 0 5.373 0 12c0 2.126.558 4.12 1.535 5.845L0 24l6.337-1.513A11.938 11.938 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.809 9.809 0 01-5.001-1.368l-.358-.214-3.726.889.926-3.619-.235-.372A9.818 9.818 0 012.182 12C2.182 6.573 6.573 2.182 12 2.182S21.818 6.573 21.818 12 17.427 21.818 12 21.818z" />
+              </svg>
+              {isEs ? "Solicitar demostración" : "Request a demo"}
+            </Link>
+            <Link
+              href={buildWhatsAppLink(isEs ? "Quiero implementar LUNA en mi empresa" : "I want to implement LUNA in my company")}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center rounded-full border border-white/20 bg-white/8 px-7 py-4 text-sm font-semibold text-white backdrop-blur transition-all hover:bg-white/14 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/30 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0a0d14]"
+            >
+              {isEs ? "Hablar con un asesor" : "Talk to an advisor"}
+            </Link>
+          </div>
+
+          <div className="flex flex-wrap items-center justify-center gap-6 text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+            <span className="flex items-center gap-2"><span className="h-1.5 w-1.5 rounded-full bg-[#14D9D9]" />{isEs ? "Sin permanencia mínima" : "No lock-in"}</span>
+            <span className="flex items-center gap-2"><span className="h-1.5 w-1.5 rounded-full bg-[#14D9D9]" />{isEs ? "Demo sin costo" : "Free demo"}</span>
+            <span className="flex items-center gap-2"><span className="h-1.5 w-1.5 rounded-full bg-[#14D9D9]" />{isEs ? "Implementación guiada" : "Guided implementation"}</span>
+            <span className="flex items-center gap-2"><span className="h-1.5 w-1.5 rounded-full bg-[#14D9D9]" />{isEs ? "Soporte local Venezuela" : "Local Venezuela support"}</span>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  );
+}
