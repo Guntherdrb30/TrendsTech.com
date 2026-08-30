@@ -1,15 +1,4 @@
 import { prisma } from '@trends172tech/db';
-import {
-  adminActivity,
-  adminAgentTasks,
-  adminAiAgents,
-  adminClients,
-  adminOverview,
-  adminProjects,
-  adminProposals,
-  getProjectLicenses,
-  getProjectSubscriptions
-} from './mock-data';
 import type {
   AdminActivity,
   AdminClient,
@@ -34,24 +23,26 @@ function localized(value: string) {
   return { es: value, en: value };
 }
 
-function isMissingAdminTables(error: unknown) {
-  const message = error instanceof Error ? error.message.toLowerCase() : '';
-  return message.includes('admin') || message.includes('does not exist') || message.includes('table');
+export class AdminDataUnavailableError extends Error {
+  constructor(cause: unknown) {
+    super('The operational database could not be queried.', { cause });
+    this.name = 'AdminDataUnavailableError';
+  }
 }
 
-async function withFallback<T>(query: () => Promise<T>, fallback: T): Promise<T> {
+async function queryAdminData<T>(query: () => Promise<T>): Promise<T> {
   try {
     return await query();
   } catch (error) {
-    if (isMissingAdminTables(error)) {
-      return fallback;
-    }
-    return fallback;
+    const errorName = error instanceof Error ? error.name : 'UnknownError';
+    const errorCode = typeof error === 'object' && error !== null && 'code' in error ? String(error.code) : undefined;
+    console.error('[admin-data] Operational query failed', { errorName, errorCode });
+    throw new AdminDataUnavailableError(error);
   }
 }
 
 export async function getAdminClients(): Promise<AdminClient[]> {
-  return withFallback(async () => {
+  return queryAdminData(async () => {
     const clients = await prisma.adminClient.findMany({
       orderBy: { createdAt: 'desc' },
       include: {
@@ -59,10 +50,6 @@ export async function getAdminClients(): Promise<AdminClient[]> {
         invoices: true
       }
     });
-
-    if (clients.length === 0) {
-      return adminClients;
-    }
 
     return clients.map((client) => ({
       id: client.id,
@@ -79,15 +66,16 @@ export async function getAdminClients(): Promise<AdminClient[]> {
         .reduce((sum, invoice) => sum + toMoney(invoice.amount), 0),
       health: client.health === 'RISK' || client.health === 'WATCH' ? client.health : 'GOOD'
     }));
-  }, adminClients);
+  });
 }
 
 export async function getAdminProjects(): Promise<AdminProject[]> {
-  return withFallback(async () => {
+  return queryAdminData(async () => {
     const projects = await prisma.adminProject.findMany({
       orderBy: { createdAt: 'desc' },
       include: {
         system: true,
+        client: true,
         finance: true,
         tasks: true,
         sprints: true,
@@ -95,17 +83,15 @@ export async function getAdminProjects(): Promise<AdminProject[]> {
         licenses: true,
         subscriptions: true,
         integrations: true,
+        invoices: true,
         agentTasks: true
       }
     });
 
-    if (projects.length === 0) {
-      return adminProjects;
-    }
-
     return projects.map((project) => ({
       id: project.id,
       clientId: project.clientId,
+      clientName: project.client.name,
       name: project.name,
       status: project.status,
       priority: project.priority,
@@ -127,8 +113,13 @@ export async function getAdminProjects(): Promise<AdminProject[]> {
         operationalCosts: toMoney(project.finance?.operationalCostsMonthly),
         licenseCosts: toMoney(project.finance?.licenseCostsMonthly),
         estimatedMonthlyProfit: toMoney(project.finance?.estimatedMonthlyProfit),
-        pendingInvoices: 0,
-        overduePayments: 0
+        pendingInvoices: project.invoices.filter((invoice) =>
+          invoice.status === 'SENT' || invoice.status === 'OVERDUE' || invoice.status === 'PARTIALLY_PAID'
+        ).length,
+        overduePayments: project.invoices.filter((invoice) =>
+          invoice.status === 'OVERDUE' ||
+          (invoice.dueDate !== null && invoice.dueDate < new Date() && invoice.status !== 'PAID' && invoice.status !== 'CANCELLED')
+        ).length
       },
       tasks: project.tasks.map((task) => ({
         id: task.id,
@@ -183,7 +174,7 @@ export async function getAdminProjects(): Promise<AdminProject[]> {
       })),
       agentIds: project.agentTasks.map((task) => task.agentId)
     }));
-  }, adminProjects);
+  });
 }
 
 export async function getAdminProjectById(id: string) {
@@ -192,14 +183,10 @@ export async function getAdminProjectById(id: string) {
 }
 
 export async function getAdminProposals(): Promise<AdminProposal[]> {
-  return withFallback(async () => {
+  return queryAdminData(async () => {
     const proposals = await prisma.adminProposal.findMany({
       orderBy: { createdAt: 'desc' }
     });
-
-    if (proposals.length === 0) {
-      return adminProposals;
-    }
 
     return proposals.map((proposal) => ({
       id: proposal.id,
@@ -211,19 +198,15 @@ export async function getAdminProposals(): Promise<AdminProposal[]> {
       validUntil: toDateString(proposal.validUntil),
       probability: proposal.probability
     }));
-  }, adminProposals);
+  });
 }
 
 export async function getAdminAiAgents(): Promise<AiAgent[]> {
-  return withFallback(async () => {
+  return queryAdminData(async () => {
     const agents = await prisma.adminAiAgent.findMany({
       orderBy: { createdAt: 'desc' },
       include: { tasks: true }
     });
-
-    if (agents.length === 0) {
-      return adminAiAgents;
-    }
 
     return agents.map((agent) => ({
       id: agent.id,
@@ -234,18 +217,14 @@ export async function getAdminAiAgents(): Promise<AiAgent[]> {
       successRate: agent.successRate,
       monthlyCost: toMoney(agent.monthlyCost)
     }));
-  }, adminAiAgents);
+  });
 }
 
 export async function getAdminAgentTasks(): Promise<AgentTask[]> {
-  return withFallback(async () => {
+  return queryAdminData(async () => {
     const tasks = await prisma.adminAgentTask.findMany({
       orderBy: { createdAt: 'desc' }
     });
-
-    if (tasks.length === 0) {
-      return adminAgentTasks;
-    }
 
     return tasks.map((task) => ({
       id: task.id,
@@ -255,19 +234,15 @@ export async function getAdminAgentTasks(): Promise<AgentTask[]> {
       status: task.status,
       priority: task.priority
     }));
-  }, adminAgentTasks);
+  });
 }
 
 export async function getAdminActivity(): Promise<AdminActivity[]> {
-  return withFallback(async () => {
+  return queryAdminData(async () => {
     const items = await prisma.adminActivityLog.findMany({
       orderBy: { createdAt: 'desc' },
       take: 12
     });
-
-    if (items.length === 0) {
-      return adminActivity;
-    }
 
     return items.map((item) => ({
       id: item.id,
@@ -276,31 +251,25 @@ export async function getAdminActivity(): Promise<AdminActivity[]> {
       entity: item.entity,
       occurredAt: item.createdAt.toISOString()
     }));
-  }, adminActivity);
+  });
 }
 
 export async function getAdminLicenses(): Promise<ProjectLicense[]> {
   const projects = await getAdminProjects();
-  return projects.length > 0 ? projects.flatMap((project) => project.licenses) : getProjectLicenses();
+  return projects.flatMap((project) => project.licenses);
 }
 
 export async function getAdminSubscriptions(): Promise<ProjectSubscription[]> {
   const projects = await getAdminProjects();
-  return projects.length > 0 ? projects.flatMap((project) => project.subscriptions) : getProjectSubscriptions();
+  return projects.flatMap((project) => project.subscriptions);
 }
 
 export async function getAdminOverview(): Promise<AdminOverview> {
-  return withFallback(async () => {
-    const [clients, projects, proposals, agents] = await Promise.all([
-      getAdminClients(),
+  return queryAdminData(async () => {
+    const [projects, proposals] = await Promise.all([
       getAdminProjects(),
-      getAdminProposals(),
-      getAdminAiAgents()
+      getAdminProposals()
     ]);
-
-    if (clients === adminClients && projects === adminProjects && proposals === adminProposals && agents === adminAiAgents) {
-      return adminOverview;
-    }
 
     const now = new Date();
     const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
@@ -317,7 +286,7 @@ export async function getAdminOverview(): Promise<AdminOverview> {
       monthSales: projects
         .filter((project) => project.soldAt && new Date(project.soldAt) >= monthStart)
         .reduce((sum, project) => sum + project.finance.soldAmount, 0),
-      budgetsSent: 0,
+      budgetsSent: proposals.filter((proposal) => proposal.status !== 'DRAFT').length,
       acceptedProposals: proposals.filter((proposal) => proposal.status === 'ACCEPTED').length,
       activeProjects: activeProjects.length,
       activeSubscriptions: projects.flatMap((project) => project.subscriptions).filter((subscription) => subscription.status === 'ACTIVE').length,
@@ -329,5 +298,5 @@ export async function getAdminOverview(): Promise<AdminOverview> {
       maintenanceProjects: maintenanceProjects.length,
       estimatedMonthlyProfit: projects.reduce((sum, project) => sum + project.finance.estimatedMonthlyProfit, 0)
     };
-  }, adminOverview);
+  });
 }

@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import type { AiAgent } from '@/lib/admin-ai/types';
-import { getLocalizedValue } from '@/lib/admin-ai/mock-data';
+import { getLocalizedValue } from '@/lib/admin-ai/localization';
 import { StatusBadge, getFinanceStatusTone } from './status-badge';
 
 type AiAgentCardProps = {

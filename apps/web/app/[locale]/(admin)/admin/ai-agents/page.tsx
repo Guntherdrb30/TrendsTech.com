@@ -6,7 +6,7 @@ import { MetricCard } from '@/components/admin/metric-card';
 import { StatusBadge, getProjectStatusTone } from '@/components/admin/status-badge';
 import { createAdminAiAgent } from '@/lib/admin-ai/actions';
 import { getAdminAgentTasks, getAdminAiAgents, getAdminProjects } from '@/lib/admin-ai/data';
-import { getLocalizedValue } from '@/lib/admin-ai/mock-data';
+import { getLocalizedValue } from '@/lib/admin-ai/localization';
 
 export default async function AdminAiAgentsPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;

@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import type { AdminActivity } from '@/lib/admin-ai/types';
-import { getLocalizedValue } from '@/lib/admin-ai/mock-data';
+import { getLocalizedValue } from '@/lib/admin-ai/localization';
 
 type ActivityFeedProps = {
   title: string;

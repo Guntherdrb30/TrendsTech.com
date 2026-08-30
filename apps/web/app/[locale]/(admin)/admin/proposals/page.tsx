@@ -5,7 +5,7 @@ import { MetricCard } from '@/components/admin/metric-card';
 import { StatusBadge, getFinanceStatusTone } from '@/components/admin/status-badge';
 import { createAdminProposal } from '@/lib/admin-ai/actions';
 import { getAdminClients, getAdminProposals } from '@/lib/admin-ai/data';
-import { getLocalizedValue } from '@/lib/admin-ai/mock-data';
+import { getLocalizedValue } from '@/lib/admin-ai/localization';
 
 function money(value: number) {
   return `$${value.toLocaleString('en-US')}`;

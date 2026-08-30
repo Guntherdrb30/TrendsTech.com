@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import type { AdminProject } from '@/lib/admin-ai/types';
-import { getClientById, getLocalizedValue } from '@/lib/admin-ai/mock-data';
+import { getLocalizedValue } from '@/lib/admin-ai/localization';
 import { MetricCard } from './metric-card';
 import { StatusBadge, getFinanceStatusTone, getProjectStatusTone } from './status-badge';
 import { AdminDataTable, TableCell, TableRow } from './admin-data-table';
@@ -17,8 +17,6 @@ function money(value: number) {
 }
 
 export function ProjectOverview({ project, locale, labels }: ProjectPanelProps) {
-  const client = getClientById(project.clientId);
-
   return (
     <div className="space-y-6">
       <Card className="rounded-lg">
@@ -36,7 +34,7 @@ export function ProjectOverview({ project, locale, labels }: ProjectPanelProps) 
         <CardContent className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
           <div>
             <p className="text-xs uppercase text-slate-400">{labels.client}</p>
-            <p className="mt-1 text-sm font-semibold text-slate-950 dark:text-white">{client?.name ?? '-'}</p>
+            <p className="mt-1 text-sm font-semibold text-slate-950 dark:text-white">{project.clientName || '-'}</p>
           </div>
           <div>
             <p className="text-xs uppercase text-slate-400">{labels.manager}</p>

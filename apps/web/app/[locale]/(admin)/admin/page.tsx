@@ -20,6 +20,11 @@ export default async function AdminDashboardPage({ params }: { params: Promise<{
     getAdminActivity()
   ]);
   const clientMap = new Map(clients.map((client) => [client.id, client]));
+  const dataTimestamp = new Intl.DateTimeFormat(locale, {
+    dateStyle: 'medium',
+    timeStyle: 'short',
+    timeZone: 'UTC'
+  }).format(new Date());
 
   return (
     <div className="space-y-6">
@@ -34,6 +39,9 @@ export default async function AdminDashboardPage({ params }: { params: Promise<{
             </h2>
             <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-600 dark:text-slate-300">
               {t('dashboard.subtitle')}
+            </p>
+            <p className="mt-3 text-xs font-medium text-slate-500 dark:text-slate-400">
+              {locale.startsWith('es') ? 'Fuente: base operativa' : 'Source: operational database'} · {dataTimestamp} UTC
             </p>
           </div>
           <Link

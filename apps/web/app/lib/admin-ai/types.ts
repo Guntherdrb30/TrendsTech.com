@@ -170,6 +170,7 @@ export type AdminActivity = {
 export type AdminProject = {
   id: string;
   clientId: string;
+  clientName: string;
   name: string;
   status: ProjectStatus;
   priority: Priority;
