@@ -556,6 +556,77 @@ export default async function LunaPage({
                       : "Each action is integrated with rules, identity, permissions and validations to preserve human control and traceability over sensitive operations."}
                   </p>
                 </div>
+                <div className="mt-5">
+                  <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-violet-300">
+                    {isEs ? "INTELIGENCIA ESPECIALIZADA POR ÁREA" : "SPECIALIZED INTELLIGENCE BY AREA"}
+                  </div>
+                  <div className="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
+                    {(isEs
+                      ? [
+                          {
+                            title: "Reportes ejecutivos",
+                            body: "Analiza ventas, utilidad, inventario, cartera, compras, cuentas por pagar, envíos, mensajería, equipos, proyectos y tráfico web; entrega hallazgos, riesgos y acciones recomendadas.",
+                          },
+                          {
+                            title: "Gráficos e informes interactivos",
+                            body: "Convierte consultas en visualizaciones ejecutivas y reportes descargables para apoyar reuniones, seguimiento gerencial y decisiones por periodo.",
+                          },
+                          {
+                            title: "Análisis limitado por rol",
+                            body: "Cada inversionista o responsable consulta únicamente sus ventas, rentabilidad, pagos, productos, stock y rotación conforme a su alcance autorizado.",
+                          },
+                          {
+                            title: "Inventario y rentabilidad",
+                            body: "Detecta stock crítico, baja rotación, capital inmovilizado, productos con mejor desempeño y oportunidades de reposición o liquidación.",
+                          },
+                          {
+                            title: "Catálogos y manuales",
+                            body: "Genera catálogos comerciales listos para imprimir y documentación de apoyo utilizando información estructurada y datos reales de la operación.",
+                          },
+                          {
+                            title: "Marketing y recomendaciones",
+                            body: "Apoya campañas, copys, carruseles, perfiles de marca, remarketing y recomendaciones de productos conectadas con el contexto comercial.",
+                          },
+                        ]
+                      : [
+                          {
+                            title: "Executive reporting",
+                            body: "Analyzes sales, profit, inventory, receivables, purchasing, payables, shipping, messaging, teams, projects and web traffic; delivering findings, risks and recommended actions.",
+                          },
+                          {
+                            title: "Interactive charts and reports",
+                            body: "Turns questions into executive visualizations and downloadable reports for meetings, management follow-up and period-based decisions.",
+                          },
+                          {
+                            title: "Role-scoped analysis",
+                            body: "Each investor or manager accesses only their authorized sales, profitability, payments, products, inventory and turnover data.",
+                          },
+                          {
+                            title: "Inventory and profitability",
+                            body: "Detects critical stock, slow turnover, tied-up capital, top-performing products and replenishment or liquidation opportunities.",
+                          },
+                          {
+                            title: "Catalogs and manuals",
+                            body: "Generates print-ready commercial catalogs and support documentation from structured information and real operational data.",
+                          },
+                          {
+                            title: "Marketing and recommendations",
+                            body: "Supports campaigns, copy, carousels, brand profiles, remarketing and product recommendations connected to commercial context.",
+                          },
+                        ]
+                    ).map((capability) => (
+                      <div key={capability.title} className="rounded-2xl border border-violet-300/15 bg-violet-300/[0.055] p-3">
+                        <div className="text-[12px] font-semibold text-violet-200">{capability.title}</div>
+                        <p className="mt-1 text-[11px] leading-relaxed text-slate-400">{capability.body}</p>
+                      </div>
+                    ))}
+                  </div>
+                  <p className="mt-3 text-[11px] leading-relaxed text-slate-400">
+                    {isEs
+                      ? "Estas capacidades no trabajan como módulos aislados: consultan fuentes autorizadas de la misma operación y respetan el alcance de cada perfil antes de responder o ejecutar una acción."
+                      : "These capabilities do not operate as isolated modules: they query authorized sources from the same operation and respect each profile's scope before answering or executing an action."}
+                  </p>
+                </div>
                 <p className="mt-4 text-[12px] leading-relaxed text-slate-400">
                   {isEs
                     ? "Esta experiencia permite adaptar el núcleo de LUNA a otras empresas, conectando sus procesos, datos, canales y reglas sin obligarlas a operar alrededor de un software rígido."
