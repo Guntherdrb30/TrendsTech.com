@@ -31,7 +31,7 @@ export function buildLunaStructuredData(locale: string) {
           'Logística y envíos',
           'Nómina y recursos humanos',
           'Reportes ejecutivos',
-          'Automatización y agentes inteligentes',
+          'Automatización e inteligencia artificial aplicada',
         ]
       : [
           'Sales and invoicing',
@@ -40,7 +40,7 @@ export function buildLunaStructuredData(locale: string) {
           'Logistics and shipping',
           'Payroll and human resources',
           'Executive reporting',
-          'Automation and intelligent agents',
+          'Automation and applied artificial intelligence',
         ],
   };
 }
