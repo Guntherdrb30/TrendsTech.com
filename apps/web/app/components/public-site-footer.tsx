@@ -5,6 +5,9 @@ export async function PublicSiteFooter({ locale }: { locale: string }) {
   const nav = await getTranslations('nav');
   const footer = await getTranslations('footer');
   const base = `/${locale}`;
+  const repositionedTitle = locale.startsWith('es')
+    ? 'Software, inteligencia aplicada y sistemas con una presencia digital de nivel corporativo.'
+    : 'Software, applied intelligence, and systems delivered with a corporate-grade digital presence.';
 
   return (
     <footer className="relative overflow-hidden border-t border-black/8 bg-[linear-gradient(180deg,#ffffff_0%,#f5f8fb_100%)]">
@@ -21,7 +24,7 @@ export async function PublicSiteFooter({ locale }: { locale: string }) {
             </div>
             <div className="space-y-3">
               <h2 className="max-w-3xl text-3xl font-[var(--font-display)] font-semibold tracking-[-0.04em] text-slate-950 sm:text-4xl">
-                {footer('title')}
+                {repositionedTitle}
               </h2>
               <p className="max-w-3xl text-sm leading-relaxed text-slate-600 sm:text-base">
                 {footer('body')}
