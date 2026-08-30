@@ -1,24 +1,15 @@
 import type { MetadataRoute } from 'next';
-import { AGENT_PRODUCTS } from './[locale]/(public)/agents/agent-products';
 import { locales } from './lib/i18n/config';
 import { localizedPath, siteUrl } from './lib/seo';
 
 const publicRoutes = [
   { pathname: '', priority: 1, changeFrequency: 'weekly' as const },
+  { pathname: 'que-ofrecemos', priority: 0.95, changeFrequency: 'monthly' as const },
   { pathname: 'systems', priority: 0.9, changeFrequency: 'monthly' as const },
   { pathname: 'systems/luna', priority: 0.9, changeFrequency: 'monthly' as const },
   { pathname: 'projects', priority: 0.8, changeFrequency: 'monthly' as const },
   { pathname: 'projects/carpihogar', priority: 0.8, changeFrequency: 'monthly' as const },
   { pathname: 'projects/luna-football', priority: 0.8, changeFrequency: 'monthly' as const },
-  { pathname: 'agents', priority: 0.8, changeFrequency: 'monthly' as const },
-  ...AGENT_PRODUCTS.map((agent) => ({
-    pathname: `agents/${agent.key}`,
-    priority: 0.7,
-    changeFrequency: 'monthly' as const,
-  })),
-  { pathname: 'crear-agente', priority: 0.8, changeFrequency: 'monthly' as const },
-  { pathname: 'skills', priority: 0.7, changeFrequency: 'monthly' as const },
-  { pathname: 'pricing', priority: 0.7, changeFrequency: 'monthly' as const },
   { pathname: 'privacy', priority: 0.4, changeFrequency: 'yearly' as const },
   { pathname: 'terms', priority: 0.4, changeFrequency: 'yearly' as const },
   { pathname: 'security', priority: 0.5, changeFrequency: 'monthly' as const },
