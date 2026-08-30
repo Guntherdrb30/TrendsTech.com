@@ -4,7 +4,6 @@ import { motion, useInView, useReducedMotion } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRef } from 'react';
-import { PublicConciergeChat } from '@/[locale]/(public)/public-concierge-chat';
 import { LunaSystemMap } from './luna-system-map';
 
 type ConciergeCopy = {
@@ -87,13 +86,13 @@ const COPY: Record<'es' | 'en', LocaleCopy> = {
     capabilities: [
       { number: '01', title: 'Operaciones', body: 'Ventas, compras, inventario, clientes, cobros, despachos y trazabilidad dentro de un entorno conectado.' },
       { number: '02', title: 'Comercio', body: 'Catálogos, cotizaciones y experiencias digitales sincronizadas con la operación interna.' },
-      { number: '03', title: 'Inteligencia', body: 'Agentes y asistentes que trabajan sobre datos, permisos y procesos reales.' },
+      { number: '03', title: 'Inteligencia aplicada', body: 'Software con IA que analiza, recomienda y ejecuta acciones controladas sobre procesos reales.' },
       { number: '04', title: 'Adaptabilidad', body: 'Módulos, identidad, permisos y flujos configurados para cada organización.' },
     ],
     architectureEyebrow: 'Arquitectura',
     architectureTitle: 'LUNA funciona como un sistema vivo.',
     architectureBody: 'Un núcleo común coordina módulos, datos, automatizaciones e interfaces. Cada capa puede crecer sin fragmentar la operación.',
-    architectureNodes: ['Operaciones', 'Comercio', 'Finanzas', 'Clientes', 'Analítica', 'Agentes IA'],
+    architectureNodes: ['Operaciones', 'Comercio', 'Finanzas', 'Clientes', 'Analítica', 'IA aplicada'],
     intelligenceTitle: 'Inteligencia conectada al contexto',
     intelligenceBody: 'La IA no vive como un accesorio aislado. Opera sobre permisos, procesos y datos empresariales para producir respuestas útiles y acciones controladas.',
     technologyEyebrow: 'Diseñada para producción',
@@ -139,13 +138,13 @@ const COPY: Record<'es' | 'en', LocaleCopy> = {
     capabilities: [
       { number: '01', title: 'Operations', body: 'Sales, purchasing, inventory, customers, collections, dispatch and traceability in one connected environment.' },
       { number: '02', title: 'Commerce', body: 'Catalogues, quotations and digital experiences synchronised with internal operations.' },
-      { number: '03', title: 'Intelligence', body: 'Agents and assistants working across real data, permissions and processes.' },
+      { number: '03', title: 'Applied intelligence', body: 'AI-powered software that analyses, recommends and performs controlled actions across real processes.' },
       { number: '04', title: 'Adaptability', body: 'Modules, identity, permissions and workflows configured for each organisation.' },
     ],
     architectureEyebrow: 'Architecture',
     architectureTitle: 'LUNA behaves like a living system.',
     architectureBody: 'A common core coordinates modules, data, automations and interfaces. Every layer can grow without fragmenting the operation.',
-    architectureNodes: ['Operations', 'Commerce', 'Finance', 'Customers', 'Analytics', 'AI Agents'],
+    architectureNodes: ['Operations', 'Commerce', 'Finance', 'Customers', 'Analytics', 'Applied AI'],
     intelligenceTitle: 'Intelligence connected to context',
     intelligenceBody: 'AI is not an isolated add-on. It operates across permissions, processes and business data to produce useful answers and controlled actions.',
     technologyEyebrow: 'Built for production',
@@ -218,7 +217,6 @@ export function HomePremium({ fontClass = '', conciergeCopy }: { fontClass?: str
     <section id="arquitectura" className="bg-[#f8faf9] py-24 sm:py-32"><div className="mx-auto grid max-w-7xl items-center gap-14 px-6 lg:grid-cols-2 lg:gap-20"><Reveal><Eyebrow>{t.architectureEyebrow}</Eyebrow><h2 className="font-[var(--font-display)] text-4xl font-semibold tracking-[-.045em] sm:text-6xl">{t.architectureTitle}</h2><p className="mt-7 max-w-xl text-lg leading-8 text-[#65707a]">{t.architectureBody}</p><div className="mt-10 rounded-[28px] border border-[#00aeb3]/12 bg-white p-7 shadow-[0_18px_60px_rgba(20,70,70,.05)]"><p className="text-xs font-semibold uppercase tracking-[.16em] text-[#00aeb3]">IA + contexto</p><h3 className="mt-3 text-xl font-semibold">{t.intelligenceTitle}</h3><p className="mt-3 leading-7 text-[#6d747d]">{t.intelligenceBody}</p></div></Reveal><Reveal delay={.15}><LunaSystemMap nodes={t.architectureNodes} compact /></Reveal></div></section>
     <section className="py-24 sm:py-32"><div className="mx-auto max-w-7xl px-6"><Reveal className="mb-14 max-w-3xl"><Eyebrow>{t.technologyEyebrow}</Eyebrow><h2 className="font-[var(--font-display)] text-4xl font-semibold tracking-[-.045em] sm:text-6xl">{t.technologyTitle}</h2></Reveal><div className="grid gap-4 lg:grid-cols-3">{t.technologyItems.map((item, index) => <Reveal key={item.title} delay={index * .07} className="rounded-[28px] border border-black/[.06] bg-white p-8 shadow-[0_18px_55px_rgba(17,20,24,.045)] sm:p-10"><span className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-[#e8fbf8] text-xs font-semibold text-[#00aeb3]">0{index + 1}</span><h3 className="mt-10 text-2xl font-semibold tracking-[-.025em]">{item.title}</h3><p className="mt-4 leading-7 text-[#68707b]">{item.body}</p></Reveal>)}</div></div></section>
     <section className="relative overflow-hidden bg-[#f4fbfa] py-24 sm:py-32"><div className="absolute -left-28 top-1/2 h-72 w-72 -translate-y-1/2 rounded-full bg-[#a7f3e9]/30 blur-3xl" /><div className="relative mx-auto max-w-5xl px-6 text-center"><Reveal><Eyebrow>{t.visionEyebrow}</Eyebrow><blockquote className="font-[var(--font-display)] text-3xl font-medium leading-tight tracking-[-.04em] text-[#111418] sm:text-5xl">“{t.visionQuote} <span className="text-[#00aeb3]">{t.visionAccent}</span>”</blockquote><div className="mx-auto mt-10 h-px w-24 bg-gradient-to-r from-transparent via-[#00c2c7] to-transparent" /></Reveal></div></section>
-    <section className="bg-white py-24 sm:py-32"><div className="mx-auto max-w-7xl px-6"><Reveal className="mb-12 text-center"><Eyebrow>{t.conciergeEyebrow}</Eyebrow><h2 className="font-[var(--font-display)] text-4xl font-semibold tracking-[-.045em] sm:text-6xl">{t.conciergeTitle}</h2><p className="mx-auto mt-5 max-w-xl text-lg leading-8 text-[#68717b]">{t.conciergeBody}</p></Reveal><Reveal delay={.12}><div className="rounded-[32px] border border-black/[.05] bg-[#f7fbfa] p-2 shadow-[0_24px_85px_rgba(17,20,24,.05)] sm:p-4"><PublicConciergeChat copy={conciergeCopy} /></div></Reveal></div></section>
     <section className="bg-[#f5fbfa] py-24 sm:py-32"><div className="mx-auto max-w-4xl px-6 text-center"><Reveal><Eyebrow>{t.finalEyebrow}</Eyebrow><h2 className="font-[var(--font-display)] text-4xl font-semibold leading-tight tracking-[-.045em] sm:text-6xl">{t.finalTitle}</h2><p className="mx-auto mt-6 max-w-xl text-lg leading-8 text-[#68717b]">{t.finalBody}</p><div className="mt-10 flex flex-wrap justify-center gap-3"><Link href={`/${locale}/contact`} className="rounded-full bg-[#111418] px-7 py-3.5 text-sm font-semibold text-white shadow-[0_14px_35px_rgba(17,20,24,.12)] transition hover:-translate-y-0.5 hover:bg-[#00aeb3]">{t.demo}</Link><Link href={`/${locale}/systems/luna`} className="rounded-full border border-black/10 bg-white px-7 py-3.5 text-sm font-semibold transition hover:border-[#00aeb3]/45 hover:text-[#008f94]">{t.discover}</Link></div></Reveal></div></section>
     <footer className="border-t border-black/[.06] bg-white py-12"><div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-6 px-6 text-center sm:flex-row sm:text-left"><div className="flex items-center gap-4"><div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#e9fbf8] text-lg font-semibold text-[#00aeb3]">T</div><div><p className="font-[var(--font-display)] text-xl font-semibold">Trends172Tech</p><p className="mt-1 text-sm text-[#818891]">{t.footer}</p></div></div><div className="flex gap-6 text-sm text-[#626a74]"><Link href={`/${locale}/systems/luna`} className="transition hover:text-[#00aeb3]">LUNA</Link><Link href={`/${locale}/projects`} className="transition hover:text-[#00aeb3]">{t.implementationsEyebrow}</Link><Link href={`/${locale}/contact`} className="transition hover:text-[#00aeb3]">{t.contact}</Link></div></div></footer>
   </main>;
