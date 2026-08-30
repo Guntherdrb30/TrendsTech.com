@@ -1,5 +1,4 @@
 import { getTranslations } from 'next-intl/server';
-import { AGENT_PRODUCTS } from '../[locale]/(public)/agents/agent-products';
 import { getCurrentUser } from '../lib/auth/guards';
 import { SiteHeaderClient } from './site-header-client';
 
@@ -9,14 +8,8 @@ type SiteHeaderProps = {
 
 export async function SiteHeader({ locale }: SiteHeaderProps) {
   const t = await getTranslations('nav');
-  const a = await getTranslations('agents');
   const base = `/${locale}`;
   const user = await getCurrentUser();
-
-  const agentOptions = AGENT_PRODUCTS.map((agent) => ({
-    key: agent.key,
-    label: a(`${agent.key}.name`)
-  }));
 
   return (
     <SiteHeaderClient
@@ -24,6 +17,7 @@ export async function SiteHeader({ locale }: SiteHeaderProps) {
       isAuthenticated={Boolean(user)}
       labels={{
         home: t('home'),
+        offerings: locale.startsWith('es') ? 'Qué ofrecemos' : 'What we offer',
         agents: t('agents'),
         systems: t('systems'),
         projects: t('projects'),
@@ -39,7 +33,6 @@ export async function SiteHeader({ locale }: SiteHeaderProps) {
         menuOpen: t('menuOpen'),
         menuClose: t('menuClose')
       }}
-      agentOptions={agentOptions}
     />
   );
 }
