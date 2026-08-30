@@ -2,7 +2,6 @@ import Link from 'next/link';
 import { getTranslations } from 'next-intl/server';
 import { IBM_Plex_Sans, Space_Grotesk } from 'next/font/google';
 import { buildLocalizedMetadata } from '@/lib/seo';
-import { AGENT_PRODUCTS } from '../agents/agent-products';
 
 const display = Space_Grotesk({
   subsets: ['latin'],
@@ -36,7 +35,6 @@ export default async function SystemsPage({ params }: { params: Promise<{ locale
   const { locale } = await params;
   const base = `/${locale}`;
   const t = await getTranslations('systemsPage');
-  const a = await getTranslations('agents');
   const uiCopy = locale.startsWith('es')
     ? {
         operationalObjective: 'Objetivo operativo',
@@ -80,7 +78,7 @@ export default async function SystemsPage({ params }: { params: Promise<{ locale
                 {t('ctaPrimary')}
               </Link>
               <Link
-                href={`${base}/agents`}
+                href={`${base}/que-ofrecemos`}
                 className="interactive-chip inline-flex items-center justify-center rounded-full border border-black/8 bg-white/86 px-5 py-2.5 text-sm font-semibold text-slate-900 transition hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900/15 focus-visible:ring-offset-2"
               >
                 {t('ctaSecondary')}
@@ -178,29 +176,6 @@ export default async function SystemsPage({ params }: { params: Promise<{ locale
         </div>
       </section>
 
-      <section className="w-full px-6 pb-6 sm:px-8 lg:px-12 xl:px-16 2xl:px-20">
-        <div className="mx-auto max-w-[1760px] space-y-6">
-          <div className="space-y-3">
-            <h2 className="text-3xl font-[var(--font-display)] font-semibold text-slate-900">{t('agentsTitle')}</h2>
-            <p className="max-w-3xl text-base text-slate-600">{t('agentsBody')}</p>
-          </div>
-          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-            {AGENT_PRODUCTS.map((agent, index) => (
-              <Link
-                key={agent.key}
-                href={`${base}/agents/${agent.key}`}
-                className="interactive-panel premium-spotlight rounded-[26px] border border-black/8 bg-white/92 px-5 py-5 text-sm shadow-[0_24px_64px_-52px_rgba(15,23,42,0.3)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900/15 focus-visible:ring-offset-2"
-              >
-                <div className="flex items-center justify-between gap-3">
-                  <div className="text-lg font-semibold text-slate-900">{a(`${agent.key}.name`)}</div>
-                  <span className={`h-2.5 w-2.5 rounded-full ${index % 2 === 0 ? 'bg-emerald-500' : 'bg-[#8b5e34]'}`} />
-                </div>
-                <p className="mt-3 text-slate-600">{a(`${agent.key}.tagline`)}</p>
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section>
     </div>
   );
 }
