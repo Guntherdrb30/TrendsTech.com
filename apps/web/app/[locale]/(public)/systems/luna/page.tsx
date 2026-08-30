@@ -461,6 +461,16 @@ export default async function LunaPage({
                     <div className="text-[11px] text-amber-400/70">carpihogar.com</div>
                   </div>
                 </div>
+                <div className="mb-5 overflow-hidden rounded-[20px] border border-white/10 bg-black/20 p-2">
+                  <Image
+                    src="/screenshots/luna/carpihogar-real-mobile.jpg"
+                    alt={isEs ? "CarpiHogar en producción con comercio móvil y búsqueda en Modo IA" : "CarpiHogar in production with mobile commerce and AI Mode search"}
+                    width={766}
+                    height={1536}
+                    className="mx-auto max-h-[560px] w-auto rounded-[14px] object-contain"
+                    sizes="(max-width: 1024px) 90vw, 38vw"
+                  />
+                </div>
                 <div className="space-y-2">
                   {(isEs
                     ? ["Tienda con catálogo de carpintería", "Colores ámbar y madera", "App PWA con logo Carpihogar", "Panel admin personalizado", "Facturación con su razón social"]
