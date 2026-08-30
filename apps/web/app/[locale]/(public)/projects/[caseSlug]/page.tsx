@@ -362,7 +362,7 @@ export default async function ProductionCasePage({ params }: { params: Promise<P
             <Link href={`${base}/systems`} className="rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-slate-950 transition hover:-translate-y-0.5 hover:bg-slate-200">
               {copy.ctaPrimary}
             </Link>
-            <Link href={`${base}/pricing`} className="rounded-full border border-white/15 bg-white/10 px-5 py-2.5 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:bg-white/15">
+            <Link href={`${base}/que-ofrecemos`} className="rounded-full border border-white/15 bg-white/10 px-5 py-2.5 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:bg-white/15">
               {copy.ctaSecondary}
             </Link>
           </div>
