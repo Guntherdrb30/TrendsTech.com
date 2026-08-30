@@ -42,22 +42,16 @@ export async function PublicSiteFooter({ locale }: { locale: string }) {
                   {nav('home')}
                 </Link>
                 <Link
-                  href={`${base}/agents`}
+                  href={`${base}/que-ofrecemos`}
                   className="interactive-chip rounded-2xl px-3 py-2 transition hover:bg-slate-50 hover:text-slate-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900/15 focus-visible:ring-offset-2"
                 >
-                  {nav('agents')}
+                  {locale.startsWith('es') ? 'Qué ofrecemos' : 'What we offer'}
                 </Link>
                 <Link
                   href={`${base}/systems`}
                   className="interactive-chip rounded-2xl px-3 py-2 transition hover:bg-slate-50 hover:text-slate-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900/15 focus-visible:ring-offset-2"
                 >
                   {nav('systems')}
-                </Link>
-                <Link
-                  href={`${base}/pricing`}
-                  className="interactive-chip rounded-2xl px-3 py-2 transition hover:bg-slate-50 hover:text-slate-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900/15 focus-visible:ring-offset-2"
-                >
-                  {nav('pricing')}
                 </Link>
                 <Link
                   href={`${base}/security`}
