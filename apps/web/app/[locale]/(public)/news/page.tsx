@@ -109,7 +109,7 @@ export default async function NewsPage({
                 {t("ctaPrimary")}
               </Link>
               <Link
-                href={`${base}/agents`}
+                href={`${base}/que-ofrecemos`}
                 className="inline-flex items-center justify-center rounded-full border border-slate-300 bg-white/80 px-5 py-2.5 text-sm font-semibold text-slate-700 backdrop-blur transition hover:-translate-y-0.5 hover:border-slate-400 dark:border-slate-700 dark:bg-slate-900/60 dark:text-slate-200"
               >
                 {t("ctaSecondary")}
