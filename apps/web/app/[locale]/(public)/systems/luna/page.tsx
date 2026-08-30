@@ -491,7 +491,7 @@ export default async function LunaPage({
                         "Finanzas, caja, cobros y reportes",
                         "Delivery, despacho y trazabilidad",
                         "Portales por rol y permisos",
-                        "IA aplicada a búsqueda, análisis y contenido",
+                        "IA transaccional conectada a datos y acciones",
                         "Marketing conectado con Meta y WhatsApp",
                         "PWA, notificaciones y flujos automatizados",
                         "Proyectos, moodboards y visualización 3D",
@@ -503,7 +503,7 @@ export default async function LunaPage({
                         "Finance, cash management, collections and reporting",
                         "Delivery, dispatch and traceability",
                         "Role-based portals and permissions",
-                        "Applied AI for search, analysis and content",
+                        "Transactional AI connected to data and actions",
                         "Marketing connected to Meta and WhatsApp",
                         "PWA, notifications and automated workflows",
                         "Projects, moodboards and 3D visualization",
@@ -515,6 +515,46 @@ export default async function LunaPage({
                       {item}
                     </div>
                   ))}
+                </div>
+                <div className="mt-5 rounded-[20px] border border-[#14D9D9]/25 bg-[#14D9D9]/[0.07] p-4">
+                  <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#4DE5E5]">
+                    {isEs ? "IA CONECTADA A TRANSACCIONES REALES" : "AI CONNECTED TO REAL TRANSACTIONS"}
+                  </div>
+                  <p className="mt-2 text-sm font-semibold leading-relaxed text-white">
+                    {isEs
+                      ? "En CarpiHogar la IA no se limita a conversar: consulta información autorizada, interpreta documentos y ejecuta acciones dentro del flujo comercial."
+                      : "At CarpiHogar, AI is not limited to conversation: it queries authorized information, interprets documents and executes actions within the commercial workflow."}
+                  </p>
+                  <div className="mt-3 space-y-2">
+                    {(isEs
+                      ? [
+                          "Busca en la base de datos productos, categorías, marcas, precios y existencias reales.",
+                          "Genera catálogos comerciales e imprimibles con imágenes, precios y stock controlados.",
+                          "Recomienda productos y puede agregar, modificar o retirar artículos del carrito.",
+                          "Conduce la compra, consulta métodos de pago y vincula la operación con una orden.",
+                          "Recibe comprobantes, extrae método, moneda, monto y referencia, y los registra para validación controlada.",
+                          "Consulta pedidos, direcciones y opciones de despacho según la identidad y los permisos del cliente.",
+                        ]
+                      : [
+                          "Searches the database for real products, categories, brands, prices and inventory.",
+                          "Generates commercial and printable catalogs with controlled images, prices and stock.",
+                          "Recommends products and can add, update or remove items from the cart.",
+                          "Guides purchases, retrieves payment methods and links the transaction to an order.",
+                          "Receives payment proofs, extracts method, currency, amount and reference, and records them for controlled validation.",
+                          "Retrieves orders, addresses and shipping options according to customer identity and permissions.",
+                        ]
+                    ).map((item) => (
+                      <div key={item} className="flex items-start gap-2 text-[12px] leading-relaxed text-slate-300">
+                        <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[#4DE5E5]" />
+                        {item}
+                      </div>
+                    ))}
+                  </div>
+                  <p className="mt-3 border-t border-white/10 pt-3 text-[11px] leading-relaxed text-slate-400">
+                    {isEs
+                      ? "Cada acción se integra con reglas, identidad, permisos y validaciones para mantener control humano y trazabilidad sobre operaciones sensibles."
+                      : "Each action is integrated with rules, identity, permissions and validations to preserve human control and traceability over sensitive operations."}
+                  </p>
                 </div>
                 <p className="mt-4 text-[12px] leading-relaxed text-slate-400">
                   {isEs
