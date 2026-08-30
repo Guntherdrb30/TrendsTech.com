@@ -627,6 +627,77 @@ export default async function LunaPage({
                       : "These capabilities do not operate as isolated modules: they query authorized sources from the same operation and respect each profile's scope before answering or executing an action."}
                   </p>
                 </div>
+                <div className="mt-5 rounded-[20px] border border-rose-300/20 bg-[linear-gradient(135deg,rgba(244,63,94,0.08),rgba(249,115,22,0.05))] p-4">
+                  <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-rose-300">
+                    {isEs ? "CRM PROPIO + MARKETING IA STUDIO" : "PROPRIETARY CRM + AI MARKETING STUDIO"}
+                  </div>
+                  <p className="mt-2 text-sm font-semibold leading-relaxed text-white">
+                    {isEs
+                      ? "CarpiHogar integra su relación con clientes, catálogo y operación comercial con un estudio de marketing propio que ya ha sido utilizado en flujos reales de publicación."
+                      : "CarpiHogar integrates customer relationships, catalog and commercial operations with its own marketing studio already used in real publishing workflows."}
+                  </p>
+                  <div className="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
+                    {(isEs
+                      ? [
+                          {
+                            title: "CRM y atención omnicanal",
+                            body: "Centraliza conversaciones web, WhatsApp e Instagram; clasifica intención, prioridad y departamento, mantiene contexto, controla SLA y escala al equipo humano cuando corresponde.",
+                          },
+                          {
+                            title: "Contexto comercial conectado",
+                            body: "La IA trabaja con perfil de marca, productos promocionables, imágenes, precios, stock, campañas, clientes y actividad registrada en la misma plataforma.",
+                          },
+                          {
+                            title: "Producción de contenido",
+                            body: "Asiste campañas, estrategias, copys, publicaciones individuales, carruseles, historias y reels con borradores editables y revisión antes de publicar.",
+                          },
+                          {
+                            title: "Meta MCP y Graph API",
+                            body: "Integra OAuth, activos comerciales, catálogo, preparación de campañas, publicaciones y lectura de métricas según los permisos aprobados en Meta.",
+                          },
+                          {
+                            title: "Remarketing y workflows",
+                            body: "Procesa eventos, comentarios e interés por productos mediante condiciones, colas, deduplicación, acciones controladas y registro de cada ejecución.",
+                          },
+                          {
+                            title: "Control y trazabilidad",
+                            body: "La IA propone y estructura; las personas pueden editar, aprobar y revisar. El sistema registra actividad, errores, publicaciones y resultados sin inventar métricas, precios ni inventario.",
+                          },
+                        ]
+                      : [
+                          {
+                            title: "CRM and omnichannel service",
+                            body: "Centralizes web, WhatsApp and Instagram conversations; classifies intent, priority and department, preserves context, controls SLAs and escalates to the human team when required.",
+                          },
+                          {
+                            title: "Connected commercial context",
+                            body: "AI works with brand profiles, eligible products, images, prices, stock, campaigns, customers and activity recorded in the same platform.",
+                          },
+                          {
+                            title: "Content production",
+                            body: "Assists campaigns, strategies, copy, individual posts, carousels, stories and reels through editable drafts and review before publishing.",
+                          },
+                          {
+                            title: "Meta MCP and Graph API",
+                            body: "Integrates OAuth, business assets, catalogs, campaign preparation, publishing and metrics retrieval according to approved Meta permissions.",
+                          },
+                          {
+                            title: "Remarketing and workflows",
+                            body: "Processes events, comments and product interest using conditions, queues, deduplication, controlled actions and execution records.",
+                          },
+                          {
+                            title: "Control and traceability",
+                            body: "AI proposes and structures; people can edit, approve and review. The system records activity, errors, publications and results without inventing metrics, prices or inventory.",
+                          },
+                        ]
+                    ).map((capability) => (
+                      <div key={capability.title} className="rounded-2xl border border-white/8 bg-black/15 p-3">
+                        <div className="text-[12px] font-semibold text-rose-200">{capability.title}</div>
+                        <p className="mt-1 text-[11px] leading-relaxed text-slate-400">{capability.body}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
                 <p className="mt-4 text-[12px] leading-relaxed text-slate-400">
                   {isEs
                     ? "Esta experiencia permite adaptar el núcleo de LUNA a otras empresas, conectando sus procesos, datos, canales y reglas sin obligarlas a operar alrededor de un software rígido."
