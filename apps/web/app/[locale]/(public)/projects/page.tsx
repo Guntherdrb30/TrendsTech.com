@@ -97,7 +97,7 @@ export default async function ProjectsPage({
             </div>
             <div className="flex flex-wrap items-center gap-3">
               <Link
-                href={`${base}/pricing`}
+                href={`${base}/que-ofrecemos`}
                 className="inline-flex items-center justify-center rounded-full bg-slate-900 px-5 py-2.5 text-sm font-semibold text-white shadow-[0_18px_40px_-20px_rgba(15,23,42,0.6)] transition hover:-translate-y-0.5 hover:bg-slate-800 dark:bg-white dark:text-slate-950 dark:hover:bg-slate-200"
               >
                 {t("ctaPrimary")}
