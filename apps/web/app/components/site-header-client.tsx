@@ -5,20 +5,15 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname, useSearchParams, type ReadonlyURLSearchParams } from 'next/navigation';
 import { authClient } from '@/lib/auth/client';
-import { AgentSearch } from './agent-search';
 import { LocaleSwitcher } from './locale-switcher';
 import { ThemeToggle } from './theme-toggle';
-
-type AgentOption = {
-  key: string;
-  label: string;
-};
 
 type SiteHeaderClientProps = {
   base: string;
   isAuthenticated: boolean;
   labels: {
     home: string;
+    offerings: string;
     agents: string;
     systems: string;
     projects: string;
@@ -34,7 +29,6 @@ type SiteHeaderClientProps = {
     menuOpen: string;
     menuClose: string;
   };
-  agentOptions: AgentOption[];
 };
 
 function MenuIcon({ open }: { open: boolean }) {
@@ -74,15 +68,12 @@ function buildRedirectTarget(base: string, pathname: string, searchParams: Reado
   return search ? `${pathname}?${search}` : pathname;
 }
 
-export function SiteHeaderClient({ base, isAuthenticated, labels, agentOptions }: SiteHeaderClientProps) {
+export function SiteHeaderClient({ base, isAuthenticated, labels }: SiteHeaderClientProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const redirectTarget = buildRedirectTarget(base, pathname, searchParams);
   const loginHref = redirectTarget ? `${base}/login?redirectTo=${encodeURIComponent(redirectTarget)}` : `${base}/login`;
-  const registerHref = redirectTarget
-    ? `${base}/register?redirectTo=${encodeURIComponent(redirectTarget)}`
-    : `${base}/register`;
 
   const handleSignOut = () => {
     setMenuOpen(false);
@@ -97,12 +88,11 @@ export function SiteHeaderClient({ base, isAuthenticated, labels, agentOptions }
 
   const navLinks = [
     { href: base, label: labels.home, desktopHidden: true },
-    { href: `${base}/agents`, label: labels.agents },
+    { href: `${base}/que-ofrecemos`, label: labels.offerings },
     { href: `${base}/systems`, label: labels.systems },
     { href: `${base}/projects`, label: labels.projects },
     { href: `${base}/projects/luna-football`, label: labels.lunaFootball, featured: true },
     { href: `${base}/news`, label: labels.news },
-    { href: `${base}/pricing`, label: labels.pricing },
   ];
 
   return (
@@ -127,13 +117,6 @@ export function SiteHeaderClient({ base, isAuthenticated, labels, agentOptions }
           </Link>
 
           <div className="flex items-center gap-2">
-            <AgentSearch
-              base={base}
-              placeholder={labels.searchPlaceholder}
-              label={labels.searchLabel}
-              options={agentOptions}
-              className="w-40 sm:w-56"
-            />
             <button
               type="button"
               onClick={() => setMenuOpen((prev) => !prev)}
@@ -190,13 +173,6 @@ export function SiteHeaderClient({ base, isAuthenticated, labels, agentOptions }
                   >
                     {labels.login}
                   </Link>
-                  <Link
-                    href={registerHref}
-                    onClick={() => setMenuOpen(false)}
-                    className="rounded-full bg-slate-950 px-4 py-2 text-sm font-semibold text-white transition hover:bg-slate-800 dark:bg-white dark:text-slate-950"
-                  >
-                    {labels.register}
-                  </Link>
                 </>
               )}
               <div className="ml-auto flex items-center gap-2">
@@ -248,14 +224,6 @@ export function SiteHeaderClient({ base, isAuthenticated, labels, agentOptions }
 
           {/* Right section */}
           <div className="flex shrink-0 items-center gap-2">
-            <AgentSearch
-              base={base}
-              placeholder={labels.searchPlaceholder}
-              label={labels.searchLabel}
-              options={agentOptions}
-              className="w-44 xl:w-56"
-            />
-
             <div className="mx-1 h-5 w-px bg-black/10 dark:bg-white/10" aria-hidden="true" />
 
             {isAuthenticated ? (
@@ -281,12 +249,6 @@ export function SiteHeaderClient({ base, isAuthenticated, labels, agentOptions }
                   className="whitespace-nowrap rounded-full px-3.5 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-100 hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-200 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white"
                 >
                   {labels.login}
-                </Link>
-                <Link
-                  href={registerHref}
-                  className="whitespace-nowrap rounded-full bg-slate-950 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:-translate-y-px hover:bg-slate-800 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-300 dark:bg-white dark:text-slate-950 dark:hover:bg-slate-100"
-                >
-                  {labels.register}
                 </Link>
               </>
             )}
