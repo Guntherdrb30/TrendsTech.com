@@ -28,13 +28,13 @@ function getCopy(locale: string): GateCopy {
   if (locale.startsWith('es')) {
     return {
       title: 'Confirma que eres humano',
-      body: 'Este paso protege los demos de bots.',
+      body: 'Esta verificación protege el acceso y la integridad del sitio.',
       error: 'No se pudo validar. Intenta de nuevo.'
     };
   }
   return {
     title: 'Confirm you are human',
-    body: 'This step protects demos from bots.',
+    body: 'This verification protects site access and integrity.',
     error: 'Verification failed. Try again.'
   };
 }
