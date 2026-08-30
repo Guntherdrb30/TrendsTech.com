@@ -2,11 +2,9 @@ import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
 import { notFound } from 'next/navigation';
 import Script from 'next/script';
-import { cookies } from 'next/headers';
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, setRequestLocale } from 'next-intl/server';
 import { ThemeProvider } from '../components/theme-provider';
-import { HumanVerificationGate } from '../components/human-verification-gate';
 import { locales } from '../lib/i18n/config';
 import { getSocialImage, siteUrl } from '../lib/seo';
 import '../../styles/globals.css';
@@ -67,9 +65,6 @@ export default async function LocaleLayout({
 
   setRequestLocale(locale);
   const messages = await getMessages();
-  const cookieStore = await cookies();
-  const verified = cookieStore.get('human_verified')?.value === '1';
-  const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? null;
   const isEs = locale.startsWith('es');
   const organizationId = new URL('/#organization', siteUrl).toString();
   const structuredData = {
@@ -113,7 +108,6 @@ export default async function LocaleLayout({
         />
         <ThemeProvider>
           <NextIntlClientProvider locale={locale} messages={messages}>
-            <HumanVerificationGate initialVerified={verified} siteKey={siteKey} locale={locale} />
             {children}
           </NextIntlClientProvider>
         </ThemeProvider>
