@@ -88,6 +88,16 @@ export default function middleware(request: Request) {
     return Response.redirect(url);
   }
 
+  const normalizedPublicPath = stripLocale(pathname);
+  const retiredCommercialRoutes = ['/agents', '/crear-agente', '/skills', '/pricing'];
+  if (retiredCommercialRoutes.some((route) => normalizedPublicPath === route || normalizedPublicPath.startsWith(`${route}/`))) {
+    const locale = getLocaleFromPathname(pathname);
+    const destination = new URL(request.url);
+    destination.pathname = `/${locale}/que-ofrecemos`;
+    destination.search = '';
+    return Response.redirect(destination, 308);
+  }
+
   if (!isProtectedPath(pathname)) {
     return nextResponse();
   }
