@@ -29,6 +29,8 @@
     "security:audit": "node scripts/security-audit.mjs",
     "security:test": "npx tsx --test apps/web/tests/mcp/*.test.ts",
     "luna:test": "npx tsx --test apps/web/tests/luna-agent/*.test.ts apps/web/tests/luna-root/*.test.ts packages/luna-runner/tests/*.test.ts",
+    "control:test": "npx tsx --test apps/web/tests/control-center/*.test.ts",
+    "control:bootstrap": "npm --workspace packages/db run control:bootstrap",
     "luna:runner:build": "npm --workspace packages/luna-runner run build",
     "luna:runner:start": "npm --workspace packages/luna-runner run start",
     "prisma": "npm --workspace packages/db run prisma",

@@ -298,6 +298,41 @@ enum AdminPriority {
   URGENT
 }
 
+enum ControlProductStatus {
+  DRAFT
+  ACTIVE
+  PAUSED
+  ARCHIVED
+}
+
+enum ControlImplementationKind {
+  INTERNAL
+  CUSTOMER
+  DEMO
+}
+
+enum ControlImplementationStatus {
+  PLANNING
+  SHADOW
+  ACTIVE
+  SUSPENDED
+  RETIRED
+}
+
+enum ControlAgentTemplateStatus {
+  DRAFT
+  ACTIVE
+  DEPRECATED
+}
+
+enum ControlAgentRunStatus {
+  ACCEPTED
+  RUNNING
+  SUCCEEDED
+  FAILED
+  CANCELLED
+}
+
 model Tenant {
   id        String       @id @default(cuid())
   name      String
@@ -307,26 +342,27 @@ model Tenant {
   createdAt DateTime     @default(now())
   updatedAt DateTime     @updatedAt
 
-  users            User[]
-  endCustomers     EndCustomer[]
-  agentInstances   AgentInstance[]
-  agentAccesses    AgentAccess[]
-  whatsappChannels WhatsAppChannel[]
-  knowledge        KnowledgeSource[]
-  installs         Install[]
-  subscriptions    Subscription[]
-  manualPayments   ManualPayment[]
-  auditLogs        AuditLog[]
-  knowledgeChunks  KnowledgeChunk[]
-  tokenWallet      TokenWallet?
-  tokenUsageLogs   TokenUsageLog[]
-  agentSessions    AgentSession[]
-  accessLogs       AccessLog[]
-  devProjects      DevProject[]
-  devTasks         DevTask[]
-  remoteSessions   RemoteSession[]
-  devRunners       DevRunner[]
-  devUsageMetrics  DevUsageMetric[]
+  users                  User[]
+  endCustomers           EndCustomer[]
+  agentInstances         AgentInstance[]
+  agentAccesses          AgentAccess[]
+  whatsappChannels       WhatsAppChannel[]
+  knowledge              KnowledgeSource[]
+  installs               Install[]
+  subscriptions          Subscription[]
+  manualPayments         ManualPayment[]
+  auditLogs              AuditLog[]
+  knowledgeChunks        KnowledgeChunk[]
+  tokenWallet            TokenWallet?
+  tokenUsageLogs         TokenUsageLog[]
+  agentSessions          AgentSession[]
+  accessLogs             AccessLog[]
+  devProjects            DevProject[]
+  devTasks               DevTask[]
+  remoteSessions         RemoteSession[]
+  devRunners             DevRunner[]
+  devUsageMetrics        DevUsageMetric[]
+  controlImplementations ControlImplementation[]
 }
 
 model User {
@@ -566,33 +602,40 @@ model EndCustomer {
 }
 
 model AgentInstance {
-  id              String      @id @default(cuid())
-  tenantId        String
-  endCustomerId   String?
-  name            String
-  baseAgentKey    String
-  languageDefault Language    @default(ES)
-  status          AgentStatus @default(DRAFT)
-  featuresJson    Json?
-  brandingJson    Json?
-  createdAt       DateTime    @default(now())
-  updatedAt       DateTime    @updatedAt
+  id                       String      @id @default(cuid())
+  tenantId                 String
+  endCustomerId            String?
+  name                     String
+  baseAgentKey             String
+  languageDefault          Language    @default(ES)
+  status                   AgentStatus @default(DRAFT)
+  featuresJson             Json?
+  brandingJson             Json?
+  controlImplementationId  String?
+  controlTemplateVersionId String?
+  createdAt                DateTime    @default(now())
+  updatedAt                DateTime    @updatedAt
 
-  tenant          Tenant            @relation(fields: [tenantId], references: [id])
-  endCustomer     EndCustomer?      @relation(fields: [endCustomerId], references: [id])
-  whatsappChannel WhatsAppChannel?
-  knowledge       KnowledgeSource[]
-  installs        Install[]
-  knowledgeChunks KnowledgeChunk[]
-  tokenUsageLogs  TokenUsageLog[]
-  agentSessions   AgentSession[]
-  accesses        AgentAccess[]
-  accessLogs      AccessLog[]
-  skills          AgentSkill[]
+  tenant                 Tenant                       @relation(fields: [tenantId], references: [id])
+  endCustomer            EndCustomer?                 @relation(fields: [endCustomerId], references: [id])
+  whatsappChannel        WhatsAppChannel?
+  knowledge              KnowledgeSource[]
+  installs               Install[]
+  knowledgeChunks        KnowledgeChunk[]
+  tokenUsageLogs         TokenUsageLog[]
+  agentSessions          AgentSession[]
+  accesses               AgentAccess[]
+  accessLogs             AccessLog[]
+  skills                 AgentSkill[]
+  controlImplementation  ControlImplementation?       @relation(fields: [controlImplementationId], references: [id], onDelete: SetNull)
+  controlTemplateVersion ControlAgentTemplateVersion? @relation(fields: [controlTemplateVersionId], references: [id], onDelete: SetNull)
+  controlRuns            ControlAgentRun[]
 
   @@index([tenantId])
   @@index([endCustomerId])
   @@index([tenantId, baseAgentKey])
+  @@index([controlImplementationId])
+  @@index([controlTemplateVersionId])
 }
 
 model KnowledgeSource {
@@ -1066,33 +1109,201 @@ model AdminProject {
   createdAt       DateTime           @default(now())
   updatedAt       DateTime           @updatedAt
 
-  client        AdminClient                @relation(fields: [clientId], references: [id], onDelete: Cascade)
-  proposal      AdminProposal?             @relation(fields: [proposalId], references: [id], onDelete: SetNull)
-  contract      AdminContract?             @relation(fields: [contractId], references: [id], onDelete: SetNull)
-  system        AdminProjectSystem?
-  finance       AdminProjectFinance?
-  costs         AdminProjectCost[]
-  revenues      AdminProjectRevenue[]
-  licenses      AdminProjectLicense[]
-  subscriptions AdminProjectSubscription[]
-  maintenances  AdminProjectMaintenance[]
-  integrations  AdminProjectIntegration[]
-  tasks         AdminTask[]
-  sprints       AdminSprint[]
-  deliverables  AdminDeliverable[]
-  invoices      AdminInvoice[]
-  payments      AdminPayment[]
-  agentTasks    AdminAgentTask[]
-  notes         AdminNote[]
-  attachments   AdminAttachment[]
-  activityLogs  AdminActivityLog[]
-  sales         AdminSale[]
+  client                AdminClient                @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  proposal              AdminProposal?             @relation(fields: [proposalId], references: [id], onDelete: SetNull)
+  contract              AdminContract?             @relation(fields: [contractId], references: [id], onDelete: SetNull)
+  system                AdminProjectSystem?
+  finance               AdminProjectFinance?
+  costs                 AdminProjectCost[]
+  revenues              AdminProjectRevenue[]
+  licenses              AdminProjectLicense[]
+  subscriptions         AdminProjectSubscription[]
+  maintenances          AdminProjectMaintenance[]
+  integrations          AdminProjectIntegration[]
+  tasks                 AdminTask[]
+  sprints               AdminSprint[]
+  deliverables          AdminDeliverable[]
+  invoices              AdminInvoice[]
+  payments              AdminPayment[]
+  agentTasks            AdminAgentTask[]
+  notes                 AdminNote[]
+  attachments           AdminAttachment[]
+  activityLogs          AdminActivityLog[]
+  sales                 AdminSale[]
+  controlImplementation ControlImplementation?
 
   @@index([clientId])
   @@index([proposalId])
   @@index([contractId])
   @@index([status])
   @@index([priority])
+}
+
+model ControlProduct {
+  id           String               @id @default(cuid())
+  key          String               @unique
+  name         String
+  description  String?              @db.Text
+  status       ControlProductStatus @default(DRAFT)
+  metadataJson Json?
+  createdAt    DateTime             @default(now())
+  updatedAt    DateTime             @updatedAt
+
+  implementations ControlImplementation[]
+  agentTemplates  ControlAgentTemplate[]
+
+  @@index([status])
+}
+
+model ControlImplementation {
+  id             String                      @id @default(cuid())
+  key            String                      @unique
+  productId      String
+  tenantId       String?
+  adminProjectId String?                     @unique
+  name           String
+  kind           ControlImplementationKind
+  status         ControlImplementationStatus @default(PLANNING)
+  environment    String                      @default("production")
+  shadowMode     Boolean                     @default(true)
+  metadataJson   Json?
+  createdAt      DateTime                    @default(now())
+  updatedAt      DateTime                    @updatedAt
+
+  product        ControlProduct         @relation(fields: [productId], references: [id], onDelete: Restrict)
+  tenant         Tenant?                @relation(fields: [tenantId], references: [id], onDelete: SetNull)
+  adminProject   AdminProject?          @relation(fields: [adminProjectId], references: [id], onDelete: SetNull)
+  agentInstances AgentInstance[]
+  serviceClients ControlServiceClient[]
+  agentRuns      ControlAgentRun[]
+
+  @@index([productId, status])
+  @@index([tenantId])
+  @@index([kind, status])
+}
+
+model ControlAgentTemplate {
+  id          String                     @id @default(cuid())
+  productId   String
+  key         String
+  name        String
+  description String?                    @db.Text
+  status      ControlAgentTemplateStatus @default(DRAFT)
+  createdAt   DateTime                   @default(now())
+  updatedAt   DateTime                   @updatedAt
+
+  product  ControlProduct                @relation(fields: [productId], references: [id], onDelete: Restrict)
+  versions ControlAgentTemplateVersion[]
+
+  @@unique([productId, key])
+  @@index([productId, status])
+}
+
+model ControlAgentTemplateVersion {
+  id              String    @id @default(cuid())
+  agentTemplateId String
+  version         Int
+  baseAgentKey    String
+  promptHash      String?
+  configJson      Json?
+  policyJson      Json?
+  skillsJson      Json?
+  isApproved      Boolean   @default(false)
+  approvedAt      DateTime?
+  createdAt       DateTime  @default(now())
+
+  agentTemplate  ControlAgentTemplate @relation(fields: [agentTemplateId], references: [id], onDelete: Cascade)
+  agentInstances AgentInstance[]
+  runs           ControlAgentRun[]
+
+  @@unique([agentTemplateId, version])
+  @@index([agentTemplateId, isApproved])
+}
+
+model ControlServiceClient {
+  id               String    @id @default(cuid())
+  implementationId String
+  name             String
+  keyPrefix        String    @unique
+  secretHash       String    @unique
+  scopes           String[]  @default([])
+  isActive         Boolean   @default(true)
+  expiresAt        DateTime?
+  lastUsedAt       DateTime?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  implementation ControlImplementation @relation(fields: [implementationId], references: [id], onDelete: Cascade)
+
+  @@index([implementationId, isActive])
+}
+
+model ControlAgentRun {
+  id                     String                @id @default(cuid())
+  implementationId       String
+  agentInstanceId        String?
+  agentTemplateVersionId String?
+  idempotencyKey         String
+  traceId                String
+  externalRunId          String?
+  status                 ControlAgentRunStatus @default(ACCEPTED)
+  channel                String?
+  actorJson              Json?
+  inputClass             String?
+  safeMetadataJson       Json?
+  startedAt              DateTime?
+  completedAt            DateTime?
+  createdAt              DateTime              @default(now())
+  updatedAt              DateTime              @updatedAt
+
+  implementation       ControlImplementation        @relation(fields: [implementationId], references: [id], onDelete: Restrict)
+  agentInstance        AgentInstance?               @relation(fields: [agentInstanceId], references: [id], onDelete: SetNull)
+  agentTemplateVersion ControlAgentTemplateVersion? @relation(fields: [agentTemplateVersionId], references: [id], onDelete: SetNull)
+  events               ControlAgentRunEvent[]
+  usageRecords         ControlAgentUsageRecord[]
+
+  @@unique([implementationId, idempotencyKey])
+  @@index([implementationId, createdAt])
+  @@index([agentInstanceId, createdAt])
+  @@index([traceId])
+  @@index([status, createdAt])
+}
+
+model ControlAgentRunEvent {
+  id               String   @id @default(cuid())
+  agentRunId       String
+  sequence         Int
+  eventType        String
+  skillKey         String?
+  safeMetadataJson Json?
+  occurredAt       DateTime
+  createdAt        DateTime @default(now())
+
+  agentRun ControlAgentRun @relation(fields: [agentRunId], references: [id], onDelete: Cascade)
+
+  @@unique([agentRunId, sequence])
+  @@index([agentRunId, occurredAt])
+  @@index([skillKey, occurredAt])
+}
+
+model ControlAgentUsageRecord {
+  id            String   @id @default(cuid())
+  agentRunId    String
+  provider      String
+  model         String
+  inputTokens   Int      @default(0)
+  outputTokens  Int      @default(0)
+  cachedTokens  Int      @default(0)
+  latencyMs     Int?
+  costUsdMicros Int?
+  gpuMillis     Int?
+  metadataJson  Json?
+  createdAt     DateTime @default(now())
+
+  agentRun ControlAgentRun @relation(fields: [agentRunId], references: [id], onDelete: Cascade)
+
+  @@index([agentRunId, createdAt])
+  @@index([provider, model, createdAt])
 }
 
 model AdminProjectSystem {

@@ -13,7 +13,8 @@
     "auth:status:http": "tsx scripts/auth-database-status.ts",
     "auth:migrate:http": "tsx scripts/apply-auth-migration-http.ts",
     "migrate:deploy": "prisma migrate deploy",
-    "seed:news": "tsx scripts/seed-news-posts.ts"
+    "seed:news": "tsx scripts/seed-news-posts.ts",
+    "control:bootstrap": "tsx scripts/bootstrap-control-center.ts"
   },
   "prisma": {
     "schema": "prisma/schema.prisma",
