@@ -40,10 +40,7 @@ async function getLunaImplementationLeads(): Promise<LunaImplementationLead[]> {
   try {
     return await prisma.adminLead.findMany({
       where: {
-        OR: [
-          { source: { contains: 'luna-football', mode: 'insensitive' } },
-          { source: { contains: 'luna', mode: 'insensitive' } }
-        ]
+        source: { contains: 'luna-football', mode: 'insensitive' }
       },
       orderBy: { createdAt: 'desc' },
       include: {
@@ -72,10 +69,10 @@ export default async function LunaImplementationsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-teal-600">LUNA</p>
-        <h2 className="mt-1 text-xl font-semibold">Implementaciones LUNA</h2>
+        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-teal-600">LUNA Fútbol</p>
+        <h2 className="mt-1 text-xl font-semibold">Solicitudes LUNA Fútbol</h2>
         <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
-          Prospectos que generaron una demo personalizada y pidieron implementar LUNA Football.
+          Prospectos que generaron una demo personalizada y solicitaron una instalación de LUNA Fútbol, producto independiente de LUNA.
         </p>
       </div>
 
@@ -89,7 +86,7 @@ export default async function LunaImplementationsPage() {
         title="Solicitudes desde demos"
         columns={['Escuela', 'Contacto', 'Teléfono', 'Valor', 'Estado', 'Próximo paso']}
         rows={leads}
-        emptyLabel="Todavía no hay solicitudes de implementación LUNA."
+        emptyLabel="Todavía no hay solicitudes de LUNA Fútbol."
         renderRow={(lead) => (
           <TableRow key={lead.id}>
             <TableCell>

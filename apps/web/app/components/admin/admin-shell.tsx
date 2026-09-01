@@ -18,6 +18,7 @@ type AdminShellProps = {
     proposals: string;
     licenses: string;
     aiAgents: string;
+    controlCenter?: string;
     luna: string;
     lunaImplementations?: string;
     payments: string;
@@ -40,6 +41,7 @@ const operationsNavItems = [
   { key: 'proposals', href: '/admin/proposals' },
   { key: 'licenses', href: '/admin/licenses' },
   { key: 'aiAgents', href: '/admin/ai-agents' },
+  { key: 'controlCenter', href: '/admin/control-center' },
   { key: 'luna', href: '/admin/luna' },
   { key: 'lunaImplementations', href: '/admin/luna-implementations' }
 ] as const;
@@ -87,7 +89,11 @@ export function AdminShell({ locale, children, labels }: AdminShellProps) {
               {operationsNavItems.map((item) => {
                 const href = `${base}${item.href}`;
                 const active = pathname === href || (item.href !== '/admin' && pathname.startsWith(href));
-                const label = item.key === 'lunaImplementations' ? labels.lunaImplementations ?? 'Implementaciones LUNA' : labels[item.key];
+                const label = item.key === 'lunaImplementations'
+                  ? labels.lunaImplementations ?? 'Solicitudes LUNA Fútbol'
+                  : item.key === 'controlCenter'
+                    ? labels.controlCenter ?? 'Control Center IA'
+                    : labels[item.key];
                 return (
                   <Link
                     key={item.key}
