@@ -24,7 +24,7 @@ export async function buildContextPack(projectId: string, agentKey = 'ORCHESTRAT
   const selected = entries.filter(entry => allowed.has(entry.type)).slice(0, 100);
   const pack = {
     generatedAt: new Date().toISOString(),
-    project: { id: project.id, name: project.name, summary: project.summary, stage: project.stage, repositoryUrl: project.repositoryUrl, repositoryBranch: project.repositoryBranch },
+    project: { id: project.id, name: project.name, summary: project.summary, stage: project.stage, repositoryUrl: project.repositoryUrl },
     orchestration: { profile: routingProfile, agentKey },
     blueprint: { version: project.blueprintVersion, status: project.blueprintStatus, understanding: project.understanding, architecture: project.architectureJson, assumptions: project.assumptionsJson, risks: project.risksJson, acceptanceCriteria: project.acceptanceCriteriaJson },
     vault: selected.map(entry => ({ id: entry.id, type: entry.type, title: entry.title, content: entry.content, source: entry.source, version: entry.version, createdAt: entry.createdAt.toISOString() }))
