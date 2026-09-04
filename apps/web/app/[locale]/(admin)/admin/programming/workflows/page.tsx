@@ -1,5 +1,5 @@
 import { revalidatePath } from 'next/cache';
-import { getWorkflowControlSnapshot, setWatcherStatus, setWorkflowStatus } from '../../../../../../lib/engineering-studio/workflow-control';
+import { getWorkflowControlSnapshot, setWatcherStatus, setWorkflowStatus } from '../../../../../lib/engineering-studio/workflow-control';
 
 function n(value: bigint | number | undefined) { return Number(value || 0); }
 function date(value: Date | null) { return value ? new Intl.DateTimeFormat('es-VE',{ dateStyle:'short', timeStyle:'short' }).format(value) : '—'; }
