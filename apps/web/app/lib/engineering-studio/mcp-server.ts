@@ -43,16 +43,20 @@ export function createTrendsMcpServer(actorRef = 'chatgpt-mcp') {
 
   server.registerTool('studio_build_context_pack',{title:'Generar Context Pack',description:'Build compact current context for an engineering agent.',inputSchema:{projectId:z.string().uuid(),agentKey:z.enum(['ORCHESTRATOR','FRONTEND','BACKEND','DATABASE','QA','NVIDIA']).default('ORCHESTRATOR')},annotations:{readOnlyHint:false,destructiveHint:false,openWorldHint:false,idempotentHint:false}},async({projectId,agentKey})=>{const result=await buildContextPack(projectId,agentKey,actorRef);return textResult(result as unknown as Record<string,unknown>,`Context Pack ${result.id} generado.`);});
 
-  server.registerTool('studio_create_task',{title:'Crear tarea de desarrollo',description:'Create an approved development backlog task.',inputSchema:{projectId:z.string().uuid(),title:z.string().min(3).max(240),description:z.string().min(1).max(20000),priority:z.enum(['LOW','MEDIUM','HIGH','CRITICAL']).default('MEDIUM'),assignedAgentKey:z.string().max(120).optional(),acceptanceCriteria:z.array(z.string().min(1).max(1000)).max(30).default([])},annotations:{readOnlyHint:false,destructiveHint:false,openWorldHint:false,idempotentHint:false}},async input=>{const id=randomUUID();await prisma.$transaction(async tx=>{await tx.$executeRaw(Prisma.sql`INSERT INTO "StudioBacklogItem" ("id","projectId","title","description","status","priority","assignedAgentKey","estimatedCost","actualCost","acceptanceCriteriaJson","createdAt","updatedAt") VALUES (${id},${input.projectId},${input.title},${input.description},'READY',${input.priority},${input.assignedAgentKey||null},0,0,CAST(${JSON.stringify(input.acceptanceCriteria)} AS jsonb),CURRENT_TIMESTAMP,CURRENT_TIMESTAMP)`;await tx.$executeRaw(Prisma.sql`INSERT INTO "StudioEvent" ("id","projectId","type","actorType","actorRef","message","metaJson","createdAt") VALUES (${randomUUID()},${input.projectId},'BACKLOG_ITEM_CREATED','CHATGPT',${actorRef},${`Tarea: ${input.title}`},CAST(${JSON.stringify({backlogItemId:id})} AS jsonb),CURRENT_TIMESTAMP)`;});await addVaultEntry({projectId:input.projectId,type:'TASK',title:input.title,content:input.description,source:'CHATGPT',sourceRef:actorRef,actorUserId:actorRef,meta:{backlogItemId:id,acceptanceCriteria:input.acceptanceCriteria}});return textResult({id},`Tarea ${input.title} creada.`);});
+  server.registerTool('studio_create_task',{title:'Crear tarea de desarrollo',description:'Create an approved development backlog task.',inputSchema:{projectId:z.string().uuid(),title:z.string().min(3).max(240),description:z.string().min(1).max(20000),priority:z.enum(['LOW','MEDIUM','HIGH','CRITICAL']).default('MEDIUM'),assignedAgentKey:z.string().max(120).optional(),acceptanceCriteria:z.array(z.string().min(1).max(1000)).max(30).default([])},annotations:{readOnlyHint:false,destructiveHint:false,openWorldHint:false,idempotentHint:false}},async input=>{
+    const id=randomUUID();
+    await prisma.$transaction(async tx=>{
+      await tx.$executeRaw(Prisma.sql`INSERT INTO "StudioBacklogItem" ("id","projectId","title","description","status","priority","assignedAgentKey","estimatedCost","actualCost","acceptanceCriteriaJson","createdAt","updatedAt") VALUES (${id},${input.projectId},${input.title},${input.description},'READY',${input.priority},${input.assignedAgentKey||null},0,0,CAST(${JSON.stringify(input.acceptanceCriteria)} AS jsonb),CURRENT_TIMESTAMP,CURRENT_TIMESTAMP)`);
+      await tx.$executeRaw(Prisma.sql`INSERT INTO "StudioEvent" ("id","projectId","type","actorType","actorRef","message","metaJson","createdAt") VALUES (${randomUUID()},${input.projectId},'BACKLOG_ITEM_CREATED','CHATGPT',${actorRef},${`Tarea: ${input.title}`},CAST(${JSON.stringify({backlogItemId:id})} AS jsonb),CURRENT_TIMESTAMP)`);
+    });
+    await addVaultEntry({projectId:input.projectId,type:'TASK',title:input.title,content:input.description,source:'CHATGPT',sourceRef:actorRef,actorUserId:actorRef,meta:{backlogItemId:id,acceptanceCriteria:input.acceptanceCriteria}});
+    return textResult({id},`Tarea ${input.title} creada.`);
+  });
 
   server.registerTool('studio_validate_workflow_draft',{
     title:'Interpretar y validar borrador de workflow',
     description:'Use this when the user describes a software workflow in natural language. Convert the request into the provided strict workflowDefinition schema and return it here for validation. This tool NEVER activates or executes the workflow and never consumes a paid model by itself.',
-    inputSchema:{
-      naturalLanguage:z.string().min(10).max(20000),
-      definition:workflowDefinitionSchema,
-      interpretationChannel:z.enum(['CHATGPT_MCP','CODEX_CHATGPT_AUTH']).default('CHATGPT_MCP')
-    },
+    inputSchema:{naturalLanguage:z.string().min(10).max(20000),definition:workflowDefinitionSchema,interpretationChannel:z.enum(['CHATGPT_MCP','CODEX_CHATGPT_AUTH']).default('CHATGPT_MCP')},
     annotations:{readOnlyHint:true,destructiveHint:false,openWorldHint:false,idempotentHint:true}
   },async({naturalLanguage,definition,interpretationChannel})=>{
     const parsed=workflowDefinitionSchema.safeParse(definition);
