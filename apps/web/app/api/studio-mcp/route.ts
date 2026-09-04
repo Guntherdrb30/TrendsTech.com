@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/streamableHttp.js';
-import { createTrendsMcpServer } from '@/app/lib/engineering-studio/mcp-server';
+import { createTrendsMcpServer } from '../../lib/engineering-studio/mcp-server';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
