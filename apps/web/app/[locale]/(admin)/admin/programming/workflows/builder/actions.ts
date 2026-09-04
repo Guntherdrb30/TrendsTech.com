@@ -1,9 +1,9 @@
 'use server';
 
 import { redirect } from 'next/navigation';
-import { createWorkflowDefinition } from '../../../../../../../lib/engineering-studio/workflow-builder';
-import { validateWorkflowDefinition } from '../../../../../../../lib/engineering-studio/workflow-contract';
-import { interpretWorkflowNaturalLanguage } from '../../../../../../../lib/engineering-studio/workflow-interpreter';
+import { createWorkflowDefinition } from '../../../../../../lib/engineering-studio/workflow-builder';
+import { validateWorkflowDefinition } from '../../../../../../lib/engineering-studio/workflow-contract';
+import { interpretWorkflowNaturalLanguage } from '../../../../../../lib/engineering-studio/workflow-interpreter';
 
 export async function interpretWorkflowAction(input: { text: string; reusable: boolean }) {
   return interpretWorkflowNaturalLanguage(input.text, input.reusable);
