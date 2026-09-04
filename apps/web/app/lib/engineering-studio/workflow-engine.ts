@@ -4,6 +4,7 @@ import { randomUUID } from 'node:crypto';
 import { Prisma, prisma } from '@trends172tech/db';
 import { addVaultEntry } from './vault';
 import { buildContextPack } from './context-pack';
+import { ensureDefaultProjectWorkflows } from './workflow-defaults';
 
 export const WORKFLOW_EVENT_TYPES = [
   'AGENT_RUN_COMPLETED',
@@ -25,6 +26,7 @@ export const WORKFLOW_ACTION_TYPES = [
   'CREATE_BACKLOG_TASK',
   'REQUEST_APPROVAL',
   'RECORD_VAULT_ENTRY',
+  'RECORD_VAULT_NOTE',
   'NOTIFY',
   'PREPARE_AGENT_RUN',
   'RUN_QA',
@@ -88,13 +90,27 @@ async function withinRateLimit(workflow: WorkflowRow) {
   return Number(rows[0]?.count || 0) < workflow.maxExecutionsPerHour;
 }
 
-async function requestApproval(projectId: string, workflowRunId: string, action: ActionRow) {
+async function alreadyProcessed(workflowId: string, eventId: string) {
+  const rows = await prisma.$queryRaw<Array<{ count: bigint }>>(Prisma.sql`
+    SELECT COUNT(*)::bigint AS "count"
+    FROM "StudioWorkflowRun"
+    WHERE "workflowId" = ${workflowId} AND "triggerEventId" = ${eventId}
+  `);
+  return Number(rows[0]?.count || 0) > 0;
+}
+
+async function requestApproval(projectId: string, workflowRunId: string, action: ActionRow, config: Record<string, unknown>) {
   const approvalId = randomUUID();
-  const gate = action.approvalGate || 'WORKFLOW_ACTION';
+  const gate = action.approvalGate || (typeof config.gate === 'string' ? config.gate : 'WORKFLOW_ACTION');
+  const note = typeof config.note === 'string' ? config.note : `Workflow ${workflowRunId} requiere aprobación.`;
   await prisma.$executeRaw(Prisma.sql`
-    INSERT INTO "StudioApproval" ("id","projectId","gate","status","requestedBy","requestedAt","payloadJson","createdAt","updatedAt")
-    VALUES (${approvalId},${projectId},${gate},'PENDING','WORKFLOW_ENGINE',CURRENT_TIMESTAMP,
-      CAST(${JSON.stringify({ workflowRunId, workflowActionId: action.id, actionType: action.type })} AS jsonb),CURRENT_TIMESTAMP,CURRENT_TIMESTAMP)
+    INSERT INTO "StudioApproval" (
+      "id","projectId","gate","status","scopeJson","requestedAt","decisionNote","createdAt"
+    ) VALUES (
+      ${approvalId},${projectId},${gate},'PENDING',
+      CAST(${JSON.stringify({ workflowRunId, workflowActionId: action.id, actionType: action.type })} AS jsonb),
+      CURRENT_TIMESTAMP,${note},CURRENT_TIMESTAMP
+    )
   `);
   return approvalId;
 }
@@ -102,8 +118,8 @@ async function requestApproval(projectId: string, workflowRunId: string, action:
 async function executeSafeAction(projectId: string, workflowRunId: string, action: ActionRow, event: { id: string; type: string; payload?: unknown }) {
   const config = asRecord(action.configJson);
   if (action.requiresApproval) {
-    const approvalId = await requestApproval(projectId, workflowRunId, action);
-    return { status: 'WAITING_APPROVAL', approvalId, result: { gate: action.approvalGate || 'WORKFLOW_ACTION' } };
+    const approvalId = await requestApproval(projectId, workflowRunId, action, config);
+    return { status: 'WAITING_APPROVAL', approvalId, result: { gate: action.approvalGate || config.gate || 'WORKFLOW_ACTION' } };
   }
 
   switch (action.type) {
@@ -114,9 +130,10 @@ async function executeSafeAction(projectId: string, workflowRunId: string, actio
       const pack = await buildContextPack(projectId, target, 'workflow-engine');
       return { status: 'COMPLETED', result: { contextPackId: pack.id, agentKey: target } };
     }
-    case 'RECORD_VAULT_ENTRY': {
+    case 'RECORD_VAULT_ENTRY':
+    case 'RECORD_VAULT_NOTE': {
       const title = typeof config.title === 'string' ? config.title : `Workflow: ${event.type}`;
-      const content = typeof config.content === 'string' ? config.content : JSON.stringify(event.payload || {});
+      const content = typeof config.content === 'string' ? config.content : JSON.stringify({ eventType: event.type, payload: event.payload || {} });
       const entry = await addVaultEntry({ projectId, type: 'NOTE', title, content, source: 'ENGINEERING_STUDIO', sourceRef: workflowRunId, actorUserId: 'workflow-engine' });
       return { status: 'COMPLETED', result: { vaultEntryId: entry.id } };
     }
@@ -124,15 +141,27 @@ async function executeSafeAction(projectId: string, workflowRunId: string, actio
       const id = randomUUID();
       const title = typeof config.title === 'string' ? config.title : `Seguimiento: ${event.type}`;
       const description = typeof config.description === 'string' ? config.description : `Creada automáticamente por workflow ${workflowRunId}.`;
+      const priority = typeof config.priority === 'string' && ['LOW','MEDIUM','HIGH','CRITICAL'].includes(config.priority) ? config.priority : 'MEDIUM';
       await prisma.$executeRaw(Prisma.sql`
-        INSERT INTO "StudioBacklogItem" ("id","projectId","title","description","status","priority","estimatedCost","actualCost","acceptanceCriteriaJson","createdAt","updatedAt")
-        VALUES (${id},${projectId},${title},${description},'READY','MEDIUM',0,0,'[]'::jsonb,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP)
+        INSERT INTO "StudioBacklogItem" (
+          "id","projectId","title","description","status","priority","assignedAgentKey","estimatedCost","actualCost","acceptanceCriteriaJson","createdAt","updatedAt"
+        ) VALUES (
+          ${id},${projectId},${title},${description},'READY',${priority},${action.agentKey},0,0,'[]'::jsonb,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP
+        )
       `);
-      return { status: 'COMPLETED', result: { backlogItemId: id } };
+      return { status: 'COMPLETED', result: { backlogItemId: id, priority, agentKey: action.agentKey } };
+    }
+    case 'REQUEST_APPROVAL': {
+      const approvalId = await requestApproval(projectId, workflowRunId, action, config);
+      return { status: 'WAITING_APPROVAL', approvalId, result: { gate: action.approvalGate || config.gate || 'WORKFLOW_ACTION' } };
     }
     case 'PAUSE_PROJECT': {
-      await prisma.$executeRaw(Prisma.sql`UPDATE "StudioProject" SET "status" = 'BLOCKED', "updatedAt" = CURRENT_TIMESTAMP WHERE "id" = ${projectId}`);
-      return { status: 'COMPLETED', result: { projectStatus: 'BLOCKED' } };
+      const reason = typeof config.reason === 'string' ? config.reason : event.type;
+      await prisma.$executeRaw(Prisma.sql`
+        UPDATE "StudioProject" SET "status" = 'BLOCKED', "updatedAt" = CURRENT_TIMESTAMP WHERE "id" = ${projectId}
+      `);
+      await addVaultEntry({ projectId, type: 'NOTE', title: 'Proyecto pausado por Workflow Engine', content: `Motivo: ${reason}`, source: 'ENGINEERING_STUDIO', sourceRef: workflowRunId, actorUserId: 'workflow-engine' });
+      return { status: 'COMPLETED', result: { projectStatus: 'BLOCKED', reason } };
     }
     case 'NOTIFY':
       return { status: 'COMPLETED', result: { notification: 'PENDING_DELIVERY', channel: config.channel || 'STUDIO' } };
@@ -145,6 +174,8 @@ async function executeSafeAction(projectId: string, workflowRunId: string, actio
 }
 
 export async function dispatchStudioEvent(input: { projectId: string; eventType: WorkflowEventType; actorType?: string; actorRef?: string; message: string; payload?: unknown }) {
+  await ensureDefaultProjectWorkflows(input.projectId, input.actorRef || 'workflow-dispatcher');
+
   const eventId = randomUUID();
   await prisma.$executeRaw(Prisma.sql`
     INSERT INTO "StudioEvent" ("id","projectId","type","actorType","actorRef","message","metaJson","createdAt")
@@ -156,6 +187,10 @@ export async function dispatchStudioEvent(input: { projectId: string; eventType:
   const runs: Array<Record<string, unknown>> = [];
 
   for (const workflow of workflows) {
+    if (await alreadyProcessed(workflow.id, eventId)) {
+      runs.push({ workflowId: workflow.id, status: 'DUPLICATE_SKIPPED' });
+      continue;
+    }
     if (!(await withinRateLimit(workflow))) {
       runs.push({ workflowId: workflow.id, status: 'RATE_LIMITED' });
       continue;
@@ -179,8 +214,9 @@ export async function dispatchStudioEvent(input: { projectId: string; eventType:
       `);
       try {
         const outcome = await executeSafeAction(input.projectId, runId, action, { id: eventId, type: input.eventType, payload: input.payload });
+        const terminal = outcome.status === 'COMPLETED' || outcome.status === 'SKIPPED';
         await prisma.$executeRaw(Prisma.sql`
-          UPDATE "StudioWorkflowActionRun" SET "status"=${outcome.status},"finishedAt"=${outcome.status === 'COMPLETED' || outcome.status === 'SKIPPED' ? new Date() : null},
+          UPDATE "StudioWorkflowActionRun" SET "status"=${outcome.status},"finishedAt"=${terminal ? new Date() : null},
             "approvalId"=${'approvalId' in outcome ? outcome.approvalId || null : null},"resultJson"=CAST(${JSON.stringify(outcome.result)} AS jsonb)
           WHERE "id"=${actionRunId}
         `);
@@ -191,15 +227,18 @@ export async function dispatchStudioEvent(input: { projectId: string; eventType:
         }
       } catch (error) {
         const message = error instanceof Error ? error.message : 'Workflow action failed';
-        await prisma.$executeRaw(Prisma.sql`UPDATE "StudioWorkflowActionRun" SET "status"='FAILED',"finishedAt"=CURRENT_TIMESTAMP,"errorSummary"=${message} WHERE "id"=${actionRunId}`);
+        await prisma.$executeRaw(Prisma.sql`
+          UPDATE "StudioWorkflowActionRun" SET "status"='FAILED',"finishedAt"=CURRENT_TIMESTAMP,"errorSummary"=${message} WHERE "id"=${actionRunId}
+        `);
         actionResults.push({ actionId: action.id, type: action.type, status: 'FAILED', error: message });
         runStatus = 'FAILED';
         if (workflow.stopOnFailure) break;
       }
     }
 
+    const workflowTerminal = runStatus === 'COMPLETED' || runStatus === 'FAILED';
     await prisma.$executeRaw(Prisma.sql`
-      UPDATE "StudioWorkflowRun" SET "status"=${runStatus},"finishedAt"=${runStatus === 'COMPLETED' || runStatus === 'FAILED' ? new Date() : null},
+      UPDATE "StudioWorkflowRun" SET "status"=${runStatus},"finishedAt"=${workflowTerminal ? new Date() : null},
         "resultJson"=CAST(${JSON.stringify({ actions: actionResults })} AS jsonb)
       WHERE "id"=${runId}
     `);
