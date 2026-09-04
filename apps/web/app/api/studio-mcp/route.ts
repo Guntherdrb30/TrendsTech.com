@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/streamableHttp.js';
+import { WebStandardStreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/webStandardStreamableHttp.js';
 import { createTrendsMcpServer } from '../../lib/engineering-studio/mcp-server';
 
 export const runtime = 'nodejs';
@@ -20,14 +20,13 @@ async function handler(request: NextRequest) {
   if (!auth.ok) return NextResponse.json({ error: auth.message }, { status: auth.status });
 
   const server = createTrendsMcpServer(auth.actorRef);
-  const transport = new StreamableHTTPServerTransport({ sessionIdGenerator: undefined });
+  const transport = new WebStandardStreamableHTTPServerTransport({
+    sessionIdGenerator: undefined,
+    enableJsonResponse: true
+  });
+
   await server.connect(transport);
-  try {
-    return await transport.handleRequest(request);
-  } finally {
-    await transport.close();
-    await server.close();
-  }
+  return transport.handleRequest(request);
 }
 
 export const GET = handler;
