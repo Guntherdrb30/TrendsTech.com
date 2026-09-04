@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from 'react';
 import Link from 'next/link';
-import { createStudioProjectAction } from '@/app/[locale]/(admin)/admin/programming/projects/new/actions';
+import { createStudioProjectAction } from '../../[locale]/(admin)/admin/programming/projects/new/actions';
 
 type Origin = 'idea' | 'prd' | 'chatgpt' | 'repository' | 'recovery';
 type Props = { locale: string };
