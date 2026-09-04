@@ -6,6 +6,10 @@
     {
       "path": "/api/cron/bcv-rate",
       "schedule": "0 */2 * * *"
+    },
+    {
+      "path": "/api/cron/studio-infrastructure-sync",
+      "schedule": "15 5 * * *"
     }
   ]
 }
