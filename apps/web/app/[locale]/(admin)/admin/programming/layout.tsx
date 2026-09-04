@@ -5,6 +5,7 @@ const items = [
   ['Overview', ''],
   ['Proyectos', '/projects'],
   ['Agentes', '/agents'],
+  ['Workflows', '/workflows'],
   ['Costos', '/costs'],
   ['Hardware IA', '/hardware'],
   ['Runs', '/runs'],
