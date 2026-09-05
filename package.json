@@ -28,6 +28,7 @@
     "typecheck": "npm --workspace apps/web run typecheck",
     "security:audit": "node scripts/security-audit.mjs",
     "security:test": "npx tsx --test apps/web/tests/mcp/*.test.ts",
+    "studio:test": "npx tsx --test apps/web/tests/engineering-studio/*.test.ts",
     "luna:test": "npx tsx --test apps/web/tests/luna-agent/*.test.ts apps/web/tests/luna-root/*.test.ts packages/luna-runner/tests/*.test.ts",
     "luna:runner:build": "npm --workspace packages/luna-runner run build",
     "luna:runner:start": "npm --workspace packages/luna-runner run start",
