@@ -7,10 +7,18 @@ import {
   listAllVercelProjects,
   resolveVercelConfig,
   synchronizeVercelInventory,
+  vercelProjectDashboardUrl,
   VercelDiscoveryError,
   type SyncProjectResult,
   type VercelProject,
 } from '../../app/lib/engineering-studio/vercel-discovery';
+
+test('construye un acceso seguro al proyecto en el dashboard de Vercel', () => {
+  assert.equal(
+    vercelProjectDashboardUrl('proyecto con espacios'),
+    'https://vercel.com/guntherdelrosario-5780s-projects/proyecto%20con%20espacios',
+  );
+});
 
 test('lista varios proyectos y recorre todos los cursores de Vercel', async () => {
   const cursors: Array<string | undefined> = [];

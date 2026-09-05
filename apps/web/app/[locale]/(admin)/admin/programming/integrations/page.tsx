@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { getVercelSyncSnapshot } from '@/lib/engineering-studio/infrastructure-sync';
-import { EXPECTED_VERCEL_TEAM_ID } from '@/lib/engineering-studio/vercel-discovery';
+import { EXPECTED_VERCEL_TEAM_ID, vercelProjectDashboardUrl } from '@/lib/engineering-studio/vercel-discovery';
 import { syncVercelNowAction } from './actions';
 import { SyncButton } from './sync-button';
 
@@ -59,7 +59,7 @@ export default async function StudioIntegrationsPage({ params, searchParams }: {
     <section>
       <div className="flex items-end justify-between"><div><p className="text-xs font-semibold uppercase tracking-[0.18em] text-cyan-600">Inventario Vercel</p><h4 className="mt-2 text-lg font-semibold">Proyectos sincronizados</h4></div><span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold dark:bg-slate-800">{snapshot.integrations.length}</span></div>
       {snapshot.integrations.length === 0 ? <div className="mt-5 rounded-[26px] border border-dashed border-slate-300 bg-white p-10 text-center dark:border-slate-700 dark:bg-slate-950"><h5 className="font-semibold">No hay proyectos sincronizados</h5><p className="mt-2 text-sm text-slate-500">Ejecuta “Sincronizar ahora”. Si el equipo es accesible y está vacío, Studio lo indicará explícitamente.</p></div>
-        : <div className="mt-5 grid gap-4 xl:grid-cols-2">{snapshot.integrations.map((item) => <Link key={item.id} href={`/${locale}/admin/programming/projects/${item.projectId}`} className="group rounded-[24px] border border-slate-200 bg-white p-5 shadow-sm transition hover:border-cyan-300 dark:border-slate-800 dark:bg-slate-950 dark:hover:border-cyan-800">
+        : <div className="mt-5 grid gap-4 xl:grid-cols-2">{snapshot.integrations.map((item) => <article key={item.id} className="group rounded-[24px] border border-slate-200 bg-white p-5 shadow-sm transition hover:border-cyan-300 dark:border-slate-800 dark:bg-slate-950 dark:hover:border-cyan-800">
           <div className="flex items-start justify-between gap-4"><div className="min-w-0"><h5 className="truncate font-semibold text-slate-950 dark:text-white">{item.externalProjectName}</h5><p className="mt-1 truncate font-mono text-[11px] text-slate-400">{item.externalProjectId}</p></div><span className={`shrink-0 rounded-full border px-2.5 py-1 text-[11px] font-semibold ${statusStyle[item.status] || statusStyle.ERROR}`}>{statusLabel[item.status] || item.status}</span></div>
           <dl className="mt-5 grid grid-cols-2 gap-x-4 gap-y-3 text-xs sm:grid-cols-3">
             <div><dt className="text-slate-400">Framework</dt><dd className="mt-1 font-medium">{item.framework || 'No detectado'}</dd></div>
@@ -70,8 +70,14 @@ export default async function StudioIntegrationsPage({ params, searchParams }: {
             <div><dt className="text-slate-400">Entorno</dt><dd className="mt-1 font-medium">{item.deploymentTarget === 'production' ? 'Production' : item.deploymentTarget === 'preview' ? 'Preview' : '—'}</dd></div>
           </dl>
           {item.lastError && <p className="mt-4 rounded-xl bg-rose-50 px-3 py-2 text-xs text-rose-700">{item.lastError}</p>}
-          <div className="mt-4 flex items-center justify-between border-t border-slate-100 pt-4 text-xs dark:border-slate-800"><span className="text-slate-400">Sync {date(item.lastSyncedAt)}</span><span className="font-semibold text-cyan-700 dark:text-cyan-300">Ver detalle →</span></div>
-        </Link>)}</div>}
+          <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-slate-100 pt-4 text-xs dark:border-slate-800">
+            <span className="text-slate-400">Sync {date(item.lastSyncedAt)}</span>
+            <div className="flex flex-wrap items-center gap-2">
+              <Link href={`/${locale}/admin/programming/projects/${item.projectId}`} className="rounded-full border border-slate-200 px-3 py-2 font-semibold text-slate-700 transition hover:border-cyan-300 hover:text-cyan-700 dark:border-slate-700 dark:text-slate-200">Ver en Studio</Link>
+              <a href={vercelProjectDashboardUrl(item.externalProjectName)} target="_blank" rel="noreferrer" className="rounded-full bg-slate-950 px-3 py-2 font-semibold text-white transition hover:bg-cyan-700 dark:bg-white dark:text-slate-950">Abrir en Vercel ↗</a>
+            </div>
+          </div>
+        </article>)}</div>}
     </section>
   </div>;
 }

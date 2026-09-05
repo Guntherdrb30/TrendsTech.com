@@ -16,6 +16,9 @@ export type StudioProjectListItem = {
   forecastCost: Prisma.Decimal | null;
   contractedValue: Prisma.Decimal | null;
   forecastMargin: Prisma.Decimal | null;
+  vercelProjectId: string | null;
+  vercelProjectName: string | null;
+  vercelIntegrationStatus: string | null;
 };
 
 export type StudioProjectDetail = {
@@ -184,7 +187,10 @@ export async function listStudioProjects(): Promise<StudioProjectListItem[]> {
       b."status" AS "blueprintStatus",
       f."internalCostForecast" AS "forecastCost",
       f."contractedValue" AS "contractedValue",
-      f."forecastMarginPercent" AS "forecastMargin"
+      f."forecastMarginPercent" AS "forecastMargin",
+      v."externalProjectId" AS "vercelProjectId",
+      v."externalProjectName" AS "vercelProjectName",
+      v."status" AS "vercelIntegrationStatus"
     FROM "StudioProject" p
     LEFT JOIN LATERAL (
       SELECT "status" FROM "StudioBlueprint"
@@ -197,6 +203,12 @@ export async function listStudioProjects(): Promise<StudioProjectListItem[]> {
       WHERE "projectId" = p."id"
       ORDER BY "calculatedAt" DESC LIMIT 1
     ) f ON true
+    LEFT JOIN LATERAL (
+      SELECT "externalProjectId", "externalProjectName", "status"
+      FROM "StudioProjectIntegration"
+      WHERE "projectId" = p."id" AND "provider" = 'VERCEL'
+      ORDER BY CASE WHEN "status" = 'ACTIVE' THEN 0 ELSE 1 END, "updatedAt" DESC LIMIT 1
+    ) v ON true
     ORDER BY p."createdAt" DESC
     LIMIT 100
   `);

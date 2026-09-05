@@ -1,6 +1,10 @@
 export const EXPECTED_VERCEL_TEAM_ID = 'team_DdPHfRSec41nlkwzbVIcSKAQ';
 export const EXPECTED_VERCEL_TEAM_SLUG = 'guntherdelrosario-5780s-projects';
 
+export function vercelProjectDashboardUrl(projectName: string) {
+  return `https://vercel.com/${EXPECTED_VERCEL_TEAM_SLUG}/${encodeURIComponent(projectName)}`;
+}
+
 export type VercelDiscoveryErrorCode =
   | 'TOKEN_MISSING'
   | 'TOKEN_INVALID'
