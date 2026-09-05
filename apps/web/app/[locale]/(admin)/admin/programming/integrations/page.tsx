@@ -1,7 +1,8 @@
 import Link from 'next/link';
 import { getVercelSyncSnapshot } from '@/lib/engineering-studio/infrastructure-sync';
 import { EXPECTED_VERCEL_TEAM_ID, vercelProjectDashboardUrl } from '@/lib/engineering-studio/vercel-discovery';
-import { syncVercelNowAction } from './actions';
+import { getGitHubSyncSnapshot } from '@/lib/engineering-studio/github-infrastructure-sync';
+import { syncGitHubNowAction, syncVercelNowAction } from './actions';
 import { SyncButton } from './sync-button';
 
 function date(value: Date | null) {
@@ -25,17 +26,23 @@ function providerId(value: string | undefined): ProviderId {
 
 export default async function StudioIntegrationsPage({ params, searchParams }: {
   params: Promise<{ locale: string }>;
-  searchParams: Promise<{ sync?: string; provider?: string }>;
+  searchParams: Promise<{ sync?: string; githubSync?: string; provider?: string }>;
 }) {
   const [{ locale }, query] = await Promise.all([params, searchParams]);
   let snapshot: Awaited<ReturnType<typeof getVercelSyncSnapshot>> = { integrations: [], runs: [] };
+  let githubSnapshot: Awaited<ReturnType<typeof getGitHubSyncSnapshot>> = { integrations: [], runs: [] };
   let schemaReady = true;
   try { snapshot = await getVercelSyncSnapshot(); } catch { schemaReady = false; }
+  try { githubSnapshot = await getGitHubSyncSnapshot(); } catch { schemaReady = false; }
   const lastRun = snapshot.runs[0];
   const syncMessage = query.sync?.startsWith('error:') ? query.sync.slice(6) : query.sync === 'ok' ? 'Sincronización completada. El inventario ya está actualizado.' : null;
   const syncError = query.sync?.startsWith('error:');
   const selectedProvider = providerId(query.provider);
-  const githubProjects = snapshot.integrations.filter((item) => item.gitProvider === 'github' || item.repositoryUrl?.includes('github.com'));
+  const githubFallbackProjects = snapshot.integrations.filter((item) => item.gitProvider === 'github' || item.repositoryUrl?.includes('github.com'));
+  const githubProjects = githubSnapshot.integrations.length ? githubSnapshot.integrations : githubFallbackProjects;
+  const githubLastRun = githubSnapshot.runs[0];
+  const githubSyncMessage = query.githubSync?.startsWith('error:') ? query.githubSync.slice(6) : query.githubSync === 'ok' ? 'GitHub se sincronizó correctamente.' : null;
+  const githubSyncError = query.githubSync?.startsWith('error:');
   const chatgptConfigured = Boolean(process.env.OPENAI_API_KEY);
   const configuredWorkflows = [process.env.CHATKIT_WORKFLOW_ID, process.env.CHATKIT_WORKFLOW_MARKETING,
     process.env.CHATKIT_WORKFLOW_SALES, process.env.CHATKIT_WORKFLOW_APPOINTMENTS, process.env.CHATKIT_WORKFLOW_SUPPORT].filter(Boolean).length;
@@ -107,6 +114,7 @@ export default async function StudioIntegrationsPage({ params, searchParams }: {
           <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-slate-100 pt-4 text-xs dark:border-slate-800">
             <span className="text-slate-400">Sync {date(item.lastSyncedAt)}</span>
             <div className="flex flex-wrap items-center gap-2">
+              <Link href={`/${locale}/admin/programming/projects/${item.projectId}/agent`} className="rounded-full bg-cyan-600 px-3 py-2 font-semibold text-white transition hover:bg-cyan-700">Mejorar o programar</Link>
               <Link href={`/${locale}/admin/programming/projects/${item.projectId}`} className="rounded-full border border-slate-200 px-3 py-2 font-semibold text-slate-700 transition hover:border-cyan-300 hover:text-cyan-700 dark:border-slate-700 dark:text-slate-200">Ver en Studio</Link>
               <a href={vercelProjectDashboardUrl(item.externalProjectName)} target="_blank" rel="noreferrer" className="rounded-full bg-slate-950 px-3 py-2 font-semibold text-white transition hover:bg-cyan-700 dark:bg-white dark:text-slate-950">Abrir en Vercel ↗</a>
             </div>
@@ -116,14 +124,17 @@ export default async function StudioIntegrationsPage({ params, searchParams }: {
     </>}
 
     {selectedProvider === 'github' && <section>
-      <div className="flex flex-wrap items-end justify-between gap-3"><div><p className="text-xs font-semibold uppercase tracking-[0.18em] text-cyan-600">GitHub Project Discovery</p><h4 className="mt-2 text-lg font-semibold">Repositorios conectados</h4></div><span className={`rounded-full px-3 py-1 text-xs font-semibold ${githubConfigured ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-800'}`}>{githubConfigured ? 'GITHUB_STUDIO_TOKEN conectado' : 'Lectura mediante metadatos de Vercel'}</span></div>
+      <div className="flex flex-wrap items-end justify-between gap-3"><div><p className="text-xs font-semibold uppercase tracking-[0.18em] text-cyan-600">GitHub Project Discovery</p><h4 className="mt-2 text-lg font-semibold">Repositorios conectados</h4></div><div className="flex flex-wrap items-center gap-2"><span className={`rounded-full px-3 py-1 text-xs font-semibold ${githubConfigured ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-800'}`}>{githubConfigured ? 'GITHUB_STUDIO_TOKEN conectado' : 'Lectura mediante metadatos de Vercel'}</span>{githubConfigured && <form action={syncGitHubNowAction}><input type="hidden" name="locale" value={locale}/><SyncButton disabled={!schemaReady} label="Sincronizar GitHub"/></form>}</div></div>
+      {githubSyncMessage && <div role="status" className={`mt-4 rounded-2xl border p-4 text-sm ${githubSyncError ? 'border-rose-200 bg-rose-50 text-rose-800' : 'border-emerald-200 bg-emerald-50 text-emerald-800'}`}>{githubSyncMessage}</div>}
       {!githubConfigured && <p className="mt-4 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800">Los repositorios, ramas y commits ya se detectan desde Vercel. Para consultar repositorios privados directamente y habilitar operaciones supervisadas, configura GITHUB_STUDIO_TOKEN con permisos mínimos.</p>}
+      {githubLastRun && <div className="mt-4 rounded-2xl border border-slate-200 bg-white p-4 text-xs text-slate-500 dark:border-slate-800 dark:bg-slate-950"><span className="font-semibold text-slate-800 dark:text-slate-100">Última sincronización directa:</span> {date(githubLastRun.finishedAt)} · {githubLastRun.discoveredCount} repositorios · {githubLastRun.status}</div>}
       {githubProjects.length === 0 ? <div className="mt-5 rounded-[26px] border border-dashed border-slate-300 bg-white p-10 text-center dark:border-slate-700 dark:bg-slate-950"><h5 className="font-semibold">No hay repositorios GitHub detectados</h5><p className="mt-2 text-sm text-slate-500">Sincroniza Vercel o conecta un repositorio al proyecto.</p></div> : <div className="mt-5 grid gap-4 xl:grid-cols-2">{githubProjects.map((item) => <article key={item.id} className="rounded-[24px] border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-950">
-        <div className="flex items-start justify-between gap-3"><div className="min-w-0"><h5 className="truncate font-semibold">{item.repositoryFullName || item.externalProjectName}</h5><p className="mt-1 text-xs text-slate-400">Proyecto Studio: {item.projectName}</p></div><span className="rounded-full bg-slate-100 px-2.5 py-1 text-[11px] font-semibold dark:bg-slate-800">{item.productionBranch || item.defaultBranch || 'sin rama'}</span></div>
+        <div className="flex items-start justify-between gap-3"><div className="min-w-0"><h5 className="truncate font-semibold">{item.repositoryFullName || item.externalProjectName}</h5><p className="mt-1 text-xs text-slate-400">Proyecto Studio: {item.projectName}</p></div><span className="rounded-full bg-slate-100 px-2.5 py-1 text-[11px] font-semibold dark:bg-slate-800">{item.defaultBranch || ('productionBranch' in item ? item.productionBranch : null) || 'sin rama'}</span></div>
         {item.projectDescription && <p className="mt-4 line-clamp-3 text-sm leading-6 text-slate-500">{item.projectDescription}</p>}
-        <dl className="mt-4 grid grid-cols-2 gap-3 text-xs"><div><dt className="text-slate-400">Último commit</dt><dd className="mt-1 font-mono font-medium">{item.productionCommitSha?.slice(0, 8) || '—'}</dd></div><div><dt className="text-slate-400">Autor</dt><dd className="mt-1 truncate font-medium">{item.productionCommitAuthor || '—'}</dd></div></dl>
+        <dl className="mt-4 grid grid-cols-2 gap-3 text-xs"><div><dt className="text-slate-400">Último commit</dt><dd className="mt-1 font-mono font-medium">{item.productionCommitSha?.slice(0, 8) || '—'}</dd></div><div><dt className="text-slate-400">Autor</dt><dd className="mt-1 truncate font-medium">{item.productionCommitAuthor || '—'}</dd></div>{'language' in item && <><div><dt className="text-slate-400">Lenguaje</dt><dd className="mt-1 font-medium">{item.language || 'No detectado'}</dd></div><div><dt className="text-slate-400">Visibilidad</dt><dd className="mt-1 font-medium">{item.visibility || '—'}</dd></div></>}</dl>
         {item.productionCommitMessage && <p className="mt-3 rounded-xl bg-slate-50 px-3 py-2 text-xs text-slate-600 dark:bg-slate-900 dark:text-slate-300">{item.productionCommitMessage}</p>}
-        <div className="mt-4 flex flex-wrap gap-2 border-t border-slate-100 pt-4 dark:border-slate-800"><Link href={`/${locale}/admin/programming/projects/${item.projectId}`} className="rounded-full border border-slate-200 px-3 py-2 text-xs font-semibold dark:border-slate-700">Ver proyecto</Link>{item.repositoryUrl && <a href={item.repositoryUrl} target="_blank" rel="noreferrer" className="rounded-full bg-slate-950 px-3 py-2 text-xs font-semibold text-white dark:bg-white dark:text-slate-950">Abrir en GitHub ↗</a>}</div>
+        {'topics' in item && item.topics.length > 0 && <div className="mt-3 flex flex-wrap gap-1.5">{item.topics.slice(0, 6).map((topic) => <span key={topic} className="rounded-full bg-cyan-50 px-2 py-1 text-[10px] font-semibold text-cyan-700">{topic}</span>)}</div>}
+        <div className="mt-4 flex flex-wrap gap-2 border-t border-slate-100 pt-4 dark:border-slate-800"><Link href={`/${locale}/admin/programming/projects/${item.projectId}/agent`} className="rounded-full bg-cyan-600 px-3 py-2 text-xs font-semibold text-white">Mejorar o programar</Link><Link href={`/${locale}/admin/programming/projects/${item.projectId}`} className="rounded-full border border-slate-200 px-3 py-2 text-xs font-semibold dark:border-slate-700">Ver proyecto</Link>{item.repositoryUrl && <a href={item.repositoryUrl} target="_blank" rel="noreferrer" className="rounded-full bg-slate-950 px-3 py-2 text-xs font-semibold text-white dark:bg-white dark:text-slate-950">Abrir en GitHub ↗</a>}</div>
       </article>)}</div>}
     </section>}
 

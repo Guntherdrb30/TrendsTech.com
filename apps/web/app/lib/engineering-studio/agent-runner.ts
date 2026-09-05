@@ -5,6 +5,8 @@ import { Prisma, prisma } from '@trends172tech/db';
 import { getProjectRoutingProfile } from './routing';
 import { buildNvidiaExecutionPlan } from './nvidia-runtime';
 import { ensureGitHubWorkspace } from './github-workspace';
+import { addVaultEntry } from './vault';
+import { buildContextPack } from './context-pack';
 
 const MODEL_ROUTE = {
   ECONOMY: { provider: 'OPENAI', model: 'gpt-5.6-luna', coordinator: 'Engineering Coordinator · Economy' },
@@ -53,6 +55,16 @@ export async function prepareAgentRun(projectId: string, actorUserId: string, ta
   const runId = randomUUID();
   const workBranch = `studio/${slug(project.name)}/${slug(task)}-${runId.slice(0, 8)}`;
   const nvidia = buildNvidiaExecutionPlan(project.localAiRequired);
+  const taskEntry = await addVaultEntry({
+    projectId,
+    type: 'TASK',
+    title: `Instrucción de programación · ${new Date().toISOString()}`,
+    content: task.trim(),
+    source: 'USER',
+    actorUserId,
+    meta: { workBranch, environment: 'PREVIEW' },
+  });
+  const context = await buildContextPack(projectId, 'ORCHESTRATOR', actorUserId);
   const workspace = await ensureGitHubWorkspace(project.repositoryUrl, workBranch);
   const status = workspace.configured ? 'READY' : 'BLOCKED_CONFIGURATION';
   const result = {
@@ -61,6 +73,9 @@ export async function prepareAgentRun(projectId: string, actorUserId: string, ta
     coordinator: route.coordinator,
     workspace,
     nvidia,
+    contextPackId: context.id,
+    estimatedContextTokens: context.estimatedTokens,
+    taskVaultEntryId: taskEntry.id,
     safety: {
       productionWrite: false,
       mergeToMain: false,
@@ -73,11 +88,11 @@ export async function prepareAgentRun(projectId: string, actorUserId: string, ta
   await prisma.$transaction(async (tx) => {
     await tx.$executeRaw(Prisma.sql`
       INSERT INTO "StudioAgentRun" (
-        "id", "projectId", "status", "provider", "model", "environment", "branchName",
-        "inputTokens", "outputTokens", "costUsd", "resultJson", "createdAt", "updatedAt"
+        "id", "projectId", "agentKey", "status", "provider", "model", "environment", "repositoryBranch",
+        "inputTokens", "outputTokens", "costUsd", "resultJson", "createdAt"
       ) VALUES (
-        ${runId}, ${projectId}, ${status}, ${route.provider}, ${route.model}, 'PREVIEW', ${workBranch},
-        0, 0, 0, CAST(${JSON.stringify(result)} AS jsonb), CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+        ${runId}, ${projectId}, 'ORCHESTRATOR', ${status}, ${route.provider}, ${route.model}, 'PREVIEW', ${workBranch},
+        0, 0, 0, CAST(${JSON.stringify(result)} AS jsonb), CURRENT_TIMESTAMP
       )
     `);
     await tx.$executeRaw(Prisma.sql`
@@ -88,13 +103,13 @@ export async function prepareAgentRun(projectId: string, actorUserId: string, ta
     `);
   });
 
-  return { runId, status, profile, model: route.model, workspace, nvidia };
+  return { runId, status, profile, model: route.model, workspace, nvidia, contextPackId: context.id, estimatedContextTokens: context.estimatedTokens };
 }
 
 export async function listAgentRuns(): Promise<StudioRunListItem[]> {
   return prisma.$queryRaw<StudioRunListItem[]>(Prisma.sql`
     SELECT r."id", r."projectId", p."name" AS "projectName", r."status", r."provider", r."model",
-      r."environment", r."branchName", r."costUsd", r."startedAt", r."createdAt", r."resultJson"
+      r."environment", r."repositoryBranch" AS "branchName", r."costUsd", r."startedAt", r."createdAt", r."resultJson"
     FROM "StudioAgentRun" r
     JOIN "StudioProject" p ON p."id" = r."projectId"
     ORDER BY r."createdAt" DESC

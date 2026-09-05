@@ -22,6 +22,17 @@ test('el centro permite seleccionar Vercel, GitHub, ChatGPT y Trends MCP', async
   assert.match(source, /Trends MCP/);
   assert.match(source, /Abrir repositorio GitHub/);
   assert.match(source, /projectDescription/);
+  assert.match(source, /Sincronizar GitHub/);
+  assert.match(source, /Mejorar o programar/);
+});
+
+test('cada proyecto abre un workspace de agente con memoria y permisos', async () => {
+  const workspacePath = new URL('../../app/[locale]/(admin)/admin/programming/projects/[projectId]/agent/page.tsx', import.meta.url);
+  const source = await readFile(workspacePath, 'utf8');
+  assert.match(source, /Chat de instrucciones/);
+  assert.match(source, /Project Vault/);
+  assert.match(source, /Último punto de trabajo/);
+  assert.match(source, /Sin escritura en producción/);
 });
 
 test('el botón representa el estado sincronizando', async () => {

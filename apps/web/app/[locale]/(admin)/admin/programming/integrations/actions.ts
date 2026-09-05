@@ -5,6 +5,8 @@ import { redirect } from 'next/navigation';
 import { requireRole } from '@/lib/auth/guards';
 import { syncVercelProjects } from '@/lib/engineering-studio/infrastructure-sync';
 import { publicVercelError } from '@/lib/engineering-studio/vercel-discovery';
+import { syncGitHubRepositories } from '@/lib/engineering-studio/github-infrastructure-sync';
+import { publicGitHubError } from '@/lib/engineering-studio/github-discovery';
 
 export async function syncVercelNowAction(formData: FormData): Promise<void> {
   await requireRole('ROOT');
@@ -15,4 +17,15 @@ export async function syncVercelNowAction(formData: FormData): Promise<void> {
   revalidatePath(`/${locale}/admin/programming/integrations`);
   revalidatePath(`/${locale}/admin/programming/projects`);
   redirect(`/${locale}/admin/programming/integrations?sync=${encodeURIComponent(outcome)}`);
+}
+
+export async function syncGitHubNowAction(formData: FormData): Promise<void> {
+  await requireRole('ROOT');
+  const locale = String(formData.get('locale') || 'es');
+  let outcome = 'ok';
+  try { await syncGitHubRepositories(); }
+  catch (error) { outcome = `error:${publicGitHubError(error).message}`; }
+  revalidatePath(`/${locale}/admin/programming/integrations`);
+  revalidatePath(`/${locale}/admin/programming/projects`);
+  redirect(`/${locale}/admin/programming/integrations?provider=github&githubSync=${encodeURIComponent(outcome)}`);
 }
