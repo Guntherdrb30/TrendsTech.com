@@ -19,6 +19,7 @@ type ProjectIntegration = {
 
 export type VercelIntegrationSummary = {
   id: string; projectId: string; projectName: string; externalProjectId: string; externalProjectName: string;
+  projectDescription: string | null;
   status: string; framework: string | null; repositoryFullName: string | null; repositoryUrl: string | null;
   defaultBranch: string | null; gitProvider: string | null; productionDeploymentId: string | null;
   productionDeploymentUrl: string | null; productionState: string | null; productionCommitSha: string | null;
@@ -230,6 +231,7 @@ export async function disconnectVercelProject(projectId: string, actorUserId: st
 
 const integrationSelect = Prisma.sql`
   SELECT i."id", i."projectId", p."name" AS "projectName", i."externalProjectId", i."externalProjectName",
+    COALESCE(NULLIF(p."summary", ''), NULLIF(p."mvpObjective", '')) AS "projectDescription",
     i."status", i."framework", i."repositoryFullName", i."repositoryUrl", i."defaultBranch", i."metaJson"->>'gitProvider' AS "gitProvider",
     i."productionDeploymentId", i."productionDeploymentUrl", i."productionState", i."productionCommitSha",
     i."metaJson"->>'productionCommitAuthor' AS "productionCommitAuthor",

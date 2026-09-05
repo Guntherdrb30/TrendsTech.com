@@ -14,6 +14,16 @@ test('la interfaz declara estados de vacío y error', async () => {
   assert.match(source, /Desconectado de Studio/);
 });
 
+test('el centro permite seleccionar Vercel, GitHub, ChatGPT y Trends MCP', async () => {
+  const source = await readFile(pagePath, 'utf8');
+  assert.match(source, /Proveedores de integración/);
+  assert.match(source, /ChatGPT \/ OpenAI/);
+  assert.match(source, /GitHub Project Discovery/);
+  assert.match(source, /Trends MCP/);
+  assert.match(source, /Abrir repositorio GitHub/);
+  assert.match(source, /projectDescription/);
+});
+
 test('el botón representa el estado sincronizando', async () => {
   const source = await readFile(syncButtonPath, 'utf8');
   assert.match(source, /Sincronizando…/);

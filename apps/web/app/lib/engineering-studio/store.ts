@@ -6,6 +6,7 @@ import { Prisma, prisma } from '@trends172tech/db';
 export type StudioProjectListItem = {
   id: string;
   name: string;
+  summary: string | null;
   clientName: string | null;
   mode: string;
   stage: string;
@@ -182,7 +183,7 @@ export async function createStudioProject(input: CreateStudioProjectInput) {
 export async function listStudioProjects(): Promise<StudioProjectListItem[]> {
   return prisma.$queryRaw<StudioProjectListItem[]>(Prisma.sql`
     SELECT
-      p."id", p."name", p."clientName", p."mode", p."stage", p."status",
+      p."id", p."name", p."summary", p."clientName", p."mode", p."stage", p."status",
       p."localAiRequired", p."createdAt",
       b."status" AS "blueprintStatus",
       f."internalCostForecast" AS "forecastCost",
