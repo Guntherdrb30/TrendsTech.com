@@ -18,6 +18,11 @@ import {
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
+const siteUrl = (process.env.BETTER_AUTH_URL || process.env.NEXT_PUBLIC_SITE_URL || "https://trends172tech.com")
+  .replace(/\/$/, "");
+const mcpResourceUrl = `${siteUrl}/mcp`;
+const mcpResourceMetadataUrl = `${siteUrl}/.well-known/oauth-protected-resource/mcp`;
+
 const pingInputSchema = z.object({ message: z.string() });
 const pingOutputSchema = z.object({ ok: z.literal(true), echo: z.string(), ts: z.string() });
 
@@ -75,7 +80,7 @@ async function authorizeMcpRequest(request: Request): Promise<McpAuthorization> 
 
   try {
     const payload = await oauthResourceClient.verifyAccessToken(token, {
-      verifyOptions: { audience: `${new URL(request.url).origin}/mcp` },
+      verifyOptions: { audience: mcpResourceUrl },
       scopes: ["mcp:read"]
     });
     const actorUserId = typeof payload.sub === "string" ? payload.sub : "";
@@ -126,7 +131,7 @@ function studioAllowedTools(authorization: Extract<McpAuthorization, { ok: true 
 }
 
 function buildServer(authorization: Extract<McpAuthorization, { ok: true }>) {
-  const server = new McpServer({ name: "Trends172 MCP Server", version: "1.1.0" }, { capabilities: { tools: {} } });
+  const server = new McpServer({ name: "Trends172 MCP Server", version: "1.1.1" }, { capabilities: { tools: {} } });
   server.registerTool("ping", { description: "Health check tool that echoes a message.", inputSchema: pingInputSchema, outputSchema: pingOutputSchema, annotations: { readOnlyHint: true, destructiveHint: false, openWorldHint: false } }, async ({ message }) => {
     const payload = { ok: true, echo: message, ts: new Date().toISOString() };
     return { content: [{ type: "text", text: JSON.stringify(payload) }], structuredContent: payload };
@@ -177,7 +182,7 @@ async function handleMcpRequest(request: Request) {
 
   const authorization = await authorizeMcpRequest(request);
   if (!authorization.ok) {
-    return NextResponse.json({ error: authorization.error }, { status: authorization.status, headers: { "Cache-Control": "no-store", "WWW-Authenticate": `Bearer realm="Trends172 MCP", resource_metadata="${url.origin}/.well-known/oauth-protected-resource/mcp", scope="mcp:read"` } });
+    return NextResponse.json({ error: authorization.error }, { status: authorization.status, headers: { "Cache-Control": "no-store", "WWW-Authenticate": `Bearer realm="Trends172 MCP", resource_metadata="${mcpResourceMetadataUrl}", scope="mcp:read"` } });
   }
 
   const transport = new WebStandardStreamableHTTPServerTransport({ sessionIdGenerator: undefined, enableJsonResponse: true });
