@@ -5,6 +5,7 @@ import { authClient } from '@/lib/auth/client';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { PasswordInput } from '@/components/ui/password-input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
@@ -17,14 +18,8 @@ type LoginCopy = {
   title: string;
   helperTitle: string;
   helperBody: string;
-  labels: {
-    email: string;
-    password: string;
-  };
-  actions: {
-    submit: string;
-    submitting: string;
-  };
+  labels: { email: string; password: string };
+  actions: { submit: string; submitting: string };
   errors: {
     emailRequired: string;
     emailInvalid: string;
@@ -40,16 +35,10 @@ function getLoginCopy(locale: string): LoginCopy {
   if (locale.startsWith('es')) {
     return {
       title: 'Iniciar sesion',
-      labels: {
-        email: 'Correo',
-        password: 'Contrasena'
-      },
-      actions: {
-        submit: 'Iniciar sesion',
-        submitting: 'Ingresando...'
-      },
+      labels: { email: 'Correo', password: 'Contrasena' },
+      actions: { submit: 'Iniciar sesion', submitting: 'Ingresando...' },
       helperTitle: 'Acceso seguro',
-      helperBody: 'Credenciales y acceso directo al entorno administrativo.',
+      helperBody: 'Credenciales y acceso directo al entorno correspondiente a tu rol.',
       errors: {
         emailRequired: 'El correo es obligatorio',
         emailInvalid: 'Ingresa un correo valido',
@@ -62,16 +51,10 @@ function getLoginCopy(locale: string): LoginCopy {
 
   return {
     title: 'Sign in',
-    labels: {
-      email: 'Email',
-      password: 'Password'
-    },
-    actions: {
-      submit: 'Sign in',
-      submitting: 'Signing in...'
-    },
+    labels: { email: 'Email', password: 'Password' },
+    actions: { submit: 'Sign in', submitting: 'Signing in...' },
     helperTitle: 'Secure login',
-    helperBody: 'Credentials and direct access to the administrative environment.',
+    helperBody: 'Credentials and direct access to the workspace assigned to your role.',
     errors: {
       emailRequired: 'Email is required',
       emailInvalid: 'Enter a valid email',
@@ -84,24 +67,15 @@ function getLoginCopy(locale: string): LoginCopy {
 
 function validateLogin(email: string, password: string, copy: LoginCopy): LoginFieldErrors {
   const errors: LoginFieldErrors = {};
-  if (!email.trim()) {
-    errors.email = copy.errors.emailRequired;
-  } else if (!/^\S+@\S+\.\S+$/.test(email.trim())) {
-    errors.email = copy.errors.emailInvalid;
-  }
-  if (!password) {
-    errors.password = copy.errors.passwordRequired;
-  }
+  if (!email.trim()) errors.email = copy.errors.emailRequired;
+  else if (!/^\S+@\S+\.\S+$/.test(email.trim())) errors.email = copy.errors.emailInvalid;
+  if (!password) errors.password = copy.errors.passwordRequired;
   return errors;
 }
 
 function resolveRedirect(locale: string, redirectTo?: string) {
-  if (!redirectTo || !redirectTo.startsWith('/')) {
-    return `/${locale}/dashboard`;
-  }
-  if (!redirectTo.startsWith(`/${locale}/`)) {
-    return `/${locale}/dashboard`;
-  }
+  if (!redirectTo || !redirectTo.startsWith('/')) return `/${locale}/dashboard`;
+  if (!redirectTo.startsWith(`/${locale}/`)) return `/${locale}/dashboard`;
   return redirectTo;
 }
 
@@ -120,18 +94,12 @@ export function LoginForm({ locale, redirectTo }: LoginFormProps) {
     setError(null);
     const errors = validateLogin(email, password, copy);
     setFieldErrors(errors);
-    if (Object.keys(errors).length > 0) {
-      return;
-    }
+    if (Object.keys(errors).length > 0) return;
 
     startTransition(async () => {
       let result: Awaited<ReturnType<typeof authClient.signIn.email>> | undefined;
       try {
-        result = await authClient.signIn.email({
-          email,
-          password,
-          rememberMe: true
-        });
+        result = await authClient.signIn.email({ email, password, rememberMe: true });
       } catch (fetchError) {
         console.error('Login failed', fetchError);
         setError(copy.errors.generic);
@@ -144,7 +112,15 @@ export function LoginForm({ locale, redirectTo }: LoginFormProps) {
         return;
       }
 
-      router.push(destination);
+      let role: string | undefined;
+      try {
+        const sessionResult = await authClient.getSession();
+        role = (sessionResult.data?.user as { role?: string } | undefined)?.role;
+      } catch (sessionError) {
+        console.error('Unable to resolve post-login role', sessionError);
+      }
+
+      router.push(role === 'PARTNER' ? `/${locale}/partner` : destination);
       router.refresh();
     });
   };
@@ -152,13 +128,9 @@ export function LoginForm({ locale, redirectTo }: LoginFormProps) {
   return (
     <Card className="interactive-panel premium-noise w-full max-w-[540px] overflow-hidden">
       <CardHeader className="space-y-3">
-        <div className="inline-flex w-fit rounded-full border border-black/8 bg-white/88 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">
-          {copy.helperTitle}
-        </div>
+        <div className="inline-flex w-fit rounded-full border border-black/8 bg-white/88 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">{copy.helperTitle}</div>
         <CardTitle className="text-2xl tracking-[-0.03em]">{copy.title}</CardTitle>
-        <p className="text-sm leading-relaxed text-slate-500">
-          {copy.helperBody}
-        </p>
+        <p className="text-sm leading-relaxed text-slate-500">{copy.helperBody}</p>
       </CardHeader>
       <CardContent>
         <form onSubmit={onSubmit} className="space-y-5">
@@ -171,59 +143,34 @@ export function LoginForm({ locale, redirectTo }: LoginFormProps) {
               onChange={(event) => {
                 const value = event.target.value;
                 setEmail(value);
-                if (fieldErrors.email) {
-                  setFieldErrors((prev) => ({
-                    ...prev,
-                    email: /^\S+@\S+\.\S+$/.test(value.trim()) ? undefined : prev.email
-                  }));
-                }
+                if (fieldErrors.email) setFieldErrors((prev) => ({ ...prev, email: /^\S+@\S+\.\S+$/.test(value.trim()) ? undefined : prev.email }));
               }}
               autoComplete="email"
               required
               aria-invalid={Boolean(fieldErrors.email)}
               aria-describedby={fieldErrors.email ? 'login-email-error' : undefined}
             />
-            {fieldErrors.email ? (
-              <p id="login-email-error" className="text-xs text-red-500">
-                {fieldErrors.email}
-              </p>
-            ) : null}
+            {fieldErrors.email ? <p id="login-email-error" className="text-xs text-red-500">{fieldErrors.email}</p> : null}
           </div>
           <div className="space-y-2">
             <Label htmlFor="password">{copy.labels.password}</Label>
-            <Input
+            <PasswordInput
               id="password"
-              type="password"
               value={password}
               onChange={(event) => {
                 const value = event.target.value;
                 setPassword(value);
-                if (fieldErrors.password) {
-                  setFieldErrors((prev) => ({
-                    ...prev,
-                    password: value ? undefined : prev.password
-                  }));
-                }
+                if (fieldErrors.password) setFieldErrors((prev) => ({ ...prev, password: value ? undefined : prev.password }));
               }}
               autoComplete="current-password"
               required
               aria-invalid={Boolean(fieldErrors.password)}
               aria-describedby={fieldErrors.password ? 'login-password-error' : undefined}
             />
-            {fieldErrors.password ? (
-              <p id="login-password-error" className="text-xs text-red-500">
-                {fieldErrors.password}
-              </p>
-            ) : null}
+            {fieldErrors.password ? <p id="login-password-error" className="text-xs text-red-500">{fieldErrors.password}</p> : null}
           </div>
-          {error ? (
-            <div className="rounded-[18px] border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
-              {error}
-            </div>
-          ) : null}
-          <Button type="submit" disabled={isPending} className="w-full">
-            {isPending ? copy.actions.submitting : copy.actions.submit}
-          </Button>
+          {error ? <div className="rounded-[18px] border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">{error}</div> : null}
+          <Button type="submit" disabled={isPending} className="w-full">{isPending ? copy.actions.submitting : copy.actions.submit}</Button>
         </form>
       </CardContent>
     </Card>
