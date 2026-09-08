@@ -1,4 +1,4 @@
-import { createCipheriv, createDecipheriv, createHash, randomBytes } from 'node:crypto';
+import { createCipheriv, createDecipheriv, createHash, randomBytes, randomUUID } from 'node:crypto';
 import { prisma } from '@trends172tech/db';
 
 const PREFIX = 'partner-invite-secret:';
@@ -34,7 +34,7 @@ export async function storePartnerInviteSecret(userId: string, temporaryPassword
   `;
   await prisma.$executeRaw`
     INSERT INTO "AuthVerification" ("id", "identifier", "value", "expiresAt", "createdAt", "updatedAt")
-    VALUES (${crypto.randomUUID()}, ${identifier}, ${encrypted}, NOW() + INTERVAL '1 hour', NOW(), NOW())
+    VALUES (${randomUUID()}, ${identifier}, ${encrypted}, NOW() + INTERVAL '1 hour', NOW(), NOW())
   `;
 }
 
