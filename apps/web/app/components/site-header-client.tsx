@@ -90,10 +90,10 @@ export function SiteHeaderClient({ base, isAuthenticated, labels }: SiteHeaderCl
   const navLinks = [
     { href: base, label: labels.home, desktopHidden: true },
     { href: `${base}/que-ofrecemos`, label: labels.offerings },
-    { href: `${base}/aliados`, label: labels.partners, featured: true },
+    { href: `${base}/aliados`, label: labels.partners, featured: 'cyan' },
     { href: `${base}/systems`, label: labels.systems },
     { href: `${base}/projects`, label: labels.projects },
-    { href: `${base}/projects/luna-football`, label: labels.lunaFootball, featured: true },
+    { href: `${base}/projects/luna-football`, label: labels.lunaFootball, featured: 'orange' },
     { href: `${base}/news`, label: labels.news },
   ];
 
@@ -141,7 +141,7 @@ export function SiteHeaderClient({ base, isAuthenticated, labels }: SiteHeaderCl
                   href={link.href}
                   onClick={() => setMenuOpen(false)}
                   className={`rounded-xl px-3 py-2.5 font-medium transition hover:bg-slate-50 hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-200 dark:hover:bg-slate-900/70 ${
-                    link.featured ? 'text-orange-600 dark:text-orange-300' : ''
+                    link.featured === 'cyan' ? 'text-[#008f94]' : link.featured === 'orange' ? 'text-orange-600 dark:text-orange-300' : ''
                   }`}
                 >
                   {link.label}
@@ -214,9 +214,11 @@ export function SiteHeaderClient({ base, isAuthenticated, labels }: SiteHeaderCl
                 key={link.href}
                 href={link.href}
                 className={`whitespace-nowrap rounded-full px-2.5 py-2 font-medium transition hover:bg-slate-100 hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-200 dark:hover:bg-slate-800/70 dark:hover:text-white xl:px-3 ${
-                  link.featured
-                    ? 'bg-orange-50 text-orange-700 hover:bg-orange-100 dark:bg-orange-500/10 dark:text-orange-300 dark:hover:bg-orange-500/20'
-                    : ''
+                  link.featured === 'cyan'
+                    ? 'bg-[#e9fbf8] text-[#008f94] hover:bg-[#d9f8f4]'
+                    : link.featured === 'orange'
+                      ? 'bg-orange-50 text-orange-700 hover:bg-orange-100 dark:bg-orange-500/10 dark:text-orange-300 dark:hover:bg-orange-500/20'
+                      : ''
                 } ${link.desktopHidden ? 'min-[1440px]:hidden' : ''}`}
               >
                 {link.label}
