@@ -25,6 +25,7 @@ export async function requirePartner(locale = 'es') {
 
   if (!partner) redirect(`/${locale}/partner/access-error`);
   if (partner.status === 'SUSPENDED') redirect(`/${locale}/partner/suspended`);
+  if (partner.status !== 'ACTIVE') redirect(`/${locale}/partner/activate`);
 
   return { user, partner };
 }
