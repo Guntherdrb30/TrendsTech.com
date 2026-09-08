@@ -8,6 +8,7 @@ import { USD_MICROS_PER_DOLLAR } from '@/lib/billing/pricing';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
+import { PasswordInput } from '@/components/ui/password-input';
 import { Label } from '@/components/ui/label';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { RootClient } from './root-client';
@@ -746,7 +747,7 @@ export default async function RootPage({ params }: { params: Promise<{ locale: s
                                     </div>
                                     <div className="grid gap-2">
                                       <Label htmlFor={`password-${user.id}`}>{tr('Nueva contrasena', 'New password')}</Label>
-                                      <Input id={`password-${user.id}`} name="password" type="password" />
+                                      <PasswordInput id={`password-${user.id}`} name="password" />
                                     </div>
                                     <Button type="submit" size="sm" disabled={!canManage}>
                                       {tr('Guardar cambios', 'Save changes')}

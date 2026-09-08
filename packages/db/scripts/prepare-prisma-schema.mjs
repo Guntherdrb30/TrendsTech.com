@@ -6,18 +6,19 @@ const here = path.dirname(fileURLToPath(import.meta.url));
 const schemaPath = path.resolve(here, '../prisma/schema.prisma');
 let schema = fs.readFileSync(schemaPath, 'utf8');
 
-const current = `enum UserRole {\n  ROOT\n  TENANT_ADMIN\n  TENANT_OPERATOR\n  TENANT_VIEWER\n}`;
-const desired = `enum UserRole {\n  ROOT\n  TENANT_ADMIN\n  TENANT_OPERATOR\n  TENANT_VIEWER\n  PARTNER\n}`;
+const enumPattern = /enum\s+UserRole\s*\{([\s\S]*?)\}/m;
+const match = schema.match(enumPattern);
+if (!match) {
+  throw new Error('Could not locate the UserRole enum in prisma/schema.prisma');
+}
 
-if (schema.includes(desired)) {
+if (/^\s*PARTNER\s*$/m.test(match[1])) {
   console.log('[prisma] UserRole already includes PARTNER');
   process.exit(0);
 }
 
-if (!schema.includes(current)) {
-  throw new Error('Could not locate the expected UserRole enum in prisma/schema.prisma');
-}
-
-schema = schema.replace(current, desired);
+const lineEnding = schema.includes('\r\n') ? '\r\n' : '\n';
+const updatedEnum = match[0].replace(/\s*\}$/, `${lineEnding}  PARTNER${lineEnding}}`);
+schema = schema.replace(match[0], updatedEnum);
 fs.writeFileSync(schemaPath, schema, 'utf8');
 console.log('[prisma] Added PARTNER to UserRole before Prisma Client generation');

@@ -3,7 +3,7 @@
 import { useState, useTransition } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
+import { PasswordInput } from '@/components/ui/password-input';
 import { Label } from '@/components/ui/label';
 
 type ChangePasswordFormProps = {
@@ -128,9 +128,8 @@ export function ChangePasswordForm({ locale }: ChangePasswordFormProps) {
           <p className="text-sm text-slate-500 dark:text-slate-400">{copy.body}</p>
           <div className="space-y-2">
             <Label htmlFor="currentPassword">{copy.currentLabel}</Label>
-            <Input
+            <PasswordInput
               id="currentPassword"
-              type="password"
               value={currentPassword}
               onChange={(event) => setCurrentPassword(event.target.value)}
               autoComplete="current-password"
@@ -138,9 +137,8 @@ export function ChangePasswordForm({ locale }: ChangePasswordFormProps) {
           </div>
           <div className="space-y-2">
             <Label htmlFor="newPassword">{copy.nextLabel}</Label>
-            <Input
+            <PasswordInput
               id="newPassword"
-              type="password"
               value={newPassword}
               onChange={(event) => setNewPassword(event.target.value)}
               autoComplete="new-password"
@@ -148,9 +146,8 @@ export function ChangePasswordForm({ locale }: ChangePasswordFormProps) {
           </div>
           <div className="space-y-2">
             <Label htmlFor="confirmPassword">{copy.confirmLabel}</Label>
-            <Input
+            <PasswordInput
               id="confirmPassword"
-              type="password"
               value={confirmPassword}
               onChange={(event) => setConfirmPassword(event.target.value)}
               autoComplete="new-password"

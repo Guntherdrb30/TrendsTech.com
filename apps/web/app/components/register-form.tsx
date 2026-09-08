@@ -3,6 +3,7 @@
 import { useState, useTransition } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { PasswordInput } from '@/components/ui/password-input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
@@ -383,9 +384,8 @@ export function RegisterForm({ locale }: RegisterFormProps) {
           </div>
           <div className="space-y-2">
             <Label htmlFor="password">{copy.labels.password}</Label>
-            <Input
+            <PasswordInput
               id="password"
-              type="password"
               value={payload.password}
               onChange={(event) => {
                 const value = event.target.value;

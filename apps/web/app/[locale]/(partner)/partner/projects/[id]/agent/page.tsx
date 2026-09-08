@@ -5,6 +5,7 @@ import { requirePartner } from '@/lib/partners/access';
 import { runProjectAgent } from '@/lib/partners/project-agent';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import Link from 'next/link';
 
 type ProjectRow = { id: string; name: string; targetCompany: string; agentName: string | null; readinessScore: number };
 type ChatRow = { id: string; category: string; content: string; createdAt: Date };
@@ -48,7 +49,7 @@ export default async function ProjectAgentPage({ params }: { params: Promise<{ l
   return <div className="mx-auto max-w-5xl space-y-6">
     <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
       <div><p className="text-xs font-semibold uppercase tracking-[0.16em] text-red-600">Project Agent · memoria persistente</p><h2 className="mt-1 text-3xl font-semibold tracking-tight">{project.agentName || project.name}</h2><p className="mt-2 text-sm text-slate-500">{project.targetCompany} · preparación {project.readinessScore}%</p></div>
-      <a className="text-sm font-semibold text-red-600" href={`/${locale}/partner/projects/${id}`}>Volver al expediente</a>
+      <Link className="text-sm font-semibold text-red-600" href={`/${locale}/partner/projects/${id}`}>Volver al expediente</Link>
     </div>
 
     {!enabled && <div className="rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900"><strong>IA preparada pero deshabilitada.</strong> La interfaz, aislamiento por proyecto y persistencia están conectados. Para evitar consumo accidental de API, el administrador debe habilitar <code>PARTNER_AGENT_API_ENABLED=true</code>.</div>}

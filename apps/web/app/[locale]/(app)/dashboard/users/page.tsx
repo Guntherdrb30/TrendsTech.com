@@ -7,6 +7,7 @@ import { requireTenantId } from '@/lib/tenant';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
+import { PasswordInput } from '@/components/ui/password-input';
 import { Label } from '@/components/ui/label';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { hashPassword } from '@/lib/auth/password';
@@ -171,7 +172,7 @@ export default async function UsersPage({ params }: { params: Promise<PageParams
             </div>
             <div className="space-y-2">
               <Label htmlFor="password">{isEs ? 'Contrasena' : 'Password'}</Label>
-              <Input id="password" name="password" type="password" required />
+              <PasswordInput id="password" name="password" required />
             </div>
             <div className="space-y-2">
               <Label htmlFor="phone">{isEs ? 'Telefono' : 'Phone'}</Label>

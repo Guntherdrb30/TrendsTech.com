@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { prisma } from '@trends172tech/db';
 import { requireAuth } from '@/lib/auth/guards';
 import { resolveTenantFromUser } from '@/lib/tenant';
+import { redirect } from 'next/navigation';
 
 function getInitials(name?: string | null, email?: string | null) {
   const source = name?.trim() || email?.trim() || '';
@@ -22,6 +23,7 @@ export default async function DashboardLayout({
   const { locale } = await params;
   const isEs = locale.startsWith('es');
   const user = await requireAuth();
+  if (user.role === 'PARTNER') redirect(`/${locale}/partner`);
   const tenant = await resolveTenantFromUser(user);
 
   const profile = await prisma.user.findUnique({

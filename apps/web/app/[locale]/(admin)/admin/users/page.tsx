@@ -10,6 +10,7 @@ import { sendEmail } from '@/lib/email/send';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
+import { PasswordInput } from '@/components/ui/password-input';
 import { Label } from '@/components/ui/label';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 
@@ -173,7 +174,7 @@ export default async function AdminUsersPage({ params }: { params: Promise<{ loc
               <div className="space-y-2"><Label htmlFor="companyName">Empresa aliada</Label><Input id="companyName" name="companyName" required /></div>
               <div className="space-y-2"><Label htmlFor="contactName">Nombre de la persona</Label><Input id="contactName" name="contactName" required /></div>
               <div className="space-y-2"><Label htmlFor="email">Correo de acceso</Label><Input id="email" name="email" type="email" required /></div>
-              <div className="space-y-2"><Label htmlFor="temporaryPassword">Clave temporal</Label><Input id="temporaryPassword" name="temporaryPassword" type="password" minLength={12} required /><p className="text-xs text-slate-500">La defines tú. El aliado la recibe por correo y deberá cambiarla después de verificar su cuenta.</p></div>
+              <div className="space-y-2"><Label htmlFor="temporaryPassword">Clave temporal</Label><PasswordInput id="temporaryPassword" name="temporaryPassword" minLength={12} required /><p className="text-xs text-slate-500">La defines tú. El aliado la recibe por correo y deberá cambiarla después de verificar su cuenta.</p></div>
               <div className="space-y-2"><Label htmlFor="country">País</Label><Input id="country" name="country" /></div>
               <div className="space-y-2"><Label htmlFor="description">Contexto / descripción</Label><textarea id="description" name="description" rows={4} className="w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm dark:border-slate-800 dark:bg-slate-950" /></div>
               <Button type="submit" className="w-full">Crear usuario y enviar correo</Button>

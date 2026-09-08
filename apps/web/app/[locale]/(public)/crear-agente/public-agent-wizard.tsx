@@ -6,6 +6,7 @@ import { IntakeChatWizard } from './intake-chat';
 import type { IntakeResult } from './intake-chat';
 import { AgentPreviewScreen } from './agent-preview-screen';
 import type { PublicSkillGroup, PublicSkillItem } from './actions';
+import { PasswordInput } from '@/components/ui/password-input';
 
 const STORAGE_KEY = 'pendingAgentConfig';
 
@@ -581,8 +582,7 @@ export function PublicAgentWizard({ skillGroups, locale }: Props) {
                     </div>
                     <div className="space-y-1.5">
                       <label className="block text-sm font-semibold text-slate-700">{copy.loginPassLabel}</label>
-                      <input
-                        type="password"
+                      <PasswordInput
                         value={authPassword}
                         onChange={(e) => setAuthPassword(e.target.value)}
                         placeholder="••••••••"

@@ -1,0 +1,12 @@
+import { prisma } from '@trends172tech/db';
+import { requirePartner } from '@/lib/partners/access';
+import { updatePartnerProfile } from '../actions';
+import { WorkspaceHeader } from '@/components/partner/workspace-ui';
+import { ChangePasswordForm } from '@/components/change-password-form';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
+
+type ProfileRow={companyName:string;legalName:string|null;country:string|null;website:string|null;description:string|null;email:string;name:string|null;phone:string|null};
+export default async function ProfilePage({params}:{params:Promise<{locale:string}>}){const{locale}=await params;const{partner}=await requirePartner(locale);const[profile]=await prisma.$queryRaw<ProfileRow[]>`SELECT p."companyName",p."legalName",p."country",p."website",p."description",u."email",u."name",u."phone" FROM "Partner" p JOIN "User" u ON u."id"=p."userId" WHERE p."id"=${partner.id} LIMIT 1`;return <div className="space-y-6"><WorkspaceHeader eyebrow="Cuenta del aliado" title="Perfil" description="Mantén actualizados los datos institucionales que Trends172Tech usará para coordinar oportunidades y revisiones."/><div className="grid gap-6 xl:grid-cols-2"><Card><CardHeader><CardTitle>Organización</CardTitle></CardHeader><CardContent><form action={updatePartnerProfile} className="space-y-4"><input type="hidden" name="locale" value={locale}/><div className="space-y-2"><Label>Empresa</Label><Input name="companyName" defaultValue={profile?.companyName} required/></div><div className="space-y-2"><Label>Razón social</Label><Input name="legalName" defaultValue={profile?.legalName||''}/></div><div className="grid gap-4 sm:grid-cols-2"><div className="space-y-2"><Label>País</Label><Input name="country" defaultValue={profile?.country||''}/></div><div className="space-y-2"><Label>Sitio web</Label><Input name="website" type="url" defaultValue={profile?.website||''}/></div></div><div className="space-y-2"><Label>Descripción y capacidades</Label><textarea name="description" rows={7} defaultValue={profile?.description||''} className="w-full rounded-xl border px-4 py-3 text-sm"/></div><div className="rounded-lg bg-slate-50 p-3 text-sm text-slate-500">Contacto: {profile?.name||'—'} · {profile?.email} {profile?.phone?`· ${profile.phone}`:''}</div><Button>Guardar perfil</Button></form></CardContent></Card><ChangePasswordForm locale={locale}/></div></div>}

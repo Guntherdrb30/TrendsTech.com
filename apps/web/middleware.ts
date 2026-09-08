@@ -47,6 +47,7 @@ function stripLocale(pathname: string) {
 function isProtectedPath(pathname: string) {
   const normalized = stripLocale(pathname);
   return (
+    normalized.startsWith('/partner') ||
     normalized.startsWith('/dashboard') ||
     normalized.startsWith('/root') ||
     normalized.startsWith('/admin')

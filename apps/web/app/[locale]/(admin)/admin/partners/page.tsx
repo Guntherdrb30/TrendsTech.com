@@ -10,6 +10,7 @@ import { sendEmail } from '@/lib/email/send';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
+import { PasswordInput } from '@/components/ui/password-input';
 import { Label } from '@/components/ui/label';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 
@@ -185,7 +186,7 @@ export default async function PartnersAdminPage({ params }: { params: Promise<{ 
                 <div className="space-y-2"><Label htmlFor="website">Sitio web</Label><Input id="website" name="website" placeholder="https://" /></div>
               </div>
               <div className="space-y-2"><Label htmlFor="description">Descripción / contexto del aliado</Label><textarea id="description" name="description" rows={4} className="w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-slate-900 dark:border-slate-800 dark:bg-slate-950" /></div>
-              <div className="space-y-2"><Label htmlFor="temporaryPassword">Clave temporal</Label><Input id="temporaryPassword" name="temporaryPassword" type="password" minLength={12} required /><p className="text-xs text-slate-500">Mínimo 12 caracteres. Se enviará al aliado y deberá cambiarse en el primer acceso.</p></div>
+              <div className="space-y-2"><Label htmlFor="temporaryPassword">Clave temporal</Label><PasswordInput id="temporaryPassword" name="temporaryPassword" minLength={12} required /><p className="text-xs text-slate-500">Mínimo 12 caracteres. Se enviará al aliado y deberá cambiarse en el primer acceso.</p></div>
               <Button type="submit" className="w-full">Crear aliado y enviar invitación</Button>
             </form>
           </CardContent>
