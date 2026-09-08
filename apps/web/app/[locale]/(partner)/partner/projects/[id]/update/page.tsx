@@ -80,8 +80,8 @@ export default async function ProjectUpdatePage({ params }: { params: Promise<{ 
   return (
     <div className="mx-auto max-w-3xl space-y-6">
       <div>
-        <Link href={`/${locale}/partner/projects/${id}`} className="text-sm font-semibold text-red-600">← Volver al expediente</Link>
-        <p className="mt-5 text-xs font-semibold uppercase tracking-[0.16em] text-red-600">Actualizar memoria del proyecto</p>
+        <Link href={`/${locale}/partner/projects/${id}`} className="text-sm font-semibold text-[#00aeb3]">← Volver al expediente</Link>
+        <p className="mt-5 text-xs font-semibold uppercase tracking-[0.16em] text-[#00aeb3]">Actualizar memoria del proyecto</p>
         <h2 className="mt-1 text-3xl font-semibold tracking-tight">{project.name}</h2>
         <p className="mt-2 text-sm text-slate-500">{project.targetCompany} · {project.stage}</p>
       </div>
@@ -124,7 +124,7 @@ export default async function ProjectUpdatePage({ params }: { params: Promise<{ 
 
             <div className="space-y-2">
               <Label htmlFor="content">Información nueva</Label>
-              <textarea id="content" name="content" rows={10} maxLength={8000} required placeholder="Registra lo que cambió o lo que se confirmó. Esta información se incorporará al expediente y estará disponible para el Project Agent en futuras conversaciones." className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-red-500 dark:border-slate-800 dark:bg-slate-950" />
+              <textarea id="content" name="content" rows={10} maxLength={8000} required placeholder="Registra lo que cambió o lo que se confirmó. Esta información se incorporará al expediente y estará disponible para el Project Agent en futuras conversaciones." className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-[#00c7ca] dark:border-slate-800 dark:bg-slate-950" />
             </div>
 
             <div className="flex items-center justify-end gap-3">

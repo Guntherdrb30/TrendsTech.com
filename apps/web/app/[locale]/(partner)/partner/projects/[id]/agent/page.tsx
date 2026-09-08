@@ -48,8 +48,8 @@ export default async function ProjectAgentPage({ params }: { params: Promise<{ l
 
   return <div className="mx-auto max-w-5xl space-y-6">
     <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
-      <div><p className="text-xs font-semibold uppercase tracking-[0.16em] text-red-600">Project Agent · memoria persistente</p><h2 className="mt-1 text-3xl font-semibold tracking-tight">{project.agentName || project.name}</h2><p className="mt-2 text-sm text-slate-500">{project.targetCompany} · preparación {project.readinessScore}%</p></div>
-      <Link className="text-sm font-semibold text-red-600" href={`/${locale}/partner/projects/${id}`}>Volver al expediente</Link>
+      <div><p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#00aeb3]">Project Agent · memoria persistente</p><h2 className="mt-1 text-3xl font-semibold tracking-tight">{project.agentName || project.name}</h2><p className="mt-2 text-sm text-slate-500">{project.targetCompany} · preparación {project.readinessScore}%</p></div>
+      <Link className="text-sm font-semibold text-[#00aeb3]" href={`/${locale}/partner/projects/${id}`}>Volver al expediente</Link>
     </div>
 
     {!enabled && <div className="rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900"><strong>IA preparada pero deshabilitada.</strong> La interfaz, aislamiento por proyecto y persistencia están conectados. Para evitar consumo accidental de API, el administrador debe habilitar <code>PARTNER_AGENT_API_ENABLED=true</code>.</div>}
@@ -60,7 +60,7 @@ export default async function ProjectAgentPage({ params }: { params: Promise<{ l
       </div>
       <form action={sendMessage} className="mt-4 space-y-3">
         <input type="hidden" name="locale" value={locale}/><input type="hidden" name="opportunityId" value={id}/>
-        <textarea name="message" required maxLength={6000} rows={5} placeholder="Ej.: Acabamos de salir de la primera reunión. Nos indicaron que usan LuloWin y que el proceso de APU se revisa manualmente. ¿Qué debemos levantar en la segunda reunión?" className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-red-500"/>
+        <textarea name="message" required maxLength={6000} rows={5} placeholder="Ej.: Acabamos de salir de la primera reunión. Nos indicaron que usan LuloWin y que el proceso de APU se revisa manualmente. ¿Qué debemos levantar en la segunda reunión?" className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-[#00c7ca]"/>
         <div className="flex items-center justify-between gap-3"><p className="text-xs text-slate-500">La información útil aportada aquí puede incorporarse a la memoria del proyecto con su fuente y nivel de confianza.</p><Button type="submit" disabled={!enabled}>Enviar al agente</Button></div>
       </form>
     </CardContent></Card>
