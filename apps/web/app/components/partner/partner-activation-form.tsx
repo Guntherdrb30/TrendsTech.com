@@ -4,7 +4,7 @@ import { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
+import { PasswordInput } from '@/components/ui/password-input';
 import { Label } from '@/components/ui/label';
 
 export function PartnerActivationForm({ locale }: { locale: string }) {
@@ -41,9 +41,9 @@ export function PartnerActivationForm({ locale }: { locale: string }) {
       <CardHeader><CardTitle>Cambiar clave temporal</CardTitle></CardHeader>
       <CardContent>
         <form onSubmit={submit} className="space-y-5">
-          <div className="space-y-2"><Label htmlFor="currentPassword">Clave temporal</Label><Input id="currentPassword" type="password" autoComplete="current-password" value={currentPassword} onChange={(e) => setCurrentPassword(e.target.value)} /></div>
-          <div className="space-y-2"><Label htmlFor="newPassword">Nueva clave</Label><Input id="newPassword" type="password" autoComplete="new-password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} /></div>
-          <div className="space-y-2"><Label htmlFor="confirmPassword">Confirmar nueva clave</Label><Input id="confirmPassword" type="password" autoComplete="new-password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} /></div>
+          <div className="space-y-2"><Label htmlFor="currentPassword">Clave temporal</Label><PasswordInput id="currentPassword" autoComplete="current-password" value={currentPassword} onChange={(e) => setCurrentPassword(e.target.value)} /></div>
+          <div className="space-y-2"><Label htmlFor="newPassword">Nueva clave</Label><PasswordInput id="newPassword" autoComplete="new-password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} /></div>
+          <div className="space-y-2"><Label htmlFor="confirmPassword">Confirmar nueva clave</Label><PasswordInput id="confirmPassword" autoComplete="new-password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} /></div>
           <p className="text-xs text-slate-500">Mínimo 12 caracteres. Al guardar se revocarán las demás sesiones y el aliado quedará activo.</p>
           {error ? <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div> : null}
           <Button type="submit" disabled={pending} className="w-full">{pending ? 'Activando…' : 'Cambiar clave y entrar al portal'}</Button>
