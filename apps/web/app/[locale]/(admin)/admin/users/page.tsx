@@ -37,6 +37,34 @@ const createPartnerUserSchema = z.object({
   description: z.string().max(2000).optional()
 });
 
+async function resendPartnerVerification(formData: FormData) {
+  'use server';
+  const locale = String(formData.get('locale') || 'es');
+  const userId = String(formData.get('userId') || '');
+  if (!userId) return;
+
+  await requireRole('ROOT');
+
+  const rows = await prisma.$queryRaw<Array<{ email: string; emailVerified: boolean; role: string }>>`
+    SELECT "email", "emailVerified", "role"::text AS "role"
+    FROM "User"
+    WHERE "id" = ${userId}
+    LIMIT 1
+  `;
+  const user = rows[0];
+  if (!user || user.role !== 'PARTNER' || user.emailVerified) return;
+
+  await auth.api.sendVerificationEmail({
+    body: {
+      email: user.email,
+      callbackURL: `/${locale}/partner`
+    }
+  });
+
+  revalidatePath(`/${locale}/admin/users`);
+  redirect(`/${locale}/admin/users?resent=1`);
+}
+
 async function createPartnerUser(formData: FormData) {
   'use server';
 
@@ -120,7 +148,7 @@ export default async function AdminUsersPage({ params }: { params: Promise<{ loc
 
   const users = await prisma.$queryRaw<UserRow[]>`
     SELECT
-      u."id", u."name", u."email", u."emailVerified", u."role", u."createdAt",
+      u."id", u."name", u."email", u."emailVerified", u."role"::text AS "role", u."createdAt",
       p."id" AS "partnerId", p."companyName", p."status" AS "partnerStatus"
     FROM "User" u
     LEFT JOIN "Partner" p ON p."userId" = u."id"
@@ -133,7 +161,7 @@ export default async function AdminUsersPage({ params }: { params: Promise<{ loc
       <div>
         <p className="text-xs font-semibold uppercase tracking-[0.16em] text-cyan-700">Control ROOT</p>
         <h2 className="mt-1 text-3xl font-semibold tracking-tight">Usuarios</h2>
-        <p className="mt-2 max-w-3xl text-sm text-slate-500">Desde aquí el administrador ROOT crea y controla los accesos. Los usuarios de tipo Aliado reciben correo, verifican su dirección y acceden al Portal de Aliados con credenciales creadas por Trends172Tech.</p>
+        <p className="mt-2 max-w-3xl text-sm text-slate-500">Desde aquí el administrador ROOT crea y controla los accesos. Los aliados pendientes aparecen como no verificados y puedes reenviarles el correo de verificación cuando sea necesario.</p>
       </div>
 
       <div className="grid gap-6 xl:grid-cols-[430px_1fr]">
@@ -158,7 +186,7 @@ export default async function AdminUsersPage({ params }: { params: Promise<{ loc
           <CardContent>
             <div className="overflow-x-auto">
               <Table>
-                <TableHeader><TableRow><TableHead>Usuario</TableHead><TableHead>Tipo</TableHead><TableHead>Empresa</TableHead><TableHead>Correo</TableHead><TableHead>Verificación</TableHead><TableHead>Estado</TableHead></TableRow></TableHeader>
+                <TableHeader><TableRow><TableHead>Usuario</TableHead><TableHead>Tipo</TableHead><TableHead>Empresa</TableHead><TableHead>Correo</TableHead><TableHead>Verificación</TableHead><TableHead>Estado</TableHead><TableHead>Acción</TableHead></TableRow></TableHeader>
                 <TableBody>
                   {users.map((user) => (
                     <TableRow key={user.id}>
@@ -168,6 +196,15 @@ export default async function AdminUsersPage({ params }: { params: Promise<{ loc
                       <TableCell>{user.email}</TableCell>
                       <TableCell><span className={user.emailVerified ? 'text-emerald-600' : 'text-amber-600'}>{user.emailVerified ? 'Verificado' : 'Pendiente'}</span></TableCell>
                       <TableCell>{user.partnerStatus || 'Activo'}</TableCell>
+                      <TableCell>
+                        {user.role === 'PARTNER' && !user.emailVerified ? (
+                          <form action={resendPartnerVerification}>
+                            <input type="hidden" name="locale" value={locale} />
+                            <input type="hidden" name="userId" value={user.id} />
+                            <Button type="submit" size="sm" variant="outline">Reenviar verificación</Button>
+                          </form>
+                        ) : <span className="text-xs text-slate-400">—</span>}
+                      </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
