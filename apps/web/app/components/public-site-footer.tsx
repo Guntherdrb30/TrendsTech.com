@@ -51,6 +51,12 @@ export async function PublicSiteFooter({ locale }: { locale: string }) {
                   {locale.startsWith('es') ? 'Qué ofrecemos' : 'What we offer'}
                 </Link>
                 <Link
+                  href={`${base}/aliados`}
+                  className="interactive-chip rounded-2xl px-3 py-2 transition hover:bg-slate-50 hover:text-slate-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900/15 focus-visible:ring-offset-2"
+                >
+                  {locale.startsWith('es') ? 'Alianzas y despliegue FDE' : 'FDE deployment and partnerships'}
+                </Link>
+                <Link
                   href={`${base}/systems`}
                   className="interactive-chip rounded-2xl px-3 py-2 transition hover:bg-slate-50 hover:text-slate-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900/15 focus-visible:ring-offset-2"
                 >

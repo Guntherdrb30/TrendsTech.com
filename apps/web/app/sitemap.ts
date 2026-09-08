@@ -5,6 +5,7 @@ import { localizedPath, siteUrl } from './lib/seo';
 const publicRoutes = [
   { pathname: '', priority: 1, changeFrequency: 'weekly' as const },
   { pathname: 'que-ofrecemos', priority: 0.95, changeFrequency: 'monthly' as const },
+  { pathname: 'aliados', priority: 0.9, changeFrequency: 'monthly' as const },
   { pathname: 'systems', priority: 0.9, changeFrequency: 'monthly' as const },
   { pathname: 'systems/luna', priority: 0.9, changeFrequency: 'monthly' as const },
   { pathname: 'projects', priority: 0.8, changeFrequency: 'monthly' as const },

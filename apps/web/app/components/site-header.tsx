@@ -18,6 +18,7 @@ export async function SiteHeader({ locale }: SiteHeaderProps) {
       labels={{
         home: t('home'),
         offerings: locale.startsWith('es') ? 'Qué ofrecemos' : 'What we offer',
+        partners: locale.startsWith('es') ? 'Alianzas FDE' : 'FDE partnerships',
         agents: t('agents'),
         systems: t('systems'),
         projects: t('projects'),

@@ -14,6 +14,7 @@ type SiteHeaderClientProps = {
   labels: {
     home: string;
     offerings: string;
+    partners: string;
     agents: string;
     systems: string;
     projects: string;
@@ -89,6 +90,7 @@ export function SiteHeaderClient({ base, isAuthenticated, labels }: SiteHeaderCl
   const navLinks = [
     { href: base, label: labels.home, desktopHidden: true },
     { href: `${base}/que-ofrecemos`, label: labels.offerings },
+    { href: `${base}/aliados`, label: labels.partners, featured: true },
     { href: `${base}/systems`, label: labels.systems },
     { href: `${base}/projects`, label: labels.projects },
     { href: `${base}/projects/luna-football`, label: labels.lunaFootball, featured: true },
