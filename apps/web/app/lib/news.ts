@@ -4,6 +4,18 @@ export function localeToLanguage(locale: string) {
   return locale.toLowerCase().startsWith("en") ? Language.EN : Language.ES;
 }
 
+const publicNewsSelect = {
+  id: true,
+  slug: true,
+  title: true,
+  summary: true,
+  body: true,
+  category: true,
+  featured: true,
+  publishedAt: true,
+  updatedAt: true
+} as const;
+
 export async function getPublishedNewsPosts(locale: string, limit?: number) {
   return prisma.newsPost.findMany({
     where: {
@@ -13,17 +25,19 @@ export async function getPublishedNewsPosts(locale: string, limit?: number) {
     },
     orderBy: [{ featured: "desc" }, { publishedAt: "desc" }],
     take: limit,
-    select: {
-      id: true,
-      slug: true,
-      title: true,
-      summary: true,
-      body: true,
-      category: true,
-      featured: true,
-      publishedAt: true,
-      updatedAt: true
-    }
+    select: publicNewsSelect
+  });
+}
+
+export async function getPublishedNewsPostBySlug(locale: string, slug: string) {
+  return prisma.newsPost.findFirst({
+    where: {
+      slug,
+      language: localeToLanguage(locale),
+      status: NewsPostStatus.PUBLISHED,
+      publishedAt: { not: null }
+    },
+    select: publicNewsSelect
   });
 }
 
