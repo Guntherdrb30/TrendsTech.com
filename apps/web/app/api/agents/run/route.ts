@@ -1,11 +1,11 @@
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
+import { type RegisteredAgentKey } from '@trends172tech/core';
 import { AuthError, requireRole } from '@/lib/auth/guards';
 import { requireTenantId } from '@/lib/tenant';
 import { enforceRequestRateLimit } from '@/lib/security/rate-limit';
 import { contextFromRequest, inspectCarpiHogarPilot, runCarpiHogarPilotTool } from '@/lib/agent-platform/runtime';
-import { runCarpiHogarAgent } from '@/lib/agent-platform/orchestrator';
-import { runArquiAi } from '@/lib/agent-platform/arqui-ai';
+import { runRegisteredAgent } from '@/lib/agent-platform/registered-agent-runner';
 
 const requestSchema = z.object({
   agentInstanceId: z.string().min(1),
@@ -70,13 +70,9 @@ export async function POST(request: Request) {
     }
 
     const context = contextFromRequest(agentRequest);
-    if (body.data.agentKey === 'arqui-ai') {
-      const data = await runArquiAi({ request: agentRequest, context });
-      return NextResponse.json({ data, mode: 'agent', agentKey: 'arqui-ai' });
-    }
-
-    const data = await runCarpiHogarAgent({ request: agentRequest, context });
-    return NextResponse.json({ data, mode: 'agent', agentKey: 'carpihogar-customer' });
+    const agentKey = body.data.agentKey as RegisteredAgentKey;
+    const data = await runRegisteredAgent({ agentKey, request: agentRequest, context });
+    return NextResponse.json({ data, mode: 'agent', agentKey });
   } catch (error) {
     return errorResponse(error);
   }
