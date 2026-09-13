@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { calculateUsageCost, extractCachedInputTokens } from '../../lib/agent-platform/usage-cost';
+import { calculateUsageCost, extractCachedInputTokens } from '../../app/lib/agent-platform/usage-cost';
 
 test('extractCachedInputTokens aggregates cached detail records', () => {
   assert.equal(extractCachedInputTokens([{ cached_tokens: 250 }, { cachedTokens: 100 }]), 350);
