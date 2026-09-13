@@ -78,12 +78,12 @@ export async function callMcpTool(args: {
     throw new Error(`Unexpected human approval evidence for tool: ${toolName}`);
   }
 
-  return withMcpClient(server, async (client) => {
+  return withMcpClient(server, async (client): Promise<McpCallResult> => {
     const result = await client.callTool({ name: toolName, arguments: input });
     return {
       content: Array.isArray(result.content) ? result.content as Array<Record<string, unknown>> : undefined,
       structuredContent: result.structuredContent as Record<string, unknown> | undefined,
-      isError: result.isError
+      isError: typeof result.isError === 'boolean' ? result.isError : undefined
     };
   });
 }
