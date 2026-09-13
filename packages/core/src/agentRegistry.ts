@@ -29,19 +29,10 @@ export const AGENT_REGISTRY = {
     channels: ['web', 'chatgpt', 'whatsapp', 'voice', 'api'],
     mcpKey: 'carpihogar-mcp',
     allowedTools: [
-      'get_capabilities',
-      'search_products',
-      'get_product',
-      'view_cart',
-      'add_to_cart',
-      'update_cart_quantity',
-      'remove_from_cart',
-      'analyze_design_request',
-      'analyze_project_document',
-      'generate_bom',
-      'validate_bom_stock',
-      'create_carpentry_estimate',
-      'generate_cut_list'
+      'get_capabilities', 'search_products', 'get_product', 'view_cart', 'add_to_cart',
+      'update_cart_quantity', 'remove_from_cart', 'analyze_design_request', 'analyze_project_document',
+      'generate_bom', 'validate_bom_stock', 'create_carpentry_estimate', 'generate_cut_list',
+      'add_project_to_cart'
     ],
     maxTurns: 8,
     instructions: [
@@ -50,7 +41,7 @@ export const AGENT_REGISTRY = {
       'Nunca inventes precios, stock, SKU, productos, medidas ni resultados de herramientas.',
       'Para informacion transaccional actual debes usar una herramienta antes de responder.',
       'No afirmes que una accion se completo si la herramienta no lo confirma.',
-      'Las acciones que requieren aprobacion humana no estan disponibles y debes explicarlo si son necesarias.',
+      'Las acciones que requieren aprobacion humana no se exponen al modelo y deben ejecutarse por el flujo de aprobacion.',
       'Responde en el idioma del usuario y de forma concisa.'
     ]
   },
@@ -66,15 +57,9 @@ export const AGENT_REGISTRY = {
     channels: ['web', 'chatgpt', 'api'],
     mcpKey: 'carpihogar-mcp',
     allowedTools: [
-      'get_capabilities',
-      'search_products',
-      'get_product',
-      'analyze_design_request',
-      'analyze_project_document',
-      'generate_bom',
-      'validate_bom_stock',
-      'create_carpentry_estimate',
-      'generate_cut_list'
+      'get_capabilities', 'search_products', 'get_product', 'analyze_design_request',
+      'analyze_project_document', 'generate_bom', 'validate_bom_stock', 'create_carpentry_estimate',
+      'generate_cut_list', 'add_project_to_cart'
     ],
     maxTurns: 10,
     instructions: [
@@ -84,7 +69,7 @@ export const AGENT_REGISTRY = {
       'Nunca inventes productos, SKU, precios, stock, medidas ni datos faltantes.',
       'Distingue claramente medidas confirmadas, supuestos y datos pendientes.',
       'Cuando falten medidas esenciales, solicita solo la informacion minima necesaria antes de cerrar un BOM o presupuesto.',
-      'No agregues proyectos al carrito ni ejecutes compras; esas acciones requieren aprobacion humana y otro flujo.',
+      'Agregar un proyecto al carrito requiere aprobacion humana y nunca esta disponible como tool directa del modelo.',
       'Para datos comerciales o de inventario actuales, consulta siempre las herramientas antes de responder.',
       'Responde en el idioma del usuario con estructura clara y profesional.'
     ]
