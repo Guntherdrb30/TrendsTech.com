@@ -5,11 +5,13 @@ import { requireTenantId } from '@/lib/tenant';
 import { enforceRequestRateLimit } from '@/lib/security/rate-limit';
 import { contextFromRequest, inspectCarpiHogarPilot, runCarpiHogarPilotTool } from '@/lib/agent-platform/runtime';
 import { runCarpiHogarAgent } from '@/lib/agent-platform/orchestrator';
+import { runArquiAi } from '@/lib/agent-platform/arqui-ai';
 
 const requestSchema = z.object({
   agentInstanceId: z.string().min(1),
   sessionId: z.string().min(1),
   message: z.string().min(1).max(4000),
+  agentKey: z.enum(['carpihogar-customer', 'arqui-ai']).optional().default('carpihogar-customer'),
   channel: z.enum(['web', 'chatgpt', 'whatsapp', 'voice', 'engineering_studio', 'partner_portal', 'api']).optional(),
   projectId: z.string().optional(),
   endCustomerId: z.string().optional(),
@@ -68,8 +70,13 @@ export async function POST(request: Request) {
     }
 
     const context = contextFromRequest(agentRequest);
+    if (body.data.agentKey === 'arqui-ai') {
+      const data = await runArquiAi({ request: agentRequest, context });
+      return NextResponse.json({ data, mode: 'agent', agentKey: 'arqui-ai' });
+    }
+
     const data = await runCarpiHogarAgent({ request: agentRequest, context });
-    return NextResponse.json({ data, mode: 'agent' });
+    return NextResponse.json({ data, mode: 'agent', agentKey: 'carpihogar-customer' });
   } catch (error) {
     return errorResponse(error);
   }
