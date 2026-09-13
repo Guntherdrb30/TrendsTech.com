@@ -15,7 +15,127 @@ export type AuthorizedAgentExecution = {
   agentKey: RegisteredAgentKey;
   channel: AgentChannel;
   endCustomerId?: string;
+  agentAccessId?: string;
 };
+
+const EXTERNAL_CHANNELS = new Set<AgentChannel>(['web', 'chatgpt', 'whatsapp', 'voice', 'partner_portal']);
+const DOMAIN_GOVERNED_CHANNELS = new Set<AgentChannel>(['web', 'partner_portal']);
+
+function channelAliases(channel: AgentChannel) {
+  if (channel === 'web') return ['web', 'embedded_web'];
+  return [channel];
+}
+
+function normalizedHost(value?: string | null) {
+  if (!value) return null;
+  try {
+    const url = value.includes('://') ? new URL(value) : new URL(`https://${value}`);
+    return url.hostname.toLowerCase().replace(/^www\./, '');
+  } catch {
+    return null;
+  }
+}
+
+function domainAllowed(host: string, allowedDomains: string[]) {
+  return allowedDomains.some((entry) => {
+    const allowed = normalizedHost(entry);
+    if (!allowed) return false;
+    return host === allowed || host.endsWith(`.${allowed}`);
+  });
+}
+
+function monthStartUtc() {
+  const now = new Date();
+  return new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1));
+}
+
+async function enforceAgentAccess(args: {
+  tenantId: string;
+  agentInstanceId: string;
+  channel: AgentChannel;
+  requestOrigin?: string | null;
+}) {
+  if (!EXTERNAL_CHANNELS.has(args.channel)) return undefined;
+
+  const access = await prisma.agentAccess.findFirst({
+    where: {
+      tenantId: args.tenantId,
+      agentId: args.agentInstanceId,
+      isActive: true,
+      channel: { in: channelAliases(args.channel) }
+    },
+    select: {
+      id: true,
+      allowedDomains: true,
+      maxTokensPerMonth: true
+    }
+  });
+
+  if (!access) {
+    throw new AgentPlatformSecurityError('Agent access is not enabled for this channel', 403);
+  }
+
+  if (DOMAIN_GOVERNED_CHANNELS.has(args.channel) && access.allowedDomains.length > 0) {
+    const host = normalizedHost(args.requestOrigin);
+    if (!host || !domainAllowed(host, access.allowedDomains)) {
+      await prisma.accessLog.create({
+        data: {
+          tenantId: args.tenantId,
+          agentInstanceId: args.agentInstanceId,
+          agentAccessId: access.id,
+          domain: host,
+          channel: args.channel,
+          event: 'agent.execute',
+          status: 'DENIED',
+          reason: 'DOMAIN_NOT_ALLOWED'
+        }
+      });
+      throw new AgentPlatformSecurityError('Origin is not allowed for this agent access', 403);
+    }
+  }
+
+  if (access.maxTokensPerMonth && access.maxTokensPerMonth > 0) {
+    const aggregate = await prisma.tokenUsageLog.aggregate({
+      where: {
+        tenantId: args.tenantId,
+        agentInstanceId: args.agentInstanceId,
+        createdAt: { gte: monthStartUtc() }
+      },
+      _sum: { totalTokens: true }
+    });
+    const used = aggregate._sum.totalTokens ?? 0;
+    if (used >= access.maxTokensPerMonth) {
+      await prisma.accessLog.create({
+        data: {
+          tenantId: args.tenantId,
+          agentInstanceId: args.agentInstanceId,
+          agentAccessId: access.id,
+          domain: normalizedHost(args.requestOrigin),
+          channel: args.channel,
+          event: 'agent.execute',
+          status: 'DENIED',
+          reason: 'MONTHLY_TOKEN_LIMIT_REACHED',
+          metaJson: { usedTokens: used, maxTokensPerMonth: access.maxTokensPerMonth }
+        }
+      });
+      throw new AgentPlatformSecurityError('Monthly agent usage limit reached', 429);
+    }
+  }
+
+  await prisma.accessLog.create({
+    data: {
+      tenantId: args.tenantId,
+      agentInstanceId: args.agentInstanceId,
+      agentAccessId: access.id,
+      domain: normalizedHost(args.requestOrigin),
+      channel: args.channel,
+      event: 'agent.execute',
+      status: 'ALLOWED'
+    }
+  });
+
+  return access.id;
+}
 
 export async function authorizeAgentExecution(args: {
   tenantId: string;
@@ -25,6 +145,7 @@ export async function authorizeAgentExecution(args: {
   channel: AgentChannel;
   endCustomerId?: string;
   toolName?: string;
+  requestOrigin?: string | null;
 }): Promise<AuthorizedAgentExecution> {
   const profile = getAgentRuntimeProfile(args.agentKey);
 
@@ -76,6 +197,13 @@ export async function authorizeAgentExecution(args: {
     }
   }
 
+  const agentAccessId = await enforceAgentAccess({
+    tenantId: args.tenantId,
+    agentInstanceId: args.agentInstanceId,
+    channel: args.channel,
+    requestOrigin: args.requestOrigin
+  });
+
   const existingSession = await prisma.agentSession.findUnique({
     where: {
       tenantId_sessionId: {
@@ -89,6 +217,9 @@ export async function authorizeAgentExecution(args: {
   if (existingSession && existingSession.agentInstanceId !== args.agentInstanceId) {
     throw new AgentPlatformSecurityError('Session is already bound to another agent', 409);
   }
+  if (existingSession?.channel && existingSession.channel !== args.channel) {
+    throw new AgentPlatformSecurityError('Session is already bound to another channel', 409);
+  }
 
   if (!existingSession) {
     await prisma.agentSession.create({
@@ -99,19 +230,6 @@ export async function authorizeAgentExecution(args: {
         channel: args.channel
       }
     });
-  } else {
-    await prisma.agentSession.update({
-      where: {
-        tenantId_sessionId: {
-          tenantId: args.tenantId,
-          sessionId: args.sessionId
-        }
-      },
-      data: {
-        // Preserve the original channel if present; channel transitions can be governed later.
-        channel: existingSession.channel ?? args.channel
-      }
-    });
   }
 
   return {
@@ -120,6 +238,7 @@ export async function authorizeAgentExecution(args: {
     sessionId: args.sessionId,
     agentKey: args.agentKey,
     channel: args.channel,
-    endCustomerId: args.endCustomerId
+    endCustomerId: args.endCustomerId,
+    agentAccessId
   };
 }
