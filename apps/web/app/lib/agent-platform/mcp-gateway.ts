@@ -69,6 +69,7 @@ export async function callMcpTool(args: {
   context: AgentExecutionContext;
   toolName: string;
   input: Record<string, unknown>;
+  humanApproval?: { approvalId: string; approvedByUserId: string };
 }): Promise<McpCallResult> {
   const { server, context, toolName, input } = args;
   if (!context.tenantId || !context.deploymentId || !context.agentInstanceId || !context.sessionId) {
@@ -76,8 +77,11 @@ export async function callMcpTool(args: {
   }
   const policy = server.tools.find((tool) => tool.name === toolName);
   if (!policy) throw new Error(`Tool is not allowed by registry: ${toolName}`);
-  if (policy.approval === 'human_required') {
+  if (policy.approval === 'human_required' && !args.humanApproval) {
     throw new Error(`Human approval required for tool: ${toolName}`);
+  }
+  if (policy.approval !== 'human_required' && args.humanApproval) {
+    throw new Error(`Unexpected human approval evidence for tool: ${toolName}`);
   }
   return rpc<McpCallResult>(server, 'tools/call', { name: toolName, arguments: input });
 }
