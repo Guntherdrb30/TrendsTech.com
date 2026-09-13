@@ -14,7 +14,7 @@ export type PilotAgentRequest = {
 
 export const CARPIHOGAR_PILOT_DEPLOYMENT_ID = 'pilot:carpihogar:customer-agent:v1';
 
-function contextFromRequest(request: PilotAgentRequest): AgentExecutionContext {
+export function contextFromRequest(request: PilotAgentRequest): AgentExecutionContext {
   const context: AgentExecutionContext = {
     tenantId: request.tenantId,
     deploymentId: CARPIHOGAR_PILOT_DEPLOYMENT_ID,
@@ -39,10 +39,6 @@ export async function inspectCarpiHogarPilot() {
   };
 }
 
-/**
- * Deterministic pilot execution used before model-driven orchestration is enabled.
- * It proves tenant/deployment isolation and the Trends172 -> MCP execution path.
- */
 export async function runCarpiHogarPilotTool(args: {
   request: PilotAgentRequest;
   toolName: string;
