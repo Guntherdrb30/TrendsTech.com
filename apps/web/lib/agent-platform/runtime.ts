@@ -1,5 +1,6 @@
 import { CARPIHOGAR_MCP, assertExecutionIsolation, type AgentChannel, type AgentExecutionContext } from '@trends172tech/core';
 import { callMcpTool, discoverMcpTools } from './mcp-gateway';
+import { createAgentRunTrace } from './observability';
 
 export type PilotAgentRequest = {
   tenantId: string;
@@ -45,13 +46,31 @@ export async function runCarpiHogarPilotTool(args: {
   input: Record<string, unknown>;
 }) {
   const context = contextFromRequest(args.request);
+  const runTrace = createAgentRunTrace({ context, mode: 'deterministic' });
   const startedAt = Date.now();
-  const result = await callMcpTool({ server: CARPIHOGAR_MCP, context, toolName: args.toolName, input: args.input });
-  return {
-    context,
-    mcp: CARPIHOGAR_MCP.key,
-    toolName: args.toolName,
-    durationMs: Date.now() - startedAt,
-    result
-  };
+
+  try {
+    const result = await callMcpTool({ server: CARPIHOGAR_MCP, context, toolName: args.toolName, input: args.input });
+    const durationMs = Date.now() - startedAt;
+    runTrace.addTool({ toolName: args.toolName, durationMs, status: 'SUCCESS' });
+    const trace = await runTrace.finishSuccess();
+    return {
+      runId: runTrace.runId,
+      context,
+      mcp: CARPIHOGAR_MCP.key,
+      toolName: args.toolName,
+      durationMs,
+      result,
+      trace
+    };
+  } catch (error) {
+    runTrace.addTool({
+      toolName: args.toolName,
+      durationMs: Date.now() - startedAt,
+      status: 'FAILED',
+      error: error instanceof Error ? error.message : String(error)
+    });
+    await runTrace.finishFailure(error);
+    throw error;
+  }
 }
