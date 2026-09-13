@@ -1,14 +1,8 @@
+import { Client } from '@modelcontextprotocol/sdk/client/index.js';
+import { StreamableHTTPClientTransport } from '@modelcontextprotocol/sdk/client/streamableHttp.js';
 import type { AgentExecutionContext, McpServerDescriptor } from '@trends172tech/core';
 
-const MCP_PROTOCOL_VERSION = '2025-06-18';
 const DEFAULT_TIMEOUT_MS = 20_000;
-
-type JsonRpcResponse<T> = {
-  jsonrpc: '2.0';
-  id?: number | string;
-  result?: T;
-  error?: { code: number; message: string; data?: unknown };
-};
 
 export type McpTool = {
   name: string;
@@ -29,39 +23,38 @@ function assertServerAllowed(server: McpServerDescriptor) {
   if (server.status === 'paused') throw new Error(`MCP server is paused: ${server.key}`);
 }
 
-async function rpc<T>(server: McpServerDescriptor, method: string, params?: Record<string, unknown>): Promise<T> {
+async function withMcpClient<T>(server: McpServerDescriptor, operation: (client: Client) => Promise<T>): Promise<T> {
   assertServerAllowed(server);
+  const client = new Client({ name: 'trends172-agent-platform', version: '1.0.0' });
+  const transport = new StreamableHTTPClientTransport(new URL(server.endpoint));
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), DEFAULT_TIMEOUT_MS);
+
   try {
-    const response = await fetch(server.endpoint, {
-      method: 'POST',
-      headers: {
-        'content-type': 'application/json',
-        accept: 'application/json, text/event-stream',
-        'mcp-protocol-version': MCP_PROTOCOL_VERSION
-      },
-      body: JSON.stringify({ jsonrpc: '2.0', id: crypto.randomUUID(), method, ...(params ? { params } : {}) }),
-      cache: 'no-store',
-      signal: controller.signal
-    });
-    if (!response.ok) throw new Error(`MCP HTTP ${response.status}`);
-    const contentType = response.headers.get('content-type') || '';
-    if (!contentType.includes('application/json')) {
-      throw new Error(`Unsupported MCP response content-type: ${contentType || 'unknown'}`);
-    }
-    const payload = (await response.json()) as JsonRpcResponse<T>;
-    if (payload.error) throw new Error(`MCP ${payload.error.code}: ${payload.error.message}`);
-    if (payload.result === undefined) throw new Error('MCP response missing result');
-    return payload.result;
+    await client.connect(transport, { signal: controller.signal });
+    return await operation(client);
   } finally {
     clearTimeout(timeout);
+    await client.close().catch(() => undefined);
   }
 }
 
 export async function discoverMcpTools(server: McpServerDescriptor): Promise<McpTool[]> {
-  const result = await rpc<{ tools?: McpTool[] }>(server, 'tools/list', {});
-  return Array.isArray(result.tools) ? result.tools : [];
+  return withMcpClient(server, async (client) => {
+    const tools: McpTool[] = [];
+    let cursor: string | undefined;
+    do {
+      const result = await client.listTools(cursor ? { cursor } : undefined);
+      tools.push(...result.tools.map((tool) => ({
+        name: tool.name,
+        description: tool.description,
+        inputSchema: tool.inputSchema as Record<string, unknown>,
+        annotations: tool.annotations as Record<string, unknown> | undefined
+      })));
+      cursor = result.nextCursor;
+    } while (cursor);
+    return tools;
+  });
 }
 
 export async function callMcpTool(args: {
@@ -75,6 +68,7 @@ export async function callMcpTool(args: {
   if (!context.tenantId || !context.deploymentId || !context.agentInstanceId || !context.sessionId) {
     throw new Error('Incomplete agent execution context');
   }
+
   const policy = server.tools.find((tool) => tool.name === toolName);
   if (!policy) throw new Error(`Tool is not allowed by registry: ${toolName}`);
   if (policy.approval === 'human_required' && !args.humanApproval) {
@@ -83,5 +77,13 @@ export async function callMcpTool(args: {
   if (policy.approval !== 'human_required' && args.humanApproval) {
     throw new Error(`Unexpected human approval evidence for tool: ${toolName}`);
   }
-  return rpc<McpCallResult>(server, 'tools/call', { name: toolName, arguments: input });
+
+  return withMcpClient(server, async (client) => {
+    const result = await client.callTool({ name: toolName, arguments: input });
+    return {
+      content: Array.isArray(result.content) ? result.content as Array<Record<string, unknown>> : undefined,
+      structuredContent: result.structuredContent as Record<string, unknown> | undefined,
+      isError: result.isError
+    };
+  });
 }
