@@ -31,3 +31,4 @@ export interface ManualPayment {
 
 export * from './agentControlPlane';
 export * from './mcpRegistry';
+export * from './agentRegistry';
