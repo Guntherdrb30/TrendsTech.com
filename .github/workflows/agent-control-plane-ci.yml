@@ -1,0 +1,35 @@
+name: Agent Control Plane CI
+
+on:
+  push:
+    branches:
+      - feature/agent-control-plane-v1
+  pull_request:
+    paths:
+      - 'apps/web/lib/agent-platform/**'
+      - 'apps/web/app/api/agents/**'
+      - 'apps/web/app/[locale]/(admin)/admin/agent-control/**'
+      - 'apps/web/tests/agent-platform/**'
+      - 'packages/core/src/agent-platform.ts'
+      - 'packages/openai/**'
+      - 'packages/db/**'
+      - '.github/workflows/agent-control-plane-ci.yml'
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/trends172_ci
+      DIRECT_URL: postgresql://postgres:postgres@localhost:5432/trends172_ci
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - name: Typecheck
+        run: npm run typecheck
+      - name: Agent Platform tests
+        run: npx tsx --test apps/web/tests/agent-platform/*.test.ts
