@@ -1,4 +1,4 @@
-import { prisma } from '@trends172tech/db';
+import { Prisma, prisma } from '@trends172tech/db';
 import {
   getAgentRuntimeProfile,
   getMcpServerDescriptor,
@@ -23,6 +23,10 @@ type ApprovalMeta = {
   requestedByUserId: string;
   endCustomerId?: string;
 };
+
+function toJsonValue(value: unknown): Prisma.InputJsonValue {
+  return JSON.parse(JSON.stringify(value)) as Prisma.InputJsonValue;
+}
 
 export async function requestToolApproval(args: {
   actorUserId: string;
@@ -78,7 +82,7 @@ export async function requestToolApproval(args: {
       action: 'agent.tool.approval.requested',
       entity: 'agent_tool_approval',
       entityId: approvalId,
-      metaJson: meta
+      metaJson: toJsonValue(meta)
     }
   });
 
@@ -96,9 +100,9 @@ async function loadApproval(approvalId: string, tenantId: string) {
     throw new AgentPlatformSecurityError('Approval request not found', 404);
   }
   const meta = requested.metaJson as unknown as ApprovalMeta;
-  const approved = events.findLast((event) => event.action === 'agent.tool.approval.approved');
-  const rejected = events.findLast((event) => event.action === 'agent.tool.approval.rejected');
-  const executed = events.findLast((event) => event.action === 'agent.tool.approval.executed');
+  const approved = [...events].reverse().find((event) => event.action === 'agent.tool.approval.approved');
+  const rejected = [...events].reverse().find((event) => event.action === 'agent.tool.approval.rejected');
+  const executed = [...events].reverse().find((event) => event.action === 'agent.tool.approval.executed');
   return { meta, requested, approved, rejected, executed };
 }
 
