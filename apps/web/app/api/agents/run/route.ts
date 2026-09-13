@@ -32,6 +32,14 @@ function errorResponse(error: unknown) {
   return NextResponse.json({ error: message }, { status: 500 });
 }
 
+function trustedRequestOrigin(request: Request) {
+  const origin = request.headers.get('origin');
+  if (origin) return origin;
+  const referer = request.headers.get('referer');
+  if (referer) return referer;
+  return null;
+}
+
 export async function POST(request: Request) {
   const limited = enforceRequestRateLimit(request, {
     namespace: 'agent-control-plane-run',
@@ -62,7 +70,8 @@ export async function POST(request: Request) {
       agentKey,
       channel,
       endCustomerId: body.data.endCustomerId,
-      toolName: body.data.tool?.name
+      toolName: body.data.tool?.name,
+      requestOrigin: trustedRequestOrigin(request)
     });
 
     const agentRequest = {
