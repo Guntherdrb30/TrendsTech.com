@@ -7,10 +7,7 @@ import type { PilotAgentRequest } from './runtime';
 
 const MODEL = process.env.AGENT_PLATFORM_MODEL || 'gpt-5-mini';
 
-const jsonInputSchema = z.object({
-  input: z.record(z.unknown()).default({})
-});
-
+const jsonInputSchema = z.object({ input: z.record(z.unknown()).default({}) });
 type RunTrace = ReturnType<typeof createAgentRunTrace>;
 
 function createMcpAgentTool(context: AgentExecutionContext, runTrace: RunTrace, toolName: string, description: string) {
@@ -21,12 +18,7 @@ function createMcpAgentTool(context: AgentExecutionContext, runTrace: RunTrace, 
     execute: async ({ input }) => {
       const startedAt = Date.now();
       try {
-        const result = await callMcpTool({
-          server: CARPIHOGAR_MCP,
-          context,
-          toolName,
-          input
-        });
+        const result = await callMcpTool({ server: CARPIHOGAR_MCP, context, toolName, input });
         const durationMs = Date.now() - startedAt;
         runTrace.addTool({ toolName, durationMs, status: 'SUCCESS' });
         return JSON.stringify({ toolName, durationMs, result });
@@ -49,10 +41,7 @@ function buildTools(context: AgentExecutionContext, runTrace: RunTrace) {
     .map((descriptor) => createMcpAgentTool(context, runTrace, descriptor.name, descriptor.description));
 }
 
-export async function runCarpiHogarAgent(args: {
-  request: PilotAgentRequest;
-  context: AgentExecutionContext;
-}) {
+export async function runCarpiHogarAgent(args: { request: PilotAgentRequest; context: AgentExecutionContext }) {
   const startedAt = Date.now();
   const runTrace = createAgentRunTrace({ context: args.context, mode: 'agent', model: MODEL });
   const agent = new Agent({
@@ -73,6 +62,13 @@ export async function runCarpiHogarAgent(args: {
   try {
     const runner = new Runner();
     const result = await runner.run(agent, args.request.message, { maxTurns: 8 });
+    runTrace.setUsage({
+      requests: result.state.usage.requests,
+      inputTokens: result.state.usage.inputTokens,
+      outputTokens: result.state.usage.outputTokens,
+      totalTokens: result.state.usage.totalTokens,
+      inputTokensDetails: result.state.usage.inputTokensDetails
+    });
     const trace = await runTrace.finishSuccess(result.lastResponseId ?? null);
 
     return {
