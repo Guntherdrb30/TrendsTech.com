@@ -2,10 +2,12 @@ import { prisma } from '@trends172tech/db';
 import { MetricCard } from '@/components/admin/metric-card';
 import { AdminDataTable, TableCell, TableRow } from '@/components/admin/admin-data-table';
 import { StatusBadge } from '@/components/admin/status-badge';
+import { ensureBookingSchema } from '@/lib/bookings/store';
 
 export const dynamic='force-dynamic';
 
 export default async function AdminBookingsPage(){
+ await ensureBookingSchema();
  const bookings=await prisma.adminBooking.findMany({orderBy:{startsAt:'asc'},where:{startsAt:{gte:new Date(Date.now()-7*86400000)}}});
  const upcoming=bookings.filter(b=>b.status==='CONFIRMED'&&b.startsAt>new Date());
  const today=new Intl.DateTimeFormat('en-CA',{timeZone:'America/Caracas'}).format(new Date());
