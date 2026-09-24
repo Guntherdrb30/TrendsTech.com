@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@trends172tech/db';
+import { ensureBookingSchema } from '@/lib/bookings/store';
 
 export const dynamic = 'force-dynamic';
 
@@ -16,6 +17,7 @@ function makeUtc(y:number,m:number,d:number,h:number) {
 }
 
 export async function GET() {
+  await ensureBookingSchema();
   const now = new Date();
   const slots: {key:string;startsAt:string;label:string}[] = [];
   for (let offset=0; offset<21 && slots.length<30; offset++) {
