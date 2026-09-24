@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { DM_Sans, Syne } from 'next/font/google';
 import Link from 'next/link';
+import { BookingWidget } from '@/components/booking/booking-widget';
 
 const display = Syne({ subsets: ['latin'], weight: ['500','600','700','800'], variable: '--font-proposal-display' });
 const body = DM_Sans({ subsets: ['latin'], weight: ['300','400','500','600','700'], variable: '--font-proposal-body' });
@@ -116,8 +117,9 @@ export default function CityCenterProposalPage() {
             <p className="text-xs font-bold uppercase tracking-[.22em] text-cyan-400">Siguiente conversación</p>
             <h2 className="mx-auto mt-5 max-w-3xl font-[var(--font-proposal-display)] text-4xl font-semibold tracking-[-.035em] md:text-6xl">Diseñemos el City Center que también existe online.</h2>
             <p className="mx-auto mt-6 max-w-2xl leading-7 text-slate-300">Esta versión presenta la visión tecnológica inicial. El siguiente paso es validar junto a City Center el modelo comercial, la experiencia de los comercios y el alcance de la primera fase.</p>
-            <a href="https://wa.me/584222640371?text=Hola%2C%20estoy%20interesado%20en%20la%20propuesta%20LUNA%20para%20City%20Center%20Maracay.%20Me%20gustaria%20coordinar%20una%20reunion%20para%20conocer%20mas%20detalles." target="_blank" rel="noreferrer" className="mt-9 inline-flex items-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-bold text-slate-950 transition hover:bg-cyan-50"><span className="grid h-5 w-5 place-items-center rounded-full bg-emerald-500 text-[11px] text-white">W</span>Hablar por WhatsApp</a>
+            <div className="mt-9 flex flex-wrap justify-center gap-3"><a href="#reservar" className="rounded-full bg-cyan-400 px-6 py-3 text-sm font-bold text-slate-950 transition hover:bg-cyan-300">Agendar videollamada</a><a href="https://wa.me/584222640371?text=Hola%2C%20estoy%20interesado%20en%20la%20propuesta%20LUNA%20para%20City%20Center%20Maracay.%20Me%20gustaria%20coordinar%20una%20reunion%20para%20conocer%20mas%20detalles." target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-bold text-slate-950 transition hover:bg-cyan-50"><span className="grid h-5 w-5 place-items-center rounded-full bg-emerald-500 text-[11px] text-white">W</span>Hablar por WhatsApp</a></div>
           </div>
+          <div id="reservar" className="mx-auto mt-12 max-w-3xl scroll-mt-24"><BookingWidget source="city-center-maracay" /></div>
           <p className="mx-auto mt-8 max-w-5xl text-center text-[11px] uppercase tracking-[.16em] text-slate-400">Documento digital de visualización · Preparado por Trends172Tech · City Center Maracay</p>
         </section>
       </main>
