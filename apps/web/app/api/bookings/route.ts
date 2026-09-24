@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@trends172tech/db';
 import { z } from 'zod';
 import { sendEmail } from '@/lib/email/send';
+import { ensureBookingSchema } from '@/lib/bookings/store';
 
 const TZ='America/Caracas';
 const input=z.object({source:z.string().min(1).max(120),slotKey:z.string().regex(/^\d{4}-\d{2}-\d{2}-(09|10|11)00$/),name:z.string().min(2).max(120),company:z.string().max(120).optional(),email:z.string().email(),phone:z.string().max(40).optional(),notes:z.string().max(1000).optional()});
@@ -9,6 +10,7 @@ const input=z.object({source:z.string().min(1).max(120),slotKey:z.string().regex
 function dateFromKey(key:string){const [y,m,d,hm]=key.split('-');return new Date(Date.UTC(Number(y),Number(m)-1,Number(d),Number(hm.slice(0,2))+4));}
 
 export async function POST(request:Request){
+  await ensureBookingSchema();
   const parsed=input.safeParse(await request.json().catch(()=>null));
   if(!parsed.success)return NextResponse.json({error:'Revisa los datos de la reserva.'},{status:400});
   const start=dateFromKey(parsed.data.slotKey);
