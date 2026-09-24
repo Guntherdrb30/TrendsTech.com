@@ -12,8 +12,6 @@ const pillars = [
   { n:'04', title:'Control central City Center', text:'Una administración central permite gobernar el ecosistema digital, altas de comercios, visibilidad, campañas, configuración y métricas de la plataforma.' },
 ];
 
-const whatsappUrl = 'https://wa.me/584222640371?text=Hola%2C%20estoy%20interesado%20en%20la%20propuesta%20LUNA%20para%20City%20Center%20Maracay.%20Me%20gustar%C3%ADa%20coordinar%20una%20reuni%C3%B3n%20para%20conocer%20m%C3%A1s%20detalles.';
-
 const phases = [
   ['01','City Center Digital','Directorio, espacios digitales de comercios, catálogo, promociones, búsqueda y administración central.'],
   ['02','City Center Intelligence','Agente IA, búsqueda conversacional, recomendaciones, analítica e inteligencia comercial.'],
@@ -118,12 +116,12 @@ export default function CityCenterProposalPage() {
             <p className="text-xs font-bold uppercase tracking-[.22em] text-cyan-400">Siguiente conversación</p>
             <h2 className="mx-auto mt-5 max-w-3xl font-[var(--font-proposal-display)] text-4xl font-semibold tracking-[-.035em] md:text-6xl">Diseñemos el City Center que también existe online.</h2>
             <p className="mx-auto mt-6 max-w-2xl leading-7 text-slate-300">Esta versión presenta la visión tecnológica inicial. El siguiente paso es validar junto a City Center el modelo comercial, la experiencia de los comercios y el alcance de la primera fase.</p>
-            <a href={whatsappUrl} target="_blank" rel="noreferrer" className="mt-9 inline-flex items-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-bold text-slate-950 transition hover:bg-cyan-50"><span className="grid h-5 w-5 place-items-center rounded-full bg-emerald-500 text-[11px] text-white">W</span>Hablar por WhatsApp</a>
+            <a href="https://wa.me/584222640371?text=Hola%2C%20estoy%20interesado%20en%20la%20propuesta%20LUNA%20para%20City%20Center%20Maracay.%20Me%20gustaria%20coordinar%20una%20reunion%20para%20conocer%20mas%20detalles." target="_blank" rel="noreferrer" className="mt-9 inline-flex items-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-bold text-slate-950 transition hover:bg-cyan-50"><span className="grid h-5 w-5 place-items-center rounded-full bg-emerald-500 text-[11px] text-white">W</span>Hablar por WhatsApp</a>
           </div>
           <p className="mx-auto mt-8 max-w-5xl text-center text-[11px] uppercase tracking-[.16em] text-slate-400">Documento digital de visualización · Preparado por Trends172Tech · City Center Maracay</p>
         </section>
       </main>
-      <a href={whatsappUrl} target="_blank" rel="noreferrer" aria-label="Contactar por WhatsApp" className="fixed bottom-5 right-5 z-50 inline-flex items-center gap-2 rounded-full bg-emerald-500 px-4 py-3 text-sm font-bold text-white shadow-[0_14px_40px_rgba(16,185,129,.35)] transition hover:-translate-y-0.5 hover:bg-emerald-600 md:bottom-7 md:right-7 md:px-5"><span className="grid h-6 w-6 place-items-center rounded-full bg-white/20 text-xs">W</span><span className="hidden sm:inline">Estoy interesado</span></a>
+      <a href="https://wa.me/584222640371?text=Hola%2C%20estoy%20interesado%20en%20la%20propuesta%20LUNA%20para%20City%20Center%20Maracay.%20Me%20gustaria%20coordinar%20una%20reunion%20para%20conocer%20mas%20detalles." target="_blank" rel="noreferrer" aria-label="Contactar por WhatsApp" className="fixed bottom-5 right-5 z-50 inline-flex items-center gap-2 rounded-full bg-emerald-500 px-4 py-3 text-sm font-bold text-white shadow-[0_14px_40px_rgba(16,185,129,.35)] transition hover:-translate-y-0.5 hover:bg-emerald-600 md:bottom-7 md:right-7 md:px-5"><span className="grid h-6 w-6 place-items-center rounded-full bg-white/20 text-xs">W</span><span className="hidden sm:inline">Estoy interesado</span></a>
     </div>
   );
 }
