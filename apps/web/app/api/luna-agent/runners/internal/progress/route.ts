@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@trends172tech/db";
 import { appendTaskFiles, authenticateRunner, createTaskLog, logRunnerEvent } from "@/lib/luna-agent/runners";
 import { runnerProgressSchema } from "@/lib/validators/luna-agent";
+import { syncStudioRunProgressFromQueue } from "@/lib/engineering-studio/orchestrator-bridge";
 
 export async function POST(request: Request) {
   const body = await request.json().catch(() => ({}));
@@ -20,6 +21,11 @@ export async function POST(request: Request) {
       where: {
         id: parsed.data.taskId,
         tenantId: runner.tenantId
+      },
+      include: {
+        queue: {
+          select: { payloadJson: true }
+        }
       }
     });
 
@@ -48,6 +54,8 @@ export async function POST(request: Request) {
         fileCount: parsed.data.files.length
       }
     });
+
+    await syncStudioRunProgressFromQueue(task.queue?.payloadJson, parsed.data.message);
 
     return NextResponse.json({ ok: true });
   } catch (error) {
