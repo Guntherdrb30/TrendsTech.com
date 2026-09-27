@@ -143,6 +143,22 @@ function extractAgentSummary(stdout: string) {
   return messages.at(-1)?.trim() || "Codex completó la tarea.";
 }
 
+const SENSITIVE_PATH_PATTERNS = [
+  /(^|\/)\.env(\.|$)/i,
+  /(^|\/)\.npmrc$/i,
+  /(^|\/)\.pypirc$/i,
+  /(^|\/)(id_rsa|id_ed25519)(\.pub)?$/i,
+  /\.(pem|p12|pfx|key)$/i,
+  /(^|\/)(credentials?|secrets?)\.(json|ya?ml|toml|txt)$/i
+];
+
+function assertNoSensitiveFiles(files: Array<{ filePath: string }>) {
+  const blocked = files.filter((file) => SENSITIVE_PATH_PATTERNS.some((pattern) => pattern.test(file.filePath)));
+  if (blocked.length > 0) {
+    throw new Error(`Codex generó o modificó archivos sensibles y el Runner bloqueó el commit: ${blocked.map((file) => file.filePath).join(", ")}`);
+  }
+}
+
 function parseChangedFiles(text: string) {
   return text
     .split(/\r?\n/)
@@ -179,20 +195,12 @@ export async function runCodexTask(params: {
   }
 
   await params.onProgress(`Codex inicia en ${params.task.project.name} · rama ${branch}.`);
-  await params.onProgress("Sandbox workspace-write activo; producción, merge y secretos permanecen fuera del alcance.");
+  await params.onProgress("Codex full-auto activo dentro del workspace Git aislado; merge, producción y archivos sensibles permanecen bloqueados por el Runner.");
 
   const args = [
     "exec",
-    "--experimental-json",
-    "--ephemeral",
-    "--sandbox",
-    "workspace-write",
-    "--cd",
-    cwd,
-    "--config",
-    'approval_policy="never"',
-    "--config",
-    "sandbox_workspace_write.network_access=false",
+    "--json",
+    "--full-auto",
     prompt
   ];
 
@@ -202,6 +210,7 @@ export async function runCodexTask(params: {
 
   const status = await runCommand("git", ["status", "--porcelain"], cwd, params.timeoutMs);
   const files = parseChangedFiles(status.stdout);
+  assertNoSensitiveFiles(files);
   if (files.length === 0) {
     const head = await runCommand("git", ["rev-parse", "HEAD"], cwd, params.timeoutMs);
     return {
