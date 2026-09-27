@@ -48,18 +48,15 @@ export function ProposalExperience({ proposal }: { proposal: ProposalId }) {
     sync();
     const old = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
-    // Keep the underlying site shell out of the focus order while presenting.
+    // Hide only the site's duplicate navigation from keyboard users.
+    // Security, consent and other platform overlays retain their behavior.
     const siblings: Array<[HTMLElement, boolean]> = [];
-    let node: HTMLElement | null = root.current;
-    while (node?.parentElement && node !== document.body) {
-      for (const sibling of Array.from(node.parentElement.children)) {
-        if (sibling !== node && sibling instanceof HTMLElement && !['SCRIPT', 'STYLE', 'LINK'].includes(sibling.tagName)) {
-          siblings.push([sibling, sibling.inert]);
-          sibling.inert = true;
-        }
+    document.querySelectorAll<HTMLElement>('header, footer').forEach(element => {
+      if (!root.current?.contains(element)) {
+        siblings.push([element, element.inert]);
+        element.inert = true;
       }
-      node = node.parentElement;
-    }
+    });
     const fullscreen = () => setFull(document.fullscreenElement === root.current);
     window.addEventListener('hashchange', sync);
     document.addEventListener('fullscreenchange', fullscreen);
