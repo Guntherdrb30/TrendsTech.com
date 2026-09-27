@@ -17,7 +17,7 @@ import { buildContextPack } from './context-pack';
 import { addVaultEntry } from './vault';
 import { dispatchStudioEvent } from './workflow-engine';
 
-const INTERNAL_TENANT_SLUG = 'trends-engineering-studio';
+export const INTERNAL_TENANT_SLUG = 'trends-engineering-studio';
 
 type JsonRecord = Record<string, unknown>;
 
@@ -109,7 +109,7 @@ async function resolveExecutionUser(actorRef: string, projectCreatedByUserId: st
   return root;
 }
 
-async function ensureInternalExecutionTenant() {
+export async function ensureInternalExecutionTenant() {
   return prisma.tenant.upsert({
     where: { slug: INTERNAL_TENANT_SLUG },
     update: {
