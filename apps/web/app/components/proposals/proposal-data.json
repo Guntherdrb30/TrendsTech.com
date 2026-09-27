@@ -1,0 +1,98 @@
+{
+  "city-center-maracay": {
+    "capabilities": [
+      {
+        "title": "Centro comercial digital",
+        "text": "Una extensión web del complejo donde cada comercio puede tener presencia, catálogo y una experiencia conectada con la operación física."
+      },
+      {
+        "title": "Espacio para cada comercio",
+        "text": "Cada aliado comercial puede operar su propia vitrina digital y, según el alcance contratado, gestionar productos, promociones, pedidos y herramientas comerciales."
+      },
+      {
+        "title": "Inteligencia artificial",
+        "text": "LUNA puede incorporar agentes capaces de orientar al visitante, descubrir comercios y productos y conectar la intención del cliente con la oferta disponible."
+      },
+      {
+        "title": "Control central City Center",
+        "text": "Una administración central permite gobernar el ecosistema digital, altas de comercios, visibilidad, campañas, configuración y métricas de la plataforma."
+      }
+    ],
+    "phases": [
+      {
+        "title": "City Center Digital",
+        "text": "Directorio, espacios digitales de comercios, catálogo, promociones, búsqueda y administración central."
+      },
+      {
+        "title": "City Center Intelligence",
+        "text": "Agente IA, búsqueda conversacional, recomendaciones, analítica e inteligencia comercial."
+      },
+      {
+        "title": "City Center Commerce",
+        "text": "Órdenes y experiencia omnicanal, con el modelo transaccional definido junto a City Center."
+      },
+      {
+        "title": "Marketing IA",
+        "text": "Herramientas para contenido, campañas y capacidades de marketing asistidas por inteligencia artificial."
+      },
+      {
+        "title": "Smart Mall",
+        "text": "Evolución hacia experiencias físico-digitales, navegación, eventos, fidelización e integraciones."
+      }
+    ]
+  },
+  "big-home": {
+    "capabilities": [
+      {
+        "title": "Ventas y cajas",
+        "text": "POS por sucursal, cajas, vendedores, cotizaciones, pedidos, devoluciones, métodos de pago y control operativo."
+      },
+      {
+        "title": "Inventario multi-sucursal",
+        "text": "Productos, SKUs, existencias, almacenes, transferencias, costos, precios y trazabilidad entre sedes."
+      },
+      {
+        "title": "Compras y proveedores",
+        "text": "Órdenes de compra, recepción de mercancía, proveedores, costos y reposición conectada con inventario."
+      },
+      {
+        "title": "E-commerce conectado",
+        "text": "Catálogo digital, búsqueda, carrito, pedidos y disponibilidad vinculada con la operación real."
+      },
+      {
+        "title": "CRM + IA comercial",
+        "text": "Historial del cliente, segmentación, seguimiento y agentes IA entrenados sobre información autorizada del negocio."
+      },
+      {
+        "title": "Dirección y BI",
+        "text": "Indicadores de ventas, inventario, rotación, compras, sucursales y consultas ejecutivas asistidas por IA."
+      }
+    ],
+    "phases": [
+      {
+        "title": "Diagnóstico e integración",
+        "text": "Mapear procesos, sistemas actuales, sucursales, cajas, almacenes, catálogo, usuarios e integraciones."
+      },
+      {
+        "title": "Núcleo LUNA",
+        "text": "Adaptar ventas, compras, inventario, proveedores, cajas, usuarios, permisos y operación multi-sucursal."
+      },
+      {
+        "title": "Comercio + clientes",
+        "text": "Conectar e-commerce, CRM, atención y experiencia omnicanal con la operación central."
+      },
+      {
+        "title": "Marketing IA",
+        "text": "Campañas, promociones, contenido y automatización comercial basados en catálogo y datos autorizados."
+      },
+      {
+        "title": "Video Marketing AI",
+        "text": "Flujo especializado para transformar productos y campañas en piezas de video y variantes creativas asistidas por IA."
+      },
+      {
+        "title": "Inteligencia avanzada",
+        "text": "Analítica conversacional y experiencias visuales para explorar productos en espacios, sujetas al alcance acordado."
+      }
+    ]
+  }
+}
