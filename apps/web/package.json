@@ -8,7 +8,8 @@
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
     "knowledge-worker": "tsx scripts/knowledge-worker.ts",
-    "auth:bootstrap-admin": "tsx scripts/bootstrap-auth-admin.ts"
+    "auth:bootstrap-admin": "tsx scripts/bootstrap-auth-admin.ts",
+    "postbuild": "node --import tsx scripts/register-published-proposals.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.105.0",

@@ -39,6 +39,8 @@ export type AdminLead = {
 };
 
 export type AdminProposal = {
+  summary?: string;
+  presentationUrl?: string | null;
   id: string;
   clientId: string;
   title: LocalizedString;
