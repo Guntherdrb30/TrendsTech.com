@@ -125,6 +125,7 @@ async function handleTask(client: RunnerApiClient, claim: RunnerClaimTask) {
       taskId: claim.task.id,
       status: "DONE",
       resultSummary: `${result.resultSummary}\nTiempo total: ${Math.round((Date.now() - startedAt) / 1000)}s`,
+      commitSha: result.commitSha,
       files: result.files
     });
     runnerStatus = "ONLINE";
@@ -167,6 +168,8 @@ async function executeByRuntime(
     case "CODEX_CLI":
       return runCodexTask({
         task: claim.task,
+        workdir: config.defaultWorkdir,
+        timeoutMs: config.maxTaskMs,
         onProgress
       });
   }
