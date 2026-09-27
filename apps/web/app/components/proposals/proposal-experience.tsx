@@ -50,10 +50,11 @@ export function ProposalExperience({ proposal }: { proposal: ProposalId }) {
     document.body.style.overflow = 'hidden';
     // Hide only the site's duplicate navigation from keyboard users.
     // Security, consent and other platform overlays retain their behavior.
-    const siblings: Array<[HTMLElement, boolean]> = [];
+    const siblings: Array<[HTMLElement, boolean, boolean]> = [];
     document.querySelectorAll<HTMLElement>('header, footer').forEach(element => {
       if (!root.current?.contains(element)) {
-        siblings.push([element, element.inert]);
+        siblings.push([element, element.inert, element.hidden]);
+        element.hidden = true;
         element.inert = true;
       }
     });
@@ -62,7 +63,7 @@ export function ProposalExperience({ proposal }: { proposal: ProposalId }) {
     document.addEventListener('fullscreenchange', fullscreen);
     return () => {
       document.body.style.overflow = old;
-      siblings.forEach(([element, inert]) => { element.inert = inert; });
+      siblings.forEach(([element, inert, hidden]) => { element.inert = inert; element.hidden = hidden; });
       window.removeEventListener('hashchange', sync);
       document.removeEventListener('fullscreenchange', fullscreen);
     };
