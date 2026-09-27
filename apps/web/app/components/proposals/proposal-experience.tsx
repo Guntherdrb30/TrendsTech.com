@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import Link from 'next/link';
 import { BookingWidget } from '@/components/booking/booking-widget';
 import data from './proposal-data.json';
 import s from './proposal-experience.module.css';
@@ -112,7 +113,7 @@ export function ProposalExperience({ proposal }: { proposal: ProposalId }) {
   const scenarioData = scenarios[proposal][scenario];
   return <div ref={root} className={s.deck} data-proposal={proposal}>
     <header className={s.header}>
-      <a className={s.brand} href="/es" aria-label="Trends172Tech, inicio"><img src="/branding/ttech-logo.svg" alt="" width="32" height="32" />Trends172Tech</a>
+      <Link className={s.brand} href="/es" aria-label="Trends172Tech, inicio"><img src="/branding/ttech-logo.svg" alt="" width="32" height="32" />Trends172Tech</Link>
       <div className={s.headerLabel}><span>PROPUESTA CORPORATIVA</span><strong>{client}</strong></div>
       <button type="button" className={s.fullscreen} onClick={toggleFull} aria-label={full ? 'Salir de pantalla completa' : 'Abrir en pantalla completa'}>{full ? '↙' : '↗'}</button>
     </header>
