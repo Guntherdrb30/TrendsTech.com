@@ -1,5 +1,6 @@
 'use server';
 
+import { safePresentationUrl, withPresentationLink } from './proposal-presentation';
 import { revalidatePath } from 'next/cache';
 import {
   AdminAiAgentStatus,
@@ -49,6 +50,7 @@ const projectSchema = z.object({
 });
 
 const proposalSchema = z.object({
+  presentationUrl: z.string().max(1000).optional().refine(value => !value || Boolean(safePresentationUrl(value)), 'Invalid presentation URL'),
   locale: localeSchema,
   clientId: z.string().min(1),
   title: z.string().min(2).max(160),
@@ -245,7 +247,7 @@ export async function createAdminProposal(formData: FormData) {
     data: {
       clientId: parsed.data.clientId,
       title: parsed.data.title.trim(),
-      summary: optionalString(parsed.data.summary),
+      summary: parsed.data.presentationUrl ? withPresentationLink(parsed.data.summary ?? '', parsed.data.presentationUrl) : optionalString(parsed.data.summary),
       status: parsed.data.status,
       amount: parsed.data.amount,
       probability: parsed.data.probability,

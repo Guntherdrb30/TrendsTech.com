@@ -1,3 +1,4 @@
+import { presentationFromSummary } from './proposal-presentation';
 import { prisma } from '@trends172tech/db';
 import type {
   AdminActivity,
@@ -192,6 +193,8 @@ export async function getAdminProposals(): Promise<AdminProposal[]> {
       id: proposal.id,
       clientId: proposal.clientId,
       title: localized(proposal.title),
+      summary: proposal.summary ?? '',
+      presentationUrl: presentationFromSummary(proposal.summary),
       status: proposal.status,
       amount: toMoney(proposal.amount),
       sentAt: toDateString(proposal.sentAt),
