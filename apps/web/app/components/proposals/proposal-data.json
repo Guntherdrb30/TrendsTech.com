@@ -95,57 +95,57 @@
       }
     ]
   },
-  "pit-venezuela": {
+  "fits-tools": {
     "capabilities": [
       {
         "title": "Ventas y fuerza comercial",
-        "text": "Cotizaciones, pedidos, vendedores, territorios, cartera, metas, seguimiento y trazabilidad comercial desde una misma operación nacional."
+        "text": "Cotizaciones, pedidos, vendedores, cartera, seguimiento, metas y trazabilidad comercial para clientes empresa y persona natural dentro de la operación venezolana."
       },
       {
         "title": "Inventario y almacenes",
-        "text": "SKUs, existencias, entradas, reservas, transferencias, mínimos, rotación y disponibilidad por almacén o zona, conectados con los procesos reales de P.I.T. Venezuela."
+        "text": "Productos, repuestos, maquinaria, SKUs, existencias, entradas, reservas, mínimos, rotación y disponibilidad conectados con la operación real de Fits Tools."
       },
       {
-        "title": "Clientes y distribuidores",
-        "text": "Expediente comercial para distribuidores, ferreterías y clientes, con condiciones, precios, crédito, historial, oportunidades y responsables asignados."
+        "title": "Clientes y aliados comerciales",
+        "text": "CRM para empresas homologadas, ferreterías, distribuidores y clientes finales, con condiciones comerciales, historial, oportunidades y responsables asignados."
       },
       {
         "title": "Pedidos, despacho y entregas",
-        "text": "Flujo trazable desde la toma del pedido hasta preparación, despacho, transporte, entrega, incidencias y devoluciones."
+        "text": "Flujo trazable desde la venta hasta preparación, despacho, transporte, entrega, incidencias y devoluciones, adaptado a la cobertura nacional."
       },
       {
-        "title": "Cobranza y control comercial",
-        "text": "Saldos, vencimientos, límites de crédito, condiciones de pago y alertas para apoyar decisiones comerciales sin sustituir sistemas financieros que deban mantenerse."
+        "title": "Cobranza y condiciones comerciales",
+        "text": "Saldos, vencimientos, límites de crédito, condiciones de pago y alertas para apoyar la gestión comercial sin sustituir los sistemas financieros que Fits Tools decida conservar."
       },
       {
-        "title": "Garantías y servicio",
-        "text": "Registro de producto, serial, compra, incidencia, diagnóstico, reparación o reemplazo y cierre, adaptado al proceso de postventa definido por P.I.T."
+        "title": "Postventa, repuestos y servicio",
+        "text": "Trazabilidad de producto, repuesto, cliente, compra, incidencia, diagnóstico, reparación, reemplazo y cierre según los procesos definidos por Fits Tools."
       },
       {
         "title": "IA y marketing aplicado",
-        "text": "Consultas sobre datos autorizados, apoyo a vendedores, campañas, promociones, contenido y automatizaciones comerciales bajo revisión del equipo."
+        "text": "Asistentes para ventas, catálogo, campañas, promociones, contenido y consultas sobre datos autorizados, siempre bajo reglas y permisos del negocio."
       },
       {
         "title": "Dirección y analítica",
-        "text": "Visión nacional de ventas, inventario, vendedores, clientes, pedidos, entregas, cobranza y servicio con indicadores acordados y control por permisos."
+        "text": "Visión nacional de ventas, inventario, clientes, pedidos, entregas, cobranza, categorías, rotación y servicio mediante indicadores y consultas ejecutivas."
       }
     ],
     "phases": [
       {
         "title": "FDE Discovery",
-        "text": "Conocer la operación real de P.I.T. en Venezuela: estructura comercial, vendedores, almacenes, distribuidores, pedidos, entregas, cobranza, garantías, sistemas y responsables."
+        "text": "Conocer cómo opera Fits Tools en Venezuela: ventas, canal empresa/persona natural, vendedores, almacenes, inventario, pedidos, entregas, cobranza, repuestos, servicio y sistemas actuales."
       },
       {
         "title": "Mapa de procesos",
-        "text": "Documentar flujos, datos, documentos, decisiones y puntos de integración para separar lo que LUNA ya cubre de lo que requiere adaptación o desarrollo nuevo."
+        "text": "Documentar flujos, responsables, datos, documentos y puntos de integración para separar lo que LUNA ya cubre de lo que requiere adaptación o desarrollo nuevo."
       },
       {
-        "title": "LUNA Venezuela Core",
-        "text": "Configurar el núcleo inicial de ventas, inventario, clientes, usuarios, permisos, pedidos y control operativo según el alcance priorizado."
+        "title": "LUNA Fits Tools Core",
+        "text": "Configurar el núcleo inicial de ventas, inventario, clientes, usuarios, permisos, pedidos, CRM y control operativo según las prioridades acordadas."
       },
       {
         "title": "Ingeniería FDE e integraciones",
-        "text": "Adaptar módulos existentes, desarrollar capacidades específicas e integrar los sistemas que P.I.T. decida conservar."
+        "text": "Adaptar módulos existentes, desarrollar capacidades específicas e integrar el sitio, servicios o sistemas que Fits Tools decida conservar."
       },
       {
         "title": "Piloto y validación",
@@ -153,7 +153,7 @@
       },
       {
         "title": "Despliegue y evolución",
-        "text": "Extender la solución a la operación acordada en Venezuela y mantener una ruta de mejora continua de módulos, automatizaciones e inteligencia artificial."
+        "text": "Extender la solución a la operación acordada en Venezuela y mantener una ruta continua de mejora de módulos, automatizaciones e inteligencia artificial."
       }
     ]
   }
