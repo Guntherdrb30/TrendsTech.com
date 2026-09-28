@@ -94,5 +94,67 @@
         "text": "Analítica conversacional y experiencias visuales para explorar productos en espacios, sujetas al alcance acordado."
       }
     ]
+  },
+  "pit-venezuela": {
+    "capabilities": [
+      {
+        "title": "Ventas y fuerza comercial",
+        "text": "Cotizaciones, pedidos, vendedores, territorios, cartera, metas, seguimiento y trazabilidad comercial desde una misma operación nacional."
+      },
+      {
+        "title": "Inventario y almacenes",
+        "text": "SKUs, existencias, entradas, reservas, transferencias, mínimos, rotación y disponibilidad por almacén o zona, conectados con los procesos reales de P.I.T. Venezuela."
+      },
+      {
+        "title": "Clientes y distribuidores",
+        "text": "Expediente comercial para distribuidores, ferreterías y clientes, con condiciones, precios, crédito, historial, oportunidades y responsables asignados."
+      },
+      {
+        "title": "Pedidos, despacho y entregas",
+        "text": "Flujo trazable desde la toma del pedido hasta preparación, despacho, transporte, entrega, incidencias y devoluciones."
+      },
+      {
+        "title": "Cobranza y control comercial",
+        "text": "Saldos, vencimientos, límites de crédito, condiciones de pago y alertas para apoyar decisiones comerciales sin sustituir sistemas financieros que deban mantenerse."
+      },
+      {
+        "title": "Garantías y servicio",
+        "text": "Registro de producto, serial, compra, incidencia, diagnóstico, reparación o reemplazo y cierre, adaptado al proceso de postventa definido por P.I.T."
+      },
+      {
+        "title": "IA y marketing aplicado",
+        "text": "Consultas sobre datos autorizados, apoyo a vendedores, campañas, promociones, contenido y automatizaciones comerciales bajo revisión del equipo."
+      },
+      {
+        "title": "Dirección y analítica",
+        "text": "Visión nacional de ventas, inventario, vendedores, clientes, pedidos, entregas, cobranza y servicio con indicadores acordados y control por permisos."
+      }
+    ],
+    "phases": [
+      {
+        "title": "FDE Discovery",
+        "text": "Conocer la operación real de P.I.T. en Venezuela: estructura comercial, vendedores, almacenes, distribuidores, pedidos, entregas, cobranza, garantías, sistemas y responsables."
+      },
+      {
+        "title": "Mapa de procesos",
+        "text": "Documentar flujos, datos, documentos, decisiones y puntos de integración para separar lo que LUNA ya cubre de lo que requiere adaptación o desarrollo nuevo."
+      },
+      {
+        "title": "LUNA Venezuela Core",
+        "text": "Configurar el núcleo inicial de ventas, inventario, clientes, usuarios, permisos, pedidos y control operativo según el alcance priorizado."
+      },
+      {
+        "title": "Ingeniería FDE e integraciones",
+        "text": "Adaptar módulos existentes, desarrollar capacidades específicas e integrar los sistemas que P.I.T. decida conservar."
+      },
+      {
+        "title": "Piloto y validación",
+        "text": "Operar una primera fase controlada con usuarios y procesos definidos, validar criterios de aceptación y corregir fricciones antes del despliegue nacional."
+      },
+      {
+        "title": "Despliegue y evolución",
+        "text": "Extender la solución a la operación acordada en Venezuela y mantener una ruta de mejora continua de módulos, automatizaciones e inteligencia artificial."
+      }
+    ]
   }
 }
