@@ -181,7 +181,7 @@ export function ProposalExperience({ proposal }: { proposal: ProposalId }) {
         <div className={s.eyebrow}><span>RUTA DE IMPLEMENTACIÓN</span><span>06 / 08</span></div>
         <h2>Construir por fases.<br /><em>Validar antes de escalar.</em></h2><p className={s.intro}>Explora la secuencia propuesta. El diagnóstico define prioridades, dependencias y calendario.</p>
         <div className={s.phases}>{phases.map((phase,i) => <details key={phase.title} name={`${proposal}-phases`} open={i === 0 ? true : undefined}><summary><span>{String(i+1).padStart(2,'0')}</span><h3>{phase.title}</h3><b>+</b></summary><p>{phase.text}</p></details>)}</div>
-        <p className={s.note}>{city ? 'El modelo transaccional, las integraciones y el alcance de Smart Mall se acuerdan antes de su implementación.' : 'Migración, sucursales, usuarios y capacidades avanzadas se dimensionan después del diagnóstico inicial.'}</p>
+        <p className={s.note}>{city ? 'El modelo transaccional, las integraciones y el alcance de Smart Mall se acuerdan antes de su implementación.' : pit ? 'Sistemas actuales, almacenes, vendedores, distribuidores, logística e integraciones se dimensionan durante FDE Discovery antes del despliegue.' : 'Migración, sucursales, usuarios y capacidades avanzadas se dimensionan después del diagnóstico inicial.'}</p>
       </section>
 
       <section className={s.slide} hidden={active !== 6} id="alcance">
