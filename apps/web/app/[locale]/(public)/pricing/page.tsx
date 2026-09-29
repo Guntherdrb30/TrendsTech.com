@@ -1,19 +1,6 @@
 import Link from 'next/link';
 import { getTranslations } from 'next-intl/server';
-import { IBM_Plex_Sans, Space_Grotesk } from 'next/font/google';
 import { buildLocalizedMetadata } from '@/lib/seo';
-
-const display = Space_Grotesk({
-  subsets: ['latin'],
-  weight: ['400', '500', '600', '700'],
-  variable: '--font-display'
-});
-
-const body = IBM_Plex_Sans({
-  subsets: ['latin'],
-  weight: ['300', '400', '500', '600'],
-  variable: '--font-body'
-});
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
@@ -44,7 +31,7 @@ export default async function PricingPage({ params }: { params: Promise<{ locale
   ];
 
   return (
-    <div className={`${display.variable} ${body.variable} space-y-12 font-[var(--font-body)]`}>
+    <div className={`space-y-12 font-sans`}>
       <section className="premium-spotlight relative overflow-hidden border-y border-black/8 bg-[linear-gradient(180deg,#f4f7fb_0%,#ffffff_28%,#f7fafc_100%)] px-6 py-12 sm:px-8 lg:px-12 xl:px-16 2xl:px-20">
         <div className="premium-grid absolute inset-0 opacity-50" aria-hidden="true" />
         <div className="relative mx-auto grid w-full max-w-[1760px] gap-8 xl:grid-cols-[1.05fr_0.95fr]">
@@ -53,7 +40,7 @@ export default async function PricingPage({ params }: { params: Promise<{ locale
               {pricing('eyebrow')}
             </div>
             <div className="space-y-4">
-              <h1 className="max-w-4xl text-4xl font-[var(--font-display)] font-semibold tracking-[-0.05em] text-slate-950 sm:text-5xl lg:text-6xl">
+              <h1 className="max-w-4xl text-4xl font-sans font-semibold tracking-[-0.05em] text-slate-950 sm:text-5xl lg:text-6xl">
                 {pricing('title')}
               </h1>
               <p className="max-w-3xl text-base leading-relaxed text-slate-600 sm:text-lg">
@@ -91,7 +78,7 @@ export default async function PricingPage({ params }: { params: Promise<{ locale
                 <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
                   {pages('pricingTitle')}
                 </div>
-                <div className="mt-3 text-3xl font-[var(--font-display)] font-semibold tracking-[-0.05em] text-white">
+                <div className="mt-3 text-3xl font-sans font-semibold tracking-[-0.05em] text-white">
                   {`01 / 03`}
                 </div>
                 <p className="mt-3 text-sm leading-relaxed text-slate-300">{pricing('plansBody')}</p>
@@ -116,7 +103,7 @@ export default async function PricingPage({ params }: { params: Promise<{ locale
                   {`0${index + 1}`}
                 </div>
               </div>
-              <div className="mt-6 text-2xl font-[var(--font-display)] font-semibold tracking-[-0.04em] text-slate-950">
+              <div className="mt-6 text-2xl font-sans font-semibold tracking-[-0.04em] text-slate-950">
                 {card.title}
               </div>
               <p className="mt-3 text-sm leading-relaxed text-slate-600">{card.body}</p>
