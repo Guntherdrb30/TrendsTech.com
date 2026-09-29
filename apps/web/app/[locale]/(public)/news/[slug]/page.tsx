@@ -1,10 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { IBM_Plex_Sans, Space_Grotesk } from "next/font/google";
 import { formatNewsDate, getPublishedNewsPostBySlug, splitNewsBody } from "@/lib/news";
 
-const display = Space_Grotesk({ subsets: ["latin"], weight: ["500", "600", "700"], variable: "--font-display" });
-const body = IBM_Plex_Sans({ subsets: ["latin"], weight: ["300", "400", "500", "600"], variable: "--font-body" });
 
 export const dynamic = "force-dynamic";
 
@@ -32,7 +29,7 @@ export default async function NewsArticlePage({ params }: { params: Promise<{ lo
   const isEs = locale.toLowerCase().startsWith("es");
 
   return (
-    <article className={`${display.variable} ${body.variable} mx-auto max-w-4xl space-y-10 font-[var(--font-body)]`}>
+    <article className="mx-auto max-w-4xl space-y-10 font-sans">
       <header className="space-y-6 rounded-3xl border border-slate-200 bg-white px-6 py-10 shadow-[0_30px_90px_-70px_rgba(15,23,42,0.45)] dark:border-slate-800 dark:bg-slate-950 sm:px-10">
         <Link href={`/${locale}/news`} className="text-sm font-semibold text-slate-500 transition hover:text-slate-900 dark:text-slate-400 dark:hover:text-white">
           {isEs ? "← Volver a noticias" : "← Back to news"}
@@ -43,7 +40,7 @@ export default async function NewsArticlePage({ params }: { params: Promise<{ lo
           <span>{formatNewsDate(post.publishedAt, locale)}</span>
         </div>
         <div className="space-y-4">
-          <h1 className="text-4xl font-[var(--font-display)] font-semibold leading-tight text-slate-950 dark:text-white sm:text-5xl">{post.title}</h1>
+          <h1 className="text-4xl font-sans font-semibold leading-tight text-slate-950 dark:text-white sm:text-5xl">{post.title}</h1>
           <p className="text-lg leading-relaxed text-slate-600 dark:text-slate-300">{post.summary}</p>
         </div>
       </header>
