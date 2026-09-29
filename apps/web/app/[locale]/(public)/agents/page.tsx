@@ -1,6 +1,5 @@
 import Link from 'next/link';
 import { getTranslations } from 'next-intl/server';
-import { IBM_Plex_Sans, Space_Grotesk } from 'next/font/google';
 import { Button } from '@/components/ui/button';
 import { buildLocalizedMetadata } from '@/lib/seo';
 import { AGENT_PRODUCTS } from './agent-products';
@@ -13,18 +12,6 @@ function buildWhatsAppLink(agentName: string, isEs: boolean) {
   );
   return `https://wa.me/${WHATSAPP_BUY_NUMBER}?text=${text}`;
 }
-
-const display = Space_Grotesk({
-  subsets: ['latin'],
-  weight: ['400', '500', '600', '700'],
-  variable: '--font-display'
-});
-
-const body = IBM_Plex_Sans({
-  subsets: ['latin'],
-  weight: ['300', '400', '500', '600'],
-  variable: '--font-body'
-});
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
@@ -85,7 +72,7 @@ export default async function AgentsPage({ params }: { params: Promise<{ locale:
   const isEs = locale.startsWith('es');
 
   return (
-    <div className={`${display.variable} ${body.variable} space-y-14 font-[var(--font-body)]`}>
+    <div className="space-y-14 font-sans">
       <section className="premium-spotlight relative overflow-hidden border-y border-black/8 bg-[linear-gradient(180deg,#f4f7fb_0%,#ffffff_24%,#f6f9fc_100%)] px-6 py-12 sm:px-8 lg:px-12 xl:px-16 2xl:px-20">
         <div className="premium-grid absolute inset-0 opacity-55" aria-hidden="true" />
         <div className="relative mx-auto grid w-full max-w-[1760px] gap-8 xl:grid-cols-[1.05fr_0.95fr]">
@@ -95,7 +82,7 @@ export default async function AgentsPage({ params }: { params: Promise<{ locale:
               {t('eyebrow')}
             </div>
             <div className="space-y-4">
-              <h1 className="max-w-4xl text-4xl font-[var(--font-display)] font-semibold tracking-[-0.05em] text-slate-950 sm:text-5xl lg:text-6xl">
+              <h1 className="max-w-4xl text-4xl font-sans font-semibold tracking-[-0.05em] text-slate-950 sm:text-5xl lg:text-6xl">
                 {t('title')}
               </h1>
               <p className="max-w-3xl text-base leading-relaxed text-slate-600 sm:text-lg">
@@ -134,7 +121,7 @@ export default async function AgentsPage({ params }: { params: Promise<{ locale:
                 <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
                   {uiCopy.demoAccess}
                 </div>
-                <div className="mt-3 text-3xl font-[var(--font-display)] font-semibold tracking-[-0.05em] text-white">
+                <div className="mt-3 text-3xl font-sans font-semibold tracking-[-0.05em] text-white">
                   {uiCopy.verifiedOnly}
                 </div>
                 <p className="mt-3 text-sm leading-relaxed text-slate-300">{t('demoRulesInline')}</p>
@@ -168,7 +155,7 @@ export default async function AgentsPage({ params }: { params: Promise<{ locale:
                 <div className="grid gap-5 lg:grid-cols-[1.02fr_0.98fr]">
                   <div className="space-y-4">
                     <div className="space-y-2">
-                      <h2 className="text-[2rem] font-[var(--font-display)] font-semibold tracking-[-0.04em] text-slate-900">
+                      <h2 className="text-[2rem] font-sans font-semibold tracking-[-0.04em] text-slate-900">
                         {a(`${agent.key}.name`)}
                       </h2>
                       <p className="text-sm leading-relaxed text-slate-600">{a(`${agent.key}.tagline`)}</p>
@@ -179,7 +166,7 @@ export default async function AgentsPage({ params }: { params: Promise<{ locale:
                         <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">
                           {uiCopy.features}
                         </div>
-                        <div className="mt-2 text-2xl font-[var(--font-display)] font-semibold tracking-[-0.04em] text-slate-950">
+                        <div className="mt-2 text-2xl font-sans font-semibold tracking-[-0.04em] text-slate-950">
                           {String(agent.featureKeys.length).padStart(2, '0')}
                         </div>
                       </div>
@@ -258,7 +245,7 @@ export default async function AgentsPage({ params }: { params: Promise<{ locale:
       <section className="w-full px-6 pb-6 sm:px-8 lg:px-12 xl:px-16 2xl:px-20">
         <div className="mx-auto max-w-[1760px] space-y-6">
           <div className="space-y-3">
-            <h2 className="text-3xl font-[var(--font-display)] font-semibold text-slate-900">{t('flowTitle')}</h2>
+            <h2 className="text-3xl font-sans font-semibold text-slate-900">{t('flowTitle')}</h2>
             <p className="max-w-2xl text-base text-slate-600">{t('flowSubtitle')}</p>
           </div>
           <div className="grid gap-4 lg:grid-cols-3">
