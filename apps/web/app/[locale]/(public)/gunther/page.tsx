@@ -1,19 +1,6 @@
 import Image from 'next/image';
-import { Syne, DM_Sans } from 'next/font/google';
 import { LinkHubCard } from '@/components/link-hub-card';
 import { buildLocalizedMetadata } from '@/lib/seo';
-
-const display = Syne({
-  subsets: ['latin'],
-  weight: ['400', '600', '700', '800'],
-  variable: '--font-display',
-});
-
-const body = DM_Sans({
-  subsets: ['latin'],
-  weight: ['300', '400', '500'],
-  variable: '--font-body',
-});
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
@@ -110,7 +97,7 @@ export default async function GuntherPage({ params }: { params: Promise<{ locale
       emoji: '💬',
     },
   ];
-  const fontClass = `${display.variable} ${body.variable} font-[var(--font-body)]`;
+  const fontClass = `font-sans`;
 
   return (
     <div className={`${fontClass} relative min-h-screen bg-white`}>
@@ -151,7 +138,7 @@ export default async function GuntherPage({ params }: { params: Promise<{ locale
 
           {/* Nombre */}
           <h1
-            className="font-[var(--font-display)] text-[32px] font-extrabold tracking-[-0.04em] text-[#0a0d14]"
+            className="font-sans text-[32px] font-extrabold tracking-[-0.04em] text-[#0a0d14]"
           >
             Gunther Del Rosario
           </h1>
