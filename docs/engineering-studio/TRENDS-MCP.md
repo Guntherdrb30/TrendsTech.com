@@ -25,20 +25,28 @@ A Context Pack is a generated, auditable snapshot for a specific agent role. It 
 
 ## MCP MVP tools
 Read-only:
-- `search`: project/Vault discovery using the standard MCP search result shape.
-- `fetch`: fetch a project or Vault entry by stable ID.
-- `studio_get_project`: structured project state.
-- `studio_get_context_pack`: build/retrieve agent-scoped context.
-- `studio_get_runs`: execution history.
+- `studio_search_projects`: project discovery.
+- `studio_fetch_project`: current project/Blueprint/Vault state.
+- `studio_search_vault`: decisions and persistent project memory.
+- `studio_list_agent_runs`: execution history.
+- `studio_get_routing_profile`: current routing policy.
+- `studio_validate_workflow_draft`: strict workflow validation without execution.
+- `studio_get_execution_capabilities`: safe configuration health for GitHub/Vercel/database.
+- `studio_list_connected_repositories`: repositories visible to the Studio GitHub credential.
+- `studio_list_run_files`: safe file inventory from an isolated `studio/...` run branch.
+- `studio_read_run_file`: safe UTF-8 source read from the isolated branch.
+- `studio_get_run_delivery_status`: GitHub Actions + Vercel preview status for the run.
 
 Mutating:
 - `studio_create_project`: create project shell/Blueprint.
-- `studio_add_vault_entry`: persist a ChatGPT/Codex milestone.
-- `studio_record_decision`: persist a decision.
-- `studio_update_prd`: create a new PRD version; never overwrite history.
-- `studio_create_task`: create backlog/Codex task.
-- `studio_prepare_run`: prepare supervised run/workspace.
-- `studio_request_approval`: create an approval request.
+- `studio_record_vault_entry`: persist a ChatGPT/Codex milestone.
+- `studio_build_context_pack`: create an auditable role-scoped context snapshot.
+- `studio_create_task`: create backlog task.
+- `studio_set_routing_profile`: set project routing without starting a paid model.
+- `studio_approve_blueprint`: explicit Blueprint approval.
+- `studio_prepare_agent_run`: prepare a supervised isolated `studio/...` GitHub branch.
+- `studio_write_run_file`: create/update a safe source file only on that isolated branch.
+- `studio_create_run_pull_request`: create a draft PR; never merge it.
 
 ## Security contract
 - Remote HTTPS `/mcp` endpoint.
@@ -57,5 +65,18 @@ ChatGPT does not need to copy the entire private conversation automatically. Dur
 ## NVIDIA handoff
 When Astra/NVIDIA agents take over, the orchestrator requests a role-specific Context Pack. NVIDIA execution continues to use the four-layer runtime defined by Engineering Studio: NeMo Agent Toolkit, Dynamo, OpenShell/NemoClaw and TensorRT-LLM where compatible.
 
+## Execution safety
+
+The ChatGPT execution path is intentionally narrower than a general GitHub administrator:
+- writes are accepted only on the `studio/...` branch attached to a prepared Studio run;
+- `main` and other arbitrary branches are rejected;
+- real `.env*`, credentials, private keys, `.vercel`, `.git`, `node_modules` and `.github/workflows` are not exposed through Studio file tools;
+- pull requests are created as drafts;
+- merge, production deployment, destructive database migration and secret mutation are not exposed by these tools;
+- all file writes and PR creation produce Studio audit events.
+
+When ChatGPT is the interactive reasoning surface, these MCP tools do not invoke a second paid LLM. API/model routing remains available for executions initiated outside ChatGPT.
+
 ## Deployment status
-This document defines the contract only. The database migration, authenticated remote MCP route and ChatGPT Developer Mode connection must be verified separately before the bridge is considered operational.
+
+The canonical production MCP endpoint is `https://www.trends172tech.com/mcp` with OAuth protected-resource metadata and Studio scopes. The Studio bridge is implemented in the application. New coding tools must still pass CI and preview verification before they are merged to `main`; production connection from ChatGPT remains an explicit workspace/plugin connection step.
