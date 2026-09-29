@@ -1,19 +1,6 @@
 import Link from 'next/link';
 import { getTranslations } from 'next-intl/server';
-import { IBM_Plex_Sans, Space_Grotesk } from 'next/font/google';
 import { buildLocalizedMetadata } from '@/lib/seo';
-
-const display = Space_Grotesk({
-  subsets: ['latin'],
-  weight: ['400', '500', '600', '700'],
-  variable: '--font-display'
-});
-
-const body = IBM_Plex_Sans({
-  subsets: ['latin'],
-  weight: ['300', '400', '500', '600'],
-  variable: '--font-body'
-});
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
@@ -55,7 +42,7 @@ export default async function SystemsPage({ params }: { params: Promise<{ locale
   const lunaHighlights = [t('lunaHighlights.h1'), t('lunaHighlights.h2'), t('lunaHighlights.h3'), t('lunaHighlights.h4')];
 
   return (
-    <div className={`${display.variable} ${body.variable} space-y-14 font-[var(--font-body)]`}>
+    <div className={`space-y-14 font-sans`}>
       <section className="premium-spotlight relative overflow-hidden border-y border-black/8 bg-[linear-gradient(180deg,#f4f7fb_0%,#ffffff_24%,#f6f9fc_100%)] px-6 py-12 sm:px-8 lg:px-12 xl:px-16 2xl:px-20">
         <div className="premium-grid absolute inset-0 opacity-55" aria-hidden="true" />
         <div className="relative mx-auto grid w-full max-w-[1760px] gap-8 xl:grid-cols-[1.02fr_0.98fr]">
@@ -65,7 +52,7 @@ export default async function SystemsPage({ params }: { params: Promise<{ locale
               {t('eyebrow')}
             </div>
             <div className="space-y-4">
-              <h1 className="max-w-4xl text-4xl font-[var(--font-display)] font-semibold tracking-[-0.05em] text-slate-950 sm:text-5xl lg:text-6xl">
+              <h1 className="max-w-4xl text-4xl font-sans font-semibold tracking-[-0.05em] text-slate-950 sm:text-5xl lg:text-6xl">
                 {t('title')}
               </h1>
               <p className="max-w-3xl text-base leading-relaxed text-slate-600 sm:text-lg">{t('subtitle')}</p>
@@ -112,7 +99,7 @@ export default async function SystemsPage({ params }: { params: Promise<{ locale
       <section className="w-full px-6 sm:px-8 lg:px-12 xl:px-16 2xl:px-20">
         <div className="mx-auto max-w-[1760px] space-y-6">
           <div className="space-y-3">
-            <h2 className="text-3xl font-[var(--font-display)] font-semibold text-slate-900">{t('catalogTitle')}</h2>
+            <h2 className="text-3xl font-sans font-semibold text-slate-900">{t('catalogTitle')}</h2>
             <p className="max-w-3xl text-base text-slate-600">{t('catalogBody')}</p>
           </div>
 
@@ -131,7 +118,7 @@ export default async function SystemsPage({ params }: { params: Promise<{ locale
             <div className="grid gap-5 p-6 xl:grid-cols-[1.02fr_0.98fr]">
               <div className="space-y-4">
                 <div className="space-y-2">
-                  <h3 className="text-[2.2rem] font-[var(--font-display)] font-semibold tracking-[-0.05em] text-slate-900">LUNA</h3>
+                  <h3 className="text-[2.2rem] font-sans font-semibold tracking-[-0.05em] text-slate-900">LUNA</h3>
                   <p className="max-w-3xl text-sm leading-relaxed text-slate-600">{t('lunaBody')}</p>
                 </div>
                 <div className="grid gap-3 sm:grid-cols-2">
@@ -162,7 +149,7 @@ export default async function SystemsPage({ params }: { params: Promise<{ locale
                 <div className="grid h-full gap-4">
                   <div className="rounded-[24px] border border-white/60 bg-white/72 px-4 py-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.9)]">
                     <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">{uiCopy.systemModule}</div>
-                    <div className="mt-2 text-2xl font-[var(--font-display)] font-semibold tracking-[-0.04em] text-slate-950">01</div>
+                    <div className="mt-2 text-2xl font-sans font-semibold tracking-[-0.04em] text-slate-950">01</div>
                     <p className="mt-2 text-sm text-slate-600">{uiCopy.systemModuleBody}</p>
                   </div>
                   <div className="rounded-[24px] border border-black/8 bg-slate-950 px-4 py-4 shadow-[0_24px_60px_-40px_rgba(15,23,42,0.45)]">

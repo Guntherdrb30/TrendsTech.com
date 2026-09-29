@@ -2,7 +2,6 @@ import type { ReactNode } from 'react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { getTranslations } from 'next-intl/server';
-import { IBM_Plex_Sans, Space_Grotesk } from 'next/font/google';
 import { Button } from '@/components/ui/button';
 import { AgentChat } from '@/components/agent-chat';
 import { getCurrentUser } from '@/lib/auth/guards';
@@ -15,18 +14,6 @@ function buildWhatsAppLink(agentName: string, message?: string) {
   const text = encodeURIComponent(message ?? `Estoy interesado en el agente ${agentName}`);
   return `https://wa.me/${WHATSAPP_BUY_NUMBER}?text=${text}`;
 }
-
-const display = Space_Grotesk({
-  subsets: ['latin'],
-  weight: ['400', '500', '600', '700'],
-  variable: '--font-display'
-});
-
-const body = IBM_Plex_Sans({
-  subsets: ['latin'],
-  weight: ['300', '400', '500', '600'],
-  variable: '--font-body'
-});
 
 type PageParams = {
   locale: string;
@@ -88,7 +75,7 @@ function DetailShell({
   bottomPanels: ReactNode;
 }) {
   return (
-    <div className={`${display.variable} ${body.variable} space-y-12 font-[var(--font-body)]`}>
+    <div className={`space-y-12 font-sans`}>
       <section className="premium-spotlight relative overflow-hidden border-y border-black/8 bg-[linear-gradient(180deg,#f4f7fb_0%,#ffffff_24%,#f6f9fc_100%)] px-6 py-12 sm:px-8 lg:px-12 xl:px-16 2xl:px-20">
         <div className="premium-grid absolute inset-0 opacity-55" aria-hidden="true" />
         <div className="relative mx-auto grid w-full max-w-[1760px] gap-8 xl:grid-cols-[1.02fr_0.98fr]">
@@ -104,7 +91,7 @@ function DetailShell({
               {eyebrow}
             </div>
             <div className="space-y-4">
-              <h1 className="max-w-4xl text-4xl font-[var(--font-display)] font-semibold tracking-[-0.05em] text-slate-950 sm:text-5xl lg:text-6xl">
+              <h1 className="max-w-4xl text-4xl font-sans font-semibold tracking-[-0.05em] text-slate-950 sm:text-5xl lg:text-6xl">
                 {title}
               </h1>
               <p className="max-w-3xl text-base leading-relaxed text-slate-600 sm:text-lg">{summary}</p>
@@ -293,7 +280,7 @@ export default async function AgentDetailPage({ params }: { params: Promise<Page
                     <div className="text-base font-semibold text-slate-900">
                       {a(`luna_code_orchestrator.commercial.plans.${planKey}.name`)}
                     </div>
-                    <div className="mt-3 text-3xl font-[var(--font-display)] font-semibold tracking-[-0.05em] text-slate-950">
+                    <div className="mt-3 text-3xl font-sans font-semibold tracking-[-0.05em] text-slate-950">
                       {a(`luna_code_orchestrator.commercial.plans.${planKey}.price`)}
                     </div>
                     <p className="mt-3 text-sm text-slate-600">

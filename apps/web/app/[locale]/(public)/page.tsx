@@ -1,20 +1,7 @@
 import type { Metadata } from 'next';
-import { Syne, DM_Sans } from 'next/font/google';
 import { getTranslations } from 'next-intl/server';
 import { HomePremium, type HomePremiumCopy } from '@/components/home-premium';
 import { buildLocalizedMetadata } from '@/lib/seo';
-
-const display = Syne({
-  subsets: ['latin'],
-  weight: ['400', '500', '600', '700', '800'],
-  variable: '--font-display',
-});
-
-const body = DM_Sans({
-  subsets: ['latin'],
-  weight: ['300', '400', '500', '600'],
-  variable: '--font-body',
-});
 
 export async function generateMetadata({
   params,
@@ -39,7 +26,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
   const { locale } = await params;
   const home = await getTranslations('home');
 
-  const fontClass = `${display.variable} ${body.variable} font-[var(--font-body)]`;
+  const fontClass = `font-sans`;
 
   const conciergeCopy = {
     locale,

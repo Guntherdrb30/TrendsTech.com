@@ -1,19 +1,6 @@
 import Image from 'next/image';
-import { Syne, DM_Sans } from 'next/font/google';
 import { LinkHubCard } from '@/components/link-hub-card';
 import { buildLocalizedMetadata } from '@/lib/seo';
-
-const display = Syne({
-  subsets: ['latin'],
-  weight: ['400', '600', '700', '800'],
-  variable: '--font-display',
-});
-
-const body = DM_Sans({
-  subsets: ['latin'],
-  weight: ['300', '400', '500'],
-  variable: '--font-body',
-});
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
@@ -125,7 +112,7 @@ export default async function LinksPage({ params }: { params: Promise<{ locale: 
       emoji: '💬',
     },
   ];
-  const fontClass = `${display.variable} ${body.variable} font-[var(--font-body)]`;
+  const fontClass = `font-sans`;
 
   return (
     <div className={`${fontClass} relative min-h-screen bg-white`}>
@@ -166,7 +153,7 @@ export default async function LinksPage({ params }: { params: Promise<{ locale: 
 
           {/* Nombre */}
           <h1
-            className="font-[var(--font-display)] text-[32px] font-extrabold tracking-[-0.04em] text-[#0a0d14]"
+            className="font-sans text-[32px] font-extrabold tracking-[-0.04em] text-[#0a0d14]"
           >
             Trends172Tech
           </h1>
@@ -206,7 +193,7 @@ export default async function LinksPage({ params }: { params: Promise<{ locale: 
               key={stat.label}
               className="rounded-2xl border border-[#f3f4f6] bg-[#fafafa] px-3 py-4 text-center"
             >
-              <p className="font-[var(--font-display)] text-[20px] font-extrabold text-[#14D9D9]">
+              <p className="font-sans text-[20px] font-extrabold text-[#14D9D9]">
                 {stat.value}
               </p>
               <p className="mt-0.5 text-[11px] text-[#9ca3af]">{stat.label}</p>

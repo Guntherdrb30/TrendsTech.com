@@ -1,7 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
 import { getTranslations } from "next-intl/server";
-import { Syne, DM_Sans } from "next/font/google";
 import { Button } from "@/components/ui/button";
 import { JsonLd } from "@/components/json-ld";
 import { CarpiHogarShowcase } from "@/components/carpihogar-showcase";
@@ -13,18 +12,6 @@ const WHATSAPP_BUY_NUMBER = "584122640371";
 function buildWhatsAppLink(msg = "Quiero una demo de LUNA para mi empresa") {
   return `https://wa.me/${WHATSAPP_BUY_NUMBER}?text=${encodeURIComponent(msg)}`;
 }
-
-const display = Syne({
-  subsets: ["latin"],
-  weight: ["400", "600", "700", "800"],
-  variable: "--font-display",
-});
-
-const body = DM_Sans({
-  subsets: ["latin"],
-  weight: ["300", "400", "500"],
-  variable: "--font-body",
-});
 
 export async function generateMetadata({
   params,
@@ -266,7 +253,7 @@ export default async function LunaPage({
       ];
 
   return (
-    <div className={`${display.variable} ${body.variable} space-y-14 font-[var(--font-body)]`}>
+    <div className={`space-y-14 font-sans`}>
       <JsonLd data={structuredData} />
 
       {/* ── HERO ── */}
@@ -305,7 +292,7 @@ export default async function LunaPage({
             </div>
 
             <div className="space-y-5">
-              <h1 className="max-w-2xl font-[var(--font-display)] text-4xl font-extrabold tracking-[-0.05em] text-[#0a0d14] sm:text-5xl lg:text-6xl">
+              <h1 className="max-w-2xl font-sans text-4xl font-extrabold tracking-[-0.05em] text-[#0a0d14] sm:text-5xl lg:text-6xl">
                 {isEs ? "Nunca verás dos LUNA iguales." : "No two LUNA instances look alike."}
               </h1>
               <p className="max-w-xl text-base leading-relaxed text-[#4b5563] sm:text-lg">
@@ -440,7 +427,7 @@ export default async function LunaPage({
               <div className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#14D9D9]">
                 {isEs ? "ERP CAMALEÓNICO" : "CHAMELEON ERP"}
               </div>
-              <h2 className="font-[var(--font-display)] text-3xl font-extrabold tracking-[-0.04em] text-white sm:text-4xl">
+              <h2 className="font-sans text-3xl font-extrabold tracking-[-0.04em] text-white sm:text-4xl">
                 {isEs ? "Una plataforma. Infinitas identidades." : "One platform. Infinite identities."}
               </h2>
               <p className="mx-auto max-w-2xl text-base leading-relaxed text-slate-300">
@@ -766,7 +753,7 @@ export default async function LunaPage({
             <div className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#0099a8]">
               {isEs ? "WHITE LABEL NATIVO" : "NATIVE WHITE LABEL"}
             </div>
-            <h2 className="max-w-2xl font-[var(--font-display)] text-3xl font-extrabold tracking-[-0.04em] text-[#0a0d14] sm:text-4xl">
+            <h2 className="max-w-2xl font-sans text-3xl font-extrabold tracking-[-0.04em] text-[#0a0d14] sm:text-4xl">
               {isEs ? "LUNA toma la identidad de tu empresa" : "LUNA takes on your company's identity"}
             </h2>
             <p className="max-w-2xl text-base leading-relaxed text-[#6b7280]">
@@ -816,7 +803,7 @@ export default async function LunaPage({
             <div className="inline-flex items-center gap-2 rounded-full border border-[#14D9D9]/30 bg-[#14D9D9]/8 px-5 py-2">
               <span className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#0099a8]">LUNA CORE</span>
             </div>
-            <h2 className="max-w-2xl font-[var(--font-display)] text-3xl font-extrabold tracking-[-0.04em] text-[#0a0d14]">
+            <h2 className="max-w-2xl font-sans text-3xl font-extrabold tracking-[-0.04em] text-[#0a0d14]">
               {isEs ? "Activa solo los módulos que necesitas" : "Activate only the modules you need"}
             </h2>
             <p className="max-w-xl text-base text-[#6b7280]">
@@ -853,7 +840,7 @@ export default async function LunaPage({
               <div className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#14D9D9]">
                 {isEs ? "INTELIGENCIA ARTIFICIAL OPERATIVA" : "OPERATIONAL ARTIFICIAL INTELLIGENCE"}
               </div>
-              <h2 className="font-[var(--font-display)] text-3xl font-extrabold tracking-[-0.04em] text-white">
+              <h2 className="font-sans text-3xl font-extrabold tracking-[-0.04em] text-white">
                 {isEs ? "IA que trabaja dentro de tu plataforma" : "AI that works inside your platform"}
               </h2>
               <p className="max-w-2xl text-base leading-relaxed text-slate-300">
@@ -885,7 +872,7 @@ export default async function LunaPage({
             <div className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#0099a8]">
               {isEs ? "CASOS REALES" : "REAL CASES"}
             </div>
-            <h2 className="font-[var(--font-display)] text-3xl font-extrabold tracking-[-0.04em] text-[#0a0d14]">
+            <h2 className="font-sans text-3xl font-extrabold tracking-[-0.04em] text-[#0a0d14]">
               {isEs ? "LUNA en empresas reales" : "LUNA in real businesses"}
             </h2>
             <p className="max-w-2xl text-base text-[#6b7280]">
@@ -983,7 +970,7 @@ export default async function LunaPage({
             <div className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#0099a8]">
               {isEs ? "PLANES" : "PLANS"}
             </div>
-            <h2 className="font-[var(--font-display)] text-4xl font-extrabold tracking-[-0.05em] text-[#0a0d14]">
+            <h2 className="font-sans text-4xl font-extrabold tracking-[-0.05em] text-[#0a0d14]">
               {isEs ? "Elige el plan para tu empresa" : "Choose the plan for your business"}
             </h2>
             <p className="mx-auto max-w-2xl text-base text-[#6b7280]">
@@ -1016,7 +1003,7 @@ export default async function LunaPage({
                   <div className={`text-[11px] font-bold uppercase tracking-[0.22em] ${plan.dark ? "text-[#14D9D9]" : "text-[#0099a8]"}`}>
                     LUNA
                   </div>
-                  <div className="font-[var(--font-display)] text-2xl font-extrabold tracking-[-0.03em]">
+                  <div className="font-sans text-2xl font-extrabold tracking-[-0.03em]">
                     {plan.name}
                   </div>
                   <div className={`text-sm ${plan.dark ? "text-slate-300" : "text-[#6b7280]"}`}>
@@ -1087,7 +1074,7 @@ export default async function LunaPage({
               <div className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#0099a8]">
                 {isEs ? "IMPLEMENTACIÓN ACELERADA" : "ACCELERATED IMPLEMENTATION"}
               </div>
-              <h2 className="font-[var(--font-display)] text-3xl font-extrabold tracking-[-0.04em] text-[#0a0d14]">
+              <h2 className="font-sans text-3xl font-extrabold tracking-[-0.04em] text-[#0a0d14]">
                 {isEs ? "De cero a operando en semanas" : "From zero to operating in weeks"}
               </h2>
               <p className="text-base leading-relaxed text-[#6b7280]">
@@ -1146,7 +1133,7 @@ export default async function LunaPage({
             <div className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#0099a8]">
               {isEs ? "SISTEMA REAL EN PRODUCCIÓN" : "REAL SYSTEM IN PRODUCTION"}
             </div>
-            <h2 className="font-[var(--font-display)] text-3xl font-extrabold tracking-[-0.04em] text-[#0a0d14]">
+            <h2 className="font-sans text-3xl font-extrabold tracking-[-0.04em] text-[#0a0d14]">
               {isEs ? "Así se ve LUNA por dentro" : "This is what LUNA looks like inside"}
             </h2>
             <p className="max-w-2xl text-base text-[#6b7280]">
@@ -1255,7 +1242,7 @@ export default async function LunaPage({
               <span className="h-1.5 w-1.5 rounded-full bg-[#14D9D9]" />
               LUNA ERP · {isEs ? "Por Trends172 Tech" : "By Trends172 Tech"}
             </div>
-            <h2 className="font-[var(--font-display)] text-4xl font-extrabold tracking-[-0.05em] sm:text-5xl">
+            <h2 className="font-sans text-4xl font-extrabold tracking-[-0.05em] sm:text-5xl">
               {isEs
                 ? "Tu marca al frente. Nuestra tecnología detrás."
                 : "Your brand in front. Our technology behind."}
