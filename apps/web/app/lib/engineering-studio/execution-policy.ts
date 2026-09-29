@@ -55,17 +55,18 @@ export function normalizeStudioRepoPath(input: string) {
   }
 
   const lower = value.toLowerCase();
-  if (BLOCKED_EXACT.has(lower)) {
+  const basename = parts[parts.length - 1].toLowerCase();
+  if (BLOCKED_EXACT.has(basename)) {
     throw new Error('Engineering Studio no puede leer ni modificar archivos de secretos.');
   }
   if (BLOCKED_PREFIXES.some((prefix) => lower.startsWith(prefix))) {
     throw new Error('Ruta protegida para Engineering Studio.');
   }
-  if (BLOCKED_EXTENSIONS.some((extension) => lower.endsWith(extension))) {
+  if (BLOCKED_EXTENSIONS.some((extension) => basename.endsWith(extension))) {
     throw new Error('Engineering Studio no puede leer ni modificar archivos de credenciales.');
   }
 
-  if (lower.startsWith('.env.') && !['.env.example', '.env.sample', '.env.template'].includes(lower)) {
+  if (basename.startsWith('.env.') && !['.env.example', '.env.sample', '.env.template'].includes(basename)) {
     throw new Error('Engineering Studio no puede leer ni modificar archivos de entorno con valores reales.');
   }
 
