@@ -1,7 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { IBM_Plex_Sans, Space_Grotesk } from 'next/font/google';
 import { JsonLd } from '@/components/json-ld';
 import { buildProductionCaseStructuredData } from '@/lib/product-structured-data';
 import { buildLocalizedMetadata } from '@/lib/seo';
@@ -11,18 +10,6 @@ import {
   localizeCaseStudy,
   type CaseStudySlug,
 } from '../case-study-data';
-
-const display = Space_Grotesk({
-  subsets: ['latin'],
-  weight: ['400', '500', '600', '700'],
-  variable: '--font-display',
-});
-
-const body = IBM_Plex_Sans({
-  subsets: ['latin'],
-  weight: ['300', '400', '500', '600'],
-  variable: '--font-body',
-});
 
 type PageParams = {
   locale: string;
@@ -134,7 +121,7 @@ export default async function ProductionCasePage({ params }: { params: Promise<P
   const structuredData = buildProductionCaseStructuredData(locale, caseSlug);
 
   return (
-    <div className={`${display.variable} ${body.variable} font-[var(--font-body)] text-slate-900 dark:text-white`}>
+    <div className="font-sans text-slate-900 dark:text-white">
       <JsonLd data={structuredData} />
 
       <section className="premium-spotlight relative overflow-hidden border-y border-black/8 bg-[linear-gradient(180deg,#f4f7fb_0%,#ffffff_26%,#f6f9fc_100%)] px-6 py-12 dark:border-white/10 dark:bg-[linear-gradient(180deg,#020617_0%,#0f172a_60%,#020617_100%)] sm:px-8 lg:px-12 xl:px-16 2xl:px-20">
@@ -160,7 +147,7 @@ export default async function ProductionCasePage({ params }: { params: Promise<P
 
             <div className="space-y-4">
               <p className={`text-sm font-semibold uppercase tracking-[0.2em] ${accentText}`}>{caseStudy.name}</p>
-              <h1 className="max-w-4xl text-4xl font-[var(--font-display)] font-semibold leading-[1.02] tracking-[-0.055em] text-slate-950 dark:text-white sm:text-5xl lg:text-6xl">
+              <h1 className="max-w-4xl text-4xl font-sans font-semibold leading-[1.02] tracking-[-0.055em] text-slate-950 dark:text-white sm:text-5xl lg:text-6xl">
                 {caseStudy.title}
               </h1>
               <p className="max-w-3xl text-base leading-relaxed text-slate-600 dark:text-slate-300 sm:text-lg">
@@ -227,7 +214,7 @@ export default async function ProductionCasePage({ params }: { params: Promise<P
         <div className="mx-auto max-w-[1760px] space-y-8">
           <div className="max-w-3xl space-y-3">
             <p className={`text-xs font-semibold uppercase tracking-[0.22em] ${accentText}`}>{copy.capabilitiesEyebrow}</p>
-            <h2 className="text-3xl font-[var(--font-display)] font-semibold tracking-[-0.04em] sm:text-4xl">
+            <h2 className="text-3xl font-sans font-semibold tracking-[-0.04em] sm:text-4xl">
               {copy.capabilitiesTitle}
             </h2>
           </div>
@@ -252,7 +239,7 @@ export default async function ProductionCasePage({ params }: { params: Promise<P
         <div className="mx-auto grid max-w-[1760px] overflow-hidden rounded-[36px] bg-slate-950 text-white shadow-[0_40px_110px_-70px_rgba(15,23,42,0.65)] lg:grid-cols-[0.9fr_1.1fr]">
           <div className="space-y-4 p-7 sm:p-10">
             <p className="text-xs font-semibold uppercase tracking-[0.22em] text-teal-300">{copy.evidenceEyebrow}</p>
-            <h2 className="text-3xl font-[var(--font-display)] font-semibold tracking-[-0.04em]">{copy.evidenceTitle}</h2>
+            <h2 className="text-3xl font-sans font-semibold tracking-[-0.04em]">{copy.evidenceTitle}</h2>
             <p className="text-sm leading-relaxed text-slate-400">{copy.evidenceNote}</p>
             <Link
               href={caseStudy.externalUrl}
@@ -280,7 +267,7 @@ export default async function ProductionCasePage({ params }: { params: Promise<P
         <div className="mx-auto max-w-[1760px] space-y-8">
           <div className="max-w-3xl space-y-3">
             <p className={`text-xs font-semibold uppercase tracking-[0.22em] ${accentText}`}>{copy.workflowEyebrow}</p>
-            <h2 className="text-3xl font-[var(--font-display)] font-semibold tracking-[-0.04em] sm:text-4xl">{copy.workflowTitle}</h2>
+            <h2 className="text-3xl font-sans font-semibold tracking-[-0.04em] sm:text-4xl">{copy.workflowTitle}</h2>
           </div>
           <ol className="grid gap-4 lg:grid-cols-4">
             {caseStudy.workflow.map((step, index) => (
@@ -299,7 +286,7 @@ export default async function ProductionCasePage({ params }: { params: Promise<P
         <div className="mx-auto max-w-[1760px] space-y-8">
           <div className="max-w-3xl space-y-3">
             <p className={`text-xs font-semibold uppercase tracking-[0.22em] ${accentText}`}>{copy.galleryEyebrow}</p>
-            <h2 className="text-3xl font-[var(--font-display)] font-semibold tracking-[-0.04em] sm:text-4xl">{copy.galleryTitle}</h2>
+            <h2 className="text-3xl font-sans font-semibold tracking-[-0.04em] sm:text-4xl">{copy.galleryTitle}</h2>
             <p className="text-sm leading-relaxed text-slate-500 dark:text-slate-400">{copy.galleryNote}</p>
           </div>
           <div className="grid gap-5 lg:grid-cols-3">
@@ -322,7 +309,7 @@ export default async function ProductionCasePage({ params }: { params: Promise<P
             { title: copy.safeguards, items: caseStudy.safeguards },
           ].map((group) => (
             <article key={group.title} className="rounded-[28px] border border-black/8 bg-white/90 p-6 dark:border-white/10 dark:bg-slate-950/70">
-              <h2 className="text-lg font-[var(--font-display)] font-semibold">{group.title}</h2>
+              <h2 className="text-lg font-sans font-semibold">{group.title}</h2>
               <ul className="mt-5 space-y-3 text-sm leading-relaxed text-slate-600 dark:text-slate-300">
                 {group.items.map((item) => (
                   <li key={item} className="flex items-start gap-3">
@@ -335,7 +322,7 @@ export default async function ProductionCasePage({ params }: { params: Promise<P
           ))}
 
           <article className="rounded-[28px] border border-black/8 bg-white/90 p-6 dark:border-white/10 dark:bg-slate-950/70">
-            <h2 className="text-lg font-[var(--font-display)] font-semibold">{copy.technology}</h2>
+            <h2 className="text-lg font-sans font-semibold">{copy.technology}</h2>
             <div className="mt-5 flex flex-wrap gap-2">
               {caseStudy.stack.map((technology) => (
                 <span key={technology} className="rounded-full border border-black/8 bg-slate-50 px-3 py-1.5 font-mono text-xs text-slate-600 dark:border-white/10 dark:bg-white/5 dark:text-slate-300">
@@ -355,7 +342,7 @@ export default async function ProductionCasePage({ params }: { params: Promise<P
         <div className="mx-auto flex max-w-[1760px] flex-col gap-7 lg:flex-row lg:items-end lg:justify-between">
           <div className="max-w-3xl space-y-3">
             <p className="text-xs font-semibold uppercase tracking-[0.22em] text-teal-300">{copy.ctaEyebrow}</p>
-            <h2 className="text-3xl font-[var(--font-display)] font-semibold tracking-[-0.04em] sm:text-4xl">{copy.ctaTitle}</h2>
+            <h2 className="text-3xl font-sans font-semibold tracking-[-0.04em] sm:text-4xl">{copy.ctaTitle}</h2>
             <p className="text-sm leading-relaxed text-slate-300 sm:text-base">{copy.ctaBody}</p>
           </div>
           <div className="flex flex-wrap gap-3">
