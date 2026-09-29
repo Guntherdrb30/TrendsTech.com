@@ -1,8 +1,6 @@
 import Link from 'next/link';
 import { buildLocalizedMetadata } from '@/lib/seo';
 
-const display = Space_Grotesk({ subsets: ['latin'], weight: ['400', '500', '600', '700'], variable: '--font-display' });
-const body = IBM_Plex_Sans({ subsets: ['latin'], weight: ['300', '400', '500', '600'], variable: '--font-body' });
 
 type PageParams = { locale: string };
 
