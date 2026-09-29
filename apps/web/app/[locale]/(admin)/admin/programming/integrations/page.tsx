@@ -1,5 +1,4 @@
 import { getVercelSyncSnapshot } from '@/lib/engineering-studio/infrastructure-sync';
-import { getStudioExecutionCapabilities, listConnectedGitHubRepositories } from '@/lib/engineering-studio/chatgpt-execution';
 import { syncVercelNowAction } from './actions';
 
 function date(value: Date | null) { return value ? new Intl.DateTimeFormat('es-VE',{dateStyle:'short',timeStyle:'short'}).format(value) : '—'; }
@@ -11,17 +10,6 @@ export default async function StudioIntegrationsPage({params}:{params:Promise<{l
   let schemaReady=true;
   try { snapshot=await getVercelSyncSnapshot(); } catch { schemaReady=false; }
   const lastRun=snapshot.runs[0];
-  const capabilities=await getStudioExecutionCapabilities();
-  let repositoryCount:number|null=null;
-  if(capabilities.github.configured){
-    try { repositoryCount=(await listConnectedGitHubRepositories()).repositories.length; } catch { repositoryCount=null; }
-  }
-  const connectionCards=[
-    {name:'GitHub',status:capabilities.github.configured?'CONECTADO':'PENDIENTE',detail:capabilities.github.configured?`${repositoryCount ?? '—'} repositorio(s) visibles para Engineering Studio. Escritura limitada a ramas studio/...`:'Configura GITHUB_STUDIO_TOKEN para habilitar ramas aisladas y herramientas de código.'},
-    {name:'Vercel',status:capabilities.vercel.configured?'CONECTADO':'PENDIENTE',detail:capabilities.vercel.configured?'Disponible para inventario, estado de despliegues y verificación de previews. Producción continúa protegida por Approval Gates.':'Configura VERCEL_STUDIO_TOKEN para verificación de previews y sincronización.'},
-    {name:'Base de datos',status:capabilities.database.configured?'CONECTADA':'PENDIENTE',detail:capabilities.database.configured?`Proveedor detectado: ${capabilities.database.provider}. No se exponen credenciales.`:'DATABASE_URL no está disponible en el runtime.'},
-    {name:'ChatGPT / Trends MCP',status:'ACTIVO',detail:'Endpoint OAuth canónico /mcp con scopes separados de lectura, escritura Studio y ejecución supervisada.'}
-  ];
   return <div className="space-y-6">
     <div><p className="text-xs font-semibold uppercase tracking-[0.18em] text-cyan-600">Infrastructure Sync</p><h3 className="mt-2 text-2xl font-semibold">Proyectos e integraciones</h3><p className="mt-2 max-w-3xl text-sm text-slate-500">Engineering Studio descubre los proyectos del proveedor, los enlaza con su repositorio y mantiene el estado de producción sincronizado. Ninguna sincronización despliega ni modifica producción.</p></div>
 
@@ -36,11 +24,11 @@ export default async function StudioIntegrationsPage({params}:{params:Promise<{l
       {snapshot.integrations.length===0?<p className="mt-5 rounded-2xl border border-dashed border-slate-300 p-6 text-center text-sm text-slate-500">El inventario aparecerá aquí después de la primera sincronización autorizada.</p>:<div className="mt-5 overflow-x-auto"><table className="min-w-full text-left text-xs"><thead className="text-slate-500"><tr><th className="pb-3 pr-5">Proyecto</th><th className="pb-3 pr-5">Repositorio</th><th className="pb-3 pr-5">Producción</th><th className="pb-3 pr-5">Commit</th><th className="pb-3">Sync</th></tr></thead><tbody>{snapshot.integrations.map(item=><tr key={item.id} className="border-t border-slate-100"><td className="py-3 pr-5"><p className="font-semibold">{item.projectName}</p><p className="text-slate-400">{item.framework||'framework —'}</p></td><td className="py-3 pr-5">{item.repositoryFullName||'No identificado'}</td><td className="py-3 pr-5"><span className={`rounded-full border px-2.5 py-1 font-semibold ${stateTone(item.productionState)}`}>{item.productionState||'UNKNOWN'}</span></td><td className="py-3 pr-5 font-mono">{item.productionCommitSha?.slice(0,8)||'—'}<span className="ml-2 font-sans text-slate-400">{item.productionBranch||''}</span></td><td className="py-3">{date(item.lastSyncedAt)}</td></tr>)}</tbody></table></div>}
     </section>
 
-    <section className="grid gap-4 md:grid-cols-2">{connectionCards.map(({name,status,detail})=><article key={name} className="rounded-[24px] border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-950"><div className="flex items-start justify-between gap-4"><h4 className="text-lg font-semibold">{name}</h4><span className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-[11px] font-semibold text-slate-600">{status}</span></div><p className="mt-3 text-sm leading-6 text-slate-500">{detail}</p></article>)}</section>
-
-    <section className="rounded-[26px] border border-slate-200 bg-slate-50 p-5 text-sm text-slate-600 dark:border-slate-800 dark:bg-slate-900/40 dark:text-slate-300">
-      <p className="font-semibold text-slate-900 dark:text-white">Modo ChatGPT</p>
-      <p className="mt-2 leading-6">Cuando Engineering Studio es operado desde ChatGPT mediante Trends MCP, ChatGPT aporta el razonamiento. Las herramientas Studio consultan memoria, repositorios, CI y previews sin iniciar por sí mismas un segundo modelo de IA de pago. Merge, producción y secretos continúan fuera de este flujo.</p>
-    </section>
+    <section className="grid gap-4 md:grid-cols-2">{[
+      ['GitHub','Vinculación automática','El repositorio se toma de la integración Git de Vercel o del metadata del deployment. El análisis profundo del código se ejecutará como paso separado y auditable.'],
+      ['ChatGPT / Trends MCP','Arquitectura definida','ChatGPT podrá consultar este inventario y trabajar sobre un proyecto concreto sin asumir acceso automático al historial privado.'],
+      ['Servidores propios','Siguiente proveedor','El modelo de integración usa provider + externalProjectId para añadir on-prem/NVIDIA sin mezclar datos entre proyectos.'],
+      ['Production Safety','Bloqueado por diseño','Descubrir y sincronizar es lectura + persistencia interna. Deploy, merge, migraciones y cambios de producción conservan Approval Gates.']
+    ].map(([name,status,detail])=><article key={name} className="rounded-[24px] border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-950"><div className="flex items-start justify-between gap-4"><h4 className="text-lg font-semibold">{name}</h4><span className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-[11px] font-semibold text-slate-600">{status}</span></div><p className="mt-3 text-sm leading-6 text-slate-500">{detail}</p></article>)}</section>
   </div>;
 }
