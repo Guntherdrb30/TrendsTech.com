@@ -1,19 +1,6 @@
 import Link from 'next/link';
 import { prisma } from '@trends172tech/db';
-import { IBM_Plex_Sans, Space_Grotesk } from 'next/font/google';
 import { buildLocalizedMetadata } from '@/lib/seo';
-
-const display = Space_Grotesk({
-  subsets: ['latin'],
-  weight: ['400', '500', '600', '700'],
-  variable: '--font-display',
-});
-
-const body = IBM_Plex_Sans({
-  subsets: ['latin'],
-  weight: ['300', '400', '500', '600'],
-  variable: '--font-body',
-});
 
 type PageParams = { locale: string };
 
@@ -84,7 +71,7 @@ export default async function SkillsPage({ params }: { params: Promise<PageParam
   };
 
   return (
-    <div className={`${display.variable} ${body.variable} space-y-16 font-[var(--font-body)]`}>
+    <div className="space-y-16 font-sans">
       {/* ── Hero ─────────────────────────────────────────────────── */}
       <section className="premium-spotlight relative overflow-hidden border-y border-black/8 bg-[linear-gradient(180deg,#f4f7fb_0%,#ffffff_28%,#f7fafc_100%)] px-6 py-14 sm:px-8 lg:px-12 xl:px-16 2xl:px-20">
         <div className="premium-grid absolute inset-0 opacity-50" aria-hidden="true" />
@@ -92,7 +79,7 @@ export default async function SkillsPage({ params }: { params: Promise<PageParam
           <div className="inline-flex rounded-full border border-black/8 bg-white/88 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-500">
             {copy.eyebrow}
           </div>
-          <h1 className="max-w-3xl text-4xl font-[var(--font-display)] font-semibold tracking-[-0.05em] text-slate-950 sm:text-5xl lg:text-6xl">
+          <h1 className="max-w-3xl text-4xl font-sans font-semibold tracking-[-0.05em] text-slate-950 sm:text-5xl lg:text-6xl">
             {copy.title}
           </h1>
           <p className="max-w-2xl text-base leading-relaxed text-slate-600 sm:text-lg">{copy.subtitle}</p>
@@ -159,7 +146,7 @@ export default async function SkillsPage({ params }: { params: Promise<PageParam
       <section className="px-6 pb-16 sm:px-8 lg:px-12 xl:px-16 2xl:px-20">
         <div className="mx-auto max-w-[1760px]">
           <div className="interactive-panel overflow-hidden rounded-[34px] border border-black/8 bg-slate-950 px-8 py-10 text-center shadow-[0_40px_100px_-70px_rgba(15,23,42,0.6)]">
-            <h2 className="text-2xl font-[var(--font-display)] font-semibold tracking-[-0.04em] text-white sm:text-3xl">
+            <h2 className="text-2xl font-sans font-semibold tracking-[-0.04em] text-white sm:text-3xl">
               {copy.ctaFinalTitle}
             </h2>
             <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-slate-300 sm:text-base">
