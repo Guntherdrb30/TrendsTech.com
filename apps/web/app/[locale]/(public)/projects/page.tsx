@@ -1,22 +1,9 @@
 import Link from "next/link";
 import Image from "next/image";
 import { getTranslations } from "next-intl/server";
-import { IBM_Plex_Sans, Space_Grotesk } from "next/font/google";
 import { JsonLd } from "@/components/json-ld";
 import { buildProductionCasesStructuredData } from "@/lib/product-structured-data";
 import { buildLocalizedMetadata } from "@/lib/seo";
-
-const display = Space_Grotesk({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-  variable: "--font-display"
-});
-
-const body = IBM_Plex_Sans({
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600"],
-  variable: "--font-body"
-});
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
@@ -74,7 +61,7 @@ export default async function ProjectsPage({
   ];
 
   return (
-    <div className={`${display.variable} ${body.variable} space-y-16 font-[var(--font-body)]`}>
+    <div className={`space-y-16 font-sans`}>
       <JsonLd data={structuredData} />
       <section className="relative overflow-hidden rounded-3xl border border-slate-200 bg-gradient-to-br from-white via-slate-50 to-slate-100 px-6 py-10 shadow-[0_40px_120px_-80px_rgba(15,23,42,0.45)] dark:border-slate-800 dark:from-slate-950 dark:via-slate-900 dark:to-slate-900 sm:px-10 sm:py-14">
         <div className="grid-lines absolute inset-0 opacity-60" aria-hidden="true" />
@@ -88,7 +75,7 @@ export default async function ProjectsPage({
               {t("eyebrow")}
             </div>
             <div className="space-y-4">
-              <h1 className="text-4xl font-[var(--font-display)] font-semibold leading-tight text-slate-900 dark:text-white sm:text-5xl">
+              <h1 className="text-4xl font-sans font-semibold leading-tight text-slate-900 dark:text-white sm:text-5xl">
                 {t("title")}
               </h1>
               <p className="max-w-xl text-base leading-relaxed text-slate-600 dark:text-slate-300 sm:text-lg">
@@ -134,7 +121,7 @@ export default async function ProjectsPage({
 
       <section className="space-y-6">
         <div className="space-y-3">
-          <h2 className="text-3xl font-[var(--font-display)] font-semibold text-slate-900 dark:text-white">
+          <h2 className="text-3xl font-sans font-semibold text-slate-900 dark:text-white">
             {t("projectsTitle")}
           </h2>
           <p className="max-w-2xl text-base text-slate-600 dark:text-slate-300">
@@ -167,7 +154,7 @@ export default async function ProjectsPage({
                   </span>
                 </div>
                 <div className="space-y-2">
-                  <h3 className="text-2xl font-[var(--font-display)] font-semibold text-slate-900 dark:text-white">
+                  <h3 className="text-2xl font-sans font-semibold text-slate-900 dark:text-white">
                     {item.title}
                   </h3>
                   <p className="text-sm leading-relaxed text-slate-600 dark:text-slate-300">{item.body}</p>
