@@ -11,6 +11,15 @@ import { approveBlueprintGate } from './approvals';
 import { workflowDefinitionSchema } from './workflow-contract';
 import { listAgentRuns, prepareAgentRun } from './agent-runner';
 import { getProjectRoutingProfile, saveProjectRoutingPolicy } from './routing';
+import {
+  createRunPullRequest,
+  getRunDeliveryStatus,
+  getStudioExecutionCapabilities,
+  listConnectedGitHubRepositories,
+  listRunRepositoryFiles,
+  readRunRepositoryFile,
+  writeRunRepositoryFile
+} from './chatgpt-execution';
 
 const vaultType = z.enum([
   'CONVERSATION_SUMMARY','PRD','REQUIREMENT','DECISION','ARCHITECTURE','CHANGE_REQUEST',
@@ -23,7 +32,12 @@ export const STUDIO_READ_TOOLS = [
   'studio_search_vault',
   'studio_list_agent_runs',
   'studio_get_routing_profile',
-  'studio_validate_workflow_draft'
+  'studio_validate_workflow_draft',
+  'studio_get_execution_capabilities',
+  'studio_list_connected_repositories',
+  'studio_list_run_files',
+  'studio_read_run_file',
+  'studio_get_run_delivery_status'
 ] as const;
 
 export const STUDIO_WRITE_TOOLS = [
@@ -36,7 +50,9 @@ export const STUDIO_WRITE_TOOLS = [
 ] as const;
 
 export const STUDIO_EXECUTE_TOOLS = [
-  'studio_prepare_agent_run'
+  'studio_prepare_agent_run',
+  'studio_write_run_file',
+  'studio_create_run_pull_request'
 ] as const;
 
 export type StudioToolName =
@@ -138,6 +154,90 @@ export function registerEngineeringStudioTools(
       const runs=await listAgentRuns();
       const filtered=projectId?runs.filter(run=>run.projectId===projectId):runs;
       return textResult({runs:filtered.slice(0,50)},`${filtered.length} ejecución(es) encontrada(s).`);
+    });
+  }
+
+  if (canRegister(allowedTools, 'studio_get_execution_capabilities')) {
+    server.registerTool('studio_get_execution_capabilities',{
+      title:'Comprobar capacidades del agente programador',
+      description:'Check whether Engineering Studio has GitHub, Vercel and database execution capabilities configured. This never exposes secrets and never calls a paid AI model.',
+      inputSchema:{},
+      annotations:{readOnlyHint:true,destructiveHint:false,openWorldHint:false,idempotentHint:true}
+    }, async ()=>{
+      const capabilities=await getStudioExecutionCapabilities();
+      return textResult(capabilities,'Capacidades de ejecución de Engineering Studio verificadas.');
+    });
+  }
+
+  if (canRegister(allowedTools, 'studio_list_connected_repositories')) {
+    server.registerTool('studio_list_connected_repositories',{
+      title:'Listar repositorios GitHub conectados',
+      description:'List repositories visible to the dedicated Engineering Studio GitHub credential. Read-only and secrets are never returned.',
+      inputSchema:{},
+      annotations:{readOnlyHint:true,destructiveHint:false,openWorldHint:true,idempotentHint:true}
+    }, async ()=>{
+      const result=await listConnectedGitHubRepositories();
+      return textResult(result,`${result.repositories.length} repositorio(s) disponibles para Engineering Studio.`);
+    });
+  }
+
+  if (canRegister(allowedTools, 'studio_list_run_files')) {
+    server.registerTool('studio_list_run_files',{
+      title:'Listar archivos de la rama de un run',
+      description:'List safe text/code paths from the isolated studio/... branch prepared for a run. Secret paths and protected workflow paths are excluded.',
+      inputSchema:{runId:z.string().uuid(),prefix:z.string().max(500).optional(),query:z.string().max(200).optional(),limit:z.number().int().min(1).max(500).default(200)},
+      annotations:{readOnlyHint:true,destructiveHint:false,openWorldHint:true,idempotentHint:true}
+    }, async input=>{
+      const result=await listRunRepositoryFiles(input.runId,{prefix:input.prefix,query:input.query,limit:input.limit});
+      return textResult(result,`${result.files.length} archivo(s) visible(s) en ${result.branch}.`);
+    });
+  }
+
+  if (canRegister(allowedTools, 'studio_read_run_file')) {
+    server.registerTool('studio_read_run_file',{
+      title:'Leer archivo de la rama de un run',
+      description:'Read one safe UTF-8 repository file from the isolated studio/... branch. Secrets, credentials, .git, .vercel and GitHub workflow files are blocked.',
+      inputSchema:{runId:z.string().uuid(),path:z.string().min(1).max(1000)},
+      annotations:{readOnlyHint:true,destructiveHint:false,openWorldHint:true,idempotentHint:true}
+    }, async({runId,path})=>{
+      const result=await readRunRepositoryFile(runId,path);
+      return textResult(result,`Archivo ${result.path} leído desde ${result.branch}.`);
+    });
+  }
+
+  if (canRegister(allowedTools, 'studio_get_run_delivery_status')) {
+    server.registerTool('studio_get_run_delivery_status',{
+      title:'Revisar CI y preview de un run',
+      description:'Read the current branch head, GitHub Actions status and matching Vercel preview for a prepared Engineering Studio run. It never merges or deploys production.',
+      inputSchema:{runId:z.string().uuid()},
+      annotations:{readOnlyHint:true,destructiveHint:false,openWorldHint:true,idempotentHint:true}
+    }, async({runId})=>{
+      const result=await getRunDeliveryStatus(runId);
+      return textResult(result,`Estado de entrega revisado para ${result.branch}.`);
+    });
+  }
+
+  if (canRegister(allowedTools, 'studio_write_run_file')) {
+    server.registerTool('studio_write_run_file',{
+      title:'Crear o actualizar archivo en rama aislada',
+      description:'Create or replace one safe UTF-8 file only inside the studio/... branch of a prepared run. Cannot write main, production secrets, .github/workflows or credential files.',
+      inputSchema:{runId:z.string().uuid(),path:z.string().min(1).max(1000),content:z.string().max(500000),message:z.string().max(240).optional(),confirm:z.literal(true)},
+      annotations:{readOnlyHint:false,destructiveHint:false,openWorldHint:true,idempotentHint:false}
+    }, async({runId,path,content,message})=>{
+      const result=await writeRunRepositoryFile({runId,path,content,message,actorRef});
+      return textResult(result,`${result.operation} de ${result.path} completado en ${result.branch}. Main y producción no fueron modificados.`);
+    });
+  }
+
+  if (canRegister(allowedTools, 'studio_create_run_pull_request')) {
+    server.registerTool('studio_create_run_pull_request',{
+      title:'Crear Pull Request draft del run',
+      description:'Open a draft PR from the isolated studio/... branch to the repository default branch. It does not merge or deploy production.',
+      inputSchema:{runId:z.string().uuid(),title:z.string().min(3).max(240),body:z.string().max(20000).optional(),confirm:z.literal(true)},
+      annotations:{readOnlyHint:false,destructiveHint:false,openWorldHint:true,idempotentHint:true}
+    }, async({runId,title,body})=>{
+      const result=await createRunPullRequest({runId,title,body,actorRef});
+      return textResult(result,result.existing?'Ya existe un PR abierto para este run.':`PR draft #${result.pullRequest.number} creado. No fue mergeado.`);
     });
   }
 
