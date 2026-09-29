@@ -1,22 +1,9 @@
-import { IBM_Plex_Sans, Space_Grotesk } from 'next/font/google';
 import { buildLocalizedMetadata } from '@/lib/seo';
 import { getPublicSkills } from './actions';
 import { PublicAgentWizard } from './public-agent-wizard';
 import { RestoreHandler } from './restore-handler';
 
 export const dynamic = 'force-dynamic';
-
-const display = Space_Grotesk({
-  subsets: ['latin'],
-  weight: ['400', '500', '600', '700'],
-  variable: '--font-display',
-});
-
-const body = IBM_Plex_Sans({
-  subsets: ['latin'],
-  weight: ['300', '400', '500', '600'],
-  variable: '--font-body',
-});
 
 type PageParams = { locale: string };
 type PageSearchParams = { restore?: string };
@@ -50,7 +37,7 @@ export default async function CrearAgentePage({
   const isRestore = restore === '1' || restore === 'true';
 
   return (
-    <div className={`${display.variable} ${body.variable} font-[var(--font-body)] text-slate-900`}>
+    <div className={`font-sans text-slate-900`}>
       {/* page header */}
       <div className="border-b border-black/6 bg-[linear-gradient(180deg,#f3f6fa_0%,#ffffff_100%)] px-6 pb-8 pt-10 sm:px-8 lg:px-14 xl:px-20">
         <div className="mx-auto max-w-4xl text-center">
@@ -58,7 +45,7 @@ export default async function CrearAgentePage({
             <span className="h-2 w-2 rounded-full bg-[#00bfa5]" />
             Trends172 Tech
           </div>
-          <h1 className="text-3xl font-[var(--font-display)] font-semibold tracking-[-0.04em] text-slate-950 sm:text-4xl">
+          <h1 className="text-3xl font-sans font-semibold tracking-[-0.04em] text-slate-950 sm:text-4xl">
             {isEs ? 'Crea tu agente IA con skills' : 'Create your AI agent with skills'}
           </h1>
           <p className="mx-auto mt-3 max-w-xl text-base leading-relaxed text-slate-600">
