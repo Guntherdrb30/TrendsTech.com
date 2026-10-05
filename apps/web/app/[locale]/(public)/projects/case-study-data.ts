@@ -43,7 +43,7 @@ const CASE_STUDIES: Record<CaseStudySlug, CaseStudyDefinition> = {
     product: 'LUNA Commerce',
     externalUrl: 'https://carpihogar.com/',
     accent: 'teal',
-    heroImage: '/cases/carpihogar/carpihogar-pwa-home.svg',
+    heroImage: '/screenshots/luna/carpihogar-real-mobile.jpg',
     title: {
       es: 'Comercio digital y operación empresarial conectados en una sola plataforma',
       en: 'Digital commerce and business operations connected in one platform',
@@ -137,36 +137,47 @@ const CASE_STUDIES: Record<CaseStudySlug, CaseStudyDefinition> = {
     stack: ['LUNA', 'Next.js', 'TypeScript', 'PWA', 'PostgreSQL', 'Vercel'],
     gallery: [
       {
-        src: '/cases/carpihogar/carpihogar-catalog-grid.svg',
+        src: '/screenshots/luna/carpihogar-real-mobile.jpg',
         alt: {
-          es: 'Vista conceptual del catálogo de CarpiHogar',
-          en: 'Conceptual view of the CarpiHogar catalog',
+          es: 'Tienda móvil real de CarpiHogar',
+          en: 'Real CarpiHogar mobile storefront',
         },
         caption: {
-          es: 'Catálogo y presentación comercial conectados con la operación.',
-          en: 'Catalog and commercial presentation connected to operations.',
+          es: 'Experiencia pública de compra y descubrimiento de productos en producción.',
+          en: 'Live public shopping and product-discovery experience.',
         },
       },
       {
-        src: '/cases/carpihogar/carpihogar-sales-form.svg',
+        src: '/screenshots/luna/carpihogar-catalogo-inteligente-mobile.jpg',
         alt: {
-          es: 'Vista conceptual del registro de ventas de CarpiHogar',
-          en: 'Conceptual view of CarpiHogar sales registration',
+          es: 'Catálogo inteligente real de CarpiHogar',
+          en: 'Real CarpiHogar intelligent catalog',
         },
         caption: {
-          es: 'Registro comercial y seguimiento del flujo de venta.',
-          en: 'Commercial registration and sales-flow tracking.',
+          es: 'Catálogo inteligente con novedades, rotación y contexto comercial.',
+          en: 'Intelligent catalog with new products, turnover, and commercial context.',
         },
       },
       {
-        src: '/cases/carpihogar/carpihogar-exec-reports.svg',
+        src: '/screenshots/luna/carpihogar-panel-ejecutivo-mobile.jpg',
         alt: {
-          es: 'Vista conceptual de reportes ejecutivos de CarpiHogar',
-          en: 'Conceptual view of CarpiHogar executive reports',
+          es: 'Panel ejecutivo real de CarpiHogar',
+          en: 'Real CarpiHogar executive dashboard',
         },
         caption: {
-          es: 'Información consolidada para seguimiento ejecutivo.',
-          en: 'Consolidated information for executive monitoring.',
+          es: 'Panel ejecutivo móvil para consultar ventas y estado operativo.',
+          en: 'Mobile executive dashboard for sales and operating status.',
+        },
+      },
+      {
+        src: '/screenshots/luna/carpihogar-metricas-mobile.jpg',
+        alt: {
+          es: 'Métricas reales de inventario y cuentas de CarpiHogar',
+          en: 'Real CarpiHogar inventory and account metrics',
+        },
+        caption: {
+          es: 'Métricas consolidadas de inventario y seguimiento financiero.',
+          en: 'Consolidated inventory and financial monitoring metrics.',
         },
       },
     ],

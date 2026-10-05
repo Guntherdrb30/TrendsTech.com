@@ -16,6 +16,24 @@ type PageParams = {
   caseSlug: CaseStudySlug;
 };
 
+const CARPIHOGAR_HERO_IMAGES = [
+  {
+    src: '/screenshots/luna/carpihogar-real-mobile.jpg',
+    altEs: 'Tienda móvil real de CarpiHogar',
+    altEn: 'Real CarpiHogar mobile storefront',
+  },
+  {
+    src: '/screenshots/luna/carpihogar-catalogo-inteligente-mobile.jpg',
+    altEs: 'Catálogo inteligente real de CarpiHogar',
+    altEn: 'Real CarpiHogar intelligent catalog',
+  },
+  {
+    src: '/screenshots/luna/carpihogar-panel-ejecutivo-mobile.jpg',
+    altEs: 'Panel ejecutivo real de CarpiHogar',
+    altEn: 'Real CarpiHogar executive dashboard',
+  },
+] as const;
+
 export function generateStaticParams() {
   return CASE_STUDY_SLUGS.map((caseSlug) => ({ caseSlug }));
 }
@@ -49,6 +67,7 @@ export default async function ProductionCasePage({ params }: { params: Promise<P
 
   const caseStudy = localizeCaseStudy(definition, locale);
   const isEs = locale.startsWith('es');
+  const isCarpihogar = caseSlug === 'carpihogar';
   const base = `/${locale}`;
   const accent = caseStudy.accent === 'orange' ? 'bg-orange-500' : 'bg-teal-500';
   const accentText = caseStudy.accent === 'orange' ? 'text-orange-600' : 'text-teal-600';
@@ -174,14 +193,41 @@ export default async function ProductionCasePage({ params }: { params: Promise<P
           </div>
 
           <div className="interactive-panel relative overflow-hidden rounded-[38px] border border-black/8 bg-white/82 p-3 shadow-[0_48px_120px_-70px_rgba(15,23,42,0.5)] dark:border-white/10 dark:bg-white/5 sm:p-5">
-            <Image
-              src={caseStudy.heroImage}
-              alt={`${caseStudy.name} — ${caseStudy.title}`}
-              width={1200}
-              height={800}
-              priority
-              className="h-auto w-full rounded-[28px] border border-black/6 bg-slate-100 dark:border-white/10"
-            />
+            {isCarpihogar ? (
+              <div className="relative aspect-[16/10] overflow-hidden rounded-[28px] border border-black/6 bg-[linear-gradient(135deg,#fff3ed_0%,#fffaf4_45%,#f3f8f7_100%)] p-3 dark:border-white/10 sm:p-5">
+                <div className="grid h-full grid-cols-[1.16fr_.84fr_.84fr] gap-2.5 sm:gap-4">
+                  {CARPIHOGAR_HERO_IMAGES.map((item, index) => (
+                    <div
+                      key={item.src}
+                      className={`relative overflow-hidden border border-white/90 bg-white shadow-[0_24px_55px_-28px_rgba(15,23,42,0.55)] ${
+                        index === 0 ? 'rounded-[22px]' : 'rounded-[18px]'
+                      }`}
+                    >
+                      <Image
+                        src={item.src}
+                        alt={isEs ? item.altEs : item.altEn}
+                        fill
+                        priority
+                        sizes="(min-width: 1280px) 24vw, (min-width: 768px) 30vw, 34vw"
+                        className="object-cover object-top"
+                      />
+                    </div>
+                  ))}
+                </div>
+                <span className="absolute bottom-5 left-5 rounded-full bg-[#ed2b22] px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.16em] text-white shadow-lg sm:bottom-7 sm:left-7">
+                  {isEs ? 'Producto real' : 'Real product'}
+                </span>
+              </div>
+            ) : (
+              <Image
+                src={caseStudy.heroImage}
+                alt={`${caseStudy.name} — ${caseStudy.title}`}
+                width={1200}
+                height={800}
+                priority
+                className="h-auto w-full rounded-[28px] border border-black/6 bg-slate-100 dark:border-white/10"
+              />
+            )}
           </div>
         </div>
       </section>
@@ -289,10 +335,16 @@ export default async function ProductionCasePage({ params }: { params: Promise<P
             <h2 className="text-3xl font-sans font-semibold tracking-[-0.04em] sm:text-4xl">{copy.galleryTitle}</h2>
             <p className="text-sm leading-relaxed text-slate-500 dark:text-slate-400">{copy.galleryNote}</p>
           </div>
-          <div className="grid gap-5 lg:grid-cols-3">
+          <div className={`grid gap-5 ${isCarpihogar ? 'sm:grid-cols-2 xl:grid-cols-4' : 'lg:grid-cols-3'}`}>
             {caseStudy.gallery.map((item) => (
               <figure key={item.src} className="interactive-panel overflow-hidden rounded-[28px] border border-black/8 bg-white shadow-[0_28px_74px_-58px_rgba(15,23,42,0.35)] dark:border-white/10 dark:bg-slate-950/70">
-                <Image src={item.src} alt={item.alt} width={920} height={720} className="aspect-[23/18] h-auto w-full object-cover" />
+                <Image
+                  src={item.src}
+                  alt={item.alt}
+                  width={920}
+                  height={720}
+                  className={isCarpihogar ? 'aspect-[9/16] h-auto w-full object-cover object-top' : 'aspect-[23/18] h-auto w-full object-cover'}
+                />
                 <figcaption className="border-t border-black/8 px-5 py-4 text-sm leading-relaxed text-slate-600 dark:border-white/10 dark:text-slate-300">
                   {item.caption}
                 </figcaption>
