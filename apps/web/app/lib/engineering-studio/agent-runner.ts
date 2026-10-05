@@ -73,10 +73,10 @@ export async function prepareAgentRun(projectId: string, actorUserId: string, ta
   await prisma.$transaction(async (tx) => {
     await tx.$executeRaw(Prisma.sql`
       INSERT INTO "StudioAgentRun" (
-        "id", "projectId", "status", "provider", "model", "environment", "branchName",
+        "id", "projectId", "agentKey", "status", "provider", "model", "environment", "branchName",
         "inputTokens", "outputTokens", "costUsd", "resultJson", "createdAt", "updatedAt"
       ) VALUES (
-        ${runId}, ${projectId}, ${status}, ${route.provider}, ${route.model}, 'PREVIEW', ${workBranch},
+        ${runId}, ${projectId}, 'ORCHESTRATOR', ${status}, ${route.provider}, ${route.model}, 'PREVIEW', ${workBranch},
         0, 0, 0, CAST(${JSON.stringify(result)} AS jsonb), CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
       )
     `);

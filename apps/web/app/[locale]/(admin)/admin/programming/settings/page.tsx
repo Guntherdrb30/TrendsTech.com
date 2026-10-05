@@ -1,5 +1,7 @@
 import { getGlobalRoutingPolicy } from '@/lib/engineering-studio/routing';
+import { getStudioRunnerSnapshot } from '@/lib/engineering-studio/studio-runner';
 import { saveRoutingPolicyAction } from './actions';
+import { StudioRunnerPanel } from './studio-runner-panel';
 
 const otherSections = [
   ['Finanzas', ['Margen objetivo', 'Margen mínimo', 'Contingencia', 'Overhead', 'Costo hora por rol', 'Tarifa eléctrica', 'Amortización', 'Moneda base']],
@@ -14,7 +16,19 @@ const profiles = [
 ] as const;
 
 export default async function StudioSettingsPage() {
-  const policy = await getGlobalRoutingPolicy();
+  const [policy, runnerSnapshot] = await Promise.all([
+    getGlobalRoutingPolicy(),
+    getStudioRunnerSnapshot()
+  ]);
+  const serializedRunnerSnapshot = {
+    ...runnerSnapshot,
+    runner: runnerSnapshot.runner ? {
+      ...runnerSnapshot.runner,
+      lastHeartbeatAt: runnerSnapshot.runner.lastHeartbeatAt?.toISOString() ?? null,
+      createdAt: runnerSnapshot.runner.createdAt.toISOString(),
+      updatedAt: runnerSnapshot.runner.updatedAt.toISOString()
+    } : null
+  };
   return <div className="space-y-6">
     <div><p className="text-xs font-semibold uppercase tracking-[0.18em] text-cyan-600">Configuration</p><h3 className="mt-2 text-2xl font-semibold">Configuración de Engineering Studio</h3><p className="mt-2 text-sm text-slate-500">Políticas globales reales. Cada proyecto podrá sobrescribir el perfil de orquestación.</p></div>
 
@@ -25,6 +39,8 @@ export default async function StudioSettingsPage() {
       <div className="mt-5 rounded-2xl bg-slate-50 p-4 text-sm text-slate-600 dark:bg-slate-900/60 dark:text-slate-300"><strong>Escalamiento automático a Astra:</strong> desactivado por política. Esta protección no puede habilitarse desde este MVP.</div>
       <button type="submit" className="mt-5 rounded-full bg-slate-950 px-5 py-3 text-sm font-semibold text-white hover:bg-cyan-600 dark:bg-white dark:text-slate-950">Guardar política</button>
     </form>
+
+    <StudioRunnerPanel initialSnapshot={serializedRunnerSnapshot}/>
 
     <div className="grid gap-4 md:grid-cols-2">{otherSections.map(([title, items]) => <section key={title} className="rounded-[24px] border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-950"><h4 className="text-lg font-semibold">{title}</h4><div className="mt-4 space-y-2">{items.map((item) => <div key={item} className="flex items-center justify-between rounded-xl bg-slate-50 px-4 py-3 text-sm dark:bg-slate-900/60"><span>{item}</span><span className="text-xs text-slate-400">Próximo bloque</span></div>)}</div></section>)}</div>
   </div>;
