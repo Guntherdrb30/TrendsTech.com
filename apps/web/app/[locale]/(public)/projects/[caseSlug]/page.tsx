@@ -79,14 +79,16 @@ export default async function ProductionCasePage({ params }: { params: Promise<P
         ecosystem: 'Conocer LUNA',
         challenge: 'El desafío',
         solution: 'La solución aplicada',
-        capabilitiesEyebrow: 'ALCANCE OPERATIVO',
-        capabilitiesTitle: 'Funciones conectadas alrededor de una operación real',
+        capabilitiesEyebrow: isCarpihogar ? 'MAPA DE PRODUCTO' : 'ALCANCE OPERATIVO',
+        capabilitiesTitle: isCarpihogar
+          ? 'Doce capacidades conectadas, no doce herramientas separadas'
+          : 'Funciones conectadas alrededor de una operación real',
         evidenceEyebrow: 'EVIDENCIA PÚBLICA',
-        evidenceTitle: 'Qué puede comprobar un visitante',
+        evidenceTitle: isCarpihogar ? 'Lo que ya está operando públicamente' : 'Qué puede comprobar un visitante',
         evidenceNote:
           'Las capacidades se presentan sin revelar datos personales, cifras financieras, valores de inventario ni controles internos sensibles.',
         workflowEyebrow: 'TRAZABILIDAD',
-        workflowTitle: 'Cómo fluye la operación',
+        workflowTitle: isCarpihogar ? 'De la intención del cliente a la decisión ejecutiva' : 'Cómo fluye la operación',
         galleryEyebrow: 'PRODUCTO',
         galleryTitle: 'Vistas representativas de la plataforma',
         galleryNote:
@@ -111,14 +113,16 @@ export default async function ProductionCasePage({ params }: { params: Promise<P
         ecosystem: 'Explore LUNA',
         challenge: 'The challenge',
         solution: 'The applied solution',
-        capabilitiesEyebrow: 'OPERATIONAL SCOPE',
-        capabilitiesTitle: 'Connected capabilities around a real operation',
+        capabilitiesEyebrow: isCarpihogar ? 'PRODUCT MAP' : 'OPERATIONAL SCOPE',
+        capabilitiesTitle: isCarpihogar
+          ? 'Twelve connected capabilities, not twelve separate tools'
+          : 'Connected capabilities around a real operation',
         evidenceEyebrow: 'PUBLIC EVIDENCE',
-        evidenceTitle: 'What a visitor can verify',
+        evidenceTitle: isCarpihogar ? 'What is already operating publicly' : 'What a visitor can verify',
         evidenceNote:
           'Capabilities are presented without revealing personal data, financial figures, inventory values, or sensitive internal controls.',
         workflowEyebrow: 'TRACEABILITY',
-        workflowTitle: 'How the operation flows',
+        workflowTitle: isCarpihogar ? 'From customer intent to executive decisions' : 'How the operation flows',
         galleryEyebrow: 'PRODUCT',
         galleryTitle: 'Representative platform views',
         galleryNote:
@@ -135,6 +139,114 @@ export default async function ProductionCasePage({ params }: { params: Promise<P
           'Trends172Tech turns real processes into connected, traceable systems prepared to grow.',
         ctaPrimary: 'Explore solutions',
         ctaSecondary: 'View plans',
+      };
+
+  const carpihogarStrategy = isEs
+    ? {
+        eyebrow: 'UNA PLATAFORMA, SEIS CAPAS DE VALOR',
+        title: 'Mucho más que un ecommerce.',
+        body:
+          'Carpihogar no termina cuando alguien agrega un producto al carrito. La plataforma conecta la experiencia del cliente con la venta, el abastecimiento, el control financiero, la red comercial y la inteligencia que ayuda a dirigir el negocio.',
+        layers: [
+          {
+            number: '01',
+            label: 'EXPERIENCIA COMERCIAL',
+            title: 'Una vitrina digital diseñada para convertir.',
+            body: 'PWA móvil, catálogo, marcas, fichas de producto, contenido, carrito y contacto por WhatsApp trabajan como una sola experiencia.',
+            items: ['PWA y carrito', 'Catálogo y marcas', 'Contenido y contacto'],
+          },
+          {
+            number: '02',
+            label: 'VENTA Y RELACIÓN',
+            title: 'Cada conversación puede avanzar hasta una venta.',
+            body: 'Cotizaciones, pedidos, clientes, historial y condiciones comerciales conservan el contexto desde el primer interés.',
+            items: ['Cotizaciones', 'Pedidos', 'Contexto del cliente'],
+          },
+          {
+            number: '03',
+            label: 'OPERACIÓN Y ABASTECIMIENTO',
+            title: 'La promesa comercial se conecta con la ejecución.',
+            body: 'Inventario, movimientos, compras, proveedores, recepción y despacho permiten coordinar disponibilidad y entrega.',
+            items: ['Inventario', 'Compras y proveedores', 'Despacho'],
+          },
+          {
+            number: '04',
+            label: 'FINANZAS Y DIRECCIÓN',
+            title: 'La operación se convierte en información para decidir.',
+            body: 'Pagos, cobros, cuentas por cobrar y pagar, valor de inventario y métricas ejecutivas ofrecen una lectura integral.',
+            items: ['Cobros y pagos', 'Cuentas por cobrar/pagar', 'Panel ejecutivo'],
+          },
+          {
+            number: '05',
+            label: 'ECOSISTEMA COMERCIAL',
+            title: 'Más canales para crecer con trazabilidad.',
+            body: 'Mini tiendas, aliados de marketing, enlaces identificables, comisiones e inversionistas amplían el alcance del negocio.',
+            items: ['Mini tiendas', 'Aliados y comisiones', 'Inversionistas'],
+          },
+          {
+            number: '06',
+            label: 'IA, CONTENIDO Y DISTRIBUCIÓN',
+            title: 'Inteligencia aplicada donde genera valor.',
+            body: 'Modo IA, agentes especializados, noticias, campañas e integración social ayudan a vender, operar y comunicar mejor.',
+            items: ['Modo IA', 'Agentes especializados', 'Meta y contenidos'],
+          },
+        ],
+        flowEyebrow: 'RECORRIDO CONECTADO',
+        flowTitle: 'Una misma operación, de punta a punta',
+        flow: ['Descubrimiento', 'Conversación', 'Cotización', 'Pedido', 'Cobro', 'Despacho', 'Analítica'],
+      }
+    : {
+        eyebrow: 'ONE PLATFORM, SIX VALUE LAYERS',
+        title: 'Much more than ecommerce.',
+        body:
+          'Carpihogar does not end when someone adds a product to the cart. The platform connects the customer experience with sales, sourcing, financial control, the commercial network, and the intelligence needed to run the business.',
+        layers: [
+          {
+            number: '01',
+            label: 'COMMERCE EXPERIENCE',
+            title: 'A digital storefront designed to convert.',
+            body: 'Mobile PWA, catalog, brands, product pages, content, cart, and WhatsApp contact work as one experience.',
+            items: ['PWA and cart', 'Catalog and brands', 'Content and contact'],
+          },
+          {
+            number: '02',
+            label: 'SALES AND RELATIONSHIPS',
+            title: 'Every conversation can move toward a sale.',
+            body: 'Quotes, orders, customers, history, and commercial conditions preserve context from the first sign of interest.',
+            items: ['Quotes', 'Orders', 'Customer context'],
+          },
+          {
+            number: '03',
+            label: 'OPERATIONS AND SOURCING',
+            title: 'The commercial promise connects to execution.',
+            body: 'Inventory, movements, purchasing, suppliers, receiving, and dispatch coordinate availability and delivery.',
+            items: ['Inventory', 'Purchasing and suppliers', 'Dispatch'],
+          },
+          {
+            number: '04',
+            label: 'FINANCE AND LEADERSHIP',
+            title: 'Operations become information for decisions.',
+            body: 'Payments, collections, receivables, payables, inventory value, and executive metrics provide a complete view.',
+            items: ['Collections and payments', 'Receivables/payables', 'Executive dashboard'],
+          },
+          {
+            number: '05',
+            label: 'COMMERCIAL ECOSYSTEM',
+            title: 'More growth channels with traceability.',
+            body: 'Mini stores, marketing partners, tracked links, commissions, and investors expand the business reach.',
+            items: ['Mini stores', 'Partners and commissions', 'Investors'],
+          },
+          {
+            number: '06',
+            label: 'AI, CONTENT, AND DISTRIBUTION',
+            title: 'Intelligence applied where it creates value.',
+            body: 'AI Mode, specialized agents, news, campaigns, and social integration help the business sell, operate, and communicate better.',
+            items: ['AI Mode', 'Specialized agents', 'Meta and content'],
+          },
+        ],
+        flowEyebrow: 'CONNECTED JOURNEY',
+        flowTitle: 'One operation, from end to end',
+        flow: ['Discovery', 'Conversation', 'Quote', 'Order', 'Payment', 'Dispatch', 'Analytics'],
       };
 
   const structuredData = buildProductionCaseStructuredData(locale, caseSlug);
@@ -255,6 +367,66 @@ export default async function ProductionCasePage({ params }: { params: Promise<P
           ))}
         </div>
       </section>
+
+      {isCarpihogar && (
+        <section className="relative overflow-hidden border-y border-white/10 bg-[#10140f] px-6 py-20 text-white sm:px-8 lg:px-12 xl:px-16 2xl:px-20">
+          <div
+            className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_14%_8%,rgba(45,212,191,0.15),transparent_31%),radial-gradient(circle_at_88%_18%,rgba(249,115,22,0.17),transparent_28%)]"
+            aria-hidden="true"
+          />
+          <div className="relative mx-auto max-w-[1760px] space-y-10">
+            <div className="grid gap-7 lg:grid-cols-[0.72fr_1.28fr] lg:items-end">
+              <div className="space-y-3">
+                <p className="text-xs font-semibold uppercase tracking-[0.22em] text-teal-300">{carpihogarStrategy.eyebrow}</p>
+                <h2 className="text-4xl font-sans font-semibold tracking-[-0.05em] sm:text-5xl">{carpihogarStrategy.title}</h2>
+              </div>
+              <p className="max-w-4xl text-base leading-relaxed text-slate-300 sm:text-lg">{carpihogarStrategy.body}</p>
+            </div>
+
+            <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+              {carpihogarStrategy.layers.map((layer, index) => (
+                <article
+                  key={layer.number}
+                  className="interactive-panel group rounded-[28px] border border-white/10 bg-white/[0.055] p-6 backdrop-blur-sm transition hover:border-white/20 hover:bg-white/[0.08]"
+                >
+                  <div className="flex items-center justify-between gap-4">
+                    <span className={`font-mono text-xs font-semibold ${index % 2 === 0 ? 'text-teal-300' : 'text-orange-300'}`}>
+                      {layer.number}
+                    </span>
+                    <span className="text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-400">{layer.label}</span>
+                  </div>
+                  <h3 className="mt-7 text-xl font-semibold leading-tight tracking-[-0.025em] text-white">{layer.title}</h3>
+                  <p className="mt-3 text-sm leading-relaxed text-slate-400">{layer.body}</p>
+                  <div className="mt-6 flex flex-wrap gap-2">
+                    {layer.items.map((item) => (
+                      <span key={item} className="rounded-full border border-white/10 bg-black/20 px-3 py-1.5 text-[11px] font-medium text-slate-300">
+                        {item}
+                      </span>
+                    ))}
+                  </div>
+                </article>
+              ))}
+            </div>
+
+            <div className="rounded-[30px] border border-white/10 bg-white/[0.06] p-6 sm:p-8">
+              <div className="flex flex-col gap-6 xl:flex-row xl:items-center xl:justify-between">
+                <div className="shrink-0">
+                  <p className="text-xs font-semibold uppercase tracking-[0.22em] text-orange-300">{carpihogarStrategy.flowEyebrow}</p>
+                  <h3 className="mt-2 text-2xl font-semibold tracking-[-0.035em]">{carpihogarStrategy.flowTitle}</h3>
+                </div>
+                <ol className="flex flex-wrap items-center gap-2 sm:gap-3">
+                  {carpihogarStrategy.flow.map((step, index) => (
+                    <li key={step} className="flex items-center gap-2 sm:gap-3">
+                      <span className="rounded-full border border-white/10 bg-black/25 px-3.5 py-2 text-xs font-semibold text-slate-200">{step}</span>
+                      {index < carpihogarStrategy.flow.length - 1 && <span className="text-slate-600" aria-hidden="true">→</span>}
+                    </li>
+                  ))}
+                </ol>
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
 
       <section className="border-y border-black/8 bg-white/75 px-6 py-16 dark:border-white/10 dark:bg-slate-950/60 sm:px-8 lg:px-12 xl:px-16 2xl:px-20">
         <div className="mx-auto max-w-[1760px] space-y-8">
