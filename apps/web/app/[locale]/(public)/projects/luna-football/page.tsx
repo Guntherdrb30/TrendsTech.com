@@ -85,9 +85,7 @@ export async function generateMetadata({ params }: { params: Promise<PageParams>
   });
 }
 
-export default async function LunaFootballLanding({ params }: { params: Promise<PageParams> }) {
-  const { locale } = await params;
-
+export default function LunaFootballLanding() {
   return (
     <main className="font-sans text-slate-950">
       <section className="relative overflow-hidden border-y border-black/8 bg-[linear-gradient(180deg,#f3fbfa_0%,#ffffff_42%,#f8fafc_100%)] px-6 py-14 sm:px-8 lg:px-12 lg:py-20 xl:px-16 2xl:px-20">
