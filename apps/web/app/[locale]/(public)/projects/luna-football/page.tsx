@@ -68,6 +68,121 @@ const realImplementation = [
   'Acceso invitado de solo lectura'
 ];
 
+const realScreenshots = [
+  {
+    src: '/cases/luna-football/real/luna-dashboard-publico.png',
+    alt: 'Panel principal real de LUNA Football en Club Español E.F.',
+    eyebrow: 'Visión ejecutiva',
+    title: 'Panel principal',
+    text: 'Indicadores operativos, estado de módulos y acceso directo a la gestión del club.',
+    width: 1247,
+    height: 720,
+    className: 'lg:col-span-2'
+  },
+  {
+    src: '/cases/luna-football/real/luna-jugadores-seguro.png',
+    alt: 'Gestión real de jugadores con filtros y categorías en LUNA Football',
+    eyebrow: 'Personas y categorías',
+    title: 'Jugadores',
+    text: 'Segmentación, búsqueda, estados y acceso a los flujos de inscripción y archivo.',
+    width: 1247,
+    height: 455,
+    className: ''
+  },
+  {
+    src: '/cases/luna-football/real/luna-categorias.png',
+    alt: 'Configuración real de categorías deportivas en LUNA Football',
+    eyebrow: 'Estructura deportiva',
+    title: 'Categorías',
+    text: 'Edades, capacidad de convocatoria y organización de la base deportiva.',
+    width: 1233,
+    height: 712,
+    className: ''
+  },
+  {
+    src: '/cases/luna-football/real/luna-equipos-seguro.png',
+    alt: 'Organización real de equipos por categoría en LUNA Football',
+    eyebrow: 'Planteles',
+    title: 'Equipos',
+    text: 'Distribución por categoría, capacidad de plantel y navegación entre equipos.',
+    width: 1247,
+    height: 360,
+    className: 'lg:col-span-2'
+  },
+  {
+    src: '/cases/luna-football/real/luna-finanzas-publico.png',
+    alt: 'Panel financiero real de LUNA Football con cifras privadas ocultas',
+    eyebrow: 'Administración',
+    title: 'Finanzas',
+    text: 'Ingresos, cartera, gastos, nómina y utilidad reunidos en una lectura mensual.',
+    width: 1233,
+    height: 712,
+    className: ''
+  },
+  {
+    src: '/cases/luna-football/real/luna-conciliacion-seguro.png',
+    alt: 'Flujo real de conciliación de pagos en LUNA Football sin datos personales',
+    eyebrow: 'Control de pagos',
+    title: 'Conciliación',
+    text: 'Búsqueda y verificación de reportes contra el estado de cuenta bancario.',
+    width: 1247,
+    height: 300,
+    className: ''
+  },
+  {
+    src: '/cases/luna-football/real/luna-torneos.png',
+    alt: 'Gestión real de torneos y partidos amistosos en LUNA Football',
+    eyebrow: 'Competencia',
+    title: 'Torneos',
+    text: 'Creación de competencias, disciplinas y partidos amistosos desde un mismo módulo.',
+    width: 1233,
+    height: 712,
+    className: ''
+  },
+  {
+    src: '/cases/luna-football/real/luna-partidos-estadisticas.png',
+    alt: 'Gestión real de partidos, grupos y resultados en LUNA Football',
+    eyebrow: 'Resultados',
+    title: 'Partidos y estadísticas',
+    text: 'Categorías, grupos, fases y resultados conectados con las estadísticas deportivas.',
+    width: 1233,
+    height: 712,
+    className: 'lg:col-span-2'
+  },
+  {
+    src: '/cases/luna-football/real/luna-entrenamientos-seguro.png',
+    alt: 'Panel real de sesiones de entrenamiento en modo de solo lectura',
+    eyebrow: 'Cuerpo técnico',
+    title: 'Entrenamientos',
+    text: 'Vista centralizada de sesiones, planes, convocatorias y estado de ejecución.',
+    width: 1247,
+    height: 315,
+    className: ''
+  },
+  {
+    src: '/cases/luna-football/real/luna-microciclos-ia.png',
+    alt: 'Adaptación real de microciclos con inteligencia artificial en LUNA Football',
+    eyebrow: 'IA aplicada',
+    title: 'Microciclos con IA',
+    text: 'Importación desde Excel, adaptación automática y planes listos para descargar e imprimir.',
+    width: 1233,
+    height: 712,
+    className: ''
+  },
+  {
+    src: '/cases/luna-football/real/luna-equipamiento.png',
+    alt: 'Inventario real de equipamiento deportivo en LUNA Football',
+    eyebrow: 'Recursos',
+    title: 'Equipamiento',
+    text: 'Inventario, alertas de stock, solicitudes y recomendaciones operativas.',
+    width: 1233,
+    height: 712,
+    className: 'lg:col-span-2'
+  }
+];
+
+const heroScreenshots = [realScreenshots[0], realScreenshots[9], realScreenshots[6], realScreenshots[10]];
+
 export async function generateMetadata({ params }: { params: Promise<PageParams> }) {
   const { locale } = await params;
 
@@ -138,18 +253,74 @@ export default function LunaFootballLanding() {
           </div>
 
           <div className="grid gap-4 sm:grid-cols-2">
-            {[
-              ['/cases/luna-football/luna-football-operations.svg', 'Operación integral de LUNA Football'],
-              ['/cases/luna-football/luna-football-training.svg', 'Entrenamientos e inteligencia deportiva'],
-              ['/cases/luna-football/luna-football-player-flow.svg', 'Flujo de jugadores y representantes'],
-              ['/cases/luna-football/luna-football-payments.svg', 'Pagos y control financiero']
-            ].map(([src, alt], index) => (
+            {heroScreenshots.map((shot, index) => (
               <div
-                key={src}
-                className={`overflow-hidden rounded-[30px] border border-black/8 bg-white p-3 shadow-[0_30px_80px_-58px_rgba(15,23,42,0.55)] ${index === 0 || index === 3 ? 'sm:translate-y-5' : ''}`}
+                key={shot.src}
+                className={`group overflow-hidden rounded-[30px] border border-black/8 bg-white p-3 shadow-[0_30px_80px_-58px_rgba(15,23,42,0.55)] ${index === 0 || index === 3 ? 'sm:translate-y-5' : ''}`}
               >
-                <Image src={src} alt={alt} width={900} height={620} className="h-auto w-full rounded-[22px]" />
+                <div className="relative aspect-[16/10] overflow-hidden rounded-[22px] bg-slate-100">
+                  <Image
+                    src={shot.src}
+                    alt={shot.alt}
+                    width={shot.width}
+                    height={shot.height}
+                    className="h-full w-full object-cover object-top transition duration-500 group-hover:scale-[1.02]"
+                    priority={index < 2}
+                  />
+                  <div className="absolute inset-x-3 bottom-3 rounded-2xl border border-white/70 bg-white/90 px-3 py-2 shadow-sm backdrop-blur">
+                    <p className="text-xs font-semibold text-slate-900">{shot.title}</p>
+                  </div>
+                </div>
               </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="border-b border-black/8 bg-[linear-gradient(180deg,#ffffff_0%,#f8fafc_100%)] px-6 py-16 sm:px-8 lg:px-12 lg:py-20 xl:px-16 2xl:px-20">
+        <div className="mx-auto max-w-[1760px] space-y-10">
+          <div className="grid gap-6 lg:grid-cols-[0.9fr_1.1fr] lg:items-end">
+            <div className="space-y-4">
+              <p className="text-xs font-semibold uppercase tracking-[0.22em] text-orange-600">Producto real</p>
+              <h2 className="text-3xl font-semibold tracking-[-0.045em] sm:text-4xl lg:text-5xl">
+                Así se ve una operación deportiva conectada.
+              </h2>
+            </div>
+            <div className="space-y-3 lg:justify-self-end">
+              <p className="max-w-3xl leading-relaxed text-slate-600">
+                Estas pantallas pertenecen a la implementación en producción de Club Español E.F. y muestran los flujos que utiliza la institución para administrar su operación diaria.
+              </p>
+              <p className="text-xs leading-relaxed text-slate-500">
+                Para esta presentación se ocultaron cifras financieras y se encuadraron las vistas que podían contener datos personales.
+              </p>
+            </div>
+          </div>
+
+          <div className="grid gap-5 lg:grid-cols-2">
+            {realScreenshots.map((shot) => (
+              <figure
+                key={shot.src}
+                className={`group overflow-hidden rounded-[30px] border border-black/8 bg-white shadow-[0_30px_90px_-66px_rgba(15,23,42,0.58)] ${shot.className}`}
+              >
+                <div className="overflow-hidden border-b border-black/8 bg-slate-100 p-2 sm:p-3">
+                  <Image
+                    src={shot.src}
+                    alt={shot.alt}
+                    width={shot.width}
+                    height={shot.height}
+                    className="h-auto w-full rounded-[20px] object-cover object-top transition duration-500 group-hover:scale-[1.01]"
+                  />
+                </div>
+                <figcaption className="grid gap-2 p-5 sm:grid-cols-[auto_1fr] sm:items-start sm:gap-5 sm:p-6">
+                  <span className="w-fit rounded-full bg-teal-50 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-teal-700">
+                    {shot.eyebrow}
+                  </span>
+                  <div>
+                    <h3 className="text-xl font-semibold tracking-[-0.03em] text-slate-950">{shot.title}</h3>
+                    <p className="mt-2 text-sm leading-relaxed text-slate-600">{shot.text}</p>
+                  </div>
+                </figcaption>
+              </figure>
             ))}
           </div>
         </div>
