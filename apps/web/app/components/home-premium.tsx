@@ -35,7 +35,15 @@ type LocaleCopy = {
   implementationsEyebrow: string;
   implementationsTitle: string;
   implementationsBody: string;
-  implementationItems: Array<{ title: string; label: string; body: string; image: string }>;
+  implementationItems: Array<{
+    title: string;
+    label: string;
+    body: string;
+    href: string;
+    cta: string;
+    accent: 'red' | 'orange';
+    images: Array<{ src: string; alt: string }>;
+  }>;
   capabilitiesEyebrow: string;
   capabilitiesTitle: string;
   capabilities: Array<{ number: string; title: string; body: string }>;
@@ -78,8 +86,32 @@ const COPY: Record<'es' | 'en', LocaleCopy> = {
     implementationsTitle: 'La plataforma se demuestra operando.',
     implementationsBody: 'Cada implementación adopta una identidad, una industria y una lógica operacional diferente sin perder el mismo núcleo tecnológico.',
     implementationItems: [
-      { title: 'Carpihogar', label: 'Comercio y operaciones', body: 'Ecommerce, ventas, inventario, cotizaciones y experiencia instalable conectados sobre una operación real.', image: '/screenshots/luna/carpihogar-real-mobile.jpg' },
-      { title: 'LUNA Football', label: 'Gestión deportiva', body: 'Jugadores, equipos, mensualidades, inventario y planificación deportiva desde una experiencia especializada.', image: '/screenshots/luna/luna-admin-dashboard.png' },
+      {
+        title: 'Carpihogar',
+        label: 'Comercio y operaciones',
+        body: 'Ecommerce, catálogo inteligente y control ejecutivo conectados sobre una operación real.',
+        href: '/es/projects/carpihogar',
+        cta: 'Ver sistema real',
+        accent: 'red',
+        images: [
+          { src: '/screenshots/luna/carpihogar-real-mobile.jpg', alt: 'Tienda móvil real de Carpihogar' },
+          { src: '/screenshots/luna/carpihogar-catalogo-inteligente-mobile.jpg', alt: 'Catálogo inteligente real de Carpihogar' },
+          { src: '/screenshots/luna/carpihogar-panel-ejecutivo-mobile.jpg', alt: 'Panel ejecutivo real de Carpihogar' },
+        ],
+      },
+      {
+        title: 'LUNA Football',
+        label: 'Gestión deportiva',
+        body: 'Jugadores, finanzas, torneos, inventario y planificación con IA dentro de una implementación activa.',
+        href: '/es/projects/luna-football',
+        cta: 'Explorar implementación',
+        accent: 'orange',
+        images: [
+          { src: '/cases/luna-football/real/luna-dashboard-publico.png', alt: 'Panel real de LUNA Football' },
+          { src: '/cases/luna-football/real/luna-microciclos-ia.png', alt: 'Microciclos con IA en LUNA Football' },
+          { src: '/cases/luna-football/real/luna-partidos-estadisticas.png', alt: 'Torneos y estadísticas en LUNA Football' },
+        ],
+      },
     ],
     capabilitiesEyebrow: 'Capacidades',
     capabilitiesTitle: 'Un núcleo operativo para toda la empresa.',
@@ -130,8 +162,32 @@ const COPY: Record<'es' | 'en', LocaleCopy> = {
     implementationsTitle: 'The platform proves itself in operation.',
     implementationsBody: 'Each implementation adopts a different identity, industry and operating logic without losing the same technology core.',
     implementationItems: [
-      { title: 'Carpihogar', label: 'Commerce and operations', body: 'Ecommerce, sales, inventory, quotations and an installable experience connected to a real operation.', image: '/screenshots/luna/carpihogar-real-mobile.jpg' },
-      { title: 'LUNA Football', label: 'Sports management', body: 'Players, teams, memberships, inventory and sports planning through a specialised experience.', image: '/screenshots/luna/luna-admin-dashboard.png' },
+      {
+        title: 'Carpihogar',
+        label: 'Commerce and operations',
+        body: 'Ecommerce, intelligent catalogue and executive control connected to a real operation.',
+        href: '/en/projects/carpihogar',
+        cta: 'View live system',
+        accent: 'red',
+        images: [
+          { src: '/screenshots/luna/carpihogar-real-mobile.jpg', alt: 'Real Carpihogar mobile storefront' },
+          { src: '/screenshots/luna/carpihogar-catalogo-inteligente-mobile.jpg', alt: 'Real Carpihogar intelligent catalogue' },
+          { src: '/screenshots/luna/carpihogar-panel-ejecutivo-mobile.jpg', alt: 'Real Carpihogar executive dashboard' },
+        ],
+      },
+      {
+        title: 'LUNA Football',
+        label: 'Sports management',
+        body: 'Players, finance, tournaments, inventory and AI-powered planning inside an active implementation.',
+        href: '/en/projects/luna-football',
+        cta: 'Explore implementation',
+        accent: 'orange',
+        images: [
+          { src: '/cases/luna-football/real/luna-dashboard-publico.png', alt: 'Real LUNA Football dashboard' },
+          { src: '/cases/luna-football/real/luna-microciclos-ia.png', alt: 'AI microcycles in LUNA Football' },
+          { src: '/cases/luna-football/real/luna-partidos-estadisticas.png', alt: 'Tournaments and statistics in LUNA Football' },
+        ],
+      },
     ],
     capabilitiesEyebrow: 'Capabilities',
     capabilitiesTitle: 'One operating core for the entire company.',
@@ -212,7 +268,7 @@ export function HomePremium({ fontClass = '', conciergeCopy }: { fontClass?: str
   return <main className={`overflow-x-hidden bg-white text-[#111418] ${fontClass}`}>
     <Hero locale={locale} t={t} />
     <section className="py-24 sm:py-32"><div className="mx-auto grid max-w-7xl gap-12 px-6 lg:grid-cols-[.88fr_1.12fr] lg:gap-20"><Reveal><Eyebrow>{t.problemEyebrow}</Eyebrow><h2 className="max-w-xl font-[var(--font-display)] text-4xl font-semibold leading-[1.03] tracking-[-.045em] sm:text-6xl">{t.problemTitle}</h2></Reveal><Reveal delay={.12}><p className="max-w-2xl text-xl leading-8 text-[#68717b]">{t.problemBody}</p><div className="mt-10 grid grid-cols-2 gap-3">{t.problemItems.map(item => <div key={item} className="rounded-2xl border border-black/[.06] bg-[#f8faf9] p-5 text-sm font-medium text-[#3f4650] shadow-[0_10px_35px_rgba(17,20,24,.035)]">{item}</div>)}</div></Reveal></div></section>
-    <section className="bg-[#f5fbfa] py-24 sm:py-32"><div className="mx-auto max-w-7xl px-6"><Reveal className="mb-14 grid gap-8 lg:grid-cols-2"><div><Eyebrow>{t.implementationsEyebrow}</Eyebrow><h2 className="font-[var(--font-display)] text-4xl font-semibold tracking-[-.045em] sm:text-6xl">{t.implementationsTitle}</h2></div><p className="self-end text-lg leading-8 text-[#69717c]">{t.implementationsBody}</p></Reveal><div className="grid gap-6 lg:grid-cols-2">{t.implementationItems.map((item, index) => <Reveal key={item.title} delay={index * .12}><article className="group overflow-hidden rounded-[30px] border border-black/[.06] bg-white shadow-[0_24px_80px_rgba(20,60,60,.07)]"><div className="aspect-[16/10] overflow-hidden bg-[#eef5f3]"><Image src={item.image} alt={item.title} width={900} height={560} className="h-full w-full object-cover object-top transition duration-700 group-hover:scale-[1.025]" /></div><div className="p-8"><p className="text-xs font-semibold uppercase tracking-[.16em] text-[#00aeb3]">{item.label}</p><h3 className="mt-3 text-3xl font-semibold tracking-[-.03em]">{item.title}</h3><p className="mt-4 max-w-xl leading-7 text-[#68707b]">{item.body}</p></div></article></Reveal>)}</div></div></section>
+    <section className="bg-[#f5fbfa] py-24 sm:py-32"><div className="mx-auto max-w-7xl px-6"><Reveal className="mb-14 grid gap-8 lg:grid-cols-2"><div><Eyebrow>{t.implementationsEyebrow}</Eyebrow><h2 className="font-[var(--font-display)] text-4xl font-semibold tracking-[-.045em] sm:text-6xl">{t.implementationsTitle}</h2></div><p className="self-end text-lg leading-8 text-[#69717c]">{t.implementationsBody}</p></Reveal><div className="grid gap-6 lg:grid-cols-2">{t.implementationItems.map((item, index) => <Reveal key={item.title} delay={index * .12}><article className="group overflow-hidden rounded-[30px] border border-black/[.06] bg-white shadow-[0_24px_80px_rgba(20,60,60,.07)]"><div className={`relative aspect-[16/10] overflow-hidden ${item.accent === 'red' ? 'bg-[#fff1ee]' : 'bg-[#fff7eb]'}`}><div className="absolute inset-4 grid grid-cols-[1.25fr_.85fr] gap-3 sm:inset-5"><div className="relative overflow-hidden rounded-[20px] border border-white/80 bg-white shadow-[0_18px_45px_rgba(17,20,24,.14)]"><Image src={item.images[0].src} alt={item.images[0].alt} fill sizes="(min-width: 1024px) 32vw, 62vw" className="object-cover object-top transition duration-700 group-hover:scale-[1.025]" /></div><div className="grid grid-rows-2 gap-3"><div className="relative overflow-hidden rounded-[16px] border border-white/80 bg-white shadow-[0_14px_35px_rgba(17,20,24,.12)]"><Image src={item.images[1].src} alt={item.images[1].alt} fill sizes="(min-width: 1024px) 20vw, 30vw" className="object-cover object-top transition duration-700 group-hover:scale-[1.035]" /></div><div className="relative overflow-hidden rounded-[16px] border border-white/80 bg-white shadow-[0_14px_35px_rgba(17,20,24,.12)]"><Image src={item.images[2].src} alt={item.images[2].alt} fill sizes="(min-width: 1024px) 20vw, 30vw" className="object-cover object-top transition duration-700 group-hover:scale-[1.035]" /></div></div></div><div className={`absolute bottom-5 left-5 rounded-full px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[.15em] text-white shadow-lg ${item.accent === 'red' ? 'bg-[#ee241d]' : 'bg-[#ff8514]'}`}>Producto real</div></div><div className="p-8"><p className={`text-xs font-semibold uppercase tracking-[.16em] ${item.accent === 'red' ? 'text-[#d82b24]' : 'text-[#e66f00]'}`}>{item.label}</p><h3 className="mt-3 text-3xl font-semibold tracking-[-.03em]">{item.title}</h3><p className="mt-4 max-w-xl leading-7 text-[#68707b]">{item.body}</p><Link href={item.href} className="mt-7 inline-flex items-center gap-3 text-sm font-semibold text-[#20252b] transition hover:text-[#00aeb3]">{item.cta}<span aria-hidden="true">→</span></Link></div></article></Reveal>)}</div></div></section>
     <section className="relative overflow-hidden bg-white py-24 sm:py-32"><div className="absolute inset-x-0 top-0 h-40 bg-[radial-gradient(circle_at_50%_0%,rgba(0,194,199,.11),transparent_65%)]" /><div className="relative mx-auto max-w-7xl px-6"><Reveal className="mb-14 max-w-3xl"><Eyebrow>{t.capabilitiesEyebrow}</Eyebrow><h2 className="font-[var(--font-display)] text-4xl font-semibold leading-[1.06] tracking-[-.045em] sm:text-6xl">{t.capabilitiesTitle}</h2></Reveal><div className="grid gap-4 md:grid-cols-2">{t.capabilities.map((item, index) => <Reveal key={item.number} delay={index * .08} className="rounded-[28px] border border-black/[.06] bg-[linear-gradient(145deg,#ffffff,#f6fbfa)] p-8 shadow-[0_20px_65px_rgba(17,20,24,.045)] sm:p-10"><div className="flex items-center justify-between"><span className="text-xs font-semibold text-[#00aeb3]">{item.number}</span><span className="h-9 w-9 rounded-full border border-[#00c2c7]/20 bg-[#eafffb]" /></div><h3 className="mt-12 text-2xl font-semibold">{item.title}</h3><p className="mt-4 max-w-md leading-7 text-[#68717b]">{item.body}</p></Reveal>)}</div></div></section>
     <section id="arquitectura" className="bg-[#f8faf9] py-24 sm:py-32"><div className="mx-auto grid max-w-7xl items-center gap-14 px-6 lg:grid-cols-2 lg:gap-20"><Reveal><Eyebrow>{t.architectureEyebrow}</Eyebrow><h2 className="font-[var(--font-display)] text-4xl font-semibold tracking-[-.045em] sm:text-6xl">{t.architectureTitle}</h2><p className="mt-7 max-w-xl text-lg leading-8 text-[#65707a]">{t.architectureBody}</p><div className="mt-10 rounded-[28px] border border-[#00aeb3]/12 bg-white p-7 shadow-[0_18px_60px_rgba(20,70,70,.05)]"><p className="text-xs font-semibold uppercase tracking-[.16em] text-[#00aeb3]">IA + contexto</p><h3 className="mt-3 text-xl font-semibold">{t.intelligenceTitle}</h3><p className="mt-3 leading-7 text-[#6d747d]">{t.intelligenceBody}</p></div></Reveal><Reveal delay={.15}><LunaSystemMap nodes={t.architectureNodes} compact /></Reveal></div></section>
     <section className="py-24 sm:py-32"><div className="mx-auto max-w-7xl px-6"><Reveal className="mb-14 max-w-3xl"><Eyebrow>{t.technologyEyebrow}</Eyebrow><h2 className="font-[var(--font-display)] text-4xl font-semibold tracking-[-.045em] sm:text-6xl">{t.technologyTitle}</h2></Reveal><div className="grid gap-4 lg:grid-cols-3">{t.technologyItems.map((item, index) => <Reveal key={item.title} delay={index * .07} className="rounded-[28px] border border-black/[.06] bg-white p-8 shadow-[0_18px_55px_rgba(17,20,24,.045)] sm:p-10"><span className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-[#e8fbf8] text-xs font-semibold text-[#00aeb3]">0{index + 1}</span><h3 className="mt-10 text-2xl font-semibold tracking-[-.025em]">{item.title}</h3><p className="mt-4 leading-7 text-[#68707b]">{item.body}</p></Reveal>)}</div></div></section>
