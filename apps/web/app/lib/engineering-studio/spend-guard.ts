@@ -81,3 +81,34 @@ export async function settleStudioSpend(projectId: string, reservationId: string
     `);
   }, { isolationLevel: Prisma.TransactionIsolationLevel.Serializable });
 }
+
+/**
+ * Read-only snapshot for a project budget dashboard.
+ * Do not treat a missing row as zero spend or permission to execute.
+ */
+export async function getStudioSpendSnapshot(projectId: string) {
+  if (!projectId) throw new Error('INVALID_PROJECT');
+  const rows = await prisma.$queryRaw<Array<{
+    activeLimitCents: bigint;
+    globalCeilingCents: bigint;
+    confirmedCents: bigint;
+    reservedCents: bigint;
+    paused: boolean;
+  }>>(Prisma.sql`
+    SELECT "activeLimitCents","globalCeilingCents","confirmedCents","reservedCents","paused"
+    FROM "StudioProjectSpendBudget" WHERE "projectId" = ${projectId}
+  `);
+  const budget = rows[0];
+  if (!budget) return { configured: false as const, paused: true as const };
+  const remainingCents = budget.activeLimitCents - budget.confirmedCents - budget.reservedCents;
+  return {
+    configured: true as const,
+    paused: budget.paused,
+    activeLimitCents: Number(budget.activeLimitCents),
+    globalCeilingCents: Number(budget.globalCeilingCents),
+    confirmedCents: Number(budget.confirmedCents),
+    reservedCents: Number(budget.reservedCents),
+    remainingCents: Number(remainingCents),
+    canStartPaidRun: !budget.paused && remainingCents > 0n
+  };
+}
