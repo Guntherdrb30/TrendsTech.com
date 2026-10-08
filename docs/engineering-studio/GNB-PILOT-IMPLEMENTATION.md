@@ -14,3 +14,10 @@ This branch introduces **pure, testable budget policy rules only**. It does **no
 9. Review changes and CI in a PR; do not deploy or consume API funds until checks pass.
 
 The policy helper can be reused by the transactional guard; **it must not be used as the sole enforcement mechanism** because parallel requests could both pass an in-memory check.
+
+## Avance 2026-10-08 — segundo bloque
+- Añadida migración aditiva `20261008150000_studio_project_spend_guard` con presupuesto por proyecto y ledger de reservas.
+- Añadido `spend-guard.ts`: reserva serializable con bloqueo de fila, idempotencia, liberación confirmada sin cargo y conciliación limitada a monto reservado.
+- **NO aplicado a Neon**, **NO integrado con los entrypoints de pago**, **NO probado con DB real**.
+- Antes de producción: test de migración, concurrente 6+6 USD, overage, idempotencia, reconexión, rollback, validación de build y revisión de seguridad.
+- Nunca habilitar ejecución pagada con este PR sin los pasos pendientes.
