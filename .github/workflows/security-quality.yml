@@ -43,6 +43,10 @@ jobs:
         if: success() || failure()
         run: npm run typecheck
 
+      - name: Run Engineering Studio unit tests (no database or AI calls)
+        if: success() || failure()
+        run: npx --yes vitest@2.1.9 run apps/web/tests/engineering-studio/budget-policy.test.ts apps/web/tests/engineering-studio/cost-estimate.test.ts apps/web/tests/engineering-studio/legacy-luna-retirement.test.ts apps/web/tests/engineering-studio/legacy-luna-routes.test.ts
+
       - name: Run LUNA tests
         if: success() || failure()
         run: npm run luna:test
