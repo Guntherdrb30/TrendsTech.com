@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { getStudioProjectDetail } from '@/lib/engineering-studio/store';
 import { getProjectRoutingProfile } from '@/lib/engineering-studio/routing';
+import { getStudioSpendSnapshot } from '@/lib/engineering-studio/spend-guard';
 import { approveBlueprintAction, prepareAgentRunAction } from './actions';
 
 type ArchitectureItem = { area?: string; detail?: string };
@@ -15,6 +16,9 @@ export default async function ProjectBlueprintPage({ params }: { params: Promise
   const project = await getStudioProjectDetail(projectId);
   if (!project) notFound();
   const routingProfile = await getProjectRoutingProfile(projectId);
+  // Before the additive migration is applied, display unavailable rather than fake $0.00.
+  const spend = await getStudioSpendSnapshot(projectId).catch(() => null);
+  const usd = (cents: number) => (cents / 100).toLocaleString('en-US', { style: 'currency', currency: 'USD' });
   const architecture = asArchitecture(project.architectureJson);
   const assumptions = asStringArray(project.assumptionsJson);
   const risks = asStringArray(project.risksJson);
@@ -22,6 +26,16 @@ export default async function ProjectBlueprintPage({ params }: { params: Promise
   const approved = project.approvalStatus === 'APPROVED';
   return <div className="space-y-6">
     <section className="rounded-[28px] border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-950 sm:p-8"><div className="flex flex-col gap-5 xl:flex-row xl:items-start xl:justify-between"><div><p className="text-xs font-semibold uppercase tracking-[0.18em] text-cyan-600">Project Blueprint · Persistido</p><h3 className="mt-2 text-3xl font-semibold tracking-[-0.03em]">{project.name}</h3><p className="mt-3 max-w-3xl text-sm leading-6 text-slate-500">{project.understanding||project.mvpObjective||project.summary}</p><p className="mt-2 text-xs text-slate-400">{project.clientName||'Proyecto interno'} · {project.mode} · Blueprint v{project.blueprintVersion||1}</p></div><div className="flex flex-wrap gap-2"><span className="rounded-full bg-emerald-50 px-3 py-1.5 text-xs font-semibold text-emerald-700">{project.blueprintStatus||'READY'}</span><span className="rounded-full bg-cyan-50 px-3 py-1.5 text-xs font-semibold text-cyan-700">Orquestador: {profileLabel[routingProfile]}</span><span className="rounded-full bg-slate-100 px-3 py-1.5 text-xs font-semibold text-slate-600">{project.stage}</span></div></div></section>
+    <section className="rounded-[26px] border border-slate-200 bg-white p-6 dark:border-slate-800 dark:bg-slate-950">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div><p className="text-xs font-semibold uppercase tracking-[0.18em] text-cyan-600">Presupuesto IA · Solo lectura</p><h4 className="mt-2 text-lg font-semibold">Control de consumo del proyecto</h4></div>
+        <span className="rounded-full bg-slate-100 px-3 py-1.5 text-xs font-semibold text-slate-700">{!spend ? 'No disponible' : !spend.configured ? 'Sin configurar' : spend.paused ? 'Pausado' : 'Configurado'}</span>
+      </div>
+      {spend?.configured ? <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+        {([['Tramo activo',spend.activeLimitCents],['Techo global',spend.globalCeilingCents],['Confirmado',spend.confirmedCents],['Reservado',spend.reservedCents],['Disponible',spend.remainingCents]] as const).map(([label, amount])=><div key={label} className="rounded-xl border border-slate-200 p-3 dark:border-slate-800"><p className="text-xs text-slate-500">{label}</p><p className="mt-2 text-lg font-semibold">{usd(amount)}</p></div>)}
+      </div> : <p className="mt-3 text-sm text-amber-700">{spend ? 'Este proyecto todavía no tiene un presupuesto operativo registrado. Las ejecuciones pagadas deben permanecer bloqueadas.' : 'No se pudo consultar el libro de gastos. Verifica que la migración esté aplicada; nunca interpretar esto como costo cero.'}</p>}
+      <p className="mt-3 text-xs text-slate-500">La consulta no autoriza consumo. El bloqueo debe aplicarse también en cada invocación pagada del servidor.</p>
+    </section>
     <div className="grid gap-6 xl:grid-cols-[1.35fr_0.65fr]"><div className="space-y-6">
       <section className="rounded-[26px] border border-slate-200 bg-white p-6 dark:border-slate-800 dark:bg-slate-950"><p className="text-xs font-semibold uppercase tracking-[0.18em] text-cyan-600">Arquitectura preliminar</p><div className="mt-5 grid gap-3 md:grid-cols-2">{architecture.map((item,index)=><div key={`${item.area}-${index}`} className="rounded-2xl border border-slate-200 p-4 dark:border-slate-800"><p className="font-semibold">{item.area||'Área'}</p><p className="mt-1 text-xs leading-5 text-slate-500">{item.detail||'Pendiente de análisis'}</p></div>)}</div></section>
       <section className="rounded-[26px] border border-slate-200 bg-white p-6 dark:border-slate-800 dark:bg-slate-950"><p className="text-xs font-semibold uppercase tracking-[0.18em] text-cyan-600">Equipo propuesto</p><div className="mt-4 flex flex-wrap gap-2">{agents.map(agent=><span key={agent} className="rounded-full bg-slate-100 px-3 py-2 text-xs font-semibold text-slate-700 dark:bg-slate-900 dark:text-slate-200">{agent}</span>)}</div><p className="mt-4 text-xs leading-5 text-slate-500">El perfil de orquestación decide el nivel de modelo. Astra no se activa automáticamente en perfiles económicos.</p></section>
