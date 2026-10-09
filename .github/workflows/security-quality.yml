@@ -40,15 +40,19 @@ jobs:
         run: npm run security:audit
 
       - name: Check TypeScript
+        if: success() || failure()
         run: npm run typecheck
 
       - name: Run LUNA tests
+        if: success() || failure()
         run: npm run luna:test
 
       - name: Test MCP security contracts
+        if: success() || failure()
         run: npm run security:test
 
       - name: Build production application
+        if: success() || failure()
         run: npm run build
 
   secret-scan:
