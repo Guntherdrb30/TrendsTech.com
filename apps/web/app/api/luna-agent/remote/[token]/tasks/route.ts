@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { isLegacyLunaExecutionDisabled, LEGACY_LUNA_RETIRED_RESPONSE } from "@/lib/luna-agent/retirement";
 import { DevQueueStatus, DevTaskStatus, prisma } from "@trends172tech/db";
 import { enforceLunaTaskCreation, incrementLunaMetric } from "@/lib/luna-agent/billing";
 import { expireRemoteSessions } from "@/lib/luna-agent/runtime";
@@ -13,6 +14,7 @@ export async function POST(
   request: Request,
   { params }: { params: Promise<RouteParams> }
 ) {
+  if (isLegacyLunaExecutionDisabled()) return NextResponse.json(LEGACY_LUNA_RETIRED_RESPONSE, { status: 410 });
   const { token } = await params;
   const body = await request.json().catch(() => ({}));
   const parsed = createRemoteTaskSchema.safeParse(body);

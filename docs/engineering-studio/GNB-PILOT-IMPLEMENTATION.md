@@ -1,0 +1,29 @@
+# GNB USD 10 pilot — implementation status
+
+This branch introduces **pure, testable budget policy rules only**. It does **not** yet enforce a live limit or initiate paid execution.
+
+## Before enabling any paid job
+1. Persist a project budget with active limit USD 10, global ceiling USD 100, and explicit approval for increases.
+2. Enforce reservation atomically in the database **before** invoking a paid model or claiming a billable job. Use row locking or an equivalent serializable transaction and idempotency key.
+3. Persist reservations and reconcile confirmed provider charges; account for in-flight requests and post-hoc charges. Fail closed if costs cannot be bounded.
+4. Apply the guard to every paid entrypoint (Studio, workflows, subagents, retries and Luna runner if linked); no bypass from another route.
+5. Add integration tests: two concurrent USD 6 reservations must not both succeed, provider failure, refund/reconciliation, pause, approval gate and retries.
+6. Connect a real executor and prove a commit plus test output; Codex CLI adapter is currently a placeholder.
+7. Replace static Cost Engine display with verified spend, reserved amount, remaining active limit, and per-task ledger.
+8. Validate configured GitHub token, runner health and provider pricing without exposing credentials.
+9. Review changes and CI in a PR; do not deploy or consume API funds until checks pass.
+
+The policy helper can be reused by the transactional guard; **it must not be used as the sole enforcement mechanism** because parallel requests could both pass an in-memory check.
+
+## Avance 2026-10-08 — segundo bloque
+- Añadida migración aditiva `20261008150000_studio_project_spend_guard` con presupuesto por proyecto y ledger de reservas.
+- Añadido `spend-guard.ts`: reserva serializable con bloqueo de fila, idempotencia, liberación confirmada sin cargo y conciliación limitada a monto reservado.
+- **NO aplicado a Neon**, **NO integrado con los entrypoints de pago**, **NO probado con DB real**.
+- Antes de producción: test de migración, concurrente 6+6 USD, overage, idempotencia, reconexión, rollback, validación de build y revisión de seguridad.
+- Nunca habilitar ejecución pagada con este PR sin los pasos pendientes.
+
+## 2026-10-09 — Paid execution gateway scaffold
+- Added `paid-execution-gate.ts`: validates bounded maximum cost, checks active project budget, atomically reserves and settles confirmed charges; ambiguous failures remain reserved for manual reconciliation.
+- **NOT WIRED to a provider or Studio Runner.** No paid invocation can be initiated by this module without a caller providing `invoke`; it is not proof of universal enforcement.
+- IMPORTANT: the current generic callback contract does not itself prove the provider's hard maximum charge. Do not connect any real provider until a provider-specific bound, retry behavior, timeout reconciliation, authorization gate and cross-entrypoint enforcement are verified.
+- Remaining: database-backed tests, TypeScript/CI checks, auth/RBAC on server endpoints, project budget provisioning, migration verification, safe operational pause, complete audit of alternative billable routes.
