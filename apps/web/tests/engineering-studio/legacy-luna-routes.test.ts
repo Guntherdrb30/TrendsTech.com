@@ -2,6 +2,8 @@ import { describe, expect, it } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 
+const appApiRoot = resolve(process.cwd(), 'apps/web/app/api/luna-agent');
+
 const protectedRoutes = [
   'projects/route.ts',
   'providers/route.ts',
@@ -15,7 +17,7 @@ const protectedRoutes = [
 describe('legacy Luna API retirement coverage', () => {
   for (const route of protectedRoutes) {
     it(`guards POST ${route} before doing work`, () => {
-      const source = readFileSync(resolve(process.cwd(), 'app/api/luna-agent', route), 'utf8');
+      const source = readFileSync(resolve(appApiRoot, route), 'utf8');
       const post = source.indexOf('export async function POST(');
       expect(post).toBeGreaterThan(-1);
       const body = source.slice(post, post + 700);
@@ -27,7 +29,7 @@ describe('legacy Luna API retirement coverage', () => {
   }
 
   it('retains runner completion to finish in-flight work', () => {
-    const source = readFileSync(resolve(process.cwd(), 'app/api/luna-agent/runners/internal/complete/route.ts'), 'utf8');
+    const source = readFileSync(resolve(appApiRoot, 'runners/internal/complete/route.ts'), 'utf8');
     expect(source).toContain('export async function POST(');
     expect(source).not.toContain('isLegacyLunaExecutionDisabled()');
   });
