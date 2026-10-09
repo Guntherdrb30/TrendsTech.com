@@ -37,3 +37,8 @@ Plan documentado en rama de trabajo. Ninguna ruta ni servicio ha sido eliminado/
 - No se han modificado GET históricos ni los endpoints de progreso/complete; las tareas ya reclamadas pueden necesitar finalizar.
 - **No está cubierto aún todo el producto legado**: auditar `POST /api/luna-agent/remote/[token]/tasks`, rutas de runners y sesiones, menús, integraciones, consumidores externos y tareas activas. El flag NO garantiza desactivación universal.
 - Ningún despliegue, migración o borrado de datos se ha ejecutado. Falta compilación, pruebas y revisión de la configuración del entorno.
+
+## 2026-10-09 — Ruta remota
+- Bloqueada por defecto la creación de tareas mediante `POST /api/luna-agent/remote/[token]/tasks` usando el interruptor de retirada (HTTP 410).
+- Sigue pendiente bloquear el alta de nuevos runners y sesiones remotas, además de verificar las demás rutas y referencias UI. Una tentativa de edición múltiple fue interrumpida; no se debe asumir que esos cambios quedaron aplicados.
+- No se han ejecutado pruebas ni realizado despliegue.
