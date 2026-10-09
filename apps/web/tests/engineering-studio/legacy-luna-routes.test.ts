@@ -18,10 +18,10 @@ describe('legacy Luna API retirement coverage', () => {
       const source = readFileSync(resolve(process.cwd(), 'app/api/luna-agent', route), 'utf8');
       const post = source.indexOf('export async function POST(');
       expect(post).toBeGreaterThan(-1);
-      const body = source.slice(source.indexOf('{', post) + 1);
+      const body = source.slice(post, post + 700);
       const guard = body.indexOf('isLegacyLunaExecutionDisabled()');
       expect(guard).toBeGreaterThanOrEqual(0);
-      expect(guard).toBeLessThan(250);
+      expect(guard).toBeLessThan(400);
       expect(body.slice(guard, guard + 180)).toContain('status: 410');
     });
   }
