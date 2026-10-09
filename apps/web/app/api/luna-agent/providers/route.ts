@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { isLegacyLunaExecutionDisabled, LEGACY_LUNA_RETIRED_RESPONSE } from "@/lib/luna-agent/retirement";
 import { prisma } from "@trends172tech/db";
 import { AuthError, requireRole } from "@/lib/auth/guards";
 import { enforceLunaProviderCreation, incrementLunaMetric } from "@/lib/luna-agent/billing";
@@ -33,6 +34,7 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
+  if (isLegacyLunaExecutionDisabled()) return NextResponse.json(LEGACY_LUNA_RETIRED_RESPONSE, { status: 410 });
   try {
     const user = await requireRole("TENANT_OPERATOR");
     const body = await request.json();
