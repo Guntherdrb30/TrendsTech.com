@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { ProjectCostEstimator } from './cost-estimator';
 import { notFound } from 'next/navigation';
 import { getStudioProjectDetail } from '@/lib/engineering-studio/store';
 import { getProjectRoutingProfile } from '@/lib/engineering-studio/routing';
@@ -36,6 +37,7 @@ export default async function ProjectBlueprintPage({ params }: { params: Promise
       </div> : <p className="mt-3 text-sm text-amber-700">{spend ? 'Este proyecto todavía no tiene un presupuesto operativo registrado. Las ejecuciones pagadas deben permanecer bloqueadas.' : 'No se pudo consultar el libro de gastos. Verifica que la migración esté aplicada; nunca interpretar esto como costo cero.'}</p>}
       <p className="mt-3 text-xs text-slate-500">La consulta no autoriza consumo. El bloqueo debe aplicarse también en cada invocación pagada del servidor.</p>
     </section>
+    <ProjectCostEstimator remainingCents={spend?.configured ? spend.remainingCents : null} />
     <div className="grid gap-6 xl:grid-cols-[1.35fr_0.65fr]"><div className="space-y-6">
       <section className="rounded-[26px] border border-slate-200 bg-white p-6 dark:border-slate-800 dark:bg-slate-950"><p className="text-xs font-semibold uppercase tracking-[0.18em] text-cyan-600">Arquitectura preliminar</p><div className="mt-5 grid gap-3 md:grid-cols-2">{architecture.map((item,index)=><div key={`${item.area}-${index}`} className="rounded-2xl border border-slate-200 p-4 dark:border-slate-800"><p className="font-semibold">{item.area||'Área'}</p><p className="mt-1 text-xs leading-5 text-slate-500">{item.detail||'Pendiente de análisis'}</p></div>)}</div></section>
       <section className="rounded-[26px] border border-slate-200 bg-white p-6 dark:border-slate-800 dark:bg-slate-950"><p className="text-xs font-semibold uppercase tracking-[0.18em] text-cyan-600">Equipo propuesto</p><div className="mt-4 flex flex-wrap gap-2">{agents.map(agent=><span key={agent} className="rounded-full bg-slate-100 px-3 py-2 text-xs font-semibold text-slate-700 dark:bg-slate-900 dark:text-slate-200">{agent}</span>)}</div><p className="mt-4 text-xs leading-5 text-slate-500">El perfil de orquestación decide el nivel de modelo. Astra no se activa automáticamente en perfiles económicos.</p></section>
