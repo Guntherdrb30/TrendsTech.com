@@ -29,3 +29,11 @@ Engineering Studio será el único producto de orquestación de desarrollo. Reti
 
 ## Estado
 Plan documentado en rama de trabajo. Ninguna ruta ni servicio ha sido eliminado/desactivado; sin despliegue ni consumo IA adicional.
+
+## Primera implementación en rama (2026-10-09)
+- `apps/web/app/lib/luna-agent/retirement.ts` define un bloqueo reversible: si `ENABLE_LEGACY_LUNA_CODE_ORCHESTRATOR` no es exactamente `true`, las rutas protegidas rechazan nuevas operaciones.
+- `POST /api/luna-agent/tasks` devuelve HTTP 410 para creación de tareas.
+- `POST /api/luna-agent/runners/internal/claim` devuelve HTTP 410 para nuevas asignaciones de tareas.
+- No se han modificado GET históricos ni los endpoints de progreso/complete; las tareas ya reclamadas pueden necesitar finalizar.
+- **No está cubierto aún todo el producto legado**: auditar `POST /api/luna-agent/remote/[token]/tasks`, rutas de runners y sesiones, menús, integraciones, consumidores externos y tareas activas. El flag NO garantiza desactivación universal.
+- Ningún despliegue, migración o borrado de datos se ha ejecutado. Falta compilación, pruebas y revisión de la configuración del entorno.
