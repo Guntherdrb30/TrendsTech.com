@@ -21,3 +21,9 @@ The policy helper can be reused by the transactional guard; **it must not be use
 - **NO aplicado a Neon**, **NO integrado con los entrypoints de pago**, **NO probado con DB real**.
 - Antes de producción: test de migración, concurrente 6+6 USD, overage, idempotencia, reconexión, rollback, validación de build y revisión de seguridad.
 - Nunca habilitar ejecución pagada con este PR sin los pasos pendientes.
+
+## 2026-10-09 — Paid execution gateway scaffold
+- Added `paid-execution-gate.ts`: validates bounded maximum cost, checks active project budget, atomically reserves and settles confirmed charges; ambiguous failures remain reserved for manual reconciliation.
+- **NOT WIRED to a provider or Studio Runner.** No paid invocation can be initiated by this module without a caller providing `invoke`; it is not proof of universal enforcement.
+- IMPORTANT: the current generic callback contract does not itself prove the provider's hard maximum charge. Do not connect any real provider until a provider-specific bound, retry behavior, timeout reconciliation, authorization gate and cross-entrypoint enforcement are verified.
+- Remaining: database-backed tests, TypeScript/CI checks, auth/RBAC on server endpoints, project budget provisioning, migration verification, safe operational pause, complete audit of alternative billable routes.
