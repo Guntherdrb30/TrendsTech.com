@@ -82,3 +82,29 @@ jobs:
         uses: actions/dependency-review-action@a1d282b36b6f3519aa1f3fc636f609c47dddb294 # v5.0.0
         with:
           fail-on-severity: critical
+
+  lockfile-candidate:
+    name: Generate dependency fix proposal
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Calculate compatible dependency updates
+        run: |
+          npm audit fix --package-lock-only --ignore-scripts || true
+          npm install --package-lock-only --ignore-scripts
+      - name: Save candidate lockfile
+        uses: actions/upload-artifact@v4
+        with:
+          name: proposed-lockfile
+          path: package-lock.json
+          retention-days: 7
+      - name: Summarize proposed changes
+        run: git diff --stat -- package-lock.json
