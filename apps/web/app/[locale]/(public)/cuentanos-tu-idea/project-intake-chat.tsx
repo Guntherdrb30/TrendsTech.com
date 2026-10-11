@@ -27,6 +27,7 @@ export function ProjectIntakeChat({ locale }: { locale: 'es' | 'en' }) {
   const [reference, setReference] = useState('');
 
   function start(selected: IntakeCategory) {
+    if (!consent) return;
     setCategory(selected);
     setTranscript([{ role: 'agent', content: getIntakeQuestion(selected, 0, locale) }]);
     setStage('interview');
@@ -105,8 +106,9 @@ export function ProjectIntakeChat({ locale }: { locale: 'es' | 'en' }) {
       <div className="space-y-5 px-5 py-7 sm:px-9">
         {stage === 'select' && <>
           <p className="font-medium">{es ? '¿Qué te gustaría hacer?' : 'How can we help you?'}</p>
+          <label className="mb-4 flex items-start gap-3 text-sm text-slate-700"><input type="checkbox" checked={consent} onChange={e => setConsent(e.target.checked)} className="mt-1" /><span>{es ? 'Autorizo el tratamiento de la información de esta conversación para preparar una propuesta y contactarme. ' : 'I authorize the processing of this conversation to prepare a proposal and contact me. '}<Link href={'/' + locale + '/privacy'} className="font-semibold text-teal-700 underline">{es ? 'Política de privacidad' : 'Privacy policy'}</Link></span></label>
           <div className="grid gap-3 sm:grid-cols-2">{CATEGORIES.map(item =>
-            <button key={item.id} type="button" onClick={() => start(item.id)} className="rounded-2xl border border-slate-200 p-5 text-left font-medium transition hover:border-teal-500 hover:bg-teal-50 focus-visible:ring-2 focus-visible:ring-teal-500">{es ? item.es : item.en} →</button>
+            <button key={item.id} disabled={!consent} type="button" onClick={() => start(item.id)} className="rounded-2xl border border-slate-200 p-5 text-left font-medium transition hover:border-teal-500 hover:bg-teal-50 focus-visible:ring-2 focus-visible:ring-teal-500 disabled:cursor-not-allowed disabled:opacity-50">{es ? item.es : item.en} →</button>
           )}</div>
         </>}
         {stage === 'interview' && <>
