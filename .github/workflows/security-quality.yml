@@ -108,3 +108,7 @@ jobs:
           retention-days: 7
       - name: Summarize proposed changes
         run: git diff --stat -- package-lock.json
+      - name: Verify candidate dependency install
+        run: npm ci
+      - name: Audit candidate dependency tree
+        run: npm run security:audit
