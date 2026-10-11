@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { summarizeDailyUsage, type LunaActivityEvent } from '../../../core/src/luna-ai-control/activity';
+import { summarizeDailyUsage, type LunaActivityEvent } from '../../core/src/luna-ai-control/activity';
 
 const base: LunaActivityEvent = {
   id: 'event-1', installationId: 'installation-1', projectKey: 'luna-football',
