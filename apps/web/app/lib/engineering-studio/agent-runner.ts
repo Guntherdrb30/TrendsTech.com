@@ -5,6 +5,7 @@ import { Prisma, prisma } from '@trends172tech/db';
 import { getProjectRoutingProfile } from './routing';
 import { buildNvidiaExecutionPlan } from './nvidia-runtime';
 import { ensureGitHubWorkspace } from './github-workspace';
+import { getStudioSpendSnapshot } from './spend-guard';
 
 const MODEL_ROUTE = {
   ECONOMY: { provider: 'OPENAI', model: 'gpt-5.6-luna', coordinator: 'Engineering Coordinator · Economy' },
@@ -48,19 +49,30 @@ export async function prepareAgentRun(projectId: string, actorUserId: string, ta
   if (project.approvalStatus !== 'APPROVED') throw new Error('Approval Gate A debe estar aprobado antes de preparar una ejecución.');
   if (!project.repositoryUrl) throw new Error('El proyecto necesita un repositorio GitHub antes de preparar ejecución de código.');
 
+  // Preparation is free, but a paid run must never be presented as READY
+  // while its project has no approved, unpaused spend budget.
+  const spend = await getStudioSpendSnapshot(projectId).catch(() => null);
+  const budgetReady = Boolean(spend?.configured && !spend.paused && spend.canStartPaidRun);
   const profile = await getProjectRoutingProfile(projectId);
   const route = MODEL_ROUTE[profile];
   const runId = randomUUID();
   const workBranch = `studio/${slug(project.name)}/${slug(task)}-${runId.slice(0, 8)}`;
   const nvidia = buildNvidiaExecutionPlan(project.localAiRequired);
   const workspace = await ensureGitHubWorkspace(project.repositoryUrl, workBranch);
-  const status = workspace.configured ? 'READY' : 'BLOCKED_CONFIGURATION';
+  const status = workspace.configured && budgetReady ? 'READY' : 'BLOCKED_CONFIGURATION';
   const result = {
     task: task.trim(),
     profile,
     coordinator: route.coordinator,
     workspace,
     nvidia,
+    budgetGate: {
+      configured: Boolean(spend?.configured),
+      paused: spend?.paused ?? true,
+      eligibleForFuturePaidExecution: budgetReady,
+      reservationCreated: false,
+      note: 'READY solo indica preparación; la ejecución pagada requiere reserva atómica independiente.'
+    },
     safety: {
       productionWrite: false,
       mergeToMain: false,
@@ -84,7 +96,7 @@ export async function prepareAgentRun(projectId: string, actorUserId: string, ta
       INSERT INTO "StudioEvent" ("id", "projectId", "type", "actorType", "actorRef", "message", "metaJson", "createdAt")
       VALUES (${randomUUID()}, ${projectId}, 'AGENT_RUN_PREPARED', 'USER', ${actorUserId},
         'Ejecución supervisada preparada; todavía no consume modelos.',
-        CAST(${JSON.stringify({ runId, profile, model: route.model, branchName: workBranch, workspaceConfigured: workspace.configured })} AS jsonb), CURRENT_TIMESTAMP)
+        CAST(${JSON.stringify({ runId, profile, model: route.model, branchName: workBranch, workspaceConfigured: workspace.configured, budgetReady })} AS jsonb), CURRENT_TIMESTAMP)
     `);
   });
 

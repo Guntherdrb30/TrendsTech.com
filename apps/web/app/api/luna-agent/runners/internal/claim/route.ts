@@ -1,9 +1,11 @@
 import { NextResponse } from "next/server";
+import { isLegacyLunaExecutionDisabled, LEGACY_LUNA_RETIRED_RESPONSE } from "@/lib/luna-agent/retirement";
 import { DevQueueStatus, prisma } from "@trends172tech/db";
 import { authenticateRunner, claimNextTaskForRunner, createTaskLog, logRunnerEvent } from "@/lib/luna-agent/runners";
 import { runnerClaimSchema } from "@/lib/validators/luna-agent";
 
 export async function POST(request: Request) {
+  if (isLegacyLunaExecutionDisabled()) return NextResponse.json(LEGACY_LUNA_RETIRED_RESPONSE, { status: 410 });
   const body = await request.json().catch(() => ({}));
   const parsed = runnerClaimSchema.safeParse(body);
 

@@ -40,16 +40,62 @@ jobs:
         run: npm run security:audit
 
       - name: Check TypeScript
+        if: success() || failure()
         run: npm run typecheck
 
+      - name: Run Engineering Studio unit tests (no database or AI calls)
+        if: success() || failure()
+        run: npx --yes vitest@2.1.9 run apps/web/tests/engineering-studio/budget-policy.test.ts apps/web/tests/engineering-studio/cost-estimate.test.ts apps/web/tests/engineering-studio/legacy-luna-retirement.test.ts apps/web/tests/engineering-studio/legacy-luna-routes.test.ts
+
       - name: Run LUNA tests
+        if: success() || failure()
         run: npm run luna:test
 
       - name: Test MCP security contracts
+        if: success() || failure()
         run: npm run security:test
 
       - name: Build production application
+        if: success() || failure()
         run: npm run build
+
+  remediate-lockfile:
+    name: Update vulnerable lockfile dependencies (pilot branch only)
+    if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository && github.head_ref == 'studio/gnb-budget-guard-pilot'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+    steps:
+      - name: Check out pilot branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.head_ref }}
+          persist-credentials: true
+
+      - name: Set up Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Apply compatible npm audit fixes to lockfile
+        run: npm audit fix --package-lock-only --ignore-scripts --no-force || true
+
+      - name: Verify lockfile consistency
+        run: npm ci --ignore-scripts
+
+      - name: Commit compatible lockfile fixes to pilot branch
+        run: |
+          if git diff --quiet -- package-lock.json; then
+            echo "No compatible lockfile updates available."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add package-lock.json
+          git commit -m "fix(deps): apply compatible security patches to lockfile"
+          git push origin HEAD:${{ github.head_ref }}
 
   secret-scan:
     name: Secret scan

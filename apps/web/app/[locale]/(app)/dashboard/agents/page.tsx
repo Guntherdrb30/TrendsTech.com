@@ -59,12 +59,6 @@ export default async function AgentsPage({ params }: { params: Promise<PageParam
           <div className="flex flex-wrap gap-3">
             <Link
               className="interactive-chip inline-flex rounded-full border border-black/8 bg-white/90 px-4 py-2 text-sm font-semibold text-slate-900 transition hover:bg-slate-900 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900/15 focus-visible:ring-offset-2"
-              href={`/${locale}/dashboard/agents/luna-code-orchestrator`}
-            >
-              {isEs ? 'Abrir Luna Code' : 'Open Luna Code'}
-            </Link>
-            <Link
-              className="interactive-chip inline-flex rounded-full border border-black/8 bg-white/90 px-4 py-2 text-sm font-semibold text-slate-900 transition hover:bg-slate-900 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900/15 focus-visible:ring-offset-2"
               href={`/${locale}/dashboard`}
             >
               {isEs ? 'Configurar nuevo agente' : 'Configure new agent'}

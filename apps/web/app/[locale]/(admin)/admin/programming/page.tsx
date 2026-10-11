@@ -1,12 +1,12 @@
 import Link from 'next/link';
 
 const metrics = [
-  ['Proyectos activos', '0', 'Listos para registrar'],
-  ['Agentes ejecutándose', '0', 'Runtime aún desconectado'],
-  ['Approvals pendientes', '0', 'Sin acciones sensibles'],
-  ['Costo real', '$0.00', 'Sin consumo IA'],
-  ['Forecast', '$0.00', 'Se calcula por proyecto'],
-  ['Runs fallidos', '0', 'Sin ejecuciones']
+  ['Proyectos activos', 'No disponible', 'Pendiente de consulta real'],
+  ['Agentes ejecutándose', 'No disponible', 'Pendiente de consulta real'],
+  ['Approvals pendientes', 'No disponible', 'Pendiente de consulta real'],
+  ['Costo real', 'No disponible', 'Pendiente de conciliación'],
+  ['Forecast', 'No disponible', 'Pendiente de estimación real'],
+  ['Runs fallidos', 'No disponible', 'Pendiente de consulta real']
 ] as const;
 
 const agents = [
