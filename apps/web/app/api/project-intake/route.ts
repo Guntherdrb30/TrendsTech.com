@@ -90,7 +90,7 @@ export async function POST(request: Request) {
     const saved = await prisma.adminProjectIntake.upsert({
       where: { sessionId: input.sessionId },
       create: { sessionId: input.sessionId, consentAt: new Date(), ...fields },
-      update: fields
+      update: { ...fields, consentAt: existing?.consentAt ?? new Date() }
     });
     if (!input.finalize) {
       return NextResponse.json({ ok: true, submitted: false }, { headers: jsonHeaders });
