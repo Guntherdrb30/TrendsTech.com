@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { readBoundedJson, usageEventSchema } from '../../lib/luna-ai-control/usage-validation';
+import { readBoundedJson, usageEventSchema } from '../../app/lib/luna-ai-control/usage-validation';
 
 const event = {
   operationId: 'op-1', platform: 'sample-client', module: 'request',
