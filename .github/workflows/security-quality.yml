@@ -110,5 +110,18 @@ jobs:
         run: git diff --stat -- package-lock.json
       - name: Verify candidate dependency install
         run: npm ci
+      - name: Diagnose unresolved dependency advisories
+        if: always()
+        run: |
+          npm explain braces || true
+          npm explain sharp || true
+          npm audit --omit=dev --json > candidate-audit.json || true
+      - name: Save audit diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: candidate-security-diagnostics
+          path: candidate-audit.json
+          retention-days: 7
       - name: Audit candidate dependency tree
         run: npm run security:audit
