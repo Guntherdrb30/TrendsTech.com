@@ -2,6 +2,10 @@ name: Dependency remediation candidate
 
 on:
   workflow_dispatch:
+  push:
+    branches: [feature/luna-ai-control-center]
+    paths:
+      - '.github/workflows/dependency-remediation.yml'
 
 permissions:
   contents: read
