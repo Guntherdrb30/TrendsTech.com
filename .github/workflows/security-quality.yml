@@ -36,9 +36,6 @@ jobs:
       - name: Install locked dependencies
         run: npm ci
 
-      - name: Audit production dependencies
-        run: npm run security:audit
-
       - name: Check TypeScript
         run: npm run typecheck
 
@@ -50,6 +47,10 @@ jobs:
 
       - name: Build production application
         run: npm run build
+
+      - name: Audit production dependencies
+        run: npm run security:audit
+
 
   secret-scan:
     name: Secret scan
