@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { prisma } from '@trends172tech/db';
 import { AuthError, requireAuth } from '@/lib/auth/guards';
+import { transitionInstallation, type InstallationAction, type InstallationState } from '@trends172tech/core/src/luna-ai-control/installations';
 
 export const runtime = 'nodejs';
 
@@ -9,15 +10,6 @@ const schema = z.object({
   action: z.enum(['approve', 'reject', 'activate', 'suspend', 'resume', 'revoke']),
   reason: z.string().trim().max(1000).optional(),
 }).strict();
-
-const transitions = {
-  approve: ['REQUESTED', 'APPROVED'],
-  reject: ['REQUESTED', 'REJECTED'],
-  activate: ['APPROVED', 'ACTIVE'],
-  suspend: ['ACTIVE', 'SUSPENDED'],
-  resume: ['SUSPENDED', 'ACTIVE'],
-  revoke: ['APPROVED', 'REVOKED'],
-} as const;
 
 export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
@@ -31,7 +23,15 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
       return NextResponse.json({ error: 'Reason required' }, { status: 400 });
     }
     const { id } = await params;
-    const [expected, next] = transitions[action];
+    const existing = await prisma.aiControlInstallation.findUnique({ where: { id } });
+    if (!existing) return NextResponse.json({ error: 'Installation not found' }, { status: 404 });
+    let change;
+    try {
+      change = transitionInstallation(existing.status as InstallationState, action as InstallationAction, { id: user.id, role: 'ROOT' }, reason);
+    } catch {
+      return NextResponse.json({ error: 'Invalid state transition or reason' }, { status: 409 });
+    }
+    const { previous: expected, next } = change;
     const data = await prisma.$transaction(async (tx) => {
       const changed = await tx.aiControlInstallation.updateMany({
         where: { id, status: expected },
