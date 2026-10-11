@@ -1715,6 +1715,7 @@ model AiControlInstallation {
   tenant Tenant @relation(fields: [tenantId], references: [id])
   auditEvents AiControlInstallationAudit[]
   credentials AiControlCredential[]
+  usageEvents AiControlUsageEvent[]
 
   @@index([tenantId, createdAt])
   @@index([status, createdAt])
@@ -1746,4 +1747,31 @@ model AiControlCredential {
   revokedByUserId String?
   installation AiControlInstallation @relation(fields: [installationId], references: [id])
   @@index([installationId, revokedAt])
+}
+
+model AiControlUsageEvent {
+  id String @id @default(cuid())
+  installationId String
+  operationId String
+  platform String
+  module String
+  action String
+  provider String
+  model String?
+  environment String
+  startedAt DateTime
+  completedAt DateTime
+  durationMs Int
+  status String
+  inputTokens Int?
+  outputTokens Int?
+  imageCount Int?
+  videoCount Int?
+  documentCount Int?
+  audioSeconds Float?
+  errorCode String?
+  receivedAt DateTime @default(now())
+  installation AiControlInstallation @relation(fields: [installationId], references: [id])
+  @@unique([installationId, operationId])
+  @@index([installationId, receivedAt])
 }
