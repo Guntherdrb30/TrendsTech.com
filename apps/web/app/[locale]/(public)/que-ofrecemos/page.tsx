@@ -45,8 +45,8 @@ export default async function WhatWeOfferPage({ params }: { params: Promise<{ lo
           </h1>
           <p className="mt-6 max-w-4xl text-lg leading-relaxed text-slate-600 sm:text-xl">
             {es
-              ? 'Desde Venezuela desarrollamos tecnología empresarial de calidad y acompañamos a cada organización en la implementación de inteligencia artificial adaptada a sus procesos, datos, permisos y objetivos.'
-              : 'From Venezuela, we develop quality enterprise technology and support each organisation in implementing artificial intelligence adapted to its processes, data, permissions and objectives.'}
+              ? 'Trends 172 Tech LLC desarrolla software empresarial e inteligencia artificial a partir de experiencia operativa real, un framework reutilizable y un entorno propio de ingeniería. Trabajamos con clientes y desarrollamos nuevas plataformas sectoriales.'
+              : 'Trends 172 Tech LLC develops enterprise software and AI based on operational implementation experience, reusable platform components and its own engineering environment. We work with clients and build new vertical platforms.'}
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             <Link href={`${base}/contact`} className="rounded-full bg-slate-950 px-6 py-3 text-sm font-semibold text-white">{es ? 'Conversemos sobre su operación' : 'Let’s discuss your operation'}</Link>
@@ -79,6 +79,24 @@ export default async function WhatWeOfferPage({ params }: { params: Promise<{ lo
             <p>{es ? 'Desarrollamos capacidades transaccionales que pueden consultar información autorizada, crear o actualizar registros, activar flujos y solicitar aprobaciones.' : 'We develop transactional capabilities that can query authorised information, create or update records, trigger workflows and request approvals.'}</p>
             <p>{es ? 'Cada implementación se diseña con permisos, reglas, límites de acción, aprobación humana cuando corresponde y trazabilidad completa.' : 'Every implementation is designed with permissions, rules, action limits, human approval where required and full traceability.'}</p>
           </div>
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-[1600px] px-6 sm:px-8 lg:px-12 xl:px-16">
+        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-emerald-700">{es ? 'NUESTRA PLATAFORMA DE INGENIERÍA' : 'OUR ENGINEERING PLATFORM'}</p>
+        <h2 className="mt-4 max-w-4xl text-3xl font-semibold tracking-tight text-slate-950 sm:text-5xl">{es ? 'Ingeniería interna, proyectos, propuestas y entrega FDE.' : 'In-house engineering, projects, proposals and FDE delivery.'}</h2>
+        <div className="mt-7 grid gap-5 md:grid-cols-2">
+          {(es ? [
+            ['Engineer Studio', 'Nuestro entorno de ingeniería para organizar y desarrollar proyectos de software, con flujos asistidos por IA y controles de ejecución.'],
+            ['Propuestas y proyectos', 'Herramientas internas para preparar propuestas, coordinar trabajo y dar seguimiento al desarrollo.'],
+            ['Aliados y FDE', 'Un enfoque de Forward Deployed Engineering para adaptar soluciones a las necesidades de organizaciones y aliados.'],
+            ['LUNA Framework', 'Componentes y patrones reutilizables aplicados a productos empresariales y verticales, incluyendo CarpiHogar y nuevas soluciones.'],
+          ] : [
+            ['Engineer Studio', 'Our engineering environment for organizing and building software projects with AI-assisted workflows and execution controls.'],
+            ['Proposals and projects', 'Internal tools for preparing proposals, coordinating work and tracking delivery.'],
+            ['Partners and FDE', 'A Forward Deployed Engineering approach to adapting solutions for organizations and partners.'],
+            ['LUNA Framework', 'Reusable components and patterns applied to enterprise and vertical products, including CarpiHogar and new applications.'],
+          ]).map(([title, description]) => <article key={title} className="rounded-2xl border border-slate-200 bg-white p-6"><h3 className="text-xl font-semibold text-slate-950">{title}</h3><p className="mt-3 leading-relaxed text-slate-600">{description}</p></article>)}
         </div>
       </section>
 
