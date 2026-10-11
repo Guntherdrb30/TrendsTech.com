@@ -100,7 +100,6 @@ jobs:
         run: |
           npm audit fix --package-lock-only --ignore-scripts || true
           npm install --package-lock-only --ignore-scripts
-          npm install --package-lock-only --ignore-scripts
       - name: Save candidate lockfile
         uses: actions/upload-artifact@v4
         with:
@@ -111,6 +110,12 @@ jobs:
         run: git diff --stat -- package-lock.json
       - name: Verify candidate dependency install
         run: npm ci
+      - name: Check candidate TypeScript
+        run: npm run typecheck
+      - name: Run candidate LUNA tests
+        run: npm run luna:test
+      - name: Build candidate application
+        run: npm run build
       - name: Diagnose unresolved dependency advisories
         if: always()
         run: |
