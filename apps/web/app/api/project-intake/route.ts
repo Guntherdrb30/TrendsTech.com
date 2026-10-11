@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@trends172tech/db';
 import { sendEmail } from '@/lib/email/send';
-import { enforceRequestRateLimit } from '@/lib/security/rate-limit';
+import { enforcePersistentRequestRateLimit } from '@/lib/security/rate-limit';
 import { escapeIntakeHtml, projectIntakePayload, validateFinalIntake } from '@/lib/project-intake/schema';
 import type { ProjectIntakePayload } from '@/lib/project-intake/schema';
 
@@ -60,12 +60,13 @@ async function notifySubmitted(input: ProjectIntakePayload, id: string, referenc
 }
 
 export async function POST(request: Request) {
-  const limited = enforceRequestRateLimit(request, {
+  const limited = await enforcePersistentRequestRateLimit(request, {
     namespace: 'project-intake',
-    limit: 35,
+    limit: 18,
     windowMs: 10 * 60 * 1000
   });
   if (limited) return limited;
+  if (request.headers.get('content-length') && Number(request.headers.get('content-length')) > 50000) return NextResponse.json({ error: 'Payload demasiado grande.' }, { status: 413 });
   const parsed = projectIntakePayload.safeParse(await request.json().catch(() => null));
   if (!parsed.success) {
     return NextResponse.json({ error: 'Datos de solicitud inválidos.' }, { status: 400, headers: jsonHeaders });
