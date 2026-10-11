@@ -320,6 +320,7 @@ model Tenant {
   agentAccesses    AgentAccess[]
   whatsappChannels WhatsAppChannel[]
   knowledge        KnowledgeSource[]
+  aiControlInstallations AiControlInstallation[]
   installs         Install[]
   subscriptions    Subscription[]
   manualPayments   ManualPayment[]
@@ -1685,4 +1686,49 @@ model AgentSkill {
   @@unique([agentInstanceId, skillId])
   @@index([agentInstanceId])
   @@index([skillId])
+}
+
+enum AiControlInstallationStatus {
+  REQUESTED
+  APPROVED
+  REJECTED
+  ACTIVE
+  SUSPENDED
+  REVOKED
+}
+
+model AiControlInstallation {
+  id          String @id @default(cuid())
+  tenantId    String
+  name        String
+  applicationKey String
+  environment String @default("production")
+  domain      String?
+  status      AiControlInstallationStatus @default(REQUESTED)
+  requestedByUserId String
+  reviewedByUserId String?
+  reviewedAt  DateTime?
+  reviewReason String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  tenant Tenant @relation(fields: [tenantId], references: [id])
+  auditEvents AiControlInstallationAudit[]
+
+  @@index([tenantId, createdAt])
+  @@index([status, createdAt])
+}
+
+model AiControlInstallationAudit {
+  id String @id @default(cuid())
+  installationId String
+  actorUserId String
+  action String
+  previousStatus AiControlInstallationStatus
+  nextStatus AiControlInstallationStatus
+  reason String?
+  createdAt DateTime @default(now())
+  installation AiControlInstallation @relation(fields: [installationId], references: [id])
+
+  @@index([installationId, createdAt])
 }
