@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Link from 'next/link';
 import { getTranslations } from 'next-intl/server';
 import { HomePremium, type HomePremiumCopy } from '@/components/home-premium';
 import { buildLocalizedMetadata } from '@/lib/seo';
@@ -64,6 +65,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
 
   return <>
     <HomePremium fontClass={fontClass} conciergeCopy={conciergeCopy} copy={premiumCopy} />
+    <section className="bg-[#e9fbf8] px-6 py-16 text-slate-950 sm:px-8"><div className="mx-auto flex max-w-6xl flex-col items-start justify-between gap-6 sm:flex-row sm:items-center"><div><p className="text-xs font-semibold uppercase tracking-widest text-teal-700">{es ? 'Ingeniería de software a tu medida' : 'Custom software engineering'}</p><h2 className="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">{es ? '¿Tienes una idea para un nuevo sistema?' : 'Have an idea for a new software product?'}</h2><p className="mt-3 max-w-2xl text-slate-600">{es ? 'Conversaremos contigo para entenderla, organizar tus requerimientos y contactar a nuestro equipo.' : 'Our guided advisor helps organize your requirements for our engineering team.'}</p></div><Link href={`/${locale}/cuentanos-tu-idea`} className="shrink-0 rounded-full bg-slate-950 px-7 py-4 text-sm font-semibold text-white hover:bg-teal-700">{es ? 'Cuéntanos tu idea →' : 'Tell us your idea →'}</Link></div></section>
     <section className="mx-auto max-w-[1600px] px-6 py-16 sm:px-8 lg:px-12 xl:px-16" aria-labelledby="trends-engineering">
       <p className="text-xs font-semibold uppercase tracking-[0.2em] text-emerald-700">{es ? 'INGENIERÍA CON IMPLEMENTACIONES REALES' : 'ENGINEERING BACKED BY REAL IMPLEMENTATIONS'}</p>
       <h2 id="trends-engineering" className="mt-4 max-w-4xl text-3xl font-semibold tracking-tight text-slate-950 sm:text-5xl">{es ? 'Trends172Tech desarrolla software, frameworks y plataformas de IA para empresas.' : 'Trends172Tech builds software, frameworks and AI platforms for businesses.'}</h2>
