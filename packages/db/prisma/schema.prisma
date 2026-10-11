@@ -961,6 +961,7 @@ model AdminLead {
   updatedAt      DateTime        @updatedAt
 
   client AdminClient? @relation(fields: [clientId], references: [id], onDelete: SetNull)
+  intake AdminProjectIntake?
 
   @@index([clientId])
   @@index([status])
@@ -1685,4 +1686,35 @@ model AgentSkill {
   @@unique([agentInstanceId, skillId])
   @@index([agentInstanceId])
   @@index([skillId])
+}
+
+
+// Pre-sales project discovery. Only a completed intake creates a CRM lead.
+model AdminProjectIntake {
+  id                  String   @id @default(cuid())
+  sessionId           String   @unique
+  reference           String?  @unique
+  status              String   @default("DRAFT")
+  category            String
+  locale              String   @default("es")
+  projectTitle        String?
+  details             Json?
+  transcript          Json?
+  contactName         String?
+  contactEmail        String?
+  contactPhone        String?
+  company             String?
+  country             String?
+  consentAt           DateTime
+  submittedAt         DateTime?
+  leadId              String?  @unique
+  clientEmailStatus   String   @default("PENDING")
+  internalEmailStatus String   @default("PENDING")
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  lead AdminLead? @relation(fields: [leadId], references: [id], onDelete: SetNull)
+
+  @@index([status, createdAt])
+  @@index([contactEmail])
 }
