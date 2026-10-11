@@ -74,7 +74,7 @@ export default async function LunaAiControlRoot({ params }: { params: Promise<{ 
         <h1 className="text-3xl font-semibold">LUNA AI Control Center</h1>
         <p className="text-sm text-muted-foreground">Control maestro de instalaciones. Las licencias y credenciales se incorporarán en la siguiente fase.</p>
       </header>
-      <div className="flex flex-wrap gap-3"><Link href={`/${locale}/root/luna-ai-control/security`} className="rounded-lg border px-4 py-2 text-sm">Security Gateway →</Link><Link href="/api/luna-ai-control/activity?days=30" className="rounded-lg border px-4 py-2 text-sm">Actividad y consumo (JSON) →</Link></div>
+      <div className="flex flex-wrap gap-3"><Link href={`/${locale}/root/luna-ai-control/security`} className="rounded-lg border px-4 py-2 text-sm">Security Gateway →</Link><Link href={`/${locale}/root/luna-ai-control/activity`} className="rounded-lg border px-4 py-2 text-sm">Actividad e historial →</Link></div>
       <div className="grid gap-3 sm:grid-cols-3">
         {[['Pendientes',pending],['Activas',active],['Suspendidas',suspended]].map(([name,value])=>(
           <div key={name} className="rounded-xl border p-4"><p className="text-sm text-muted-foreground">{name}</p><p className="text-3xl font-semibold">{value}</p></div>
