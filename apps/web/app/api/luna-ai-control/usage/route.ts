@@ -1,37 +1,19 @@
+import { AuthError } from '@/lib/auth/guards';
+import { assertControlPreviewReady } from '@/lib/luna-ai-control/preview-isolation';
+import { enforcePersistentRequestRateLimit } from '@/lib/security/rate-limit';
 import { NextResponse } from 'next/server';
-import { z } from 'zod';
 import { prisma } from '@trends172tech/db';
 import { hashInstallationCredential, verifyInstallationCredential } from '@/lib/luna-ai-control/credentials';
+import { readBoundedJson, usageEventSchema } from '@/lib/luna-ai-control/usage-validation';
 
 export const runtime = 'nodejs';
-
-const nonnegative = z.number().int().nonnegative().optional();
-const eventSchema = z.object({
-  operationId: z.string().min(1).max(120),
-  platform: z.string().min(1).max(80),
-  module: z.string().min(1).max(80),
-  action: z.string().min(1).max(80),
-  provider: z.string().min(1).max(80),
-  model: z.string().max(120).optional(),
-  environment: z.enum(['production', 'preview', 'test']),
-  startedAt: z.string().datetime(),
-  completedAt: z.string().datetime(),
-  durationMs: z.number().int().nonnegative().max(86400000),
-  status: z.enum(['success', 'error']),
-  inputTokens: nonnegative,
-  outputTokens: nonnegative,
-  imageCount: nonnegative,
-  videoCount: nonnegative,
-  documentCount: nonnegative,
-  audioSeconds: z.number().nonnegative().optional(),
-  errorCode: z.string().max(120).optional(),
-}).strict();
 
 export async function POST(request: Request) {
   const header = request.headers.get('authorization') ?? '';
   const secret = header.startsWith('Bearer ') ? header.slice(7) : '';
   if (!/^luna_live_[A-Za-z0-9_-]{43}$/.test(secret)) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   try {
+    assertControlPreviewReady();
     const credential = await prisma.aiControlCredential.findUnique({
       where: { secretHash: hashInstallationCredential(secret) },
       include: { installation: { select: { id: true, status: true } } },
@@ -39,14 +21,13 @@ export async function POST(request: Request) {
     if (!credential || credential.revokedAt || !verifyInstallationCredential(secret, credential.secretHash) || credential.installation.status !== 'ACTIVE') {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
-    const raw = await request.text();
-    if (raw.length > 16384) return NextResponse.json({ error: 'Payload too large' }, { status: 413 });
-    let json: unknown;
-    try { json = JSON.parse(raw); } catch { return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 }); }
-    const parsed = eventSchema.safeParse(json);
+    const limited = await enforcePersistentRequestRateLimit(request, { namespace: 'luna-usage', limit: 300, windowMs: 60000 }, credential.installation.id);
+    if (limited) return limited;
+    const body = await readBoundedJson(request);
+    if (!body.ok) return NextResponse.json({ error: body.error }, { status: body.status });
+    const parsed = usageEventSchema.safeParse(body.data);
     if (!parsed.success) return NextResponse.json({ error: 'Invalid event' }, { status: 400 });
     const e = parsed.data;
-    if (new Date(e.completedAt).getTime() < new Date(e.startedAt).getTime()) return NextResponse.json({ error: 'Invalid timestamps' }, { status: 400 });
     const result = await prisma.aiControlUsageEvent.createMany({
       data: [{
         installationId: credential.installation.id,
@@ -61,7 +42,8 @@ export async function POST(request: Request) {
       skipDuplicates: true,
     });
     return NextResponse.json({ accepted: result.count === 1, duplicate: result.count === 0 }, { status: 202 });
-  } catch {
+  } catch (error) {
+    if (error instanceof AuthError) return NextResponse.json({ error: error.message }, { status: error.status });
     return NextResponse.json({ error: 'Unexpected error' }, { status: 500 });
   }
 }
