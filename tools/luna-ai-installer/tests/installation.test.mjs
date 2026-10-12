@@ -42,6 +42,21 @@ test('disabled SDK preserves operation without network or credentials', async ()
  assert.equal(await sdk.run({}, async () => 42), 42); assert.equal(network, 0);
 });
 
+test('gateway authorization remains enforced when telemetry is disabled', async () => {
+ const config = { enabled: false, gatewayEnabled: true, endpoint: 'https://control.example', token: `luna_live_${'a'.repeat(43)}` };
+ let calls = 0;
+ const denied = createLunaControl({ ...config, fetchImpl: async () => ({ ok: false, status: 403 }) });
+ await assert.rejects(denied.run({ agent: 'assistant' }, async () => { calls++; }), /403/);
+ assert.equal(calls, 0);
+ const paths = [];
+ const allowed = createLunaControl({ ...config, fetchImpl: async url => {
+  paths.push(new URL(url).pathname);
+  return { ok: true, json: async () => ({ leaseId: 'lease' }) };
+ }});
+ assert.equal(await allowed.run({ agent: 'assistant' }, async () => 42), 42);
+ assert.deepEqual(paths, ['/api/luna-ai-control/gateway/reserve','/api/luna-ai-control/gateway/release']);
+});
+
 test('gateway rejection prevents provider call; telemetry failure preserves result', async () => {
  const config = { enabled: true, endpoint: 'https://control.example', token: `luna_live_${'a'.repeat(43)}` };
  let calls = 0;
