@@ -3,7 +3,7 @@ import { createLunaUsageReporter } from './usage-reporter.mjs';
 
 // Install only on the server. No provider credentials, prompts or outputs are transmitted.
 export function createLunaControl({ endpoint, token, enabled = false, gatewayEnabled = false, fetchImpl = fetch, onTelemetryError = () => {} }) {
-  if (!enabled) return { run: (_metadata, operation) => operation() };
+  if (!enabled && !gatewayEnabled) return { run: (_metadata, operation) => operation() };
   const report = createLunaUsageReporter({ endpoint, token, fetchImpl });
   const url = new URL(endpoint);
   async function gateway(action, body) {
@@ -28,7 +28,7 @@ export function createLunaControl({ endpoint, token, enabled = false, gatewayEna
           action: metadata.action, provider: metadata.provider, model: metadata.model,
           environment: metadata.environment, startedAt: started.toISOString(), completedAt: completed.toISOString(),
           durationMs: completed - started, status, ...(status === 'error' ? { errorCode: 'PROVIDER_ERROR' } : {}) };
-        try { await report(event); } catch { try { onTelemetryError('TELEMETRY_UNAVAILABLE'); } catch {} }
+        if (enabled) { try { await report(event); } catch { try { onTelemetryError('TELEMETRY_UNAVAILABLE'); } catch {} } }
         if (lease) { try { await gateway('release', { leaseId: lease.leaseId }); } catch {} }
       }
     },
