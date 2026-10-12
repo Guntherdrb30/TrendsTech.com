@@ -28,7 +28,7 @@ El candidato integrado se entrega en el PR #49. El PR #50 conserva la distribuci
 - `npm ci`: instalación desde directorio sin dependencias residuales y generación Prisma correctas.
 - `npm run typecheck`: correcto.
 - `npm run lint`: correcto.
-- 48 pruebas: 9 Control Center, 9 Installer, 25 LUNA y 5 MCP.
+- 49 pruebas: 9 Control Center, 10 Installer, 25 LUNA y 5 MCP.
 - `npm run build`: correcto; postbuild confirma que omite escrituras al catálogo en Preview.
 - Auditoría completa (incluye dev): 0 critical, 0 high, 4 moderate. Sin excepciones para high/critical.
 - Cuatro migraciones LUNA ejecutadas en una base PostgreSQL PGlite aislada.
@@ -49,7 +49,7 @@ El candidato integrado se entrega en el PR #49. El PR #50 conserva la distribuci
 
 - URL estable: https://trends172techcom-git-fe-693fef-guntherdelrosario-5780s-projects.vercel.app/es/root/luna-ai-control
 - Deployment de código verificado: dpl_HwCsksUbA7FpN1uSocZ7gj9Xe6HR; commit 2bfdfca88be5c2399d6ea0b58ce06e5b964d0a25. READY, target Preview.
-- CI 38247677416 y 38247677425: success; npm ci, TypeScript, 48 pruebas, build, auditoría y escaneo de secretos correctos. GitHub Dependency Graph no está disponible; el audit obligatorio del lock completo permanece activo.
+- CI 38247677416 y 38247677425: success; npm ci, TypeScript, 49 pruebas, build, auditoría y escaneo de secretos correctos. GitHub Dependency Graph no está disponible; el audit obligatorio del lock completo permanece activo.
 - Las cuatro migraciones remotas se aplicaron transaccionalmente y quedaron registradas con sus checksums en la rama aislada.
 - Login real con cuentas ficticias, ROOT, aislamiento tenant, CSRF, estados, credenciales, agentes, límites persistentes, replay y deduplicación: correctos.
 - CLI scan/plan/authorize/install/verify comprobado con fuentes ficticias de OpenAI; dos hallazgos sin ejecutar modelos. SDK generado verificó conexión ACTIVE, reservó/liberó Gateway, reportó telemetría y denegó agente ajeno antes de ejecutar callback.
@@ -63,3 +63,6 @@ Revisar el PR #49 y el Preview antes del 19 de octubre, cuando expira la base te
 
 La revisión automática rechazó una actualización de la URL de Preview en `auth.ts` al interpretar las capacidades OAuth presentes en el archivo como una ampliación no autorizada. Se conservó íntegramente la versión existente; la URL del entorno se configuró mediante variables de Vercel, sin cambiar registro OAuth ni scopes.
 
+## Cierre adicional del SDK
+
+Gateway sigue autorizando cuando la telemetría está desactivada. La regresión comprueba denegación antes del callback, autorización y liberación sin evento de uso. La prueba remota con credencial inválida también devuelve 401 antes del callback.

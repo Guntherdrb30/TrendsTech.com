@@ -21,6 +21,8 @@ Registrar la instalación en Control Center, aprobar/activar con ROOT, emitir un
 - `LUNA_TELEMETRY_ENABLED=true`: activar reporter.
 - `LUNA_GATEWAY_ENABLED=true`: activar autorización antes de la llamada.
 
+Gateway se autoriza independientemente de la telemetría: `LUNA_GATEWAY_ENABLED=true` exige autorización aunque `LUNA_TELEMETRY_ENABLED=false`.
+
 Gateway requiere una política ROOT habilitada y una lista explícita de agentes. El servidor verifica ACTIVE, revocación, agente, cuota por minuto y concurrencia. La reserva dura 60 segundos y no cancela operaciones del proveedor que superen ese plazo.
 
 ```js
