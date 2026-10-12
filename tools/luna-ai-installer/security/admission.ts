@@ -24,6 +24,8 @@ export function evaluateAiAdmission(input: AdmissionInput): AdmissionDecision {
   if (!input.authenticated) return { action: 'deny', reason: 'unauthenticated' };
   if (!input.authorized) return { action: 'deny', reason: 'forbidden' };
   if (!input.agentEnabled) return { action: 'deny', reason: 'agent_disabled' };
+  if (![input.requestsInWindow, input.concurrentRequests].every(v => Number.isInteger(v) && v >= 0) ||
+      ![input.maxRequestsInWindow, input.maxConcurrentRequests].every(v => Number.isInteger(v) && v > 0)) return { action: 'deny', reason: 'forbidden' };
   if (input.circuitOpen) return { action: 'deny', reason: 'circuit_open' };
   if (!Number.isFinite(input.estimatedCostUsd) || input.estimatedCostUsd < 0 ||
       !Number.isFinite(input.remainingBudgetUsd) || input.remainingBudgetUsd < 0 ||
