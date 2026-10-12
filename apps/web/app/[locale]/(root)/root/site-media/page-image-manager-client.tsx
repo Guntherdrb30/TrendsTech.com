@@ -313,7 +313,6 @@ export function PageImageManagerClient({
                     </CardHeader>
                     <CardContent className="space-y-5">
                       <div className="overflow-hidden rounded-[24px] border border-black/8 bg-slate-100">
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img
                           src={slot.currentImageUrl}
                           alt={slot.currentAlt}

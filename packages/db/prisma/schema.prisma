@@ -320,6 +320,7 @@ model Tenant {
   agentAccesses    AgentAccess[]
   whatsappChannels WhatsAppChannel[]
   knowledge        KnowledgeSource[]
+  aiControlInstallations AiControlInstallation[]
   installs         Install[]
   subscriptions    Subscription[]
   manualPayments   ManualPayment[]
@@ -1685,4 +1686,119 @@ model AgentSkill {
   @@unique([agentInstanceId, skillId])
   @@index([agentInstanceId])
   @@index([skillId])
+}
+
+enum AiControlInstallationStatus {
+  REQUESTED
+  APPROVED
+  REJECTED
+  ACTIVE
+  SUSPENDED
+  REVOKED
+}
+
+model AiControlInstallation {
+  id          String @id @default(cuid())
+  tenantId    String
+  name        String
+  applicationKey String
+  environment String @default("production")
+  domain      String?
+  status      AiControlInstallationStatus @default(REQUESTED)
+  requestedByUserId String
+  reviewedByUserId String?
+  reviewedAt  DateTime?
+  reviewReason String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  tenant Tenant @relation(fields: [tenantId], references: [id])
+  auditEvents AiControlInstallationAudit[]
+  credentials AiControlCredential[]
+  usageEvents AiControlUsageEvent[]
+  gatewayPolicy AiControlGatewayPolicy?
+  gatewayLeases AiControlGatewayLease[]
+
+  @@index([tenantId, createdAt])
+  @@index([status, createdAt])
+}
+
+model AiControlInstallationAudit {
+  id String @id @default(cuid())
+  installationId String
+  actorUserId String
+  action String
+  previousStatus AiControlInstallationStatus
+  nextStatus AiControlInstallationStatus
+  reason String?
+  createdAt DateTime @default(now())
+  installation AiControlInstallation @relation(fields: [installationId], references: [id])
+
+  @@index([installationId, createdAt])
+}
+
+model AiControlCredential {
+  id String @id @default(cuid())
+  installationId String
+  keyPrefix String
+  secretHash String @unique
+  createdByUserId String
+  createdAt DateTime @default(now())
+  lastUsedAt DateTime?
+  revokedAt DateTime?
+  revokedByUserId String?
+  installation AiControlInstallation @relation(fields: [installationId], references: [id])
+  @@index([installationId, revokedAt])
+}
+
+model AiControlUsageEvent {
+  id String @id @default(cuid())
+  installationId String
+  operationId String
+  platform String
+  module String
+  action String
+  provider String
+  model String?
+  environment String
+  startedAt DateTime
+  completedAt DateTime
+  durationMs Int
+  status String
+  inputTokens Int?
+  outputTokens Int?
+  imageCount Int?
+  videoCount Int?
+  documentCount Int?
+  audioSeconds Float?
+  errorCode String?
+  receivedAt DateTime @default(now())
+  installation AiControlInstallation @relation(fields: [installationId], references: [id])
+  @@unique([installationId, operationId])
+  @@index([installationId, receivedAt])
+}
+
+model AiControlGatewayPolicy {
+  installationId String @id
+  enabled Boolean @default(false)
+  allowedAgents String[]
+  requestsPerMinute Int @default(60)
+  maxConcurrent Int @default(4)
+  windowStartedAt DateTime @default(now())
+  windowRequests Int @default(0)
+  updatedAt DateTime @updatedAt
+  installation AiControlInstallation @relation(fields: [installationId], references: [id])
+}
+
+model AiControlGatewayLease {
+  id String @id @default(cuid())
+  installationId String
+  operationId String
+  agent String
+  expiresAt DateTime
+  releasedAt DateTime?
+  createdAt DateTime @default(now())
+  installation AiControlInstallation @relation(fields: [installationId], references: [id])
+  @@unique([installationId, operationId])
+  @@index([installationId, expiresAt])
 }

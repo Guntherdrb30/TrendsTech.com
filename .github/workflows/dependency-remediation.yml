@@ -1,0 +1,38 @@
+name: Dependency remediation candidate
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [feature/luna-ai-control-center]
+    paths:
+      - '.github/workflows/dependency-remediation.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  candidate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Install baseline
+        run: npm ci
+      - name: Generate non-breaking remediation candidate
+        run: |
+          npm audit fix --omit=dev --package-lock-only || true
+          npm install --package-lock-only --ignore-scripts
+      - name: Show proposed dependency changes
+        run: git diff --stat -- package-lock.json
+      - name: Save candidate lockfile for review
+        uses: actions/upload-artifact@v4
+        with:
+          name: proposed-package-lock
+          path: package-lock.json
+          retention-days: 7
+      - name: Audit proposed lockfile
+        run: npm ci && npm run security:audit
