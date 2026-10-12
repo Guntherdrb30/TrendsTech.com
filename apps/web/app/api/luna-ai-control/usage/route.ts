@@ -1,3 +1,6 @@
+import { AuthError } from '@/lib/auth/guards';
+import { assertControlPreviewReady } from '@/lib/luna-ai-control/preview-isolation';
+import { enforcePersistentRequestRateLimit } from '@/lib/security/rate-limit';
 import { NextResponse } from 'next/server';
 import { prisma } from '@trends172tech/db';
 import { hashInstallationCredential, verifyInstallationCredential } from '@/lib/luna-ai-control/credentials';
@@ -10,6 +13,7 @@ export async function POST(request: Request) {
   const secret = header.startsWith('Bearer ') ? header.slice(7) : '';
   if (!/^luna_live_[A-Za-z0-9_-]{43}$/.test(secret)) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   try {
+    assertControlPreviewReady();
     const credential = await prisma.aiControlCredential.findUnique({
       where: { secretHash: hashInstallationCredential(secret) },
       include: { installation: { select: { id: true, status: true } } },
@@ -17,6 +21,8 @@ export async function POST(request: Request) {
     if (!credential || credential.revokedAt || !verifyInstallationCredential(secret, credential.secretHash) || credential.installation.status !== 'ACTIVE') {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
+    const limited = await enforcePersistentRequestRateLimit(request, { namespace: 'luna-usage', limit: 300, windowMs: 60000 }, credential.installation.id);
+    if (limited) return limited;
     const body = await readBoundedJson(request);
     if (!body.ok) return NextResponse.json({ error: body.error }, { status: body.status });
     const parsed = usageEventSchema.safeParse(body.data);
@@ -36,7 +42,8 @@ export async function POST(request: Request) {
       skipDuplicates: true,
     });
     return NextResponse.json({ accepted: result.count === 1, duplicate: result.count === 0 }, { status: 202 });
-  } catch {
+  } catch (error) {
+    if (error instanceof AuthError) return NextResponse.json({ error: error.message }, { status: error.status });
     return NextResponse.json({ error: 'Unexpected error' }, { status: 500 });
   }
 }

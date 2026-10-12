@@ -1,3 +1,6 @@
+import { assertControlPreviewReady } from '@/lib/luna-ai-control/preview-isolation';
+import { readBoundedJson } from '@/lib/luna-ai-control/usage-validation';
+import { assertSameOrigin } from '@/lib/luna-ai-control/access';
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { prisma } from '@trends172tech/db';
@@ -13,15 +16,19 @@ const schema = z.object({
 
 export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
+    assertSameOrigin(request);
     const user = await requireAuth();
     if (user.role !== 'ROOT') return NextResponse.json({ error: 'ROOT required' }, { status: 403 });
-    const body = await request.json().catch(() => null);
+    const bounded = await readBoundedJson(request);
+    if (!bounded.ok) return NextResponse.json({ error: bounded.error }, { status: bounded.status });
+    const body = bounded.data;
     const parsed = schema.safeParse(body);
     if (!parsed.success) return NextResponse.json({ error: 'Invalid request' }, { status: 400 });
     const { action, reason } = parsed.data;
     if (['reject', 'suspend', 'revoke'].includes(action) && !reason) {
       return NextResponse.json({ error: 'Reason required' }, { status: 400 });
     }
+    assertControlPreviewReady();
     const { id } = await params;
     const existing = await prisma.aiControlInstallation.findUnique({ where: { id } });
     if (!existing) return NextResponse.json({ error: 'Installation not found' }, { status: 404 });
@@ -33,6 +40,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     }
     const { previous: expected, next } = change;
     const data = await prisma.$transaction(async (tx) => {
+      await tx.$queryRaw`SELECT "id" FROM "AiControlInstallation" WHERE "id" = ${id} FOR UPDATE`;
       const changed = await tx.aiControlInstallation.updateMany({
         where: { id, status: expected },
         data: { status: next, reviewedByUserId: user.id, reviewedAt: new Date(), reviewReason: reason ?? null },

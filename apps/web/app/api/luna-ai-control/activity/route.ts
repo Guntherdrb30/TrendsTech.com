@@ -1,3 +1,4 @@
+import { assertControlPreviewReady } from '@/lib/luna-ai-control/preview-isolation';
 import { NextResponse } from 'next/server';
 import { prisma } from '@trends172tech/db';
 import { AuthError, requireRole } from '@/lib/auth/guards';
@@ -9,6 +10,7 @@ export const dynamic = 'force-dynamic';
 export async function GET(request: Request) {
   try {
     await requireRole('ROOT');
+    assertControlPreviewReady();
     const url = new URL(request.url);
     const daysRaw = Number(url.searchParams.get('days') ?? '30');
     if (!Number.isInteger(daysRaw) || daysRaw < 1 || daysRaw > 90) {

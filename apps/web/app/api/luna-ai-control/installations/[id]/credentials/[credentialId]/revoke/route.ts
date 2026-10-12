@@ -1,15 +1,20 @@
+import { assertControlPreviewReady } from '@/lib/luna-ai-control/preview-isolation';
+import { assertSameOrigin } from '@/lib/luna-ai-control/access';
 import { NextResponse } from 'next/server';
 import { prisma } from '@trends172tech/db';
 import { AuthError, requireAuth } from '@/lib/auth/guards';
 
 export const runtime = 'nodejs';
 
-export async function POST(_request: Request, { params }: { params: Promise<{ id: string; credentialId: string }> }) {
+export async function POST(request: Request, { params }: { params: Promise<{ id: string; credentialId: string }> }) {
   try {
+    assertSameOrigin(request);
     const actor = await requireAuth();
     if (actor.role !== 'ROOT') return NextResponse.json({ error: 'ROOT required' }, { status: 403 });
+    assertControlPreviewReady();
     const { id, credentialId } = await params;
     const result = await prisma.$transaction(async (tx) => {
+      await tx.$queryRaw`SELECT "id" FROM "AiControlInstallation" WHERE "id" = ${id} FOR UPDATE`;
       const credential = await tx.aiControlCredential.findFirst({
         where: { id: credentialId, installationId: id, revokedAt: null },
         include: { installation: { select: { status: true } } },

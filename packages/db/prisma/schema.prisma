@@ -1716,6 +1716,8 @@ model AiControlInstallation {
   auditEvents AiControlInstallationAudit[]
   credentials AiControlCredential[]
   usageEvents AiControlUsageEvent[]
+  gatewayPolicy AiControlGatewayPolicy?
+  gatewayLeases AiControlGatewayLease[]
 
   @@index([tenantId, createdAt])
   @@index([status, createdAt])
@@ -1774,4 +1776,29 @@ model AiControlUsageEvent {
   installation AiControlInstallation @relation(fields: [installationId], references: [id])
   @@unique([installationId, operationId])
   @@index([installationId, receivedAt])
+}
+
+model AiControlGatewayPolicy {
+  installationId String @id
+  enabled Boolean @default(false)
+  allowedAgents String[]
+  requestsPerMinute Int @default(60)
+  maxConcurrent Int @default(4)
+  windowStartedAt DateTime @default(now())
+  windowRequests Int @default(0)
+  updatedAt DateTime @updatedAt
+  installation AiControlInstallation @relation(fields: [installationId], references: [id])
+}
+
+model AiControlGatewayLease {
+  id String @id @default(cuid())
+  installationId String
+  operationId String
+  agent String
+  expiresAt DateTime
+  releasedAt DateTime?
+  createdAt DateTime @default(now())
+  installation AiControlInstallation @relation(fields: [installationId], references: [id])
+  @@unique([installationId, operationId])
+  @@index([installationId, expiresAt])
 }

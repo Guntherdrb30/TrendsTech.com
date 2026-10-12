@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-const nonnegative = z.number().int().nonnegative().optional();
+const nonnegative = z.number().int().nonnegative().max(2147483647).optional();
 export const usageEventSchema = z.object({
   operationId: z.string().min(1).max(120),
   platform: z.string().min(1).max(80),
@@ -8,7 +8,7 @@ export const usageEventSchema = z.object({
   action: z.string().min(1).max(80),
   provider: z.string().min(1).max(80),
   model: z.string().max(120).optional(),
-  environment: z.enum(['production', 'preview', 'test']),
+  environment: z.enum(['production', 'preview', 'development', 'test']),
   startedAt: z.string().datetime(),
   completedAt: z.string().datetime(),
   durationMs: z.number().int().nonnegative().max(86400000),
@@ -18,7 +18,7 @@ export const usageEventSchema = z.object({
   imageCount: nonnegative,
   videoCount: nonnegative,
   documentCount: nonnegative,
-  audioSeconds: z.number().nonnegative().optional(),
+  audioSeconds: z.number().finite().nonnegative().max(86400).optional(),
   errorCode: z.string().max(120).optional(),
 }).strict().superRefine((event, ctx) => {
   const start = Date.parse(event.startedAt);

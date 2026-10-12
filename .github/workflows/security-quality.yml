@@ -4,7 +4,7 @@ on:
   push:
     branches: [main]
   pull_request:
-    branches: [main]
+    branches: [main, feature/luna-ai-control-center]
   workflow_dispatch:
 
 concurrency:
@@ -41,6 +41,9 @@ jobs:
 
       - name: Run LUNA tests
         run: npm run luna:test
+
+      - name: Test Control Center and Installer
+        run: npm run luna:control:test && npm run luna:installer:test
 
       - name: Test MCP security contracts
         run: npm run security:test
@@ -81,7 +84,7 @@ jobs:
       - name: Review dependency changes
         uses: actions/dependency-review-action@a1d282b36b6f3519aa1f3fc636f609c47dddb294 # v5.0.0
         with:
-          fail-on-severity: critical
+          fail-on-severity: high
 
   lockfile-candidate:
     name: Generate dependency fix proposal
@@ -100,8 +103,6 @@ jobs:
         run: |
           npm audit fix --package-lock-only --ignore-scripts || true
           npm install --package-lock-only --ignore-scripts
-          npm pkg set 'overrides.sharp=0.35.5'
-          npm install --package-lock-only --ignore-scripts
       - name: Save candidate lockfile
         uses: actions/upload-artifact@v4
         with:
@@ -112,6 +113,12 @@ jobs:
         run: git diff --stat -- package-lock.json
       - name: Verify candidate dependency install
         run: npm ci
+      - name: Check candidate TypeScript
+        run: npm run typecheck
+      - name: Run candidate LUNA tests
+        run: npm run luna:test
+      - name: Build candidate application
+        run: npm run build
       - name: Diagnose unresolved dependency advisories
         if: always()
         run: |

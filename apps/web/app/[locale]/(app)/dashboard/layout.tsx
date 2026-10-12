@@ -57,7 +57,6 @@ export default async function DashboardLayout({
           <div className="flex items-center gap-3">
             <div className="flex h-14 w-14 items-center justify-center overflow-hidden rounded-[18px] bg-slate-950 text-sm font-semibold text-white shadow-[0_20px_45px_-24px_rgba(15,23,42,0.5)]">
               {profile?.avatarUrl ? (
-                // eslint-disable-next-line @next/next/no-img-element
                 <img src={profile.avatarUrl} alt={isEs ? 'Perfil' : 'Profile'} className="h-full w-full object-cover" />
               ) : (
                 <span>{initials}</span>

@@ -271,7 +271,6 @@ export function SettingsClient({
             </Button>
             {activeRemoteUrl && activeQrDataUrl ? (
               <div className="space-y-3 rounded-2xl border border-slate-200 p-4 text-sm dark:border-slate-800">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={activeQrDataUrl} alt={tr("QR remoto", "Remote QR code")} className="h-56 w-56 rounded-xl border border-slate-200" />
                 <div className="break-all text-xs text-slate-500 dark:text-slate-400">{activeRemoteUrl}</div>
               </div>

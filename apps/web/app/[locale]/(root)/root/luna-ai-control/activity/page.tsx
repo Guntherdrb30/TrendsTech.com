@@ -1,3 +1,5 @@
+import { isControlPreviewReady } from '@/lib/luna-ai-control/preview-isolation';
+import { requireRootPage } from '@/lib/luna-ai-control/root-page';
 import Link from 'next/link';
 import { prisma } from '@trends172tech/db';
 import { requireRole } from '@/lib/auth/guards';
@@ -6,7 +8,8 @@ export const dynamic = 'force-dynamic';
 
 export default async function LunaActivityPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
-  await requireRole('ROOT');
+  await requireRootPage(locale);
+  if (!isControlPreviewReady()) return <div className="space-y-4 rounded-xl border p-6"><h1 className="text-2xl font-semibold">LUNA AI Control Center — Preview</h1><p>El código está desplegado. La operación con datos espera una base de pruebas aislada; el Preview actual comparte configuración con producción.</p><Link href={`/${locale}/root/luna-ai-control/security`} className="underline">Ver controles de seguridad</Link><br/><Link href={`/${locale}/root/luna-installer`} className="underline">Ver flujo del instalador</Link></div>;
   const [events, total] = await Promise.all([
     prisma.aiControlUsageEvent.findMany({
       orderBy: { startedAt: 'desc' }, take: 250,
