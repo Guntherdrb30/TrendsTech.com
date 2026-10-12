@@ -68,6 +68,7 @@ export class RunnerApiClient {
     status: "DONE" | "FAILED" | "CANCELED";
     resultSummary?: string;
     lastError?: string;
+    commitSha?: string;
     files?: Array<{ filePath: string; changeType: "CREATED" | "UPDATED" | "DELETED"; summary?: string }>;
   }) {
     return this.post("/api/luna-agent/runners/internal/complete", payload);

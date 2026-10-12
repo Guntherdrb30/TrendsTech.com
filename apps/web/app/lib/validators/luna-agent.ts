@@ -123,6 +123,7 @@ export const runnerCompleteSchema = z.object({
   status: z.enum(["DONE", "FAILED", "CANCELED"]),
   resultSummary: optionalTrimmed,
   lastError: optionalTrimmed,
+  commitSha: optionalTrimmed,
   files: z
     .array(
       z.object({

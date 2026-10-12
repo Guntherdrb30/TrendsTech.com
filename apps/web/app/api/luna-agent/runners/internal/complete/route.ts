@@ -8,6 +8,7 @@ import {
 } from "@/lib/luna-agent/runners";
 import { incrementLunaMetric } from "@/lib/luna-agent/billing";
 import { runnerCompleteSchema } from "@/lib/validators/luna-agent";
+import { syncStudioRunCompletionFromQueue } from "@/lib/engineering-studio/orchestrator-bridge";
 
 const completionMap = {
   DONE: {
@@ -105,8 +106,17 @@ export async function POST(request: Request) {
       payloadJson: {
         queueId: queue.id,
         lastError: parsed.data.lastError ?? null,
-        fileCount: parsed.data.files.length
+        fileCount: parsed.data.files.length,
+        commitSha: parsed.data.commitSha ?? null
       }
+    });
+
+    await syncStudioRunCompletionFromQueue(queue.payloadJson, {
+      status: parsed.data.status,
+      resultSummary: parsed.data.resultSummary,
+      lastError: parsed.data.lastError,
+      commitSha: parsed.data.commitSha,
+      files: parsed.data.files
     });
 
     if (parsed.data.status === "DONE") {

@@ -135,6 +135,7 @@ export async function runShellTask(params: {
 
   return {
     resultSummary: output || `Shell runtime completo para ${params.task.title}.`,
+    commitSha: undefined as string | undefined,
     files: [] as Array<{ filePath: string; changeType: "CREATED" | "UPDATED" | "DELETED"; summary?: string }>
   };
 }
