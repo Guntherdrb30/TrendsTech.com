@@ -5,10 +5,13 @@ import { hashInstallationCredential, verifyInstallationCredential } from './cred
 
 export function assertSameOrigin(request: Request) {
   const origin = request.headers.get('origin');
-  const configuredOrigin = process.env.VERCEL_ENV === 'preview' && process.env.VERCEL_URL
-    ? `https://${process.env.VERCEL_URL}` : process.env.BETTER_AUTH_URL;
-  const expectedOrigin = new URL(configuredOrigin || request.url).origin;
-  if (!origin || origin !== expectedOrigin || request.headers.get('sec-fetch-site') === 'cross-site') {
+  const configuredOrigins = [process.env.BETTER_AUTH_URL];
+  if (process.env.VERCEL_ENV === 'preview' && process.env.VERCEL_URL) {
+    configuredOrigins.push(`https://${process.env.VERCEL_URL}`);
+  }
+  const expectedOrigins = new Set(configuredOrigins.filter(Boolean).map(value => new URL(value!).origin));
+  if (!expectedOrigins.size) expectedOrigins.add(new URL(request.url).origin);
+  if (!origin || !expectedOrigins.has(origin) || request.headers.get('sec-fetch-site') === 'cross-site') {
     throw new AuthError(403, 'Same-origin request required');
   }
 }
