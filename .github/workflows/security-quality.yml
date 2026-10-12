@@ -4,7 +4,7 @@ on:
   push:
     branches: [main]
   pull_request:
-    branches: [main]
+    branches: [main, feature/luna-ai-control-center]
   workflow_dispatch:
 
 concurrency:
@@ -36,20 +36,24 @@ jobs:
       - name: Install locked dependencies
         run: npm ci
 
-      - name: Audit production dependencies
-        run: npm run security:audit
-
       - name: Check TypeScript
         run: npm run typecheck
 
       - name: Run LUNA tests
         run: npm run luna:test
 
+      - name: Test Control Center and Installer
+        run: npm run luna:control:test && npm run luna:installer:test
+
       - name: Test MCP security contracts
         run: npm run security:test
 
       - name: Build production application
         run: npm run build
+
+      - name: Audit production dependencies
+        run: npm run security:audit
+
 
   secret-scan:
     name: Secret scan
@@ -77,7 +81,72 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
+      - name: Probe GitHub Dependency Graph
+        id: dependency-graph
+        run: node scripts/probe-dependency-review.mjs
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DEPENDENCY_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          DEPENDENCY_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+
       - name: Review dependency changes
+        if: steps.dependency-graph.outputs.supported == 'true'
         uses: actions/dependency-review-action@a1d282b36b6f3519aa1f3fc636f609c47dddb294 # v5.0.0
         with:
-          fail-on-severity: critical
+          fail-on-severity: high
+
+      - name: Set up Node for mandatory audit
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: 22
+      - name: Install and audit the full locked tree
+        run: npm ci && npm run security:audit
+
+  lockfile-candidate:
+    name: Generate dependency fix proposal
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Calculate compatible dependency updates
+        run: |
+          npm audit fix --package-lock-only --ignore-scripts || true
+          npm install --package-lock-only --ignore-scripts
+      - name: Save candidate lockfile
+        uses: actions/upload-artifact@v4
+        with:
+          name: proposed-lockfile
+          path: package-lock.json
+          retention-days: 7
+      - name: Summarize proposed changes
+        run: git diff --stat -- package-lock.json
+      - name: Verify candidate dependency install
+        run: npm ci
+      - name: Check candidate TypeScript
+        run: npm run typecheck
+      - name: Run candidate LUNA tests
+        run: npm run luna:test
+      - name: Build candidate application
+        run: npm run build
+      - name: Diagnose unresolved dependency advisories
+        if: always()
+        run: |
+          npm explain braces || true
+          npm explain sharp || true
+          npm audit --omit=dev --json > candidate-audit.json || true
+      - name: Save audit diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: candidate-security-diagnostics
+          path: candidate-audit.json
+          retention-days: 7
+      - name: Audit candidate dependency tree
+        run: npm run security:audit

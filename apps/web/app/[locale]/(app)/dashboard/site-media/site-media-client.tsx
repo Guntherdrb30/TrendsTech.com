@@ -482,7 +482,6 @@ export function SiteMediaClient({
                       <div className="space-y-3">
                         <div className="overflow-hidden rounded-2xl border border-slate-200 bg-slate-100 dark:border-slate-800 dark:bg-slate-900">
                           {asset.imageUrl ? (
-                            // eslint-disable-next-line @next/next/no-img-element
                             <img
                               src={asset.imageUrl}
                               alt={asset.title || uiCopy.preview}

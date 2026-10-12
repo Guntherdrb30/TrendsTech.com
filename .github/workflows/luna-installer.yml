@@ -1,0 +1,26 @@
+name: LUNA Installer isolated validation
+
+on:
+  pull_request:
+    paths:
+      - 'tools/luna-ai-installer/**'
+      - '.github/workflows/luna-installer.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  installer:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Run isolated CLI tests
+        run: node --test tools/luna-ai-installer/tests/*.test.mjs
+      - name: Verify command help
+        run: node tools/luna-ai-installer/bin/luna-ai-installer.mjs --help
+      - name: Scan installer source without mutation
+        run: node tools/luna-ai-installer/bin/luna-ai-installer.mjs scan --project tools/luna-ai-installer --output /tmp/luna-installer-scan.json
