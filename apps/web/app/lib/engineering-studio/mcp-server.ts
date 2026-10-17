@@ -101,7 +101,7 @@ export function registerEngineeringStudioTools(
 
   if (canRegister(allowedTools, 'studio_create_project')) {
     server.registerTool('studio_create_project', { title:'Crear proyecto en Engineering Studio', description:'Persist a new software project with initial Blueprint and Approval Gate.', inputSchema:{name:z.string().min(3).max(180),clientName:z.string().max(180).optional(),summary:z.string().min(20).max(20000),origin:z.enum(['idea','prd','chatgpt','repository','recovery']).default('chatgpt'),marginPercent:z.number().min(0).max(95).default(40),commercialBudget:z.number().min(0).default(0),localAiRequired:z.boolean().default(false),repositoryUrl:z.string().max(500).optional()}, annotations:{readOnlyHint:false,destructiveHint:false,openWorldHint:false,idempotentHint:false} }, async input=>{
-      const created=await createStudioProject({...input,createdByUserId:actorRef}); await addVaultEntry({projectId:created.projectId,type:'CONVERSATION_SUMMARY',title:'Contexto inicial desde ChatGPT',content:input.summary,source:'CHATGPT',sourceRef:actorRef,actorUserId:actorRef}); return textResult(created,`Proyecto ${input.name} creado en Engineering Studio.`);
+      const created=await createStudioProject({...input,createdByUserId:actorRef}); return textResult(created,`Proyecto ${input.name} creado en Engineering Studio. La memoria de ChatGPT requiere consentimiento separado por proyecto.`);
     });
   }
 
