@@ -14,8 +14,8 @@ export function validateMobileMemory(input: { type: string; title: string; conte
 
 export function normalizedGitHubRepo(value: string | null | undefined) {
   if (!value) return null;
-  const stripped = value.trim().replace(/\\.git$/i, '');
-  const fullName = stripped.replace(/^https:\/\/github\\.com\//i, '').replace(/^git@github\\.com:/i, '');
+  const stripped = value.trim().replace(/\.git$/i, '');
+  const fullName = stripped.replace(/^https:\/\/github\.com\//i, '').replace(/^git@github\.com:/i, '');
   return /^[a-z0-9_.-]+\/[a-z0-9_.-]+$/i.test(fullName) ? fullName : null;
 }
 
