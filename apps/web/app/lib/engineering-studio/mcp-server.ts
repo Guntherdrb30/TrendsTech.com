@@ -5,7 +5,7 @@ import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { z } from 'zod';
 import { Prisma, prisma } from '@trends172tech/db';
 import { addVaultEntry, listVaultEntries, searchVault } from './vault';
-import { getProjectMemoryConsent, requireProjectMemoryConsent, setProjectMemoryConsent } from './memory-consent';
+import { getProjectMemoryConsent, requireProjectMemoryConsent } from './memory-consent';
 import { buildContextPack } from './context-pack';
 import { createStudioProject, getStudioProjectDetail, listStudioProjects } from './store';
 import { approveBlueprintGate } from './approvals';
@@ -45,7 +45,6 @@ export const STUDIO_READ_TOOLS = [
 export const STUDIO_WRITE_TOOLS = [
   'studio_create_project',
   'studio_record_vault_entry',
-  'studio_set_project_memory_consent',
   'studio_build_context_pack',
   'studio_create_task',
   'studio_set_routing_profile',
@@ -93,10 +92,6 @@ export function registerEngineeringStudioTools(
 
   if (canRegister(allowedTools, 'studio_get_project_memory_consent')) {
     server.registerTool('studio_get_project_memory_consent',{title:'Consultar consentimiento de memoria',description:'Read the ChatGPT memory opt-in for a single project.',inputSchema:{projectId:z.string().uuid()},annotations:{readOnlyHint:true,destructiveHint:false,openWorldHint:false}},async({projectId})=>textResult(await getProjectMemoryConsent(projectId),'Consentimiento de memoria consultado.'));
-  }
-
-  if (canRegister(allowedTools, 'studio_set_project_memory_consent')) {
-    server.registerTool('studio_set_project_memory_consent',{title:'Autorizar o revocar memoria',description:'Set ChatGPT memory permission for one project only after explicit approval by the user. Revoking does not delete previous records.',inputSchema:{projectId:z.string().uuid(),enabled:z.boolean(),confirm:z.literal(true)},annotations:{readOnlyHint:false,destructiveHint:false,openWorldHint:false,idempotentHint:true}},async({projectId,enabled})=>textResult(await setProjectMemoryConsent(projectId,enabled,actorRef),enabled?'Memoria autorizada.':'Memoria revocada.'));
   }
 
   if (canRegister(allowedTools, 'studio_create_project')) {
