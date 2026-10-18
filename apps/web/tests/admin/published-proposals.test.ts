@@ -11,6 +11,7 @@ function database() {
   const tx = {
     $executeRaw: async () => 1,
     adminClient: {
+      findUnique: async () => null,
       findMany: async ({where}: any) => clients.filter(c => where.OR.some((x: any) => c.name.toLowerCase() === x.name.equals.toLowerCase())),
       create: async ({data}: any) => { clients.push({...data}); return clients.at(-1); },
     },
@@ -24,10 +25,12 @@ function database() {
   return {tx,clients,proposals,logs};
 }
 
-test('registration is repeatable, links complete scopes, creates no fake FDE client', async () => {
+test('registration is repeatable, links complete scopes and registers CIMA independently', async () => {
   const db = database();
   await registerPublishedProposals(db.tx); await registerPublishedProposals(db.tx);
-  assert.equal(db.clients.length,2); assert.equal(db.proposals.length,2); assert.equal(db.logs.size,2);
+  assert.equal(db.clients.length,4); assert.equal(db.proposals.length,4); assert.equal(db.logs.size,4);
+  assert.ok(db.clients.some(c => c.name === 'Centro Comercial CIMA Barinas'));
+  assert.ok(db.proposals.some(p => p.id === 'published-proposal-cima-barinas'));
   for (const p of db.proposals) {
     assert.ok(p.summary.includes('RUTA DE IMPLEMENTACIÓN')); assert.ok(p.summary.includes('CONDICIONES'));
     assert.ok(presentationFromSummary(p.summary)); assert.equal(p.status,'DRAFT'); assert.equal(p.amount,0);
@@ -38,7 +41,7 @@ test('reuses existing client and preserves negotiated data and summary', async (
   db.clients.push({id:'existing-city',name:'CITY CENTER',email:'existing@example.test'});
   db.proposals.push({id:'existing-proposal',clientId:'existing-city',title:'LUNA para City Center Maracay',summary:'Condiciones acordadas existentes',status:'ACCEPTED',amount:5500,probability:100,sentAt:'2026-09-20'});
   await registerPublishedProposals(db.tx);
-  assert.equal(db.clients.length,2); assert.equal(db.proposals.length,2);
+  assert.equal(db.clients.length,4); assert.equal(db.proposals.length,4);
   const p = db.proposals[0]; assert.equal(p.status,'ACCEPTED'); assert.equal(p.amount,5500); assert.equal(p.sentAt,'2026-09-20'); assert.ok(p.summary.includes('Condiciones acordadas existentes'));
 });
 test('ambiguous client matches stop before writes', async () => {
