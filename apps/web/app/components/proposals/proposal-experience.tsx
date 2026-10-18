@@ -39,7 +39,7 @@ export function ProposalExperience({ proposal }: { proposal: ProposalId }) {
   const city = proposal === 'city-center-maracay';
   const mall = city || proposal === 'cima-barinas';
   const pit = proposal === 'fits-tools';
-  const client = mall ? (mall ? 'City Center Maracay' : 'Centro Comercial CIMA de Barinas') : pit ? 'Fits Tools' : 'Big Home';
+  const client = mall ? (city ? 'City Center Maracay' : 'Centro Comercial CIMA de Barinas') : pit ? 'Fits Tools' : 'Big Home';
   const { capabilities, phases } = data[proposal];
   const [active, setActive] = useState(0);
   const [module, setModule] = useState(0);
