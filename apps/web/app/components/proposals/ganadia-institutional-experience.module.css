@@ -1,6 +1,5 @@
-:root { color-scheme: light dark; }
-
 .shell {
+  color-scheme: dark;
   --ink: #f6f8f4;
   --muted: #a9b8ad;
   --gold: #cda15c;
