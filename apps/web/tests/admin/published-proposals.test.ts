@@ -11,7 +11,8 @@ function database() {
   const tx = {
     $executeRaw: async () => 1,
     adminClient: {
-      findMany: async ({where}: any) => clients.filter(c => where.OR.some((x: any) => c.name.toLowerCase() === x.name.equals.toLowerCase())),
+      findUnique: async () => null,
+      findMany: async ({where}: any) => clients.filter(c => where.OR.some((x: any) => x.id === c.id || (x.name && c.name.toLowerCase() === x.name.equals.toLowerCase()))),
       create: async ({data}: any) => { clients.push({...data}); return clients.at(-1); },
     },
     adminProposal: {
@@ -24,10 +25,12 @@ function database() {
   return {tx,clients,proposals,logs};
 }
 
-test('registration is repeatable, links complete scopes, creates no fake FDE client', async () => {
+test('registration is repeatable, links complete scopes and registers CIMA independently', async () => {
   const db = database();
   await registerPublishedProposals(db.tx); await registerPublishedProposals(db.tx);
-  assert.equal(db.clients.length,2); assert.equal(db.proposals.length,2); assert.equal(db.logs.size,2);
+  assert.equal(db.clients.length,4); assert.equal(db.proposals.length,4); assert.equal(db.logs.size,4);
+  assert.ok(db.clients.some(c => c.name === 'Centro Comercial CIMA Barinas'));
+  assert.ok(db.proposals.some(p => p.id === 'published-proposal-cima-barinas'));
   for (const p of db.proposals) {
     assert.ok(p.summary.includes('RUTA DE IMPLEMENTACIÓN')); assert.ok(p.summary.includes('CONDICIONES'));
     assert.ok(presentationFromSummary(p.summary)); assert.equal(p.status,'DRAFT'); assert.equal(p.amount,0);
@@ -38,7 +41,7 @@ test('reuses existing client and preserves negotiated data and summary', async (
   db.clients.push({id:'existing-city',name:'CITY CENTER',email:'existing@example.test'});
   db.proposals.push({id:'existing-proposal',clientId:'existing-city',title:'LUNA para City Center Maracay',summary:'Condiciones acordadas existentes',status:'ACCEPTED',amount:5500,probability:100,sentAt:'2026-09-20'});
   await registerPublishedProposals(db.tx);
-  assert.equal(db.clients.length,2); assert.equal(db.proposals.length,2);
+  assert.equal(db.clients.length,4); assert.equal(db.proposals.length,4);
   const p = db.proposals[0]; assert.equal(p.status,'ACCEPTED'); assert.equal(p.amount,5500); assert.equal(p.sentAt,'2026-09-20'); assert.ok(p.summary.includes('Condiciones acordadas existentes'));
 });
 test('ambiguous client matches stop before writes', async () => {
@@ -48,4 +51,16 @@ test('ambiguous client matches stop before writes', async () => {
 test('untrusted or executable links are never rendered as presentation actions', () => {
   for (const url of ['javascript:alert(1)','https://evil.test/es/propuestas/a','https://www.trends172tech.com.evil.test/es/propuestas/a','https://name:secret@www.trends172tech.com/es/propuestas/a','https://www.trends172tech.com/es/admin']) assert.equal(safePresentationUrl(url),null);
   assert.equal(presentationFromSummary('Notas sin enlace'),null);
+});
+
+test('legacy PIT registration never resets negotiated terms or client identity', async () => {
+  const db = database();
+  const client = {id:'published-client-pit-venezuela',name:'P.I.T.',notes:'Verified client notes'};
+  const proposal = {id:'published-proposal-pit-venezuela',clientId:client.id,title:'Original signed scope',summary:'Negotiated scope',status:'ACCEPTED',amount:9900,probability:100,sentAt:'2026-09-20'};
+  db.clients.push({...client}); db.proposals.push({...proposal});
+  await registerPublishedProposals(db.tx); await registerPublishedProposals(db.tx);
+  assert.deepEqual(db.clients[0],client);
+  assert.deepEqual({...db.proposals[0],summary:proposal.summary},proposal);
+  assert.ok(db.proposals[0].summary.includes(proposal.summary));
+  assert.equal(db.proposals.length,4);
 });

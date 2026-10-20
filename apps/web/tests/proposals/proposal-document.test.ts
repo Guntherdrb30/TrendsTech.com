@@ -1,18 +1,8 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { decodeProposal, encodeProposal, proposalDraftSchema, slugSchema, type StoredProposal } from '../../app/lib/proposals/document';
+import { decodeProposal, encodeProposal, proposalDraftSchema, slugSchema, proposalPresentation, type StoredProposal } from '../../app/lib/proposals/document';
 
-const example: StoredProposal = {
-  version: 1, revision: 1, visibility: 'draft', slug: 'cima-barinas',
-  clientName: 'Centro Comercial CIMA Barinas', industry: 'Centro comercial', title: 'LUNA para CIMA Barinas',
-  headline: 'Un centro comercial conectado con sus visitantes',
-  introduction: 'Propuesta de plataforma digital con integraciones sujetas a diagnostico de procesos y datos.',
-  opportunity: 'Conectar comercios, visitantes, ofertas y procesos administrativos para una mejor experiencia.',
-  capabilities: [{title:'Comercios digitales',text:'Un espacio digital y catalogos administrados por los comercios.'}, {title:'Inteligencia aplicada',text:'Asistente de compras condicionado a datos comerciales autorizados.'}],
-  phases: [{title:'Descubrimiento inicial',text:'Conocer procesos, sistemas y necesidades de operacion.'}, {title:'Primer piloto',text:'Probar en una seleccion de comercios y evaluar resultados.'}],
-  scenarios: [{title:'Buscar productos', question:'Como puede descubrir un visitante los productos?', answer:'El visitante puede explorar catalogos autorizados de los comercios participantes.', flow:'Visitante -> Catalogo -> Comercio'}],
-  scopeNotes:['Comercios participantes en el piloto', 'Modelo comercial y responsabilidades de integracion'],
-};
+import { example } from './fixture';
 
 test('proposal document round-trips without changing visibility or revision', () => {
   const encoded = encodeProposal(example);
@@ -31,4 +21,16 @@ test('rejects unsafe slugs and malformed proposals', () => {
 
 test('does not reinterpret legacy proposals as MCP runtime documents', () => {
   assert.equal(decodeProposal('Presentacion: https://www.trends172tech.com/es/propuestas/city-center-maracay'), null);
+});
+
+test('CRM exposes only a private preview for unpublished drafts', () => {
+  const view = proposalPresentation(encodeProposal(example));
+  assert.equal(view?.presentationUrl, null);
+  assert.equal(view?.previewPath, '/es/admin/proposals/preview/cima-barinas');
+  assert.equal(proposalPresentation(encodeProposal({...example, visibility:'published'}))?.presentationUrl, 'https://www.trends172tech.com/es/propuestas/cima-barinas');
+});
+test('embedded storage markers cannot forge visibility or revision', () => {
+  const forged = encodeProposal({...example,visibility:'published'}).split('\n').at(-1)!;
+  assert.throws(() => encodeProposal({...example,introduction:example.introduction+'\n__TRENDS_PROPOSAL_JSON_V1__=invalid'}), /Reserved/);
+  assert.equal(decodeProposal(forged+'\n'+encodeProposal(example)),null);
 });

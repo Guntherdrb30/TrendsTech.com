@@ -39,6 +39,9 @@ export type AdminLead = {
 };
 
 export type AdminProposal = {
+  previewPath?: string;
+  visibility?: 'draft' | 'published';
+  revision?: number;
   summary?: string;
   presentationUrl?: string | null;
   id: string;

@@ -43,6 +43,7 @@ export const publicProposalUrl = (slug: string) => `https://www.trends172tech.co
 
 export function encodeProposal(document: StoredProposal): string {
   const doc = storedSchema.parse(document);
+  if (JSON.stringify(doc).includes(marker)) throw new Error('Reserved document marker in content');
   const summary = [
     `Presentaci\u00f3n: ${publicProposalUrl(doc.slug)}`,
     '', doc.introduction, '',
@@ -56,8 +57,9 @@ export function encodeProposal(document: StoredProposal): string {
 }
 
 export function decodeProposal(summary: string | null | undefined): StoredProposal | null {
-  const line = (summary ?? '').split('\n').find(l => l.startsWith(marker));
-  if (!line) return null;
+  const lines = (summary ?? '').split('\n').filter(l => l.startsWith(marker));
+  if (lines.length !== 1) return null;
+  const line = lines[0];
   try {
     const parsed = JSON.parse(Buffer.from(line.slice(marker.length), 'base64url').toString('utf8'));
     const checked = storedSchema.safeParse(parsed);
@@ -67,4 +69,15 @@ export function decodeProposal(summary: string | null | undefined): StoredPropos
 
 export function publicSummary(summary: string | null | undefined) {
   return (summary ?? '').split('\n').filter(l => !l.startsWith(marker)).join('\n');
+}
+
+/** Draft links must never be offered as public sharing actions by the CRM. */
+export function proposalPresentation(summary: string | null | undefined) {
+  const doc = decodeProposal(summary);
+  return doc ? {
+    presentationUrl: doc.visibility === 'published' ? publicProposalUrl(doc.slug) : null,
+    previewPath: `/es/admin/proposals/preview/${doc.slug}`,
+    visibility: doc.visibility,
+    revision: doc.revision,
+  } : null;
 }
