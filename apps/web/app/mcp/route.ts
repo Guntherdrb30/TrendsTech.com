@@ -5,6 +5,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 
 import { prisma } from "@trends172tech/db";
+import { registerProposalTools } from "@/lib/proposals/mcp-tools";
 import { getToolDefinitions, type ToolContext } from "@trends172tech/openai";
 import { oauthResourceClient } from "@/lib/auth/oauth-resource";
 import { enforcePersistentRequestRateLimit, getRequestIdentifier } from "@/lib/security/rate-limit";
@@ -40,7 +41,7 @@ type McpAuthorization =
   | { ok: false; status: 401 | 403 | 503; error: string }
   | { ok: true; mode: "health"; actorRole: null; scopes: string[] }
   | { ok: true; mode: "scoped"; client: ScopedClient; actorRole: string | null; scopes: string[] }
-  | { ok: true; mode: "oauth"; client: ScopedClient | null; actorRole: string; scopes: string[] };
+  | { ok: true; mode: "oauth"; client: ScopedClient | null; actorRole: string; actorUserId: string; scopes: string[] };
 
 const OAUTH_READ_TOOLS = ["get_pricing_info", "get_token_pricing"];
 const OAUTH_WRITE_TOOLS = ["create_lead", "create_appointment", "request_human_contact"];
@@ -91,15 +92,15 @@ async function authorizeMcpRequest(request: Request): Promise<McpAuthorization> 
 
     const scopes = typeof payload.scope === "string" ? payload.scope.split(" ") : [];
     const allowedTools = [...OAUTH_READ_TOOLS, ...(scopes.includes("mcp:write") ? OAUTH_WRITE_TOOLS : [])];
-    if (!actor.tenantId) return { ok: true, mode: "oauth", client: null, actorRole: actor.role, scopes };
+    if (!actor.tenantId) return { ok: true, mode: "oauth", client: null, actorRole: actor.role, actorUserId: actor.id, scopes };
 
     const agentInstance = await prisma.agentInstance.findFirst({
       where: { tenantId: actor.tenantId, status: "ACTIVE" }, orderBy: { createdAt: "asc" }, select: { id: true }
     });
-    if (!agentInstance) return { ok: true, mode: "oauth", client: null, actorRole: actor.role, scopes };
+    if (!agentInstance) return { ok: true, mode: "oauth", client: null, actorRole: actor.role, actorUserId: actor.id, scopes };
 
     return {
-      ok: true, mode: "oauth", actorRole: actor.role, scopes,
+      ok: true, mode: "oauth", actorRole: actor.role, actorUserId: actor.id, scopes,
       client: { tokenSha256, tenantId: actor.tenantId, agentInstanceId: agentInstance.id, actorUserId: actor.id, allowedTools }
     };
   } catch {
@@ -162,6 +163,9 @@ function buildServer(authorization: Extract<McpAuthorization, { ok: true }>) {
       ? authorization.client?.actorUserId ?? "chatgpt-root"
       : authorization.mode === "scoped" ? authorization.client.actorUserId : "mcp-health";
     registerEngineeringStudioTools(server, actorRef, studioTools);
+  }
+  if (authorization.mode === "oauth" && authorization.actorRole === "ROOT") {
+    registerProposalTools(server, authorization.actorUserId, authorization.scopes);
   }
   return server;
 }
