@@ -101,7 +101,7 @@ export function GanadIAInstitutionalExperience() {
     <div ref={shellRef} className={styles.shell} data-ganadia-proposal="institutional-insai">
       <header className={styles.header}>
         <Link href="/es" className={styles.company} aria-label="Ir a Trends172Tech">
-          <span className={styles.brandAccent}>T</span><span>Trends<span className={styles.brandNumber}>172</span>Tech</span>
+          <Image src="/branding/ttech-logo.svg" width={36} height={36} unoptimized alt="" /><span>Trends<span className={styles.brandNumber}>172</span>Tech</span>
         </Link>
         <div className={styles.documentStatus}>
           <span className={styles.statusDot} />
