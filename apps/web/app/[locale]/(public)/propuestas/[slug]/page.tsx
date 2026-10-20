@@ -20,5 +20,6 @@ export default async function ProposalPage({ params }: { params: Promise<{ slug:
   const { slug } = await params;
   const doc = await getProposalDocument(slug, true);
   if (!doc) notFound();
-  return <DynamicProposal document={doc}/>;
+  const publicDocument = { ...doc, lastApprovedBy: undefined };
+  return <DynamicProposal document={publicDocument}/>;
 }

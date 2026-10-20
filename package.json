@@ -48,6 +48,7 @@
     "db:auth:migrate:http": "npm --workspace packages/db run auth:migrate:http",
     "db:studio": "npm --workspace packages/db run prisma studio",
     "db:seed": "npm --workspace packages/db run prisma db seed",
-    "db:seed-news": "npm --workspace packages/db run seed:news"
+    "db:seed-news": "npm --workspace packages/db run seed:news",
+    "proposals:test": "node --import tsx --test apps/web/tests/proposals/*.test.ts apps/web/tests/admin/published-proposals.test.ts"
   }
 }

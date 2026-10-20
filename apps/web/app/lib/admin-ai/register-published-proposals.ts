@@ -5,47 +5,10 @@ import { withPresentationLink } from './proposal-presentation';
 export async function registerPublishedProposals(tx: Prisma.TransactionClient) {
   await tx.$executeRaw`SELECT pg_advisory_xact_lock(17220260927::bigint)`;
 
-  // Correct the previously published prospect that was mistakenly identified as P.I.T.
-  const legacyClient = await tx.adminClient.findUnique({ where: { id: 'published-client-pit-venezuela' } });
-  if (legacyClient) {
-    await tx.adminClient.update({
-      where: { id: legacyClient.id },
-      data: {
-        name: 'Fits Tools',
-        country: 'Venezuela',
-        industry: 'Maquinaria, herramientas y repuestos',
-        notes: 'Prospecto Fits Tools registrado para organizar la propuesta LUNA + FDE. Contactos y condiciones por confirmar.',
-      },
-    });
-    const legacyProposal = await tx.adminProposal.findUnique({ where: { id: 'published-proposal-pit-venezuela' } });
-    if (legacyProposal) {
-      await tx.adminProposal.update({
-        where: { id: legacyProposal.id },
-        data: {
-          clientId: legacyClient.id,
-          title: 'LUNA + FDE para Fits Tools Venezuela',
-          summary: publishedProposalSummary('fits-tools'),
-          status: 'DRAFT',
-          amount: 0,
-          probability: 0,
-        },
-      });
-    }
-    const legacyAudit = await tx.adminActivityLog.findUnique({ where: { id: 'published-proposal-registration-pit-venezuela' } });
-    if (legacyAudit) {
-      await tx.adminActivityLog.update({
-        where: { id: legacyAudit.id },
-        data: {
-          action: 'Propuesta publicada vinculada: LUNA + FDE para Fits Tools Venezuela',
-          metaJson: { source: 'published-proposal-catalog', url: 'https://www.trends172tech.com/es/propuestas/fits-tools', correctedFrom: 'pit-venezuela' },
-        },
-      });
-    }
-  }
-
+  // Legacy records are reused below without rewriting negotiated data.
   const result: string[] = [];
   for (const entry of publishedProposals) {
-    const clients = await tx.adminClient.findMany({ where: { OR: entry.aliases.map(name => ({ name: { equals: name, mode: 'insensitive' as const } })) } });
+    const clients = await tx.adminClient.findMany({ where: { OR: [...entry.aliases.map(name => ({ name: { equals: name, mode: 'insensitive' as const } })), ...(entry.key === 'fits-tools' ? [{ id: 'published-client-pit-venezuela' }] : [])] } });
     if (clients.length > 1) throw new Error(`Ambiguous client match: ${entry.key}`);
     const client = clients[0] ?? await tx.adminClient.create({ data: {
       id: `published-client-${entry.key}`, name: entry.clientName, country: 'Venezuela', industry: entry.industry,
@@ -53,7 +16,7 @@ export async function registerPublishedProposals(tx: Prisma.TransactionClient) {
     } });
     const url = `https://www.trends172tech.com/es/propuestas/${entry.key}`;
     const matches = await tx.adminProposal.findMany({ where: { clientId: client.id, OR: [
-      { id: `published-proposal-${entry.key}` }, { title: { equals: entry.title, mode: 'insensitive' } },
+      { id: `published-proposal-${entry.key}` }, ...(entry.key === 'fits-tools' ? [{ id: 'published-proposal-pit-venezuela' }] : []), { title: { equals: entry.title, mode: 'insensitive' } },
       { summary: { contains: `/propuestas/${entry.key}` } },
     ] } });
     if (matches.length > 1) throw new Error(`Ambiguous proposal match: ${entry.key}`);

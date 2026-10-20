@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { ProposalLinkActions } from '@/components/admin/proposal-link-actions';
 import { getTranslations } from 'next-intl/server';
 import { AdminDataTable, TableCell, TableRow } from '@/components/admin/admin-data-table';
@@ -32,6 +33,17 @@ export default async function AdminProposalsPage({ params }: { params: Promise<{
         <MetricCard label={t('metrics.acceptedProposals')} value={String(accepted)} accent="emerald" />
         <MetricCard label={t('metrics.pipeline')} value={money(total)} accent="cyan" />
       </div>
+      <section className="space-y-4" aria-label="Borradores privados">
+        <h3 className="text-lg font-semibold">{es ? 'Borradores de ChatGPT · revisión privada' : 'ChatGPT drafts · private review'}</h3>
+        <div className="grid gap-4 xl:grid-cols-2">
+          {proposals.filter(p => p.visibility === 'draft').map(p => <article key={p.id} className="rounded-xl border border-slate-200 p-5">
+            <p className="text-sm">{clientMap.get(p.clientId)?.name} · {es ? 'Revisión' : 'Revision'} {p.revision}</p>
+            <h4 className="my-3 text-xl font-semibold">{getLocalizedValue(p.title, locale)}</h4>
+            <Link className="font-semibold text-teal-700 underline" href={p.previewPath!}>{es ? 'Revisar borrador privado' : 'Review private draft'}</Link>
+            <p className="mt-3 text-sm text-slate-500">{es ? 'La publicación requiere aprobación expresa de esta revisión.' : 'Publication requires explicit approval of this revision.'}</p>
+          </article>)}
+        </div>
+      </section>
       <section className="space-y-4" aria-label={es ? 'Propuestas publicadas' : 'Published proposals'}>
         <div><h3 className="text-lg font-semibold">{es ? 'Propuestas listas para compartir' : 'Proposals ready to share'}</h3><p className="mt-1 text-sm text-slate-500">{es ? 'Abre la presentación completa, consulta su alcance o copia el enlace para enviarlo al cliente.' : 'Open the full presentation, review its scope or copy its client link.'}</p></div>
         <div className="grid gap-4 xl:grid-cols-2">
@@ -121,7 +133,7 @@ export default async function AdminProposalsPage({ params }: { params: Promise<{
             <TableCell>{proposal.presentationUrl && proposal.amount === 0 ? (es ? 'Por definir' : 'To be defined') : money(proposal.amount)}</TableCell>
             <TableCell>{proposal.probability}%</TableCell>
             <TableCell>{proposal.validUntil || '—'}</TableCell>
-            <TableCell>{proposal.presentationUrl ? <ProposalLinkActions url={proposal.presentationUrl} locale={locale} /> : '—'}</TableCell>
+            <TableCell>{proposal.presentationUrl ? <ProposalLinkActions url={proposal.presentationUrl} locale={locale} /> : proposal.previewPath ? <Link href={proposal.previewPath}>{es ? 'Vista previa privada' : 'Private preview'}</Link> : '—'}</TableCell>
           </TableRow>
         )}
       />

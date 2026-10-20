@@ -156,5 +156,47 @@
         "text": "Extender la solución a la operación acordada en Venezuela y mantener una ruta continua de mejora de módulos, automatizaciones e inteligencia artificial."
       }
     ]
+  },
+  "cima-barinas": {
+    "capabilities": [
+      {
+        "title": "Centro comercial digital",
+        "text": "Una extensión web del complejo donde cada comercio puede tener presencia, catálogo y una experiencia conectada con la operación física."
+      },
+      {
+        "title": "Espacio para cada comercio",
+        "text": "Cada aliado comercial puede operar su propia vitrina digital y, según el alcance contratado, gestionar productos, promociones, pedidos y herramientas comerciales."
+      },
+      {
+        "title": "Inteligencia artificial",
+        "text": "LUNA puede incorporar agentes capaces de orientar al visitante, descubrir comercios y productos y conectar la intención del cliente con la oferta disponible."
+      },
+      {
+        "title": "Control central CIMA",
+        "text": "Una administración central permite gobernar el ecosistema digital, altas de comercios, visibilidad, campañas, configuración y métricas de la plataforma."
+      }
+    ],
+    "phases": [
+      {
+        "title": "CIMA Digital",
+        "text": "Directorio, espacios digitales de comercios, catálogo, promociones, búsqueda y administración central."
+      },
+      {
+        "title": "CIMA Intelligence",
+        "text": "Agente IA, búsqueda conversacional, recomendaciones, analítica e inteligencia comercial."
+      },
+      {
+        "title": "CIMA Commerce",
+        "text": "Órdenes y experiencia omnicanal, con el modelo transaccional definido junto a CIMA."
+      },
+      {
+        "title": "Marketing IA",
+        "text": "Herramientas para contenido, campañas y capacidades de marketing asistidas por inteligencia artificial."
+      },
+      {
+        "title": "CIMA Smart Mall",
+        "text": "Evolución hacia experiencias físico-digitales, navegación, eventos, fidelización e integraciones."
+      }
+    ]
   }
 }

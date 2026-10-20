@@ -1,5 +1,5 @@
 import { presentationFromSummary } from './proposal-presentation';
-import { publicSummary } from '@/lib/proposals/document';
+import { publicSummary, proposalPresentation } from '@/lib/proposals/document';
 import { prisma } from '@trends172tech/db';
 import type {
   AdminActivity,
@@ -190,18 +190,24 @@ export async function getAdminProposals(): Promise<AdminProposal[]> {
       orderBy: { createdAt: 'desc' }
     });
 
-    return proposals.map((proposal) => ({
-      id: proposal.id,
-      clientId: proposal.clientId,
-      title: localized(proposal.title),
-      summary: publicSummary(proposal.summary),
-      presentationUrl: presentationFromSummary(proposal.summary),
-      status: proposal.status,
-      amount: toMoney(proposal.amount),
-      sentAt: toDateString(proposal.sentAt),
-      validUntil: toDateString(proposal.validUntil),
-      probability: proposal.probability
-    }));
+    return proposals.map((proposal) => {
+      const presentation = proposalPresentation(proposal.summary);
+      return {
+        id: proposal.id,
+        clientId: proposal.clientId,
+        title: localized(proposal.title),
+        summary: publicSummary(proposal.summary),
+        presentationUrl: presentation?.presentationUrl ?? (proposal.id.startsWith('chatgpt-proposal-') ? null : presentationFromSummary(proposal.summary)),
+        previewPath: presentation?.previewPath,
+        visibility: presentation?.visibility,
+        revision: presentation?.revision,
+        status: proposal.status,
+        amount: toMoney(proposal.amount),
+        sentAt: toDateString(proposal.sentAt),
+        validUntil: toDateString(proposal.validUntil),
+        probability: proposal.probability
+      };
+    });
   });
 }
 

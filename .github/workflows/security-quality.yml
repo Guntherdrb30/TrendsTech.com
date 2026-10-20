@@ -48,6 +48,9 @@ jobs:
       - name: Test MCP security contracts
         run: npm run security:test
 
+      - name: Test proposal persistence and authorization
+        run: npm run proposals:test
+
       - name: Build production application
         run: npm run build
 
