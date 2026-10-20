@@ -28,12 +28,10 @@ test('institucional proposal distinguishes real code, roadmap and authority-cont
   for (const marker of [
     'Implementado en el código', 'MVP geográfico', 'LABORATORIO INICIAL',
     'EVOLUCIÓN PROPUESTA', 'ROADMAP · NO DISPONIBLE COMO SERVICIO FINAL',
-    'INSAI no genera',
     'GanadIA no genera ni sustituye guías oficiales por cuenta propia',
     'No se presupone que exista una API pública',
     'Facilitar el primer acercamiento',
   ]) {
-    if (marker === 'INSAI no genera') continue;
     assert.ok(experience.includes(marker), 'Missing commitment or status: ' + marker);
   }
   assert.doesNotMatch(experience, /INSAI\s+(es|será)\s+(nuestro|un)\s+cliente/i);
