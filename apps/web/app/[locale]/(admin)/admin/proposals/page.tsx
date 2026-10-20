@@ -46,6 +46,19 @@ export default async function AdminProposalsPage({ params }: { params: Promise<{
           ))}
         </div>
       </section>
+      <section className="space-y-4" aria-label={es ? 'Propuestas institucionales de productos propios' : 'Institutional product proposals'}>
+        <div>
+          <h3 className="text-lg font-semibold">{es ? 'Propuestas institucionales de productos propios' : 'Institutional proposals for our products'}</h3>
+          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">{es ? 'Presentaciones para dar a conocer nuestras soluciones y abrir conversaciones de colaboración, sin registrar a las instituciones como clientes.' : 'Presentations introducing our products and potential collaboration, without recording institutions as clients.'}</p>
+        </div>
+        <article className="rounded-xl border border-amber-200 bg-white p-5 dark:border-amber-900/70 dark:bg-slate-900">
+          <p className="text-xs font-semibold uppercase tracking-wider text-amber-700 dark:text-amber-300">{es ? 'Producto propio · Acercamiento institucional' : 'Own product · Institutional outreach'}</p>
+          <h4 className="mt-2 text-xl font-semibold text-slate-950 dark:text-white">GanadIA · Plataforma inteligente del ganadero</h4>
+          <p className="my-3 max-w-3xl text-sm leading-6 text-slate-600 dark:text-slate-300">{es ? 'Presentación navegable de GanadIA y oportunidad de explorar, mediante una mesa técnica, una eventual interoperabilidad autorizada con los permisos de movilización del INSAI. No existe convenio ni integración oficial vigente.' : 'Interactive overview of GanadIA and a proposed technical dialogue regarding potential authorized interoperability with INSAI livestock movement permits. No official integration or agreement exists.'}</p>
+          <div className="mb-3 text-xs text-slate-500">{es ? 'Finalidad: solicitar presentación del producto y contacto institucional. Sin importe comercial ni cliente asociado.' : 'Purpose: introduce the product and request institutional contact. No price or client associated.'}</div>
+          <ProposalLinkActions url="https://www.trends172tech.com/es/propuestas/ganadia-insai" locale={locale} />
+        </article>
+      </section>
       <section className="rounded-xl border border-teal-200 bg-teal-50/60 p-5 dark:border-teal-900 dark:bg-teal-950/30">
         <p className="text-xs font-semibold uppercase tracking-wider text-teal-700 dark:text-teal-300">{es ? 'Material comercial general' : 'General sales material'}</p>
         <h3 className="mt-2 text-lg font-semibold">FDE · Software + IA aplicada a negocios reales</h3>
