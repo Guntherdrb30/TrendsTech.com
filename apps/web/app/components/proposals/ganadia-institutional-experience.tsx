@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import styles from './ganadia-institutional-experience.module.css';
 
 const chapters = [
@@ -63,7 +64,7 @@ export function GanadIAInstitutionalExperience() {
   const [active, setActive] = useState(0);
   const [fullscreen, setFullscreen] = useState(false);
   const shellRef = useRef<HTMLDivElement>(null);
-  const stageRef = useRef<HTMLElement>(null);
+  const stageRef = useRef<HTMLDivElement>(null);
 
   function navigate(index: number) {
     setActive(Math.max(0, Math.min(chapters.length - 1, index)));
@@ -133,7 +134,7 @@ export function GanadIAInstitutionalExperience() {
         <div className={styles.navFoot}><span>TRAZABILIDAD · CAMPO · INTELIGENCIA</span><p>Desarrollado por Trends172Tech</p></div>
       </nav>
 
-      <main ref={stageRef} className={styles.stage} role="region" aria-label={'Capítulo ' + (active + 1) + ': ' + chapters[active][1]}>
+      <div ref={stageRef} className={styles.stage} role="region" aria-label={'Capítulo ' + (active + 1) + ': ' + chapters[active][1]}>
         {active === 0 && <section className={styles.chapter}>
           <Eyebrow step="01" tag="PLATAFORMA AGROPECUARIA CON INTELIGENCIA ARTIFICIAL" />
           <div className={styles.hero}>
@@ -146,7 +147,7 @@ export function GanadIAInstitutionalExperience() {
             </div>
             <div className={styles.heroVisual}>
               <div className={styles.visualHeader}><span>PLATAFORMA DE PRODUCTO</span><span>VENEZUELA · 2026</span></div>
-              <img className={styles.ganadiaLogo} src="/branding/ganadia-lockup.svg" alt="GanadIA — Tu finca, gestión inteligente" />
+              <Image className={styles.ganadiaLogo} src="/branding/ganadia-lockup.svg" alt="GanadIA — Tu finca, gestión inteligente" width={1086} height={362} unoptimized />
               <div className={styles.visualLine} />
               <div className={styles.visualGrid}><span>FINCAS</span><span>ANIMALES</span><span>OPERACIONES</span><span>DATOS</span></div>
               <div className={styles.visualFooter}><span>Una misma visión</span><strong>Del registro a la trazabilidad.</strong></div>
@@ -274,14 +275,14 @@ export function GanadIAInstitutionalExperience() {
               <div className={styles.contact}>Trends172Tech · Tecnología que impulsa el futuro.<br/>gunther@trends172tech.com</div>
             </div>
             <div className={styles.closingPanel}>
-              <img src="/branding/ganadia-lockup.svg" alt="GanadIA — Tu finca, gestión inteligente" />
+              <Image src="/branding/ganadia-lockup.svg" alt="GanadIA — Tu finca, gestión inteligente" width={1086} height={362} unoptimized />
               <h3>Principios de la propuesta</h3>
               <ul>{constraints.map(item => <li key={item}>{item}</li>)}</ul>
               <small>Venezuela · Octubre 2026 · Presentación exploratoria, no vinculante.</small>
             </div>
           </div>
         </section>}
-      </main>
+      </div>
 
       <footer className={styles.footer}>
         <div className={styles.footerName}><span>GANADIA</span> <small>PRODUCTO DE TRENDS172TECH</small></div>
