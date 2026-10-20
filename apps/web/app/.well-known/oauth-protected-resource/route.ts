@@ -9,7 +9,7 @@ export async function GET() {
   const metadata = await oauthResourceClient.getProtectedResourceMetadata({
     resource: `${siteUrl}/mcp`,
     authorization_servers: [siteUrl],
-    scopes_supported: ['mcp:read', 'mcp:write', 'mcp:studio:write', 'mcp:studio:execute']
+    scopes_supported: ['mcp:read', 'mcp:write', 'mcp:studio:write', 'mcp:studio:execute', 'mcp:proposals:write', 'mcp:proposals:publish']
   });
 
   return Response.json(metadata, {

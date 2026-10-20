@@ -18,7 +18,9 @@ const scopeCopy: Record<string, { es: string; en: string }> = {
   email: { es: 'Ver tu correo verificado', en: 'View your verified email' },
   offline_access: { es: 'Mantener la conexión hasta que la revoques', en: 'Keep the connection until you revoke it' },
   'mcp:read': { es: 'Consultar información autorizada de LUNA', en: 'Read authorized LUNA information' },
-  'mcp:write': { es: 'Ejecutar acciones autorizadas en LUNA', en: 'Perform authorized LUNA actions' }
+  'mcp:write': { es: 'Ejecutar acciones autorizadas en LUNA', en: 'Perform authorized LUNA actions' },
+  'mcp:proposals:write': { es: 'Crear y actualizar borradores de propuestas de Trends172Tech', en: 'Create and update Trends172Tech proposal drafts' },
+  'mcp:proposals:publish': { es: 'Publicar propuestas con mi aprobaci\u00f3n expresa', en: 'Publish proposals only with my explicit approval' }
 };
 
 export function OAuthConsentCard({ clientName, clientUri, scopes, locale }: OAuthConsentCardProps) {
