@@ -2,9 +2,10 @@
 
 Routes remain unchanged:
 - `/es/propuestas/city-center-maracay`
+- `/es/propuestas/cima-barinas`
 - `/es/propuestas/big-home`
 
-Both pages use `app/components/proposals/proposal-experience.tsx` and its scoped CSS module. Original capabilities and roadmaps are retained in `proposal-data.json`: four capabilities/five phases for City Center and six capabilities/six phases for Big Home.
+All mall and retail proposals use `app/components/proposals/proposal-experience.tsx` and its scoped CSS module. Original capabilities and roadmaps are retained in `proposal-data.json`: four capabilities/five phases each for City Center and CIMA, and six capabilities/six phases for Big Home. CIMA is a separate proposal using the same mall experience, with its own client name, scenarios, phases, booking source and noindex metadata. It preserves City Center's original page.
 
 Each proposal includes eight chapters, hash navigation, keyboard controls, fullscreen, accessible capability tabs, predefined conceptual AI scenarios, a CarpiHogar reference, implementation accordions, scope and the existing booking widget. No prices, performance metrics or delivery dates have been introduced. Existing booking source identifiers and WhatsApp destination are retained. No booking API changes.
 
