@@ -38,6 +38,7 @@ const operationsNavItems = [
   { key: 'partners', href: '/admin/partners' },
   { key: 'payments', href: '/admin/payments' },
   { key: 'clients', href: '/admin/clients' },
+  { key: 'intakes', href: '/admin/intakes' },
   { key: 'projects', href: '/admin/projects' },
   { key: 'proposals', href: '/admin/proposals' },
   { key: 'bookings', href: '/admin/bookings' },
@@ -79,7 +80,7 @@ export function AdminShell({ locale, children, labels }: AdminShellProps) {
               {operationsNavItems.map((item) => {
                 const href = `${base}${item.href}`;
                 const active = pathname === href || (item.href !== '/admin' && pathname.startsWith(href));
-                const label = item.key === 'partners' ? (locale.startsWith('es') ? 'Aliados' : 'Partners') : item.key === 'bookings' ? (locale.startsWith('es') ? 'Reservas' : 'Bookings') : item.key === 'engineeringStudio' ? 'Engineering Studio' : item.key === 'lunaImplementations' ? labels.lunaImplementations ?? 'Implementaciones LUNA' : labels[item.key];
+                const label = item.key === 'intakes' ? (locale.startsWith('es') ? 'Oportunidades IA' : 'AI opportunities') : item.key === 'partners' ? (locale.startsWith('es') ? 'Aliados' : 'Partners') : item.key === 'bookings' ? (locale.startsWith('es') ? 'Reservas' : 'Bookings') : item.key === 'engineeringStudio' ? 'Engineering Studio' : item.key === 'lunaImplementations' ? labels.lunaImplementations ?? 'Implementaciones LUNA' : labels[item.key];
                 return <Link key={item.key} href={href} className={cn('whitespace-nowrap rounded-lg border px-3 py-2 text-sm font-medium transition lg:w-full', active ? 'border-slate-950 bg-slate-950 text-white dark:border-white dark:bg-white dark:text-slate-950' : 'border-transparent text-slate-600 hover:border-black/10 hover:bg-slate-50 hover:text-slate-950 dark:text-slate-300 dark:hover:border-slate-800 dark:hover:bg-slate-900 dark:hover:text-white')}>{label}</Link>;
               })}
             </nav>

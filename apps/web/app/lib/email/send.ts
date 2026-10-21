@@ -34,7 +34,10 @@ export async function sendEmail(options: SendEmailOptions): Promise<EmailResult>
       replyTo: replyTo || EMAIL_CONFIG.replyTo,
     } as CreateEmailOptions);
 
-    return { ok: true, emailId: result.data?.id };
+    if (result.error || !result.data?.id) {
+      return { ok: false, error: result.error?.message || 'Email provider did not confirm acceptance.' };
+    }
+    return { ok: true, emailId: result.data.id };
   } catch (error) {
     console.error('Failed to send email:', error);
     return {
