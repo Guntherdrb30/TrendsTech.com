@@ -5,6 +5,7 @@ import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { z } from 'zod';
 import { Prisma, prisma } from '@trends172tech/db';
 import { addVaultEntry, listVaultEntries, searchVault } from './vault';
+import { getProjectMemoryConsent, requireProjectMemoryConsent } from './memory-consent';
 import { buildContextPack } from './context-pack';
 import { createStudioProject, getStudioProjectDetail, listStudioProjects } from './store';
 import { approveBlueprintGate } from './approvals';
@@ -30,6 +31,7 @@ export const STUDIO_READ_TOOLS = [
   'studio_search_projects',
   'studio_fetch_project',
   'studio_search_vault',
+  'studio_get_project_memory_consent',
   'studio_list_agent_runs',
   'studio_get_routing_profile',
   'studio_validate_workflow_draft',
@@ -88,14 +90,18 @@ export function registerEngineeringStudioTools(
     });
   }
 
+  if (canRegister(allowedTools, 'studio_get_project_memory_consent')) {
+    server.registerTool('studio_get_project_memory_consent',{title:'Consultar consentimiento de memoria',description:'Read the ChatGPT memory opt-in for a single project.',inputSchema:{projectId:z.string().uuid()},annotations:{readOnlyHint:true,destructiveHint:false,openWorldHint:false}},async({projectId})=>textResult(await getProjectMemoryConsent(projectId),'Consentimiento de memoria consultado.'));
+  }
+
   if (canRegister(allowedTools, 'studio_create_project')) {
     server.registerTool('studio_create_project', { title:'Crear proyecto en Engineering Studio', description:'Persist a new software project with initial Blueprint and Approval Gate.', inputSchema:{name:z.string().min(3).max(180),clientName:z.string().max(180).optional(),summary:z.string().min(20).max(20000),origin:z.enum(['idea','prd','chatgpt','repository','recovery']).default('chatgpt'),marginPercent:z.number().min(0).max(95).default(40),commercialBudget:z.number().min(0).default(0),localAiRequired:z.boolean().default(false),repositoryUrl:z.string().max(500).optional()}, annotations:{readOnlyHint:false,destructiveHint:false,openWorldHint:false,idempotentHint:false} }, async input=>{
-      const created=await createStudioProject({...input,createdByUserId:actorRef}); await addVaultEntry({projectId:created.projectId,type:'CONVERSATION_SUMMARY',title:'Contexto inicial desde ChatGPT',content:input.summary,source:'CHATGPT',sourceRef:actorRef,actorUserId:actorRef}); return textResult(created,`Proyecto ${input.name} creado en Engineering Studio.`);
+      const created=await createStudioProject({...input,createdByUserId:actorRef}); return textResult(created,`Proyecto ${input.name} creado en Engineering Studio. La memoria de ChatGPT requiere consentimiento separado por proyecto.`);
     });
   }
 
   if (canRegister(allowedTools, 'studio_record_vault_entry')) {
-    server.registerTool('studio_record_vault_entry',{title:'Guardar conocimiento en Project Vault',description:'Persist project knowledge.',inputSchema:{projectId:z.string().uuid(),type:vaultType,title:z.string().min(2).max(240),content:z.string().min(1).max(100000),supersedesId:z.string().uuid().optional(),sourceRef:z.string().max(500).optional()},annotations:{readOnlyHint:false,destructiveHint:false,openWorldHint:false,idempotentHint:false}},async input=>{const result=await addVaultEntry({...input,source:'CHATGPT',actorUserId:actorRef});return textResult(result,`${input.type} guardado en Project Vault como versión ${result.version}.`);});
+    server.registerTool('studio_record_vault_entry',{title:'Guardar conocimiento en Project Vault',description:'Persist project knowledge.',inputSchema:{projectId:z.string().uuid(),type:vaultType,title:z.string().min(2).max(240),content:z.string().min(1).max(100000),supersedesId:z.string().uuid().optional(),sourceRef:z.string().max(500).optional()},annotations:{readOnlyHint:false,destructiveHint:false,openWorldHint:false,idempotentHint:false}},async input=>{await requireProjectMemoryConsent(input.projectId);const result=await addVaultEntry({...input,source:'CHATGPT',actorUserId:actorRef});return textResult(result,`${input.type} guardado en Project Vault como versión ${result.version}.`);});
   }
 
   if (canRegister(allowedTools, 'studio_search_vault')) {
@@ -108,6 +114,7 @@ export function registerEngineeringStudioTools(
 
   if (canRegister(allowedTools, 'studio_create_task')) {
     server.registerTool('studio_create_task',{title:'Crear tarea de desarrollo',description:'Create an approved development backlog task.',inputSchema:{projectId:z.string().uuid(),title:z.string().min(3).max(240),description:z.string().min(1).max(20000),priority:z.enum(['LOW','MEDIUM','HIGH','CRITICAL']).default('MEDIUM'),assignedAgentKey:z.string().max(120).optional(),acceptanceCriteria:z.array(z.string().min(1).max(1000)).max(30).default([])},annotations:{readOnlyHint:false,destructiveHint:false,openWorldHint:false,idempotentHint:false}},async input=>{
+      await requireProjectMemoryConsent(input.projectId);
       const id=randomUUID();
       await prisma.$transaction(async tx=>{
         await tx.$executeRaw(Prisma.sql`INSERT INTO "StudioBacklogItem" ("id","projectId","title","description","status","priority","assignedAgentKey","estimatedCost","actualCost","acceptanceCriteriaJson","createdAt","updatedAt") VALUES (${id},${input.projectId},${input.title},${input.description},'READY',${input.priority},${input.assignedAgentKey||null},0,0,CAST(${JSON.stringify(input.acceptanceCriteria)} AS jsonb),CURRENT_TIMESTAMP,CURRENT_TIMESTAMP)`);
